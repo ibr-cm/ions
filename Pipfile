@@ -10,6 +10,7 @@ name = "pypi"
 matplotlib = "*"
 ujson = "*"
 numpy = "*"
+jsonpickle = "*"
 
 
 [dev-packages]
