@@ -11,6 +11,11 @@ matplotlib = "*"
 ujson = "*"
 numpy = "*"
 jsonpickle = "*"
+pandas = "*"
+pyside2 = "*"
+scipy = "*"
+sqlalchemy = "*"
+jupyter = "*"
 
 
 [dev-packages]
