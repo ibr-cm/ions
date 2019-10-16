@@ -1,20 +1,19 @@
 [[source]]
-url = "https://pypi.python.org/simple"
-verify_ssl = true
 name = "pypi"
-
-[packages]
-matplotlib = "*"
-ujson = "*"
-numpy = "*"
-jsonpickle = "*"
-pandas = "*"
-pyside2 = "*"
-scipy = "*"
-sqlalchemy = "*"
-jupyter = "*"
+url = "https://pypi.org/simple"
+verify_ssl = true
 
 [dev-packages]
 pylint = "*"
 autopep8 = "*"
 rope = "*"
+
+[packages]
+matplotlib = "*"
+numpy = "*"
+jsonpickle = "*"
+pandas = "*"
+SQLAlchemy = "*"
+
+[requires]
+python_version = "3.7"
