@@ -146,9 +146,13 @@ class BoxPlot(SimplePlot):
         self.width = width
 
     def get_ticks_mp(self):
-        # map boxplots onto this range
         ticks = range(0, 6)
         ticklabel = [ '5', '10', '25', '50', '75', '100']
+        return ticks, ticklabel
+
+    def get_ticks_slot(self):
+        ticks = range(0, 12)
+        ticklabel = ['0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22']
         return ticks, ticklabel
 
     def override(self, ax):
@@ -163,13 +167,6 @@ class BoxPlot(SimplePlot):
         # ax.autoscale_view(tight=True, scalex=True)
         # ax.use_sticky_edges = False
 
-        # static_patch = mpatches.Patch(color='lightgreen', label='static')
-        # draft_patch = mpatches.Patch(color='aqua', label='dynamic')
-        # # plt.legend(handles=[static_patch, draft_patch], bbox_to_anchor=LEGEND_BB, ncol=3, loc='center', shadow=True, fontsize=FONTSIZE)
-        # LEGEND_BB = (0.40, 1.00)
-        # # plt.legend(handles=[static_patch, draft_patch], bbox_to_anchor=LEGEND_BB, ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
-        # plt.legend(handles=[static_patch, draft_patch], ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
-
         pass
 
 
@@ -179,47 +176,51 @@ class BoxPlot(SimplePlot):
             self.plot_box(ax, df, x_row)
         debug_print("BOXPLOT")
 
-    def map_position(self, position):
-        print("position in: ", position)
-        ticks, _ = self.get_ticks(self.x_axis)
-        n = len(ticks)
-        print("position out: ", position)
+    # TODO: hacky
+    def map_position(self, n, style):
+        position = n
+        if style == 'static':
+            print("===================================")
+            position -= 0.2
+        else:
+            print("------------------------------------")
+            position += 0.2
+
         return position
 
     def plot_box(self, ax, dfs, x_row):
         print("dfs: ", dfs)
-        # print("dfs: ", len(dfs))
-        # exit(1)
 
         bxps = []
         positions = []
         style = ""
+        # plots = []
+        # labels = []
+        n = 0
         for b in dfs.iterrows():
             b = b[1].transpose()
             # print(b[x_row])
 
             val = b['bxp'].values[0]
             key = b[x_row]
-            position = b['position']
-            position = self.map_position(position)
-            label = b['label']
-            width = b['width'] if not self.width else self.width
-
-            
-            val['label'] = label
-            bxps.append(val)
+            # position = b['position']
+            # position = self.map_position(position, b)
 
             # TODO: hacky
             style = b['gen_rule']
             if ',' in style:
                 style = style.split(',')[0]
 
-            # delta = position/100.0 * 0.1
-            delta = 0.2
-            # if style=='static':
-            #     position -= delta
-            # else:
-            #     position += delta
+            # TODO: hacky
+            position = self.map_position(n, style)
+            n += 1
+
+            label = b['label']
+            width = b['width'] if not self.width else self.width
+
+            val['label'] = label
+            bxps.append(val)
+
             positions.append(position)
 
             print("--------------------------")
@@ -232,30 +233,25 @@ class BoxPlot(SimplePlot):
 
             val['label'] = label
 
-            # plot = ax.bxp(b['bxp'].values, positions=[b[x_row]], boxprops=boxprops, patch_artist=True)
-            # plot = ax.bxp([val], boxprops=boxprops, patch_artist=True)
-
             plot = ax.bxp([val], positions=[position], boxprops=boxprops, patch_artist=True, widths=width)
-            # plot = ax.bxp([val], positions=[position], patch_artist=True, widths=width)
-            ax.set_label("blah")
             set_boxplot_style(plot, style)
 
-            print("plot: ", plot)
-            handles, labels = ax.get_legend_handles_labels()
-            print("handles: ", handles)
-            print("labels: ", labels)
+            # plots.append(plot)
+            # labels.append(label)
 
-        ax.legend(ncol=1, loc='best', shadow=True, fontsize=FONTSIZE_SMALLERISH)
+            # print("plot: ", plot)
+            # handles, labels = ax.get_legend_handles_labels()
+            # print("handles: ", handles)
+            # print("labels: ", labels)
 
-        # print("bxps: ", bxps)
-        # print("positions: ", positions)
-        # plot = ax.bxp(b['bxp'].values, positions=[b[x_row]], widths=64.0, boxprops=boxprops, patch_artist=True)
-        # plot = ax.bxp(b['bxp'].values, positions=[b[x_row]], boxprops=boxprops, patch_artist=True)
-
-        # plot = ax.bxp(bxps, positions=positions, boxprops=boxprops, patch_artist=True, widths=1.5)
-        # plot = ax.bxp(bxps, positions=positions, boxprops=boxprops, patch_artist=True)
-        # plot = ax.bxp(bxps, boxprops=boxprops, patch_artist=True)
-        # set_boxplot_style(plot, style)
+        # ax.legend(handles=plots, labels=labels, ncol=1, loc='best', shadow=True, fontsize=FONTSIZE_SMALLERISH)
+        
+        static_patch = mpatches.Patch(color='lightgreen', label='static')
+        draft_patch = mpatches.Patch(color='aqua', label='dynamic')
+        # plt.legend(handles=[static_patch, draft_patch], bbox_to_anchor=LEGEND_BB, ncol=3, loc='center', shadow=True, fontsize=FONTSIZE)
+        # LEGEND_BB = (0.40, 1.00)
+        # plt.legend(handles=[static_patch, draft_patch], bbox_to_anchor=LEGEND_BB, ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
+        plt.legend(handles=[static_patch, draft_patch], ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
 
         
 #-----------------------------------------------------------------------------
