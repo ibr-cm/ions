@@ -8,6 +8,7 @@ class Plot:
     def __init__(self):
         print("Plot::init: "+ str(self.__class__))
     
+
     def exec(self, data_frames:List[pd.DataFrame]):
         """
         Execute plotting with given data and return a matplotlib.figure.Figure
@@ -21,20 +22,21 @@ class SimplePlot(Plot):
         self.x_axis = x_axis
         self.y_axis = y_axis
 
-    def plot(self, ax, df, x_row):
-        print("Implement this")
+
+    def plot(self, df, x_row):
+        raise NotImplementedError("Implement this")
+
+
+    def set_plot_options(self):
+        raise NotImplementedError("Implement this")
+
+
+    def get_ticks_mp(self):
+        raise NotImplementedError("Implement this")
+
 
     def get_ticks_slot(self):
-        ticks = [ 0, 7200,14400,21600,28800,36000,43200,50400,57600,64800,72000,79200]
-        ticklabel = ['0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22']
-        return ticks, ticklabel
-
-    #TODO: hacky
-    def get_ticks_mp(self):
-        ticks = [ 0.05, 0.10, 0.25, 0.50, 0.75, 1.0 ]
-        ticklabel = [ str(int(x*100)) for x in ticks]
-        print(ticks, ticklabel)
-        return ticks, ticklabel
+        raise NotImplementedError("Implement this")
 
 
     #TODO: hacky
@@ -48,56 +50,28 @@ class SimplePlot(Plot):
         return ticks, ticklabel
 
 
-    def override(self, ax):
-        pass
-
     def exec(self, data_frames:List[pd.DataFrame]):
         dfs = data_frames
         
-        # figure, ax = plt.subplots()
-        figure = plt.figure()
-        ax = figure.subplots()
-        figure.set_size_inches(GRAPH_SIZE)
+        self.figure = plt.figure()
+        self.ax = self.figure.subplots()
+        self.figure.set_size_inches(GRAPH_SIZE)
 
+        self.plot(dfs, self.x_axis)
 
-        self.plot(ax, dfs, self.x_axis)
+        self.ax.set_ylabel('Average '+map_variable_to_ylabel(self.y_axis) + map_variable_name_to_unit(self.y_axis), fontsize=FONTSIZE_LABEL)
+        self.ax.set_xlabel(map_variable_to_xlabel(self.x_axis), fontsize=FONTSIZE_LABEL)
 
+        self.ax.set_ylim(map_variable_to_yrange(self.y_axis))
 
-        # TODO:
-        ax.set_ylabel('Average '+map_variable_to_ylabel(self.y_axis) + map_variable_name_to_unit(self.y_axis), fontsize=FONTSIZE_LABEL)
-        ax.set_xlabel(map_variable_to_xlabel(self.x_axis), fontsize=FONTSIZE_LABEL)
-
-        # TODO:
-        # ax.set_xmargin(0.01)
-        # ax.set_xmargin(1.01)
-        # TODO: 
-        ax.set_ylim(map_variable_to_yrange(self.y_axis))
-
-        # TODO:
-        ticks, ticklabel = self.get_ticks(self.x_axis)
-        debug_print("ticklabel,ticks : ", ticklabel, ticks)
-        ax.set_xticks(ticks)
-        ax.set_xticklabels(ticklabel)
-        ax.tick_params(axis='both', which='major', labelsize=18)
-
-        ax.yaxis.grid(True, linestyle='-', which='both', color='lightgrey', alpha=0.5)
-        ax.xaxis.grid(False)
-
-
-        self.override(ax)
-
+        self.set_plot_options()
 
         plt.tight_layout()
 
-        # figure = plot.get_figure()
-        # figure.savefig(run_conf.outfile_name)
-        # figure.savefig("tst.png")
+        print("figure: ", self.figure)
+        print("ax: ", self.ax)
 
-        print("figure: ", figure)
-        print("ax: ", ax)
-
-        return figure
-
+        return self.figure
 
 
 #-----------------------------------------------------------------------------
@@ -109,20 +83,49 @@ class LinePlot(SimplePlot):
         self.column = column
         self.area = area
         self.y_range = y_range
+
+
+    def get_ticks_slot(self):
+        ticks = [ 0, 7200,14400,21600,28800,36000,43200,50400,57600,64800,72000,79200]
+        ticklabel = ['0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22']
+        return ticks, ticklabel
+
+
+    #TODO: hacky
+    def get_ticks_mp(self):
+        ticks = [ 0.05, 0.10, 0.25, 0.50, 0.75, 1.0 ]
+        ticklabel = [ str(int(x*100)) for x in ticks]
+        print(ticks, ticklabel)
+        return ticks, ticklabel
     
-    def override(self, ax):
-        ax.set_ylim(self.y_range)
-        ax.legend(ncol=1, loc='best', shadow=True, fontsize=FONTSIZE_SMALLERISH)
+
+    def set_plot_options(self):
+        self.ax.set_ylim(self.y_range)
+        # TODO:
+        # ax.set_xmargin(0.01)
+        # ax.set_xmargin(1.01)
+
+        self.ax.legend(ncol=1, loc='best', shadow=True, fontsize=FONTSIZE_SMALLERISH)
+
+        self.ax.yaxis.grid(True, linestyle='-', which='both', color='lightgrey', alpha=0.5)
+        self.ax.xaxis.grid(False)
+
+        # TODO:
+        ticks, ticklabel = self.get_ticks(self.x_axis)
+        debug_print("ticklabel,ticks : ", ticklabel, ticks)
+        self.ax.set_xticks(ticks)
+        self.ax.set_xticklabels(ticklabel)
+
+        self.ax.tick_params(axis='both', which='major', labelsize=18)
 
 
-    def plot(self, ax, dfs, x_row):
-        # LINEPLOT
+    def plot(self, dfs, x_row):
         for df in dfs:
             label = df.label
-            self.plot_line(ax, df, x_row, self.column, self.area, label)
-        debug_print("LINEPLOT")
+            self.plot_line(df, x_row, self.column, self.area, label)
 
-    def plot_line(self, ax, df, x_row, column, area, label):
+
+    def plot_line(self, df, x_row, column, area, label):
         print("-=-=-=-=-=-=-=-==-=-=-=-=-")
         print("x_row: ", df[x_row])
         print("column: ", df[column])
@@ -130,7 +133,7 @@ class LinePlot(SimplePlot):
         if isinstance(label, pd.Series):
             label = label.iloc[0]
             print("---->>>> label: ", label)
-        plot = ax.plot(df[x_row], df[column], label=label)
+        plot = self.ax.plot(df[x_row], df[column], label=label)
         if area is not None:
             print("x_row: ", x_row)
             print("area: ", area)
@@ -154,7 +157,7 @@ class BoxPlot(SimplePlot):
         ticklabel = ['0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22']
         return ticks, ticklabel
 
-    def override(self, ax):
+    def set_plot_options(self):
         # ax.set_ylim(self.y_range)
 
         # ax.set_xscale('logit')
@@ -166,14 +169,23 @@ class BoxPlot(SimplePlot):
         # ax.autoscale_view(tight=True, scalex=True)
         # ax.use_sticky_edges = False
 
-        pass
+
+        # TODO:
+        ticks, ticklabel = self.get_ticks(self.x_axis)
+        debug_print("ticklabel,ticks : ", ticklabel, ticks)
+        self.ax.set_xticks(ticks)
+        self.ax.set_xticklabels(ticklabel)
+
+        self.ax.tick_params(axis='both', which='both', labelsize=18)
+
+        self.ax.yaxis.grid(True, linestyle='-', which='both', color='lightgrey', alpha=0.5)
+        # ax.xaxis.grid(True, linestyle='-', which='minor', color='lightgrey', alpha=0.5)
 
 
-    def plot(self, ax, dfs, x_row):
-        # BOXPLOT
+    def plot(self, dfs, x_row):
         for df in dfs:
-            self.plot_box(ax, df, x_row)
-        debug_print("BOXPLOT")
+            self.plot_box(df, x_row)
+
 
     # TODO: hacky
     def map_position(self, n, style):
@@ -187,7 +199,7 @@ class BoxPlot(SimplePlot):
 
         return position
 
-    def plot_box(self, ax, dfs, x_row):
+    def plot_box(self, dfs, x_row):
         print("dfs: ", dfs)
 
         bxps = []
@@ -232,7 +244,7 @@ class BoxPlot(SimplePlot):
 
             val['label'] = label
 
-            plot = ax.bxp([val], positions=[position], boxprops=boxprops, patch_artist=True, widths=width)
+            plot = self.ax.bxp([val], positions=[position], boxprops=boxprops, patch_artist=True, widths=width)
             set_boxplot_style(plot, style)
 
             # plots.append(plot)
@@ -243,11 +255,8 @@ class BoxPlot(SimplePlot):
             # print("handles: ", handles)
             # print("labels: ", labels)
 
-        # ax.legend(handles=plots, labels=labels, ncol=1, loc='best', shadow=True, fontsize=FONTSIZE_SMALLERISH)
-        
         static_patch = mpatches.Patch(color='lightgreen', label='static')
         draft_patch = mpatches.Patch(color='aqua', label='dynamic')
-        # plt.legend(handles=[static_patch, draft_patch], bbox_to_anchor=LEGEND_BB, ncol=3, loc='center', shadow=True, fontsize=FONTSIZE)
         # LEGEND_BB = (0.40, 1.00)
         # plt.legend(handles=[static_patch, draft_patch], bbox_to_anchor=LEGEND_BB, ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
         plt.legend(handles=[static_patch, draft_patch], ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
