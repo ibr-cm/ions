@@ -1,13 +1,17 @@
 from filters import *
 
 class Plot:
+    """
+    Plotting prototype
+    """
+
     def __init__(self):
         print("Plot::init: "+ str(self.__class__))
     
-    def exec(self):
-        # execute plotting
-        # TODO:
-        # return matplotlib.figure.Figure OR matplotlib.axes.Axes ??? -> Figure, of course
+    def exec(self, data_frames:List[pd.DataFrame]):
+        """
+        Execute plotting with given data and return a matplotlib.figure.Figure
+        """
         pass
 
 
