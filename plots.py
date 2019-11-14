@@ -15,7 +15,6 @@ class Plot:
         pass
 
 
-
 class SimplePlot(Plot):
     def __init__(self, x_axis, y_axis):
         Plot.__init__(self)
@@ -106,9 +105,7 @@ class SimplePlot(Plot):
 
 class LinePlot(SimplePlot):
     def __init__(self, x_axis, y_axis, column, area, y_range):
-        Plot.__init__(self)
-        self.x_axis = x_axis
-        self.y_axis = y_axis
+        SimplePlot.__init__(self, x_axis, y_axis)
         self.column = column
         self.area = area
         self.y_range = y_range
@@ -144,9 +141,7 @@ class LinePlot(SimplePlot):
 
 class BoxPlot(SimplePlot):
     def __init__(self, x_axis, y_axis, width=None):
-        Plot.__init__(self)
-        self.x_axis = x_axis
-        self.y_axis = y_axis
+        SimplePlot.__init__(self, x_axis, y_axis)
         self.width = width
 
     def get_ticks_mp(self):
