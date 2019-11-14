@@ -64,14 +64,14 @@ class SimplePlot(Plot):
 
 
         # TODO:
-        ax.set_ylabel('Average '+map_var_name(self.y_axis), fontsize=FONTSIZE_LABEL)
-        ax.set_xlabel(map_xlabel_name(self.x_axis), fontsize=FONTSIZE_LABEL)
+        ax.set_ylabel('Average '+map_variable_to_ylabel(self.y_axis) + map_variable_name_to_unit(self.y_axis), fontsize=FONTSIZE_LABEL)
+        ax.set_xlabel(map_variable_to_xlabel(self.x_axis), fontsize=FONTSIZE_LABEL)
 
         # TODO:
         # ax.set_xmargin(0.01)
         # ax.set_xmargin(1.01)
         # TODO: 
-        ax.set_ylim(map_yrange_name(self.y_axis))
+        ax.set_ylim(map_variable_to_yrange(self.y_axis))
 
         # TODO:
         ticks, ticklabel = self.get_ticks(self.x_axis)
