@@ -59,7 +59,7 @@ class SimplePlot(Plot):
 
         self.plot(dfs, self.x_axis)
 
-        self.ax.set_ylabel('Average '+map_variable_to_ylabel(self.y_axis) + map_variable_name_to_unit(self.y_axis), fontsize=FONTSIZE_LABEL)
+        self.ax.set_ylabel('Average '+map_variable_to_ylabel(self.y_axis) +' '+ map_variable_name_to_unit(self.y_axis), fontsize=FONTSIZE_LABEL)
         self.ax.set_xlabel(map_variable_to_xlabel(self.x_axis), fontsize=FONTSIZE_LABEL)
 
         self.ax.set_ylim(map_variable_to_yrange(self.y_axis))
