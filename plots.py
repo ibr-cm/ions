@@ -31,20 +31,30 @@ class SimplePlot(Plot):
         raise NotImplementedError("Implement this")
 
 
-    def get_ticks_mp(self):
+    def get_major_ticks_mp(self):
+        raise NotImplementedError("Implement this")
+    def get_minor_ticks_mp(self):
+        raise NotImplementedError("Implement this")
+
+    def get_major_ticks_slot(self):
+        raise NotImplementedError("Implement this")
+    def get_minor_ticks_slot(self):
         raise NotImplementedError("Implement this")
 
 
-    def get_ticks_slot(self):
-        raise NotImplementedError("Implement this")
-
-
-    #TODO: hacky
-    def get_ticks(self, x_axis):
-        if x_axis=='v2x_rate':
-            ticks, ticklabel = self.get_ticks_mp()
-        elif x_axis=='period':
-            ticks, ticklabel = self.get_ticks_slot()
+    def get_ticks(self, x_axis, which='major'):
+        mapping = {
+            'v2x_rate': {
+                'major': self.get_major_ticks_mp
+                ,'minor': self.get_minor_ticks_mp
+            }
+            ,'period': {
+                'major': self.get_major_ticks_slot
+                ,'minor': self.get_minor_ticks_slot
+            }
+        }
+        if x_axis in mapping:
+            ticks, ticklabel = mapping[x_axis][which]()
         else:
             ticks, ticklabel = [],[]
         return ticks, ticklabel
@@ -53,8 +63,7 @@ class SimplePlot(Plot):
     def exec(self, data_frames:List[pd.DataFrame]):
         dfs = data_frames
         
-        self.figure = plt.figure()
-        self.ax = self.figure.subplots()
+        self.figure, self.ax = plt.subplots()
         self.figure.set_size_inches(GRAPH_SIZE)
 
         self.plot(dfs, self.x_axis)
@@ -147,15 +156,24 @@ class BoxPlot(SimplePlot):
         SimplePlot.__init__(self, x_axis, y_axis)
         self.width = width
 
-    def get_ticks_mp(self):
+    def get_major_ticks_mp(self):
         ticks = range(0, 6)
         ticklabel = [ '5', '10', '25', '50', '75', '100']
         return ticks, ticklabel
 
-    def get_ticks_slot(self):
+    def get_major_ticks_slot(self):
         ticks = range(0, 12)
         ticklabel = ['0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22']
         return ticks, ticklabel
+
+    def get_minor_ticks_slot(self):
+        ticks = [ x-0.5 for x in range(0, 13) ]
+        return ticks, []
+
+    def get_minor_ticks_mp(self):
+        ticks = [ x-0.5 for x in range(0, 7) ]
+        return ticks, []
+
 
     def set_plot_options(self):
         # ax.set_ylim(self.y_range)
@@ -169,6 +187,8 @@ class BoxPlot(SimplePlot):
         # ax.autoscale_view(tight=True, scalex=True)
         # ax.use_sticky_edges = False
 
+        for x in self.get_ticks(self.x_axis, which='minor')[0]:
+            self.ax.axvline(x=x, color='gray', alpha=0.2, linestyle='--')
 
         # TODO:
         ticks, ticklabel = self.get_ticks(self.x_axis)
