@@ -152,9 +152,10 @@ class LinePlot(SimplePlot):
 
 
 class BoxPlot(SimplePlot):
-    def __init__(self, x_axis, y_axis, width=None):
+    def __init__(self, x_axis, y_axis, width=None, offset_delta=0.2):
         SimplePlot.__init__(self, x_axis, y_axis)
         self.width = width
+        self.offset_delta = offset_delta
 
     def get_major_ticks_mp(self):
         ticks = range(0, 6)
@@ -202,25 +203,26 @@ class BoxPlot(SimplePlot):
         # ax.xaxis.grid(True, linestyle='-', which='minor', color='lightgrey', alpha=0.5)
 
 
+    def get_offset_list(self, dfs, offset_delta):
+        mapping = {
+             1 : [0]
+            ,2 : [-offset_delta, offset_delta]
+            ,3 : [-offset_delta, 0, offset_delta]
+            ,4 : [-1.5*offset_delta, -offset_delta/2.0, offset_delta/2.0, 1.5*offset_delta]
+        }
+        return mapping[len(dfs)]
+
+
     def plot(self, dfs, x_row):
+        offset_list = self.get_offset_list(dfs, self.offset_delta)
+        n = 0
         for df in dfs:
-            self.plot_box(df, x_row)
+            self.plot_box(df, x_row, offset_list[n])
+            n += 1
 
 
-    # TODO: hacky
-    def map_position(self, n, style):
-        position = n
-        if style == 'static':
-            print("===================================")
-            position -= 0.2
-        else:
-            print("------------------------------------")
-            position += 0.2
-
-        return position
-
-    def plot_box(self, dfs, x_row):
-        print("dfs: ", dfs)
+    def plot_box(self, df, x_row, offset):
+        print("df: ", df)
 
         bxps = []
         positions = []
@@ -228,12 +230,11 @@ class BoxPlot(SimplePlot):
         # plots = []
         # labels = []
         n = 0
-        for b in dfs.iterrows():
+        for b in df.iterrows():
             b = b[1].transpose()
             # print(b[x_row])
 
             val = b['bxp'].values[0]
-            key = b[x_row]
             # position = b['position']
             # position = self.map_position(position, b)
 
@@ -242,17 +243,17 @@ class BoxPlot(SimplePlot):
             if ',' in style:
                 style = style.split(',')[0]
 
-            # TODO: hacky
-            position = self.map_position(n, style)
-            n += 1
-
             label = b['label']
             width = b['width'] if not self.width else self.width
 
             val['label'] = label
             bxps.append(val)
 
-            positions.append(position)
+            position = n + offset
+            positions.append(n + offset)
+            n += 1
+
+            key = b[x_row]
 
             print("--------------------------")
             print("key: ", key)
@@ -261,8 +262,6 @@ class BoxPlot(SimplePlot):
             print("style: ", style)
             print("width: ", width)
             print("--------------------------")
-
-            val['label'] = label
 
             plot = self.ax.bxp([val], positions=[position], boxprops=boxprops, patch_artist=True, widths=width)
             set_boxplot_style(plot, style)
