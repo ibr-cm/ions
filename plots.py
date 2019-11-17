@@ -152,10 +152,11 @@ class LinePlot(SimplePlot):
 
 
 class BoxPlot(SimplePlot):
-    def __init__(self, x_axis, y_axis, width=None, offset_delta=0.2):
+    def __init__(self, x_axis, y_axis, width=None, offset_delta=0.2, minimize_flier=True):
         SimplePlot.__init__(self, x_axis, y_axis)
         self.width = width
         self.offset_delta = offset_delta
+        self.minimize_flier = minimize_flier
 
     def get_major_ticks_mp(self):
         ticks = range(0, 6)
@@ -212,6 +213,14 @@ class BoxPlot(SimplePlot):
         }
         return mapping[len(dfs)]
 
+    def do_flier_minimization(self, bxp):
+        debug_print("fliers_in:", bxp['fliers'])
+        fliers_out = list(set(map(lambda x: round(x, ndigits=3), bxp['fliers'])))
+        debug_print("fliers_out:", fliers_out)
+        debug_print("len(fliers_in):", len(bxp['fliers']))
+        debug_print("len(fliers_out):", len(fliers_out))
+        bxp['fliers'] = fliers_out
+        return bxp
 
     def plot(self, dfs, x_row):
         offset_list = self.get_offset_list(dfs, self.offset_delta)
@@ -234,7 +243,10 @@ class BoxPlot(SimplePlot):
             b = b[1].transpose()
             # print(b[x_row])
 
-            val = b['bxp'].values[0]
+            if self.minimize_flier:
+                val = self.do_flier_minimization(b['bxp'].values[0])
+            else:
+                val = b['bxp'].values[0]
             # position = b['position']
             # position = self.map_position(position, b)
 
