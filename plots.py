@@ -178,17 +178,6 @@ class BoxPlot(SimplePlot):
 
 
     def set_plot_options(self):
-        # ax.set_ylim(self.y_range)
-
-        # ax.set_xscale('logit')
-        # ax.relim()
-
-        # ax.set_xmargin(0.01)
-        # ax.set_autoscalex_on(False)
-        # ax.autoscale(enable=False, axis='x', tight=True)
-        # ax.autoscale_view(tight=True, scalex=True)
-        # ax.use_sticky_edges = False
-
         for x in self.get_ticks(self.x_axis, which='minor')[0]:
             self.ax.axvline(x=x, color='gray', alpha=0.2, linestyle='--')
 
@@ -201,7 +190,6 @@ class BoxPlot(SimplePlot):
         self.ax.tick_params(axis='both', which='both', labelsize=18)
 
         self.ax.yaxis.grid(True, linestyle='-', which='both', color='lightgrey', alpha=0.5)
-        # ax.xaxis.grid(True, linestyle='-', which='minor', color='lightgrey', alpha=0.5)
 
 
     def get_offset_list(self, dfs, offset_delta):
@@ -236,19 +224,14 @@ class BoxPlot(SimplePlot):
         bxps = []
         positions = []
         style = ""
-        # plots = []
-        # labels = []
         n = 0
         for b in df.iterrows():
             b = b[1].transpose()
-            # print(b[x_row])
 
             if self.minimize_flier:
                 val = self.do_flier_minimization(b['bxp'].values[0])
             else:
                 val = b['bxp'].values[0]
-            # position = b['position']
-            # position = self.map_position(position, b)
 
             # TODO: hacky
             style = b['gen_rule']
@@ -277,14 +260,6 @@ class BoxPlot(SimplePlot):
 
             plot = self.ax.bxp([val], positions=[position], boxprops=boxprops, patch_artist=True, widths=width)
             set_boxplot_style(plot, style)
-
-            # plots.append(plot)
-            # labels.append(label)
-
-            # print("plot: ", plot)
-            # handles, labels = ax.get_legend_handles_labels()
-            # print("handles: ", handles)
-            # print("labels: ", labels)
 
         static_patch = mpatches.Patch(color='lightgreen', label='static')
         draft_patch = mpatches.Patch(color='aqua', label='dynamic')
