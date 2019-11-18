@@ -94,17 +94,15 @@ class LinePlot(SimplePlot):
         self.y_range = y_range
 
 
-    def get_ticks_slot(self):
+    def get_major_ticks_slot(self):
         ticks = [ 0, 7200,14400,21600,28800,36000,43200,50400,57600,64800,72000,79200]
         ticklabel = ['0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22']
         return ticks, ticklabel
 
 
-    #TODO: hacky
-    def get_ticks_mp(self):
+    def get_major_ticks_mp(self):
         ticks = [ 0.05, 0.10, 0.25, 0.50, 0.75, 1.0 ]
         ticklabel = [ str(int(x*100)) for x in ticks]
-        print(ticks, ticklabel)
         return ticks, ticklabel
     
 
