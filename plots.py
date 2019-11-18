@@ -150,6 +150,64 @@ class LinePlot(SimplePlot):
             color = plot[0].get_color()
             plt.fill_between(df[x_row], df[column] - df[area], df[column] + df[area], color=color, alpha=0.1)
 
+        
+#-----------------------------------------------------------------------------
+
+
+class CdfPlot(SimplePlot):
+    def __init__(self, x_axis, y_axis):
+        SimplePlot.__init__(self, x_axis, y_axis)
+    
+    def set_plot_options(self):
+        self.ax.set_ylim((0, 1.0))
+
+        self.ax.legend(ncol=1, loc='best', shadow=True, fontsize=FONTSIZE_SMALLERISH)
+
+        self.ax.xaxis.grid(True, linestyle='-', which='both', color='lightgrey', alpha=0.5)
+        self.ax.yaxis.grid(True, linestyle='-', which='both', color='lightgrey', alpha=0.5)
+
+        y_ticks = [ x/10.0 for x in range(0, 11)]
+        y_ticks = np.linspace(0, 1.0, 11)
+        self.ax.set_yticks(y_ticks)
+
+
+    def generate_cdf(self, df):
+        histogram = df['histogram'][0]
+        counts = histogram[0]
+        bins = histogram[1]
+        cumsum = sum(counts)
+        norm_counts = counts / cumsum
+        cumsums = np.cumsum(norm_counts)
+
+        x = bins
+        y = np.append([0], cumsums)
+
+        print('df: ', df)
+        print('counts: ', counts)
+        print('bins: ', bins)
+        print('len counts: ', len(counts))
+        print('len bins: ', len(bins))
+        print('cumsum: ', cumsum)
+        print('norm_counts: ', norm_counts)
+        print('cumsums: ', cumsums)
+        print('x: ', x)
+        print('y: ', y)
+
+        return x, y
+    
+
+    def plot(self, dfs, x_row):
+        for df in dfs:
+            label = df.label
+            if isinstance(label, pd.Series):
+                label = label.iloc[0]
+                # print("---->>>> label: ", label)
+            x, y = self.generate_cdf(df)
+            plot = self.ax.plot(x, y, label=label)
+
+
+#-----------------------------------------------------------------------------
+
 
 class BoxPlot(SimplePlot):
     def __init__(self, x_axis, y_axis, width=None, offset_delta=0.2, minimize_flier=True):
@@ -267,5 +325,5 @@ class BoxPlot(SimplePlot):
         # plt.legend(handles=[static_patch, draft_patch], bbox_to_anchor=LEGEND_BB, ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
         plt.legend(handles=[static_patch, draft_patch], ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
 
-        
+
 #-----------------------------------------------------------------------------
