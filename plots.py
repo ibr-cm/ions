@@ -52,6 +52,10 @@ class SimplePlot(Plot):
                 'major': self.get_major_ticks_slot
                 ,'minor': self.get_minor_ticks_slot
             }
+            # ,'xco': {
+            #     'major': self.get_major_ticks_xco
+            #     ,'minor': self.get_minor_ticks_xco
+            # }
         }
         if x_axis in mapping:
             ticks, ticklabel = mapping[x_axis][which]()
@@ -237,11 +241,12 @@ class BoxPlot(SimplePlot):
         for x in self.get_ticks(self.x_axis, which='minor')[0]:
             self.ax.axvline(x=x, color='gray', alpha=0.2, linestyle='--')
 
-        # TODO:
-        ticks, ticklabel = self.get_ticks(self.x_axis)
-        debug_print("ticklabel,ticks : ", ticklabel, ticks)
-        self.ax.set_xticks(ticks)
-        self.ax.set_xticklabels(ticklabel)
+        # TODO: hacky
+        if self.x_axis != 'xco':
+            ticks, ticklabel = self.get_ticks(self.x_axis)
+            debug_print("ticklabel,ticks : ", ticklabel, ticks)
+            self.ax.set_xticks(ticks)
+            self.ax.set_xticklabels(ticklabel)
 
         self.ax.tick_params(axis='both', which='both', labelsize=18)
 
@@ -300,11 +305,111 @@ class BoxPlot(SimplePlot):
             val['label'] = label
             bxps.append(val)
 
+            key = b[x_row]
+
             position = n + offset
             positions.append(n + offset)
             n += 1
 
+            print("--------------------------")
+            print("key: ", key)
+            print("label: ", label)
+            print("position: ", position)
+            print("style: ", style)
+            print("width: ", width)
+            print("--------------------------")
+
+            plot = self.ax.bxp([val], positions=[position], boxprops=boxprops, patch_artist=True, widths=width)
+            set_boxplot_style(plot, style)
+
+        static_patch = mpatches.Patch(color='lightgreen', label='static')
+        draft_patch = mpatches.Patch(color='aqua', label='dynamic')
+        # LEGEND_BB = (0.40, 1.00)
+        # plt.legend(handles=[static_patch, draft_patch], bbox_to_anchor=LEGEND_BB, ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
+        plt.legend(handles=[static_patch, draft_patch], ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
+
+
+# TODO: necessary?
+class XcoBoxPlot(BoxPlot):
+    def __init__(self, x_axis, y_axis, width=None, offset_delta=0.2, minimize_flier=True):
+        SimplePlot.__init__(self, x_axis, y_axis)
+        self.width = width
+        self.offset_delta = offset_delta
+        self.minimize_flier = minimize_flier
+
+
+    def get_major_ticks_xco(self):
+        ticks = range(0, 4)
+        ticklabel = [ 'MCO', 'SCO DP2', 'SCO DP3']
+        return ticks, ticklabel
+
+    def get_minor_ticks_xco(self):
+        ticks = [ x-0.5 for x in range(0, 4) ]
+        return ticks, []
+
+
+    def set_plot_options(self):
+        for x in self.get_ticks(self.x_axis, which='minor')[0]:
+            self.ax.axvline(x=x, color='gray', alpha=0.2, linestyle='--')
+
+        # TODO:
+        ticks, ticklabel = self.get_ticks(self.x_axis)
+        debug_print("ticklabel,ticks : ", ticklabel, ticks)
+        self.ax.set_xticks(ticks)
+        self.ax.set_xticklabels(ticklabel)
+
+        self.ax.tick_params(axis='both', which='both', labelsize=18)
+
+        self.ax.yaxis.grid(True, linestyle='-', which='both', color='lightgrey', alpha=0.5)
+
+
+    def plot(self, dfs, x_row):
+        offset_list = self.get_offset_list(dfs, self.offset_delta)
+        n = 0
+        for df in dfs:
+            self.plot_box(df, x_row, offset_list[n])
+            n += 1
+
+    def map_xco_position(self, xco):
+        mapping = {
+             'MCO': 0
+            ,'SCO2': 1
+            ,'SCO3': 2
+        }
+        return mapping[xco]
+
+    def plot_box(self, df, x_row, offset):
+        print("df: ", df)
+
+        bxps = []
+        positions = []
+        style = ""
+        for b in df.iterrows():
+            b = b[1].transpose()
+
+            if self.minimize_flier:
+                val = self.do_flier_minimization(b['bxp'].values[0])
+            else:
+                val = b['bxp'].values[0]
+
+            # TODO: hacky
+            style = b['gen_rule']
+            if ',' in style:
+                style = style.split(',')[0]
+
+            label = b['label']
+            width = b['width'] if not self.width else self.width
+
+            val['label'] = label
+            bxps.append(val)
+
             key = b[x_row]
+
+            n = self.map_xco_position(key)
+            offset = -self.offset_delta if b['gen_rule'] == 'static' else self.offset_delta
+            position = n + offset
+            positions.append(n + offset)
+
 
             print("--------------------------")
             print("key: ", key)
