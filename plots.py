@@ -287,6 +287,57 @@ class CdfPlot(SimplePlot):
 #-----------------------------------------------------------------------------
 
 
+class BarPlot(Ticks, Positioning, SimplePlot):
+    def __init__(self, x_axis, y_axis, column, y_range, width=0.1, offset_delta=0.2):
+        SimplePlot.__init__(self, x_axis, y_axis)
+        self.column = column
+        self.y_range = y_range
+        self.width = width
+        self.offset_delta = offset_delta
+
+    def set_plot_options(self):
+        self.ax.set_ylim(self.y_range)
+        # TODO:
+        # ax.set_xmargin(0.01)
+        # ax.set_xmargin(1.01)
+
+        self.ax.legend(ncol=1, loc='best', shadow=True, fontsize=FONTSIZE_SMALLERISH)
+
+        self.ax.yaxis.grid(True, linestyle='-', which='both', color='lightgrey', alpha=0.5)
+        self.ax.xaxis.grid(False)
+
+        # TODO:
+        ticks, ticklabel = self.get_ticks(self.x_axis)
+        debug_print("ticklabel,ticks : ", ticklabel, ticks)
+        self.ax.set_xticks(ticks)
+        self.ax.set_xticklabels(ticklabel)
+
+        self.ax.tick_params(axis='both', which='major', labelsize=18)
+
+
+    def get_major_ticks_mp(self):
+        ticks = range(0, 6)
+        ticklabel = [ '5', '10', '25', '50', '75', '100']
+        return ticks, ticklabel
+
+
+    def plot(self, dfs, x_row):
+        offset_list = self.get_offset_list(dfs, self.offset_delta)
+        n = 0
+        for df in dfs:
+            print("df:", df)
+            print("df.index:", df.index)
+            print("df.index[0]:", df.index[0])
+            print("x_row:", x_row)
+            print(type(df[x_row]))
+            print(type(df[self.column]))
+            self.ax.bar(df.index + offset_list[n], df[self.column], width=self.width)
+            n += 1
+
+
+#-----------------------------------------------------------------------------
+
+
 class BoxPlot(Ticks, Positioning, SimplePlot):
     def __init__(self, x_axis, y_axis, width=None, offset_delta=0.2, minimize_flier=True):
         SimplePlot.__init__(self, x_axis, y_axis)
