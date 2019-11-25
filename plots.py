@@ -43,6 +43,7 @@ class SimplePlot(Plot):
 
 
     def get_ticks(self, x_axis, which='major'):
+        # TODO: hacky
         mapping = {
             'v2x_rate': {
                 'major': self.get_major_ticks_mp
@@ -52,15 +53,20 @@ class SimplePlot(Plot):
                 'major': self.get_major_ticks_slot
                 ,'minor': self.get_minor_ticks_slot
             }
-            # ,'xco': {
-            #     'major': self.get_major_ticks_xco
-            #     ,'minor': self.get_minor_ticks_xco
-            # }
+            ,'xco': {
+                'major': self.get_major_ticks_xco
+                ,'minor': self.get_minor_ticks_xco
+            }
+            ,'roadtype': {
+                'major': self.get_major_ticks_roadtype
+                ,'minor': self.get_minor_ticks_roadtype
+            }
         }
         if x_axis in mapping:
             ticks, ticklabel = mapping[x_axis][which]()
         else:
             ticks, ticklabel = [],[]
+        print("ticks:", ticks, ticklabel)
         return ticks, ticklabel
 
 
@@ -218,6 +224,7 @@ class BoxPlot(SimplePlot):
         self.offset_delta = offset_delta
         self.minimize_flier = minimize_flier
 
+
     def get_major_ticks_mp(self):
         ticks = range(0, 6)
         ticklabel = [ '5', '10', '25', '50', '75', '100']
@@ -236,21 +243,23 @@ class BoxPlot(SimplePlot):
         ticks = [ x-0.5 for x in range(0, 7) ]
         return ticks, []
 
+    def get_major_ticks_xco(self):
+        ticks = range(0, 3)
+        ticklabel = [ 'MCO', 'SCO DP2', 'SCO DP3']
+        return ticks, ticklabel
 
-    def set_plot_options(self):
-        for x in self.get_ticks(self.x_axis, which='minor')[0]:
-            self.ax.axvline(x=x, color='gray', alpha=0.2, linestyle='--')
+    def get_minor_ticks_xco(self):
+        ticks = [ x-0.5 for x in range(0, 4) ]
+        return ticks, []
 
-        # TODO: hacky
-        if self.x_axis != 'xco':
-            ticks, ticklabel = self.get_ticks(self.x_axis)
-            debug_print("ticklabel,ticks : ", ticklabel, ticks)
-            self.ax.set_xticks(ticks)
-            self.ax.set_xticklabels(ticklabel)
+    def get_major_ticks_roadtype(self):
+        ticks = range(0, 3)
+        ticklabel = [ 'rural', 'urban', 'highway']
+        return ticks, ticklabel
 
-        self.ax.tick_params(axis='both', which='both', labelsize=18)
-
-        self.ax.yaxis.grid(True, linestyle='-', which='both', color='lightgrey', alpha=0.5)
+    def get_minor_ticks_roadtype(self):
+        ticks = [ x-0.5 for x in range(1, 3) ]
+        return ticks, []
 
 
     def get_offset_list(self, dfs, offset_delta):
@@ -262,6 +271,106 @@ class BoxPlot(SimplePlot):
         }
         return mapping[len(dfs)]
 
+    def map_base_position(self, row, variable):
+        mapping = {
+            'xco': {
+                'MCO': 0
+                ,'SCO2': 1
+                ,'SCO3': 2
+            }
+            ,'v2x_rate': {
+                '0.05': 0
+                ,'0.1': 1
+                ,'0.25': 2
+                ,'0.5': 3
+                ,'0.75': 4
+                ,'1.0': 5
+            }
+            ,'period': {
+                '2.0': 0
+                ,'7200.0': 1
+                ,'14400.0': 2
+                ,'21600.0': 3
+                ,'28800.0': 4
+                ,'36000.0': 5
+                ,'43200.0': 6
+                ,'50400.0': 7
+                ,'57600.0': 8
+                ,'64800.0': 9
+                ,'72000.0': 10
+                ,'79200.0': 11
+            }
+            ,'roadtype': {
+                '13.89': 0
+                ,'27.78': 1
+                ,'42.0': 2
+            }
+        }
+        debug_print("x_row:", variable)
+        value = row[variable]
+        debug_print("value:", value)
+        base_position = mapping[variable][str(value)]
+        debug_print("base_position:", base_position)
+        return base_position
+
+
+    def plot(self, dfs, x_row):
+        offset_list = self.get_offset_list(dfs, self.offset_delta)
+        n = 0
+        for df in dfs:
+            # plot group of boxes with a fixed offset depending on the number of groups
+            self.plot_box(df, x_row, offset_list[n])
+            n += 1
+
+
+    def plot_box(self, df, x_row, offset):
+        print("df: ", df)
+
+        bxps = []
+        positions = []
+        style = ""
+        for b in df.iterrows():
+            b = b[1].transpose()
+
+            if self.minimize_flier:
+                val = self.do_flier_minimization(b['bxp'].values[0])
+            else:
+                val = b['bxp'].values[0]
+
+            # TODO: hacky
+            style = b['gen_rule']
+            if ',' in style:
+                style = style.split(',')[0]
+
+            label = b['label']
+            width = b['width'] if not self.width else self.width
+
+            val['label'] = label
+            bxps.append(val)
+
+            base_position = self.map_base_position(b, x_row)
+            position = base_position + offset
+            positions.append(position)
+
+            key = b[x_row]
+            print("--------------------------")
+            print("key: ", key)
+            print("label: ", label)
+            print("position: ", position)
+            print("style: ", style)
+            print("width: ", width)
+            print("--------------------------")
+
+            plot = self.ax.bxp([val], positions=[position], boxprops=boxprops, patch_artist=True, widths=width)
+            set_boxplot_style(plot, style)
+
+        static_patch = mpatches.Patch(color='lightgreen', label='static')
+        draft_patch = mpatches.Patch(color='aqua', label='dynamic')
+        # LEGEND_BB = (0.40, 1.00)
+        # plt.legend(handles=[static_patch, draft_patch], bbox_to_anchor=LEGEND_BB, ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
+        plt.legend(handles=[static_patch, draft_patch], ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
+
+
     def do_flier_minimization(self, bxp):
         debug_print("fliers_in:", bxp['fliers'])
         fliers_out = list(set(map(lambda x: round(x, ndigits=3), bxp['fliers'])))
@@ -271,88 +380,11 @@ class BoxPlot(SimplePlot):
         bxp['fliers'] = fliers_out
         return bxp
 
-    def plot(self, dfs, x_row):
-        offset_list = self.get_offset_list(dfs, self.offset_delta)
-        n = 0
-        for df in dfs:
-            self.plot_box(df, x_row, offset_list[n])
-            n += 1
-
-
-    def plot_box(self, df, x_row, offset):
-        print("df: ", df)
-
-        bxps = []
-        positions = []
-        style = ""
-        n = 0
-        for b in df.iterrows():
-            b = b[1].transpose()
-
-            if self.minimize_flier:
-                val = self.do_flier_minimization(b['bxp'].values[0])
-            else:
-                val = b['bxp'].values[0]
-
-            # TODO: hacky
-            style = b['gen_rule']
-            if ',' in style:
-                style = style.split(',')[0]
-
-            label = b['label']
-            width = b['width'] if not self.width else self.width
-
-            val['label'] = label
-            bxps.append(val)
-
-            key = b[x_row]
-
-            position = n + offset
-            positions.append(n + offset)
-            n += 1
-
-            print("--------------------------")
-            print("key: ", key)
-            print("label: ", label)
-            print("position: ", position)
-            print("style: ", style)
-            print("width: ", width)
-            print("--------------------------")
-
-            plot = self.ax.bxp([val], positions=[position], boxprops=boxprops, patch_artist=True, widths=width)
-            set_boxplot_style(plot, style)
-
-        static_patch = mpatches.Patch(color='lightgreen', label='static')
-        draft_patch = mpatches.Patch(color='aqua', label='dynamic')
-        # LEGEND_BB = (0.40, 1.00)
-        # plt.legend(handles=[static_patch, draft_patch], bbox_to_anchor=LEGEND_BB, ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
-        plt.legend(handles=[static_patch, draft_patch], ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
-
-
-# TODO: necessary?
-class XcoBoxPlot(BoxPlot):
-    def __init__(self, x_axis, y_axis, width=None, offset_delta=0.2, minimize_flier=True):
-        SimplePlot.__init__(self, x_axis, y_axis)
-        self.width = width
-        self.offset_delta = offset_delta
-        self.minimize_flier = minimize_flier
-
-
-    def get_major_ticks_xco(self):
-        ticks = range(0, 4)
-        ticklabel = [ 'MCO', 'SCO DP2', 'SCO DP3']
-        return ticks, ticklabel
-
-    def get_minor_ticks_xco(self):
-        ticks = [ x-0.5 for x in range(0, 4) ]
-        return ticks, []
-
 
     def set_plot_options(self):
         for x in self.get_ticks(self.x_axis, which='minor')[0]:
             self.ax.axvline(x=x, color='gray', alpha=0.2, linestyle='--')
 
-        # TODO:
         ticks, ticklabel = self.get_ticks(self.x_axis)
         debug_print("ticklabel,ticks : ", ticklabel, ticks)
         self.ax.set_xticks(ticks)
@@ -361,72 +393,6 @@ class XcoBoxPlot(BoxPlot):
         self.ax.tick_params(axis='both', which='both', labelsize=18)
 
         self.ax.yaxis.grid(True, linestyle='-', which='both', color='lightgrey', alpha=0.5)
-
-
-    def plot(self, dfs, x_row):
-        offset_list = self.get_offset_list(dfs, self.offset_delta)
-        n = 0
-        for df in dfs:
-            self.plot_box(df, x_row, offset_list[n])
-            n += 1
-
-    def map_xco_position(self, xco):
-        mapping = {
-             'MCO': 0
-            ,'SCO2': 1
-            ,'SCO3': 2
-        }
-        return mapping[xco]
-
-    def plot_box(self, df, x_row, offset):
-        print("df: ", df)
-
-        bxps = []
-        positions = []
-        style = ""
-        for b in df.iterrows():
-            b = b[1].transpose()
-
-            if self.minimize_flier:
-                val = self.do_flier_minimization(b['bxp'].values[0])
-            else:
-                val = b['bxp'].values[0]
-
-            # TODO: hacky
-            style = b['gen_rule']
-            if ',' in style:
-                style = style.split(',')[0]
-
-            label = b['label']
-            width = b['width'] if not self.width else self.width
-
-            val['label'] = label
-            bxps.append(val)
-
-            key = b[x_row]
-
-            n = self.map_xco_position(key)
-            offset = -self.offset_delta if b['gen_rule'] == 'static' else self.offset_delta
-            position = n + offset
-            positions.append(n + offset)
-
-
-            print("--------------------------")
-            print("key: ", key)
-            print("label: ", label)
-            print("position: ", position)
-            print("style: ", style)
-            print("width: ", width)
-            print("--------------------------")
-
-            plot = self.ax.bxp([val], positions=[position], boxprops=boxprops, patch_artist=True, widths=width)
-            set_boxplot_style(plot, style)
-
-        static_patch = mpatches.Patch(color='lightgreen', label='static')
-        draft_patch = mpatches.Patch(color='aqua', label='dynamic')
-        # LEGEND_BB = (0.40, 1.00)
-        # plt.legend(handles=[static_patch, draft_patch], bbox_to_anchor=LEGEND_BB, ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
-        plt.legend(handles=[static_patch, draft_patch], ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
 
 
 #-----------------------------------------------------------------------------
