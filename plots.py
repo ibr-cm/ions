@@ -31,6 +31,34 @@ class SimplePlot(Plot):
         raise NotImplementedError("Implement this")
 
 
+    
+    def exec(self, data_frames:List[pd.DataFrame]):
+        dfs = data_frames
+        
+        self.figure, self.ax = plt.subplots()
+        self.figure.set_size_inches(GRAPH_SIZE)
+
+        self.plot(dfs, self.x_axis)
+
+        self.ax.set_ylabel('Average '+map_variable_to_ylabel(self.y_axis) +' '+ map_variable_name_to_unit(self.y_axis), fontsize=FONTSIZE_LABEL)
+        self.ax.set_xlabel(map_variable_to_xlabel(self.x_axis), fontsize=FONTSIZE_LABEL)
+
+        self.ax.set_ylim(map_variable_to_yrange(self.y_axis))
+
+        self.set_plot_options()
+
+        plt.tight_layout()
+
+        print("figure: ", self.figure)
+        print("ax: ", self.ax)
+
+        return self.figure
+
+
+#-----------------------------------------------------------------------------
+
+
+class Ticks:
     def get_major_ticks_mp(self):
         raise NotImplementedError("Implement this")
     def get_minor_ticks_mp(self):
@@ -39,6 +67,16 @@ class SimplePlot(Plot):
     def get_major_ticks_slot(self):
         raise NotImplementedError("Implement this")
     def get_minor_ticks_slot(self):
+        raise NotImplementedError("Implement this")
+
+    def get_major_ticks_xco(self):
+        raise NotImplementedError("Implement this")
+    def get_minor_ticks_xco(self):
+        raise NotImplementedError("Implement this")
+
+    def get_major_ticks_roadtype(self):
+        raise NotImplementedError("Implement this")
+    def get_minor_ticks_roadtype(self):
         raise NotImplementedError("Implement this")
 
 
@@ -70,33 +108,66 @@ class SimplePlot(Plot):
         return ticks, ticklabel
 
 
-    def exec(self, data_frames:List[pd.DataFrame]):
-        dfs = data_frames
-        
-        self.figure, self.ax = plt.subplots()
-        self.figure.set_size_inches(GRAPH_SIZE)
+#-----------------------------------------------------------------------------
 
-        self.plot(dfs, self.x_axis)
 
-        self.ax.set_ylabel('Average '+map_variable_to_ylabel(self.y_axis) +' '+ map_variable_name_to_unit(self.y_axis), fontsize=FONTSIZE_LABEL)
-        self.ax.set_xlabel(map_variable_to_xlabel(self.x_axis), fontsize=FONTSIZE_LABEL)
+class Positioning:
+    def get_offset_list(self, dfs, offset_delta):
+        mapping = {
+             1 : [0]
+            ,2 : [-offset_delta, offset_delta]
+            ,3 : [-offset_delta, 0, offset_delta]
+            ,4 : [-1.5*offset_delta, -offset_delta/2.0, offset_delta/2.0, 1.5*offset_delta]
+        }
+        return mapping[len(dfs)]
 
-        self.ax.set_ylim(map_variable_to_yrange(self.y_axis))
-
-        self.set_plot_options()
-
-        plt.tight_layout()
-
-        print("figure: ", self.figure)
-        print("ax: ", self.ax)
-
-        return self.figure
+    def map_base_position(self, row, variable):
+        mapping = {
+            'xco': {
+                'MCO': 0
+                ,'SCO2': 1
+                ,'SCO3': 2
+            }
+            ,'v2x_rate': {
+                '0.05': 0
+                ,'0.1': 1
+                ,'0.25': 2
+                ,'0.5': 3
+                ,'0.75': 4
+                ,'1.0': 5
+            }
+            ,'period': {
+                '2.0': 0
+                ,'7200.0': 1
+                ,'14400.0': 2
+                ,'21600.0': 3
+                ,'28800.0': 4
+                ,'36000.0': 5
+                ,'43200.0': 6
+                ,'50400.0': 7
+                ,'57600.0': 8
+                ,'64800.0': 9
+                ,'72000.0': 10
+                ,'79200.0': 11
+            }
+            ,'roadtype': {
+                '13.89': 0
+                ,'27.78': 1
+                ,'42.0': 2
+            }
+        }
+        debug_print("x_row:", variable)
+        value = row[variable]
+        debug_print("value:", value)
+        base_position = mapping[variable][str(value)]
+        debug_print("base_position:", base_position)
+        return base_position
 
 
 #-----------------------------------------------------------------------------
 
 
-class LinePlot(SimplePlot):
+class LinePlot(Ticks, SimplePlot):
     def __init__(self, x_axis, y_axis, column, area, y_range):
         SimplePlot.__init__(self, x_axis, y_axis)
         self.column = column
@@ -109,12 +180,11 @@ class LinePlot(SimplePlot):
         ticklabel = ['0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22']
         return ticks, ticklabel
 
-
     def get_major_ticks_mp(self):
         ticks = [ 0.05, 0.10, 0.25, 0.50, 0.75, 1.0 ]
         ticklabel = [ str(int(x*100)) for x in ticks]
         return ticks, ticklabel
-    
+
 
     def set_plot_options(self):
         self.ax.set_ylim(self.y_range)
@@ -217,7 +287,7 @@ class CdfPlot(SimplePlot):
 #-----------------------------------------------------------------------------
 
 
-class BoxPlot(SimplePlot):
+class BoxPlot(Ticks, Positioning, SimplePlot):
     def __init__(self, x_axis, y_axis, width=None, offset_delta=0.2, minimize_flier=True):
         SimplePlot.__init__(self, x_axis, y_axis)
         self.width = width
@@ -262,58 +332,7 @@ class BoxPlot(SimplePlot):
         return ticks, []
 
 
-    def get_offset_list(self, dfs, offset_delta):
-        mapping = {
-             1 : [0]
-            ,2 : [-offset_delta, offset_delta]
-            ,3 : [-offset_delta, 0, offset_delta]
-            ,4 : [-1.5*offset_delta, -offset_delta/2.0, offset_delta/2.0, 1.5*offset_delta]
-        }
-        return mapping[len(dfs)]
-
-    def map_base_position(self, row, variable):
-        mapping = {
-            'xco': {
-                'MCO': 0
-                ,'SCO2': 1
-                ,'SCO3': 2
-            }
-            ,'v2x_rate': {
-                '0.05': 0
-                ,'0.1': 1
-                ,'0.25': 2
-                ,'0.5': 3
-                ,'0.75': 4
-                ,'1.0': 5
-            }
-            ,'period': {
-                '2.0': 0
-                ,'7200.0': 1
-                ,'14400.0': 2
-                ,'21600.0': 3
-                ,'28800.0': 4
-                ,'36000.0': 5
-                ,'43200.0': 6
-                ,'50400.0': 7
-                ,'57600.0': 8
-                ,'64800.0': 9
-                ,'72000.0': 10
-                ,'79200.0': 11
-            }
-            ,'roadtype': {
-                '13.89': 0
-                ,'27.78': 1
-                ,'42.0': 2
-            }
-        }
-        debug_print("x_row:", variable)
-        value = row[variable]
-        debug_print("value:", value)
-        base_position = mapping[variable][str(value)]
-        debug_print("base_position:", base_position)
-        return base_position
-
-
+    
     def plot(self, dfs, x_row):
         offset_list = self.get_offset_list(dfs, self.offset_delta)
         n = 0
