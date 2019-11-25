@@ -104,7 +104,7 @@ class Ticks:
             ticks, ticklabel = mapping[x_axis][which]()
         else:
             ticks, ticklabel = [],[]
-        print("ticks:", ticks, ticklabel)
+        # print("ticks:", ticks, ticklabel)
         return ticks, ticklabel
 
 
@@ -213,18 +213,18 @@ class LinePlot(Ticks, SimplePlot):
 
 
     def plot_line(self, df, x_row, column, area, label):
-        print("-=-=-=-=-=-=-=-==-=-=-=-=-")
-        print("x_row: ", df[x_row])
-        print("column: ", df[column])
-        print("-=-=-=-=-=-=-=-==-=-=-=-=-")
+        # print("-=-=-=-=-=-=-=-==-=-=-=-=-")
+        # print("x_row: ", df[x_row])
+        # print("column: ", df[column])
+        # print("-=-=-=-=-=-=-=-==-=-=-=-=-")
         if isinstance(label, pd.Series):
             label = label.iloc[0]
-            print("---->>>> label: ", label)
+            # print("---->>>> label: ", label)
         plot = self.ax.plot(df[x_row], df[column], label=label)
         if area is not None:
-            print("x_row: ", x_row)
-            print("area: ", area)
-            print("column: ", column)
+            # print("x_row: ", x_row)
+            # print("area: ", area)
+            # print("column: ", column)
             color = plot[0].get_color()
             plt.fill_between(df[x_row], df[column] - df[area], df[column] + df[area], color=color, alpha=0.1)
 
@@ -260,16 +260,16 @@ class CdfPlot(SimplePlot):
         x = bins
         y = np.append([0], cumsums)
 
-        print('df: ', df)
-        print('counts: ', counts)
-        print('bins: ', bins)
-        print('len counts: ', len(counts))
-        print('len bins: ', len(bins))
-        print('cumsum: ', cumsum)
-        print('norm_counts: ', norm_counts)
-        print('cumsums: ', cumsums)
-        print('x: ', x)
-        print('y: ', y)
+        # print('df: ', df)
+        # print('counts: ', counts)
+        # print('bins: ', bins)
+        # print('len counts: ', len(counts))
+        # print('len bins: ', len(bins))
+        # print('cumsum: ', cumsum)
+        # print('norm_counts: ', norm_counts)
+        # print('cumsums: ', cumsums)
+        # print('x: ', x)
+        # print('y: ', y)
 
         return x, y
     
@@ -394,7 +394,7 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
 
 
     def plot_box(self, df, x_row, offset):
-        print("df: ", df)
+        # print("df: ", df)
 
         bxps = []
         positions = []
@@ -423,13 +423,13 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
             positions.append(position)
 
             key = b[x_row]
-            print("--------------------------")
-            print("key: ", key)
-            print("label: ", label)
-            print("position: ", position)
-            print("style: ", style)
-            print("width: ", width)
-            print("--------------------------")
+            # print("--------------------------")
+            # print("key: ", key)
+            # print("label: ", label)
+            # print("position: ", position)
+            # print("style: ", style)
+            # print("width: ", width)
+            # print("--------------------------")
 
             plot = self.ax.bxp([val], positions=[position], boxprops=boxprops, patch_artist=True, widths=width)
             set_boxplot_style(plot, style)
