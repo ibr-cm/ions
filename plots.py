@@ -413,7 +413,7 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
                 style = style.split(',')[0]
 
             label = b['label']
-            width = b['width'] if not self.width else self.width
+            width = None if not self.width else self.width
 
             val['label'] = label
             bxps.append(val)
