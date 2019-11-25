@@ -339,8 +339,9 @@ class BarPlot(Ticks, Positioning, SimplePlot):
 
 
 class BoxPlot(Ticks, Positioning, SimplePlot):
-    def __init__(self, x_axis, y_axis, width=None, offset_delta=0.2, minimize_flier=True):
+    def __init__(self, x_axis, y_axis, group_column, width=None, offset_delta=0.2, minimize_flier=True):
         SimplePlot.__init__(self, x_axis, y_axis)
+        self.group_column = group_column
         self.width = width
         self.offset_delta = offset_delta
         self.minimize_flier = minimize_flier
@@ -383,8 +384,17 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
         return ticks, []
 
 
+    def sort_groups(self, dfs, column):
+        result = []
+        # print("dfs:", dfs)
+        # TODO: generalize
+        result = sorted(dfs, key=lambda x:x[column].iloc[0], reverse=True)
+        # print("result:", result)
+        return result
+
     
     def plot(self, dfs, x_row):
+        dfs = self.sort_groups(dfs, self.group_column)
         offset_list = self.get_offset_list(dfs, self.offset_delta)
         n = 0
         for df in dfs:
