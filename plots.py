@@ -233,8 +233,9 @@ class LinePlot(Ticks, SimplePlot):
 
 
 class CdfPlot(SimplePlot):
-    def __init__(self, x_axis, y_axis):
+    def __init__(self, x_axis, y_axis, marker=False):
         SimplePlot.__init__(self, x_axis, y_axis)
+        self.marker = marker
     
     def set_plot_options(self):
         self.ax.set_ylim((0, 1.0))
@@ -281,7 +282,10 @@ class CdfPlot(SimplePlot):
                 label = label.iloc[0]
                 # print("---->>>> label: ", label)
             x, y = self.generate_cdf(df)
-            plot = self.ax.plot(x, y, label=label, marker='+', ms=6)
+            if self.marker:
+                plot = self.ax.plot(x, y, label=label, marker='+', ms=6)
+            else:
+                plot = self.ax.plot(x, y, label=label)
 
 
 #-----------------------------------------------------------------------------
