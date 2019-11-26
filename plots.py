@@ -79,6 +79,11 @@ class Ticks:
     def get_minor_ticks_roadtype(self):
         raise NotImplementedError("Implement this")
 
+    def get_major_ticks_simtimeRaw(self):
+        raise NotImplementedError("Implement this")
+    def get_minor_ticks_simtimeRaw(self):
+        raise NotImplementedError("Implement this")
+
 
     def get_ticks(self, x_axis, which='major'):
         # TODO: hacky
@@ -98,6 +103,10 @@ class Ticks:
             ,'roadtype': {
                 'major': self.get_major_ticks_roadtype
                 ,'minor': self.get_minor_ticks_roadtype
+            }
+            ,'simtimeRaw': {
+                'major': self.get_major_ticks_simtimeRaw
+                ,'minor': self.get_minor_ticks_simtimeRaw
             }
         }
         if x_axis in mapping:
@@ -174,6 +183,8 @@ class LinePlot(Ticks, SimplePlot):
         self.area = area
         self.y_range = y_range
 
+        self.x_maximum = None
+        self.x_minimum = None
 
     def get_major_ticks_slot(self):
         ticks = [ 0, 7200,14400,21600,28800,36000,43200,50400,57600,64800,72000,79200]
@@ -183,6 +194,23 @@ class LinePlot(Ticks, SimplePlot):
     def get_major_ticks_mp(self):
         ticks = [ 0.05, 0.10, 0.25, 0.50, 0.75, 1.0 ]
         ticklabel = [ str(int(x*100)) for x in ticks]
+        return ticks, ticklabel
+
+    def get_major_ticks_simtimeRaw(self):
+        # TODO: hacky
+        # print("xmin:", self.x_minimum)
+        # print("xmax:", self.x_maximum)
+        x_min = int(self.x_minimum / 1e12)
+        x_max = int(self.x_maximum / 1e12)
+        # print("xmin_scaled:", x_min)
+        # print("xmax_scaled:", x_max)
+        steps = x_max - x_min
+        # print("steps:", steps)
+
+        ticks = np.linspace(int(self.x_minimum - 1e+11), int(self.x_maximum), steps+1)
+        ticklabel = [ str(x) for x in range(0, steps+1) ]
+        print("ticks:", ticks)
+        print("ticklabel:", ticklabel)
         return ticks, ticklabel
 
 
@@ -228,6 +256,15 @@ class LinePlot(Ticks, SimplePlot):
             color = plot[0].get_color()
             plt.fill_between(df[x_row], df[column] - df[area], df[column] + df[area], color=color, alpha=0.1)
 
+        x_max = df[x_row].max()
+        x_min = df[x_row].min()
+        if not self.x_maximum:
+            self.x_maximum = x_max
+            self.x_minimum = x_min
+        else:
+            self.x_maximum = x_max if x_max > self.x_maximum else self.x_maximum
+            self.x_minimum = x_min if x_min < self.x_minimum else self.x_minimum
+
         
 #-----------------------------------------------------------------------------
 
@@ -248,6 +285,8 @@ class CdfPlot(SimplePlot):
         y_ticks = [ x/10.0 for x in range(0, 11)]
         y_ticks = np.linspace(0, 1.0, 11)
         self.ax.set_yticks(y_ticks)
+
+        self.ax.tick_params(axis='both', which='major', labelsize=18)
 
 
     def generate_cdf(self, df):
