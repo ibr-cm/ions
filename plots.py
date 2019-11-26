@@ -281,7 +281,7 @@ class CdfPlot(SimplePlot):
                 label = label.iloc[0]
                 # print("---->>>> label: ", label)
             x, y = self.generate_cdf(df)
-            plot = self.ax.plot(x, y, label=label)
+            plot = self.ax.plot(x, y, label=label, marker='+', ms=6)
 
 
 #-----------------------------------------------------------------------------
