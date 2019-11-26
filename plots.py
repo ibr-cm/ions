@@ -220,7 +220,7 @@ class LinePlot(Ticks, SimplePlot):
         if isinstance(label, pd.Series):
             label = label.iloc[0]
             # print("---->>>> label: ", label)
-        plot = self.ax.plot(df[x_row], df[column], label=label)
+        plot = self.ax.plot(df[x_row], df[column], label=label, marker='+', ms=6)
         if area is not None:
             # print("x_row: ", x_row)
             # print("area: ", area)
