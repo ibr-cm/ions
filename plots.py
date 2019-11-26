@@ -339,12 +339,13 @@ class BarPlot(Ticks, Positioning, SimplePlot):
 
 
 class BoxPlot(Ticks, Positioning, SimplePlot):
-    def __init__(self, x_axis, y_axis, group_column, width=None, offset_delta=0.2, minimize_flier=True):
+    def __init__(self, x_axis, y_axis, group_column, width=None, offset_delta=0.2, minimize_flier=True, legend='dynamic'):
         SimplePlot.__init__(self, x_axis, y_axis)
         self.group_column = group_column
         self.width = width
         self.offset_delta = offset_delta
         self.minimize_flier = minimize_flier
+        self.legend = legend
 
 
     def get_major_ticks_mp(self):
@@ -396,11 +397,25 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
     def plot(self, dfs, x_row):
         dfs = self.sort_groups(dfs, self.group_column)
         offset_list = self.get_offset_list(dfs, self.offset_delta)
+        all_labels = []
+        all_handles = []
         n = 0
         for df in dfs:
             # plot group of boxes with a fixed offset depending on the number of groups
-            self.plot_box(df, x_row, offset_list[n])
+            handles, labels = self.plot_box(df, x_row, offset_list[n])
+            all_handles.extend(handles)
+            all_labels.extend(labels)
+
             n += 1
+
+        if self.legend == 'dynamic':
+            self.ax.legend(handles=all_handles, labels=all_labels, ncol=1, loc='best', shadow=True, fontsize=FONTSIZE_SMALLERISH)
+        elif self.legend == 'static':
+            static_patch = mpatches.Patch(color='lightgreen', label='static')
+            draft_patch = mpatches.Patch(color='aqua', label='dynamic')
+            # LEGEND_BB = (0.40, 1.00)
+            # plt.legend(handles=[static_patch, draft_patch], bbox_to_anchor=LEGEND_BB, ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
+            plt.legend(handles=[static_patch, draft_patch], ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
 
 
     def plot_box(self, df, x_row, offset):
@@ -408,6 +423,8 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
 
         bxps = []
         positions = []
+        labels = []
+        handles = []
         style = ""
         for b in df.iterrows():
             b = b[1].transpose()
@@ -426,6 +443,7 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
             width = None if not self.width else self.width
 
             val['label'] = label
+            labels.append(label)
             bxps.append(val)
 
             base_position = self.map_base_position(b, x_row)
@@ -441,14 +459,13 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
             # print("width: ", width)
             # print("--------------------------")
 
-            plot = self.ax.bxp([val], positions=[position], boxprops=boxprops, patch_artist=True, widths=width)
-            set_boxplot_style(plot, style)
-
-        static_patch = mpatches.Patch(color='lightgreen', label='static')
-        draft_patch = mpatches.Patch(color='aqua', label='dynamic')
-        # LEGEND_BB = (0.40, 1.00)
-        # plt.legend(handles=[static_patch, draft_patch], bbox_to_anchor=LEGEND_BB, ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
-        plt.legend(handles=[static_patch, draft_patch], ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
+            plot = self.ax.bxp([val], positions=[position] \
+                    , boxprops=get_boxprops(style), flierprops=get_flierprops() \
+                    , patch_artist=True, widths=width)
+            handles.append(plot['boxes'][0])
+            # print("plot:", plot)
+            # print("plot[boxes]:", plot['boxes'][0].__dict__)
+        return handles, labels
 
 
     def do_flier_minimization(self, bxp):
