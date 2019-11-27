@@ -476,11 +476,10 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
         if self.legend == 'dynamic':
             self.ax.legend(handles=all_handles, labels=all_labels, ncol=1, loc='best', shadow=True, fontsize=FONTSIZE_SMALLERISH)
         elif self.legend == 'static':
-            static_patch = mpatches.Patch(color='lightgreen', label='static')
-            draft_patch = mpatches.Patch(color='aqua', label='dynamic')
+            handles = get_static_legend_handles()
             # LEGEND_BB = (0.40, 1.00)
             # plt.legend(handles=[static_patch, draft_patch], bbox_to_anchor=LEGEND_BB, ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
-            plt.legend(handles=[static_patch, draft_patch], ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
+            plt.legend(handles=handles, ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
 
 
     def plot_box(self, df, x_row, offset):
