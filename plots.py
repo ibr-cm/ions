@@ -84,6 +84,11 @@ class Ticks:
     def get_minor_ticks_simtimeRaw(self):
         raise NotImplementedError("Implement this")
 
+    def get_major_ticks_gen_rule(self):
+        raise NotImplementedError("Implement this")
+    def get_minor_ticks_gen_rule(self):
+        raise NotImplementedError("Implement this")
+
 
     def get_ticks(self, x_axis, which='major'):
         # TODO: hacky
@@ -107,6 +112,10 @@ class Ticks:
             ,'simtimeRaw': {
                 'major': self.get_major_ticks_simtimeRaw
                 ,'minor': self.get_minor_ticks_simtimeRaw
+            }
+            ,'gen_rule': {
+                'major': self.get_major_ticks_gen_rule
+                ,'minor': self.get_minor_ticks_gen_rule
             }
         }
         if x_axis in mapping:
@@ -163,6 +172,10 @@ class Positioning:
                 '13.89': 0
                 ,'27.78': 1
                 ,'42.0': 2
+            }
+            ,'gen_rule': {
+                'static': 0
+                ,'draft': 1
             }
         }
         debug_print("x_row:", variable)
@@ -424,6 +437,15 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
         return ticks, ticklabel
 
     def get_minor_ticks_roadtype(self):
+        ticks = [ x-0.5 for x in range(1, 3) ]
+        return ticks, []
+
+    def get_major_ticks_gen_rule(self):
+        ticks = range(0, 2)
+        ticklabel = [ 'static', 'draft']
+        return ticks, ticklabel
+
+    def get_minor_ticks_gen_rule(self):
         ticks = [ x-0.5 for x in range(1, 3) ]
         return ticks, []
 
