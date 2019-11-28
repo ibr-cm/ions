@@ -480,6 +480,8 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
             # LEGEND_BB = (0.40, 1.00)
             # plt.legend(handles=[static_patch, draft_patch], bbox_to_anchor=LEGEND_BB, ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
             plt.legend(handles=handles, ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
+        elif self.legend == 'none':
+            pass
 
 
     def plot_box(self, df, x_row, offset):
