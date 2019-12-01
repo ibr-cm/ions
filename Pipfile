@@ -4,6 +4,16 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pylint = "*"
+autopep8 = "*"
+wrapt = "*"
+typed-ast = "*"
+rope = "*"
+pycodestyle = "*"
+mccabe = "*"
+lazy-object-proxy = "*"
+isort = "*"
+astroid = "*"
 
 [packages]
 matplotlib = "*"
