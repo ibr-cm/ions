@@ -1,3 +1,6 @@
+
+from matplotlib import pyplot as plt
+
 from filters import *
 
 class Plot:
