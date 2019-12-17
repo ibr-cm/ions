@@ -310,7 +310,10 @@ class CdfPlot(SimplePlot):
         counts = histogram[0]
         bins = histogram[1]
         cumsum = sum(counts)
-        norm_counts = counts / cumsum
+        if cumsum == 0:
+            norm_counts = [0]*len(counts)
+        else:
+            norm_counts = counts / cumsum
         cumsums = np.cumsum(norm_counts)
 
         x = bins
