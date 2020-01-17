@@ -178,7 +178,7 @@ class Positioning:
             }
             ,'gen_rule': {
                 'static': 0
-                ,'draft': 1
+                ,'dynamic': 1
             }
         }
         debug_print("x_row:", variable)
@@ -319,6 +319,7 @@ class CdfPlot(SimplePlot):
         x = bins
         y = np.append([0], cumsums)
 
+        # print('-------------------------')
         # print('df: ', df)
         # print('counts: ', counts)
         # print('bins: ', bins)
@@ -448,7 +449,7 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
 
     def get_major_ticks_gen_rule(self):
         ticks = range(0, 2)
-        ticklabel = [ 'static', 'draft']
+        ticklabel = [ 'static', 'dynamic']
         return ticks, ticklabel
 
     def get_minor_ticks_gen_rule(self):
