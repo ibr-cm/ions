@@ -41,6 +41,14 @@ class SimplePlot(Plot):
         self.figure, self.ax = plt.subplots()
         self.figure.set_size_inches(GRAPH_SIZE)
 
+        self.x_groups = set()
+        for df in dfs:
+            x_groups = set(df[self.x_axis])
+            self.x_groups.update(x_groups)
+        self.x_groups = list(self.x_groups)
+        # TODO: make order configurable
+        self.x_groups.sort()
+
         self.plot(dfs, self.x_axis)
 
         self.ax.set_ylabel(map_variable_to_ylabel(self.y_axis) +' '+ map_variable_name_to_unit(self.y_axis), fontsize=FONTSIZE_LABEL)
@@ -87,13 +95,13 @@ class Ticks:
     def get_minor_ticks_simtimeRaw(self):
         raise NotImplementedError("Implement this")
 
-    def get_major_ticks_gen_rule(self):
+    def get_major_ticks_gen_rule(self, x_groups):
         raise NotImplementedError("Implement this")
-    def get_minor_ticks_gen_rule(self):
+    def get_minor_ticks_gen_rule(self, x_groups):
         raise NotImplementedError("Implement this")
 
 
-    def get_ticks(self, x_axis, which='major'):
+    def get_ticks(self, x_axis, x_groups, which='major'):
         # TODO: hacky
         mapping = {
             'v2x_rate': {
@@ -122,7 +130,7 @@ class Ticks:
             }
         }
         if x_axis in mapping:
-            ticks, ticklabel = mapping[x_axis][which]()
+            ticks, ticklabel = mapping[x_axis][which](x_groups)
         else:
             ticks, ticklabel = [],[]
         # print("ticks:", ticks, ticklabel)
@@ -142,49 +150,22 @@ class Positioning:
         }
         return mapping[len(dfs)]
 
-    def map_base_position(self, row, variable):
-        mapping = {
-            'xco': {
-                'MCO': 0
-                ,'SCO2': 1
-                ,'SCO3': 2
-            }
-            ,'v2x_rate': {
-                '0.05': 0
-                ,'0.1': 1
-                ,'0.25': 2
-                ,'0.5': 3
-                ,'0.75': 4
-                ,'1.0': 5
-            }
-            ,'period': {
-                '2.0': 0
-                ,'7200.0': 1
-                ,'14400.0': 2
-                ,'21600.0': 3
-                ,'28800.0': 4
-                ,'36000.0': 5
-                ,'43200.0': 6
-                ,'50400.0': 7
-                ,'57600.0': 8
-                ,'64800.0': 9
-                ,'72000.0': 10
-                ,'79200.0': 11
-            }
-            ,'roadtype': {
-                '13.89': 0
-                ,'27.78': 1
-                ,'42.0': 2
-            }
-            ,'gen_rule': {
-                'static': 0
-                ,'dynamic': 1
-            }
-        }
+
+    def get_mapping(self, x_groups):
+        x = 0
+        mapping = {}
+        for item in list(x_groups):
+            mapping[str(item)] = x
+            x += 1
+
+        return mapping
+
+
+    def map_base_position(self, row, variable, x_groups):
         debug_print("x_row:", variable)
         value = row[variable]
         debug_print("value:", value)
-        base_position = mapping[variable][str(value)]
+        base_position = self.get_mapping(x_groups)[str(value)]
         debug_print("base_position:", base_position)
         return base_position
 
@@ -202,13 +183,13 @@ class LinePlot(Ticks, SimplePlot):
         self.x_maximum = None
         self.x_minimum = None
 
-    def get_major_ticks_slot(self):
-        ticks = [ 0, 7200,14400,21600,28800,36000,43200,50400,57600,64800,72000,79200]
-        ticklabel = ['0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22']
+    def get_major_ticks_slot(self, x_groups):
+        ticks = x_groups
+        ticklabel = [ str(int(x/3600)) for x in ticks]
         return ticks, ticklabel
 
-    def get_major_ticks_mp(self):
-        ticks = [ 0.05, 0.10, 0.25, 0.50, 0.75, 1.0 ]
+    def get_major_ticks_mp(self, x_groups):
+        ticks = x_groups
         ticklabel = [ str(int(x*100)) for x in ticks]
         return ticks, ticklabel
 
@@ -242,7 +223,7 @@ class LinePlot(Ticks, SimplePlot):
         self.ax.xaxis.grid(False)
 
         # TODO:
-        ticks, ticklabel = self.get_ticks(self.x_axis)
+        ticks, ticklabel = self.get_ticks(self.x_axis, self.x_groups)
         debug_print("ticklabel,ticks : ", ticklabel, ticks)
         self.ax.set_xticks(ticks)
         self.ax.set_xticklabels(ticklabel)
@@ -364,13 +345,13 @@ class BarPlot(Ticks, Positioning, SimplePlot):
         # ax.set_xmargin(0.01)
         # ax.set_xmargin(1.01)
 
-        self.ax.legend(ncol=1, loc='best', shadow=True, fontsize=FONTSIZE_SMALLERISH)
+        # self.ax.legend(ncol=1, loc='best', shadow=True, fontsize=FONTSIZE_SMALLERISH)
 
         self.ax.yaxis.grid(True, linestyle='-', which='both', color='lightgrey', alpha=0.5)
         self.ax.xaxis.grid(False)
 
         # TODO:
-        ticks, ticklabel = self.get_ticks(self.x_axis)
+        ticks, ticklabel = self.get_ticks(self.x_axis, self.x_groups)
         debug_print("ticklabel,ticks : ", ticklabel, ticks)
         self.ax.set_xticks(ticks)
         self.ax.set_xticklabels(ticklabel)
@@ -378,24 +359,44 @@ class BarPlot(Ticks, Positioning, SimplePlot):
         self.ax.tick_params(axis='both', which='major', labelsize=18)
 
 
-    def get_major_ticks_mp(self):
-        ticks = range(0, 6)
-        ticklabel = [ '5', '10', '25', '50', '75', '100']
-        return ticks, ticklabel
+    def get_major_ticks_mp(self, x_groups):
+        # ticks = range(0, 6)
+        # ticklabel = [ '5', '10', '25', '50', '75', '100']
+        # return ticks, ticklabel
 
+        ticks = range(0, len(x_groups)+1)
+        ticklabel = [ str(int(x*100)) for x in x_groups]
+        print(ticks, ticklabel)
+        return ticks, ticklabel
 
     def plot(self, dfs, x_row):
         offset_list = self.get_offset_list(dfs, self.offset_delta)
+        label_set = set()
+        labels = []
+        handles = []
         n = 0
         for df in dfs:
-            print("df:", df)
-            print("df.index:", df.index)
-            print("df.index[0]:", df.index[0])
-            print("x_row:", x_row)
-            print(type(df[x_row]))
-            print(type(df[self.column]))
-            self.ax.bar(df.index + offset_list[n], df[self.column], width=self.width)
+            # print("df:", df)
+            # print("df.index:", df.index)
+            # print("df.index[0]:", df.index[0])
+            # print("x_row:", x_row)
+            # print(type(df[x_row]))
+            # print(type(df[self.column]))
+
+            for row in df.iterrows():
+                row = row[1].transpose()
+                base_position = self.map_base_position(row, x_row, self.x_groups)
+                color = get_style_color(row['gen_rule'])
+                plot = self.ax.bar(base_position + offset_list[n], row[self.column], width=self.width, color=color)
+                label = row['label']
+                if label not in label_set:
+                    labels.append(label)
+                    handles.append(plot)
+                    label_set.add(label)
+
             n += 1
+
+        self.ax.legend(handles=handles, labels=labels, ncol=1, loc='best', shadow=True, fontsize=FONTSIZE_SMALLERISH)
 
 
 #-----------------------------------------------------------------------------
@@ -409,51 +410,56 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
         self.offset_delta = offset_delta
         self.minimize_flier = minimize_flier
         self.legend = legend
+        self.x_groups = []
 
 
-    def get_major_ticks_mp(self):
-        ticks = range(0, 6)
-        ticklabel = [ '5', '10', '25', '50', '75', '100']
+    def get_major_ticks_mp(self, x_groups):
+        ticks = range(0, len(x_groups)+1)
+        ticklabel = [ str(int(x*100)) for x in x_groups]
         return ticks, ticklabel
 
-    def get_major_ticks_slot(self):
+    def get_minor_ticks_mp(self, x_groups):
+        ticks = [ x-0.5 for x in range(0, len(x_groups)+1) ]
+        return ticks, []
+
+
+    def get_major_ticks_slot(self, x_groups):
         ticks = range(0, 12)
         ticklabel = ['0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22']
         return ticks, ticklabel
 
-    def get_minor_ticks_slot(self):
+    def get_minor_ticks_slot(self, x_groups):
         ticks = [ x-0.5 for x in range(0, 13) ]
         return ticks, []
 
-    def get_minor_ticks_mp(self):
-        ticks = [ x-0.5 for x in range(0, 7) ]
-        return ticks, []
 
-    def get_major_ticks_xco(self):
-        ticks = range(0, 3)
-        ticklabel = [ 'MCO', 'SCO DP2', 'SCO DP3']
+    def get_major_ticks_xco(self, x_groups):
+        ticks = range(0, len(x_groups))
+        ticklabel = x_groups
         return ticks, ticklabel
 
-    def get_minor_ticks_xco(self):
-        ticks = [ x-0.5 for x in range(0, 4) ]
+    def get_minor_ticks_xco(self, x_groups):
+        ticks = [ x-0.5 for x in range(0, len(x_groups)+1) ]
         return ticks, []
 
-    def get_major_ticks_roadtype(self):
+
+    def get_major_ticks_roadtype(self, x_groups):
         ticks = range(0, 3)
         ticklabel = [ 'rural', 'urban', 'highway']
         return ticks, ticklabel
 
-    def get_minor_ticks_roadtype(self):
+    def get_minor_ticks_roadtype(self, x_groups):
         ticks = [ x-0.5 for x in range(1, 3) ]
         return ticks, []
 
-    def get_major_ticks_gen_rule(self):
-        ticks = range(0, 2)
-        ticklabel = [ 'static', 'dynamic']
+
+    def get_major_ticks_gen_rule(self, x_groups):
+        ticks = range(0, len(x_groups))
+        ticklabel = [ 'static', 'dynamic', 'lookahead']
         return ticks, ticklabel
 
-    def get_minor_ticks_gen_rule(self):
-        ticks = [ x-0.5 for x in range(1, 3) ]
+    def get_minor_ticks_gen_rule(self, x_groups):
+        ticks = [ x-0.5 for x in range(1, len(x_groups)+1) ]
         return ticks, []
 
 
@@ -469,12 +475,14 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
     def plot(self, dfs, x_row):
         dfs = self.sort_groups(dfs, self.group_column)
         offset_list = self.get_offset_list(dfs, self.offset_delta)
+        label_set = set()
         all_labels = []
         all_handles = []
         n = 0
+        
         for df in dfs:
             # plot group of boxes with a fixed offset depending on the number of groups
-            handles, labels = self.plot_box(df, x_row, offset_list[n])
+            handles, labels, label_set = self.plot_box(df, x_row, offset_list[n], label_set)
             all_handles.extend(handles)
             all_labels.extend(labels)
 
@@ -491,9 +499,8 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
             pass
 
 
-    def plot_box(self, df, x_row, offset):
+    def plot_box(self, df, x_row, offset, label_set):
         # print("df: ", df)
-
         bxps = []
         positions = []
         labels = []
@@ -516,10 +523,9 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
             width = None if not self.width else self.width
 
             val['label'] = label
-            labels.append(label)
             bxps.append(val)
 
-            base_position = self.map_base_position(b, x_row)
+            base_position = self.map_base_position(b, x_row, self.x_groups)
             position = base_position + offset
             positions.append(position)
 
@@ -535,10 +541,14 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
             plot = self.ax.bxp([val], positions=[position] \
                     , boxprops=get_boxprops(style), flierprops=get_flierprops() \
                     , patch_artist=True, widths=width)
-            handles.append(plot['boxes'][0])
+
+            if label not in label_set:
+                labels.append(label)
+                label_set.add(label)
+                handles.append(plot['boxes'][0])
             # print("plot:", plot)
             # print("plot[boxes]:", plot['boxes'][0].__dict__)
-        return handles, labels
+        return handles, labels, label_set
 
 
     def do_flier_minimization(self, bxp):
@@ -552,10 +562,10 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
 
 
     def set_plot_options(self):
-        for x in self.get_ticks(self.x_axis, which='minor')[0]:
+        for x in self.get_ticks(self.x_axis, self.x_groups, which='minor')[0]:
             self.ax.axvline(x=x, color='gray', alpha=0.2, linestyle='--')
 
-        ticks, ticklabel = self.get_ticks(self.x_axis)
+        ticks, ticklabel = self.get_ticks(self.x_axis, self.x_groups)
         debug_print("ticklabel,ticks : ", ticklabel, ticks)
         self.ax.set_xticks(ticks)
         self.ax.set_xticklabels(ticklabel)
