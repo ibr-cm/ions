@@ -100,6 +100,11 @@ class Ticks:
     def get_minor_ticks_gen_rule(self, x_groups):
         raise NotImplementedError("Implement this")
 
+    def get_major_ticks_dcc_state(self, x_groups):
+        raise NotImplementedError("Implement this")
+    def get_minor_ticks_dcc_state(self, x_groups):
+        raise NotImplementedError("Implement this")
+
 
     def get_ticks(self, x_axis, x_groups, which='major'):
         # TODO: hacky
@@ -127,6 +132,10 @@ class Ticks:
             ,'gen_rule': {
                 'major': self.get_major_ticks_gen_rule
                 ,'minor': self.get_minor_ticks_gen_rule
+            }
+            ,'dcc_state': {
+                'major': self.get_major_ticks_dcc_state
+                ,'minor': self.get_minor_ticks_dcc_state
             }
         }
         if x_axis in mapping:
@@ -365,9 +374,27 @@ class BarPlot(Ticks, Positioning, SimplePlot):
         # return ticks, ticklabel
 
         ticks = range(0, len(x_groups)+1)
-        ticklabel = [ str(int(x*100)) for x in x_groups]
+        ticklabel = [str(int(x*100)) for x in x_groups]
         print(ticks, ticklabel)
         return ticks, ticklabel
+
+
+    def get_major_ticks_dcc_state(self, x_groups):
+        ticks = range(0, len(x_groups)+1)
+        mapping = {
+            0 : "Relaxed"
+            ,1 : "Active 1"
+            ,2 : "Active 2"
+            ,3 : "Active 3"
+            ,4 : "Restrictive"
+        }
+        ticklabel = [ mapping[x] for x in x_groups]
+        return ticks, ticklabel
+
+    def get_minor_ticks_dcc_state(self, x_groups):
+        ticks = [ x-0.5 for x in range(0, len(x_groups)+1) ]
+        return ticks, []
+
 
     def plot(self, dfs, x_row):
         offset_list = self.get_offset_list(dfs, self.offset_delta)
