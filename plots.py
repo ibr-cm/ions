@@ -20,10 +20,11 @@ class Plot:
 
 
 class SimplePlot(Plot):
-    def __init__(self, x_axis, y_axis):
+    def __init__(self, x_axis, y_axis, y_range):
         Plot.__init__(self)
         self.x_axis = x_axis
         self.y_axis = y_axis
+        self.y_range = y_range
 
 
     def plot(self, df, x_row):
@@ -54,7 +55,7 @@ class SimplePlot(Plot):
         self.ax.set_ylabel(map_variable_to_ylabel(self.y_axis) +' '+ map_variable_name_to_unit(self.y_axis), fontsize=FONTSIZE_LABEL)
         self.ax.set_xlabel(map_variable_to_xlabel(self.x_axis), fontsize=FONTSIZE_LABEL)
 
-        self.ax.set_ylim(map_variable_to_yrange(self.y_axis))
+        self.ax.set_ylim(self.y_range)
 
         self.set_plot_options()
 
@@ -184,7 +185,7 @@ class Positioning:
 
 class LinePlot(Ticks, SimplePlot):
     def __init__(self, x_axis, y_axis, column, area, y_range):
-        SimplePlot.__init__(self, x_axis, y_axis)
+        SimplePlot.__init__(self, x_axis, y_axis, y_range)
         self.column = column
         self.area = area
         self.y_range = y_range
@@ -276,8 +277,8 @@ class LinePlot(Ticks, SimplePlot):
 
 
 class CdfPlot(SimplePlot):
-    def __init__(self, x_axis, y_axis, marker=False):
-        SimplePlot.__init__(self, x_axis, y_axis)
+    def __init__(self, x_axis, y_axis, y_range, marker=False):
+        SimplePlot.__init__(self, x_axis, y_axis, y_range)
         self.marker = marker
     
     def set_plot_options(self):
@@ -342,9 +343,8 @@ class CdfPlot(SimplePlot):
 
 class BarPlot(Ticks, Positioning, SimplePlot):
     def __init__(self, x_axis, y_axis, column, y_range, width=0.1, offset_delta=0.2):
-        SimplePlot.__init__(self, x_axis, y_axis)
+        SimplePlot.__init__(self, x_axis, y_axis, y_range)
         self.column = column
-        self.y_range = y_range
         self.width = width
         self.offset_delta = offset_delta
 
@@ -430,8 +430,8 @@ class BarPlot(Ticks, Positioning, SimplePlot):
 
 
 class BoxPlot(Ticks, Positioning, SimplePlot):
-    def __init__(self, x_axis, y_axis, group_column, width=None, offset_delta=0.2, minimize_flier=True, legend='dynamic'):
-        SimplePlot.__init__(self, x_axis, y_axis)
+    def __init__(self, x_axis, y_axis, group_column, y_range, width=None, offset_delta=0.2, minimize_flier=True, legend='dynamic'):
+        SimplePlot.__init__(self, x_axis, y_axis, y_range)
         self.group_column = group_column
         self.width = width
         self.offset_delta = offset_delta
