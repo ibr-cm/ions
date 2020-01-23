@@ -413,7 +413,12 @@ class BarPlot(Ticks, Positioning, SimplePlot):
             for row in df.iterrows():
                 row = row[1].transpose()
                 base_position = self.map_base_position(row, x_row, self.x_groups)
-                color = get_style_color(row['gen_rule'])
+                style = row['gen_rule']
+                if 'red_mit' in row.index:
+                    substyle = row['red_mit']
+                else:
+                    substyle = "None"
+                color = get_style_color(style, substyle)
                 plot = self.ax.bar(base_position + offset_list[n], row[self.column], width=self.width, color=color)
                 label = row['label']
                 if label not in label_set:
