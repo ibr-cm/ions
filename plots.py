@@ -331,9 +331,17 @@ class CdfPlot(SimplePlot):
             if isinstance(label, pd.Series):
                 label = label.iloc[0]
                 # print("---->>>> label: ", label)
+
+            style = df['gen_rule'].iloc[0]
+            if 'red_mit' in df.columns:
+                substyle = df['red_mit'].iloc[0]
+            else:
+                substyle = "None"
+            color = get_style_color(style, substyle)
+
             x, y = self.generate_cdf(df)
             if self.marker:
-                plot = self.ax.plot(x, y, label=label, marker='+', ms=6)
+                plot = self.ax.plot(x, y, label=label, marker='+', ms=6, color=color)
             else:
                 plot = self.ax.plot(x, y, label=label)
 
