@@ -541,10 +541,14 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
             else:
                 val = b['bxp'].values[0]
 
-            # TODO: hacky
+            # TODO: hacky, generalize
             style = b['gen_rule']
             if ',' in style:
                 style = style.split(',')[0]
+            if 'red_mit' in b.index:
+                substyle = b['red_mit']
+            else:
+                substyle = 'None'
 
             label = b['label']
             width = None if not self.width else self.width
@@ -566,7 +570,7 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
             # print("--------------------------")
 
             plot = self.ax.bxp([val], positions=[position] \
-                    , boxprops=get_boxprops(style), flierprops=get_flierprops() \
+                    , boxprops=get_boxprops(style, substyle), flierprops=get_flierprops() \
                     , patch_artist=True, widths=width)
 
             if label not in label_set:
