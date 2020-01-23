@@ -482,7 +482,7 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
 
     def get_major_ticks_gen_rule(self, x_groups):
         ticks = range(0, len(x_groups))
-        ticklabel = [ 'static', 'dynamic', 'lookahead']
+        ticklabel = x_groups
         return ticks, ticklabel
 
     def get_minor_ticks_gen_rule(self, x_groups):
