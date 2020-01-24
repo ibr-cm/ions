@@ -370,6 +370,14 @@ class BarPlot(Ticks, Positioning, SimplePlot):
         self.width = width
         self.offset_delta = offset_delta
 
+
+    def generate_auto_x_groups(self, dfs):
+        super().generate_auto_x_groups(dfs)
+
+        if self.x_axis == 'dcc_state':
+            self.x_groups = [-1, 0, 1, 2, 3, 4]
+
+
     def set_plot_options(self):
         self.ax.set_ylim(self.y_range)
         # TODO:
@@ -404,7 +412,8 @@ class BarPlot(Ticks, Positioning, SimplePlot):
     def get_major_ticks_dcc_state(self, x_groups):
         ticks = range(0, len(x_groups)+1)
         mapping = {
-            0 : "Relaxed"
+            -1 : ""
+            ,0 : "Relaxed"
             ,1 : "Active 1"
             ,2 : "Active 2"
             ,3 : "Active 3"
