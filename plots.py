@@ -67,9 +67,6 @@ class SimplePlot(Plot):
 
         plt.tight_layout()
 
-        print("figure: ", self.figure)
-        print("ax: ", self.ax)
-
         return self.figure
 
 
@@ -149,7 +146,6 @@ class Ticks:
             ticks, ticklabel = mapping[x_axis][which](x_groups)
         else:
             ticks, ticklabel = [],[]
-        # print("ticks:", ticks, ticklabel)
         return ticks, ticklabel
 
 
@@ -178,11 +174,8 @@ class Positioning:
 
 
     def map_base_position(self, row, variable, x_groups):
-        debug_print("x_row:", variable)
         value = row[variable]
-        debug_print("value:", value)
         base_position = self.get_mapping(x_groups)[str(value)]
-        debug_print("base_position:", base_position)
         return base_position
 
 
@@ -199,6 +192,7 @@ class LinePlot(Ticks, SimplePlot):
         self.x_maximum = None
         self.x_minimum = None
 
+
     def get_major_ticks_slot(self, x_groups):
         ticks = x_groups
         ticklabel = [ str(int(x/3600)) for x in ticks]
@@ -211,36 +205,24 @@ class LinePlot(Ticks, SimplePlot):
 
     def get_major_ticks_simtimeRaw(self):
         # TODO: hacky
-        # print("xmin:", self.x_minimum)
-        # print("xmax:", self.x_maximum)
         x_min = int(self.x_minimum / 1e12)
         x_max = int(self.x_maximum / 1e12)
-        # print("xmin_scaled:", x_min)
-        # print("xmax_scaled:", x_max)
         steps = x_max - x_min
-        # print("steps:", steps)
 
         ticks = np.linspace(int(self.x_minimum - 1e+11), int(self.x_maximum), steps+1)
         ticklabel = [ str(x) for x in range(0, steps+1) ]
-        print("ticks:", ticks)
-        print("ticklabel:", ticklabel)
         return ticks, ticklabel
 
 
     def set_plot_options(self):
         self.ax.set_ylim(self.y_range)
-        # TODO:
-        # ax.set_xmargin(0.01)
-        # ax.set_xmargin(1.01)
 
         self.ax.legend(ncol=1, loc='best', shadow=True, fontsize=FONTSIZE_SMALLERISH)
 
         self.ax.yaxis.grid(True, linestyle='-', which='both', color='lightgrey', alpha=0.5)
         self.ax.xaxis.grid(False)
 
-        # TODO:
         ticks, ticklabel = self.get_ticks(self.x_axis, self.x_groups)
-        debug_print("ticklabel,ticks : ", ticklabel, ticks)
         self.ax.set_xticks(ticks)
         self.ax.set_xticklabels(ticklabel)
 
@@ -254,18 +236,10 @@ class LinePlot(Ticks, SimplePlot):
 
 
     def plot_line(self, df, x_row, column, area, label):
-        # print("-=-=-=-=-=-=-=-==-=-=-=-=-")
-        # print("x_row: ", df[x_row])
-        # print("column: ", df[column])
-        # print("-=-=-=-=-=-=-=-==-=-=-=-=-")
         if isinstance(label, pd.Series):
             label = label.iloc[0]
-            # print("---->>>> label: ", label)
         plot = self.ax.plot(df[x_row], df[column], label=label, marker='+', ms=6)
         if area is not None:
-            # print("x_row: ", x_row)
-            # print("area: ", area)
-            # print("column: ", column)
             color = plot[0].get_color()
             plt.fill_between(df[x_row], df[column] - df[area], df[column] + df[area], color=color, alpha=0.1)
 
@@ -324,18 +298,6 @@ class CdfPlot(SimplePlot):
         x = bins
         y = np.append([0], cumsums)
 
-        # print('-------------------------')
-        # print('df: ', df)
-        # print('counts: ', counts)
-        # print('bins: ', bins)
-        # print('len counts: ', len(counts))
-        # print('len bins: ', len(bins))
-        # print('cumsum: ', cumsum)
-        # print('norm_counts: ', norm_counts)
-        # print('cumsums: ', cumsums)
-        # print('x: ', x)
-        # print('y: ', y)
-
         return x, y
     
 
@@ -344,7 +306,6 @@ class CdfPlot(SimplePlot):
             label = df.label
             if isinstance(label, pd.Series):
                 label = label.iloc[0]
-                # print("---->>>> label: ", label)
 
             style = df['gen_rule'].iloc[0]
             if 'red_mit' in df.columns:
@@ -380,18 +341,11 @@ class BarPlot(Ticks, Positioning, SimplePlot):
 
     def set_plot_options(self):
         self.ax.set_ylim(self.y_range)
-        # TODO:
-        # ax.set_xmargin(0.01)
-        # ax.set_xmargin(1.01)
-
-        # self.ax.legend(ncol=1, loc='best', shadow=True, fontsize=FONTSIZE_SMALLERISH)
 
         self.ax.yaxis.grid(True, linestyle='-', which='both', color='lightgrey', alpha=0.5)
         self.ax.xaxis.grid(False)
 
-        # TODO:
         ticks, ticklabel = self.get_ticks(self.x_axis, self.x_groups)
-        debug_print("ticklabel,ticks : ", ticklabel, ticks)
         self.ax.set_xticks(ticks)
         self.ax.set_xticklabels(ticklabel)
 
@@ -399,13 +353,8 @@ class BarPlot(Ticks, Positioning, SimplePlot):
 
 
     def get_major_ticks_mp(self, x_groups):
-        # ticks = range(0, 6)
-        # ticklabel = [ '5', '10', '25', '50', '75', '100']
-        # return ticks, ticklabel
-
         ticks = range(0, len(x_groups)+1)
         ticklabel = [str(int(x*100)) for x in x_groups]
-        print(ticks, ticklabel)
         return ticks, ticklabel
 
 
@@ -422,6 +371,7 @@ class BarPlot(Ticks, Positioning, SimplePlot):
         ticklabel = [ mapping[x] for x in x_groups]
         return ticks, ticklabel
 
+
     def get_minor_ticks_dcc_state(self, x_groups):
         ticks = [ x-0.5 for x in range(0, len(x_groups)+1) ]
         return ticks, []
@@ -434,13 +384,6 @@ class BarPlot(Ticks, Positioning, SimplePlot):
         handles = []
         n = 0
         for df in dfs:
-            # print("df:", df)
-            # print("df.index:", df.index)
-            # print("df.index[0]:", df.index[0])
-            # print("x_row:", x_row)
-            # print(type(df[x_row]))
-            # print(type(df[self.column]))
-
             for row in df.iterrows():
                 row = row[1].transpose()
                 base_position = self.map_base_position(row, x_row, self.x_groups)
@@ -481,6 +424,7 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
         ticklabel = [ str(int(x*100)) for x in x_groups]
         return ticks, ticklabel
 
+
     def get_minor_ticks_mp(self, x_groups):
         ticks = [ x-0.5 for x in range(0, len(x_groups)+1) ]
         return ticks, []
@@ -490,6 +434,7 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
         ticks = range(0, 12)
         ticklabel = ['0', '2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22']
         return ticks, ticklabel
+
 
     def get_minor_ticks_slot(self, x_groups):
         ticks = [ x-0.5 for x in range(0, 13) ]
@@ -501,6 +446,7 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
         ticklabel = x_groups
         return ticks, ticklabel
 
+
     def get_minor_ticks_xco(self, x_groups):
         ticks = [ x-0.5 for x in range(0, len(x_groups)+1) ]
         return ticks, []
@@ -510,6 +456,7 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
         ticks = range(0, 3)
         ticklabel = [ 'rural', 'urban', 'highway']
         return ticks, ticklabel
+
 
     def get_minor_ticks_roadtype(self, x_groups):
         ticks = [ x-0.5 for x in range(1, 3) ]
@@ -521,6 +468,7 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
         ticklabel = x_groups
         return ticks, ticklabel
 
+
     def get_minor_ticks_gen_rule(self, x_groups):
         ticks = [ x-0.5 for x in range(1, len(x_groups)+1) ]
         return ticks, []
@@ -528,10 +476,8 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
 
     def sort_groups(self, dfs, column):
         result = []
-        # print("dfs:", dfs)
         # TODO: generalize
         result = sorted(dfs, key=lambda x:x[column].iloc[0], reverse=True)
-        # print("result:", result)
         return result
 
     
@@ -555,15 +501,12 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
             self.ax.legend(handles=all_handles, labels=all_labels, ncol=1, loc='best', shadow=True, fontsize=FONTSIZE_SMALLERISH)
         elif self.legend == 'static':
             handles = get_static_legend_handles()
-            # LEGEND_BB = (0.40, 1.00)
-            # plt.legend(handles=[static_patch, draft_patch], bbox_to_anchor=LEGEND_BB, ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
             plt.legend(handles=handles, ncol=3, loc='best', shadow=True, fontsize=FONTSIZE_SMALLER)
         elif self.legend == 'none':
             pass
 
 
     def plot_box(self, df, x_row, offset, label_set):
-        # print("df: ", df)
         bxps = []
         positions = []
         labels = []
@@ -597,13 +540,6 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
             positions.append(position)
 
             key = b[x_row]
-            # print("--------------------------")
-            # print("key: ", key)
-            # print("label: ", label)
-            # print("position: ", position)
-            # print("style: ", style)
-            # print("width: ", width)
-            # print("--------------------------")
 
             plot = self.ax.bxp([val], positions=[position] \
                     , boxprops=get_boxprops(style, substyle), flierprops=get_flierprops() \
@@ -613,17 +549,14 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
                 labels.append(label)
                 label_set.add(label)
                 handles.append(plot['boxes'][0])
-            # print("plot:", plot)
-            # print("plot[boxes]:", plot['boxes'][0].__dict__)
         return handles, labels, label_set
 
 
     def do_flier_minimization(self, bxp):
-        debug_print("fliers_in:", bxp['fliers'])
+        """
+        Reduce number of outlier points for smaller SVG file size
+        """
         fliers_out = list(set(map(lambda x: round(x, ndigits=3), bxp['fliers'])))
-        debug_print("fliers_out:", fliers_out)
-        debug_print("len(fliers_in):", len(bxp['fliers']))
-        debug_print("len(fliers_out):", len(fliers_out))
         bxp['fliers'] = fliers_out
         return bxp
 
