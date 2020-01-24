@@ -287,6 +287,14 @@ class CdfPlot(SimplePlot):
         SimplePlot.__init__(self, x_axis, y_axis, y_range)
         self.marker = marker
     
+
+    def generate_auto_x_groups(self, dfs):
+        """
+        X-axis range is derived from histogram bins
+        """
+        pass
+
+
     def set_plot_options(self):
         self.ax.set_ylim((0, 1.0))
 
