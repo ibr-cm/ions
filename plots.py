@@ -35,13 +35,10 @@ class SimplePlot(Plot):
         raise NotImplementedError("Implement this")
 
 
-    
-    def exec(self, data_frames:List[pd.DataFrame]):
-        dfs = data_frames
-        
-        self.figure, self.ax = plt.subplots()
-        self.figure.set_size_inches(GRAPH_SIZE)
-
+    def generate_auto_x_groups(self, dfs):
+        """
+        Generate x-axis groups to be used as labels
+        """
         self.x_groups = set()
         for df in dfs:
             x_groups = set(df[self.x_axis])
@@ -49,6 +46,15 @@ class SimplePlot(Plot):
         self.x_groups = list(self.x_groups)
         # TODO: make order configurable
         self.x_groups.sort()
+
+
+    def exec(self, data_frames:List[pd.DataFrame]):
+        dfs = data_frames
+
+        self.figure, self.ax = plt.subplots()
+        self.figure.set_size_inches(GRAPH_SIZE)
+
+        self.generate_auto_x_groups(dfs)
 
         self.plot(dfs, self.x_axis)
 
