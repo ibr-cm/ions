@@ -203,7 +203,7 @@ class LinePlot(Ticks, SimplePlot):
         ticklabel = [ str(int(x*100)) for x in ticks]
         return ticks, ticklabel
 
-    def get_major_ticks_simtimeRaw(self):
+    def get_major_ticks_simtimeRaw(self, x_groups):
         # TODO: hacky
         x_min = int(self.x_minimum / 1e12)
         x_max = int(self.x_maximum / 1e12)
