@@ -58,8 +58,13 @@ class SimplePlot(Plot):
 
         self.plot(dfs, self.x_axis)
 
-        self.ax.set_ylabel(map_variable_to_ylabel(self.y_axis) +' '+ map_variable_name_to_unit(self.y_axis), fontsize=FONTSIZE_LABEL)
-        self.ax.set_xlabel(map_variable_to_xlabel(self.x_axis), fontsize=FONTSIZE_LABEL)
+        y_label = map_variable_to_ylabel(self.y_axis)
+        y_unit = map_variable_name_to_unit(self.y_axis)
+        self.ax.set_ylabel(y_label + (' [' + y_unit + ']' if len(y_unit) > 0 else ''), fontsize=FONTSIZE_LABEL)
+
+        x_label = map_variable_to_xlabel(self.x_axis)
+        x_unit = map_variable_name_to_unit(self.x_axis)
+        self.ax.set_xlabel(x_label + (' [' + x_unit + ']' if len(x_unit) > 0 else ''), fontsize=FONTSIZE_LABEL)
 
         self.ax.set_ylim(self.y_range)
 
