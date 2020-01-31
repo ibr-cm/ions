@@ -546,8 +546,14 @@ class BoxPlot(Ticks, Positioning, SimplePlot):
 
             key = b[x_row]
 
+            if 'color' in b.index:
+                color = b['color']
+                boxprops = dict(facecolor=color, edgecolor=color)
+            else:
+                boxprops = get_boxprops(style, substyle)
+
             plot = self.ax.bxp([val], positions=[position] \
-                    , boxprops=get_boxprops(style, substyle), flierprops=get_flierprops() \
+                    , boxprops=boxprops, flierprops=get_flierprops() \
                     , patch_artist=True, widths=width)
 
             if label not in label_set:
