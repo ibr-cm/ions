@@ -22,6 +22,7 @@ jsonpickle = "*"
 ujson = "*"
 pandas = "*"
 SQLAlchemy = "*"
+seaborn = "*"
 
 [requires]
 python_version = "3.6"
