@@ -115,6 +115,14 @@ class Ticks:
         raise NotImplementedError("Implement this")
 
 
+    def get_major_ticks_cbr(self, x_groups):
+        raise NotImplementedError("Implement this")
+    def get_minor_ticks_cbr(self, x_groups):
+        ticks = [ x/10 for x in range(1, 10, 2) ]
+        ticklabel = []
+        return ticks, ticklabel
+
+
     def get_ticks(self, x_axis, x_groups, which='major'):
         # TODO: hacky
         mapping = {
@@ -146,7 +154,19 @@ class Ticks:
                 'major': self.get_major_ticks_dcc_state
                 ,'minor': self.get_minor_ticks_dcc_state
             }
+            ,'cbr': {
+                'major': self.get_major_ticks_cbr
+                ,'minor': self.get_minor_ticks_cbr
+            }
         }
+
+        # TODO: extract into config
+        alias_mapping = {
+                'per_vehicle_message_drop_rate_cpm': 'cbr'
+        }
+        if x_axis in alias_mapping:
+            x_axis = alias_mapping[x_axis]
+
         if x_axis in mapping:
             ticks, ticklabel = mapping[x_axis][which](x_groups)
         else:
@@ -232,6 +252,9 @@ class LinePlot(Ticks, SimplePlot):
         self.ax.set_xticklabels(ticklabel)
 
         self.ax.tick_params(axis='both', which='major', labelsize=18)
+
+        y_ticks_minor, y_ticklabel_minor = self.get_ticks(self.y_axis, None, which='minor')
+        self.ax.set_yticks(y_ticks_minor, minor=True)
 
 
     def plot(self, dfs, x_row):
