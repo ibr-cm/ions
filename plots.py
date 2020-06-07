@@ -243,7 +243,11 @@ class LinePlot(Ticks, SimplePlot):
     def plot_line(self, df, x_row, column, area, label):
         if isinstance(label, pd.Series):
             label = label.iloc[0]
-        plot = self.ax.plot(df[x_row], df[column], label=label, marker='+', ms=6)
+        if 'color' in df.columns:
+            color = df['color'].iat[0]
+        else:
+            color = None
+        plot = self.ax.plot(df[x_row], df[column], label=label, marker='+', ms=6, color=color)
         if area is not None:
             color = plot[0].get_color()
             plt.fill_between(df[x_row], df[column] - df[area], df[column] + df[area], color=color, alpha=0.1)
