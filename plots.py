@@ -253,7 +253,12 @@ class LinePlot(Ticks, SimplePlot):
         else:
             marker = '+'
 
-        plot = self.ax.plot(df[x_row], df[column], label=label, marker=marker, ms=6, color=color)
+        if 'linestyle' in df.columns:
+            linestyle = df['linestyle'].iat[0]
+        else:
+            linestyle = '-'
+
+        plot = self.ax.plot(df[x_row], df[column], label=label, marker=marker, ms=6, color=color, linestyle=linestyle)
         if area is not None:
             color = plot[0].get_color()
             plt.fill_between(df[x_row], df[column] - df[area], df[column] + df[area], color=color, alpha=0.1)
