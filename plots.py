@@ -258,6 +258,9 @@ class LinePlot(Ticks, SimplePlot):
         y_ticks_minor, y_ticklabel_minor = self.get_ticks(self.y_axis, None, which='minor')
         self.ax.set_yticks(y_ticks_minor, minor=True)
 
+        if self.run_conf.y_label:
+            self.ax.set_ylabel(self.run_conf.y_label, fontsize=FONTSIZE_LABEL)
+
 
     def plot(self, dfs, x_row):
         for df in dfs:
