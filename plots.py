@@ -208,11 +208,13 @@ class Positioning:
 
 
 class LinePlot(Ticks, SimplePlot):
-    def __init__(self, x_axis, y_axis, column, area, y_range):
+    def __init__(self, x_axis, y_axis, column, area, y_range, run_conf):
         SimplePlot.__init__(self, x_axis, y_axis, y_range)
         self.column = column
         self.area = area
         self.y_range = y_range
+
+        self.run_conf = run_conf
 
         self.x_maximum = None
         self.x_minimum = None
@@ -242,7 +244,7 @@ class LinePlot(Ticks, SimplePlot):
     def set_plot_options(self):
         self.ax.set_ylim(self.y_range)
 
-        self.ax.legend(ncol=1, loc='best', shadow=True, fontsize=FONTSIZE_SMALLERISH)
+        self.ax.legend(ncol=self.run_conf.legend_columns, loc='best', shadow=True, fontsize=FONTSIZE_SMALLERISH)
 
         self.ax.yaxis.grid(True, linestyle='-', which='both', color='lightgrey', alpha=0.5)
         self.ax.xaxis.grid(False)
