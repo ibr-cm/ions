@@ -47,6 +47,25 @@ class SimplePlot(Plot):
         # TODO: make order configurable
         self.x_groups.sort()
 
+    def set_proper_y_ticks_cbr(self):
+        y_ticks = self.ax.get_yticks()
+
+        ticks_min = np.round(min(y_ticks), 3)
+        ticks_max = np.round(max(y_ticks), 3)
+        if ticks_max > 1.0:
+            ticks_max = 1.0
+
+        y_ticks = [
+            x/10 for x in range(int(ticks_min*10), int(ticks_max*10)+1, 2)]
+
+        ticks_minor_min = np.round(min(y_ticks) + 0.1, 1)
+        ticks_minor_max = np.round(max(y_ticks) - 0.1, 1)
+        num_ticks_minor = int(np.round((max(y_ticks) - min(y_ticks)) / 0.2, 1))
+        y_ticks_minor = np.linspace(
+            ticks_minor_min, ticks_minor_max, num_ticks_minor)
+
+        self.ax.set_yticks(y_ticks)
+        self.ax.set_yticks(y_ticks_minor, minor=True)
 
     def exec(self, data_frames:List[pd.DataFrame]):
         dfs = data_frames
@@ -255,8 +274,12 @@ class LinePlot(Ticks, SimplePlot):
 
         self.ax.tick_params(axis='both', which='major', labelsize=18)
 
-        y_ticks_minor, y_ticklabel_minor = self.get_ticks(self.y_axis, None, which='minor')
-        self.ax.set_yticks(y_ticks_minor, minor=True)
+        if self.y_axis in y_axis_ticks_list_cbr:
+            self.set_proper_y_ticks_cbr()
+        else:
+            y_ticks_minor, y_ticklabel_minor = self.get_ticks(
+                self.y_axis, None, which='minor')
+            self.ax.set_yticks(y_ticks_minor, minor=True)
 
         if self.run_conf.y_label:
             self.ax.set_ylabel(self.run_conf.y_label, fontsize=FONTSIZE_LABEL)
