@@ -181,8 +181,13 @@ class Ticks:
 
         # TODO: extract into config
         alias_mapping = {
-                'per_vehicle_message_drop_rate_cpm': 'cbr'
+            'cbr_ca': 'cbr', 'per_vehicle_message_drop_rate_cpm': 'cbr'
         }
+        if x_axis in ['per_vehicle_message_count_average_combined'] and which == 'minor':
+            ticks = [x for x in range(10, 100, 20)]
+            ticklabel = []
+            return ticks, ticklabel
+
         if x_axis in alias_mapping:
             x_axis = alias_mapping[x_axis]
 
