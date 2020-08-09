@@ -71,7 +71,7 @@ class SimplePlot(Plot):
         dfs = data_frames
 
         self.figure, self.ax = plt.subplots()
-        self.figure.set_size_inches(GRAPH_SIZE)
+        self.figure.set_size_inches(self.run_conf.size)
 
         self.generate_auto_x_groups(dfs)
 
