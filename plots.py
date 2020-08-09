@@ -20,12 +20,12 @@ class Plot:
 
 
 class SimplePlot(Plot):
-    def __init__(self, x_axis, y_axis, y_range):
+    def __init__(self, x_axis, y_axis, y_range, run_conf):
         Plot.__init__(self)
         self.x_axis = x_axis
         self.y_axis = y_axis
         self.y_range = y_range
-
+        self.run_conf = run_conf
 
     def plot(self, df, x_row):
         raise NotImplementedError("Implement this")
@@ -216,19 +216,18 @@ class Positioning:
 
         return mapping
 
-
     def map_base_position(self, row, variable, x_groups):
         value = row[variable]
         base_position = self.get_mapping(x_groups)[str(value)]
         return base_position
 
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 class LinePlot(Ticks, SimplePlot):
     def __init__(self, x_axis, y_axis, column, area, y_range, run_conf):
-        SimplePlot.__init__(self, x_axis, y_axis, y_range)
+        SimplePlot.__init__(self, x_axis, y_axis, y_range, run_conf)
         self.column = column
         self.area = area
         self.y_range = y_range
@@ -323,15 +322,14 @@ class LinePlot(Ticks, SimplePlot):
             self.x_maximum = x_max if x_max > self.x_maximum else self.x_maximum
             self.x_minimum = x_min if x_min < self.x_minimum else self.x_minimum
 
-        
-#-----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
 
 
 class CdfPlot(SimplePlot):
-    def __init__(self, x_axis, y_axis, y_range, marker=False):
-        SimplePlot.__init__(self, x_axis, y_axis, y_range)
+    def __init__(self, x_axis, y_axis, y_range, run_conf, marker=False):
+        SimplePlot.__init__(self, x_axis, y_axis, y_range, run_conf)
         self.marker = marker
-    
 
     def generate_auto_x_groups(self, dfs):
         """
@@ -396,8 +394,8 @@ class CdfPlot(SimplePlot):
 
 
 class BarPlot(Ticks, Positioning, SimplePlot):
-    def __init__(self, x_axis, y_axis, column, y_range, width=0.1, offset_delta=0.2):
-        SimplePlot.__init__(self, x_axis, y_axis, y_range)
+    def __init__(self, x_axis, y_axis, column, y_range, run_conf, width=0.1, offset_delta=0.2):
+        SimplePlot.__init__(self, x_axis, y_axis, y_range, run_conf)
         self.column = column
         self.width = width
         self.offset_delta = offset_delta
@@ -476,12 +474,12 @@ class BarPlot(Ticks, Positioning, SimplePlot):
         self.ax.legend(handles=handles, labels=labels, ncol=1, loc='best', shadow=True, fontsize=FONTSIZE_SMALLERISH)
 
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 class BoxPlot(Ticks, Positioning, SimplePlot):
-    def __init__(self, x_axis, y_axis, group_column, y_range, width=None, offset_delta=0.2, minimize_flier=True, legend='dynamic'):
-        SimplePlot.__init__(self, x_axis, y_axis, y_range)
+    def __init__(self, x_axis, y_axis, group_column, y_range, run_conf, width=None, offset_delta=0.2, minimize_flier=True, legend='dynamic'):
+        SimplePlot.__init__(self, x_axis, y_axis, y_range, run_conf)
         self.group_column = group_column
         self.width = width
         self.offset_delta = offset_delta
