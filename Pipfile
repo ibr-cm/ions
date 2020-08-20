@@ -23,6 +23,10 @@ ujson = "*"
 pandas = "*"
 SQLAlchemy = "*"
 seaborn = "*"
+sphinx = "*"
+numpydoc = "*"
+sphinx-rtd-theme = "*"
+recommonmark = "*"
 
 [requires]
 python_version = "3.6"
