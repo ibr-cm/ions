@@ -1,7 +1,19 @@
 import ast
 import operator
 
-def evaluate_simple_arithmetic_expression(expression_string):
+def evaluate_simple_arithmetic_expression(expression_string:str):
+    r"""
+    Evaluate a simple arithmetic expression of the form 'x{+,-}y'
+
+    Parameters
+    ----------
+    expression_string : str
+        the expression to be evaluated
+
+    Returns
+    -------
+    the result of the evaluated expression string
+    """
     allowed_operators = { ast.Add: operator.add, ast.Sub: operator.sub }
     expression = ast.parse(expression_string, mode='eval')
     op = expression.body
