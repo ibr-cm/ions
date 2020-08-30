@@ -14,6 +14,7 @@ mccabe = "*"
 lazy-object-proxy = "*"
 isort = "*"
 astroid = "*"
+mypy = "*"
 
 [packages]
 matplotlib = "*"
