@@ -11,6 +11,7 @@ Welcome to artery-scripts's documentation!
     :caption: Contents:
 
     general.md
+    evaluation_plotting.md
     extending.md
     gdb_helper.md
     troubleshooting.md
