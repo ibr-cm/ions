@@ -32,6 +32,6 @@ Traceback (most recent call last):
 ImportError: /home/artery/.local/share/virtualenvs/artery-scripts-f1mZWz4T/lib/python3.6/site-packages/ujson.cpython-36m-x86_64-linux-gnu.so: undefined symbol: Buffer_AppendShortHexUnchecked
 ```
 This is a known [issue](https://github.com/esnme/ultrajson/issues/271) in µjson.  
-Install µjson with your distribution's package manager & copy that version into your :  
+Install µjson with your distribution's package manager & copy that version into your virtual environment:  
 `cp -f /usr/lib/python3.6/site-packages/ujson.cpython-36m-x86_64-linux-gnu.so /home/artery/.local/share/virtualenvs/artery-scripts-f1mZWz4T/lib/python3.6/site-packages/ujson.cpython-36m-x86_64-linux-gnu.so`  
 
