@@ -20,7 +20,7 @@ Example:
 `-v` select variable (signal) to process  
 `-s` calculate statistics over a 100ms window  
   
-This will produce a JSON File in the specified result folder which can be plotted in the next step
+This will produce a JSON File in the specified result folder which can be plotted in the next step.
 
 ### Options overview  
 - statistics can be calculated over different windows:
