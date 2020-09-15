@@ -113,8 +113,8 @@ pipenv run ./plot.py -w tst -b -x xco -y 10Hz_cpm --label xco --delta 0.2 --widt
     -- <dataset0 for MCO/SCO2/SCO3 for draft/static> \
     -- <dataset1 for MCO/SCO2/SCO3 for draft/static>
 ```  
-`-g gen_rule` group by `gen_rule` column (TODO: this is an UI-issue; use a new pipeline instead)  
-`-x xco` use auxiliary column `xco` as x-axis (TODO: users should not need to know about internal data structures)  
+`-g gen_rule` group by `gen_rule` column  
+`-x xco` use auxiliary column `xco` as x-axis  
 
 Show variable-to-signal mapping:  
 `pipenv run ./eval.py --show-var-mapping`  
