@@ -1,7 +1,7 @@
 Plot types
 ==========
 
-.. automodule:: plot_types
+.. automodule:: plotting.plot_types
     :members:
     :undoc-members:
     :show-inheritance:

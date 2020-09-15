@@ -1,7 +1,7 @@
 Filters
 =======
 
-.. automodule:: filters
+.. automodule:: plotting.filters
     :members:
     :undoc-members:
     :show-inheritance:

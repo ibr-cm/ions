@@ -1,7 +1,7 @@
 Operations
 ==========
 
-.. automodule:: operations
+.. automodule:: evaluation.operations
     :members:
     :undoc-members:
     :show-inheritance:

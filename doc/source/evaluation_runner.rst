@@ -1,7 +1,7 @@
 Evaluation Runner
-================
+=================
 
-.. automodule:: evaluation_runner
+.. automodule:: evaluation.evaluation_runner
     :members:
     :undoc-members:
     :show-inheritance:

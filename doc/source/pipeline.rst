@@ -1,7 +1,7 @@
 Pipeline
 ========
 
-.. automodule:: pipeline
+.. automodule:: plotting.pipeline
     :members:
     :undoc-members:
     :show-inheritance:
