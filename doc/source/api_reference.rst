@@ -17,7 +17,6 @@ API reference
     evaluation_runner.rst
     filters.rst
     pipeline.rst
-    filters.rst
     plot_types.rst
 
 
