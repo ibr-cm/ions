@@ -6,6 +6,13 @@
 Welcome to artery-scripts's documentation!
 ==========================================
 
+Artery Scripts
+==============
+
+This is a collection of Python & shell scripts that have proven useful when
+running simulation studies with Artery.
+
+
 .. toctree::
     :maxdepth: 3
     :caption: Contents:

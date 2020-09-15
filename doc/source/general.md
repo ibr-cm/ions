@@ -1,9 +1,3 @@
-
-# Artery Scripts
-
-This is a collection of Python & shell scripts that have proven useful in
-running simulation studies with Artery.
-
 ## General Instructions
 
 This page provides a detailed description how to get started with the plotting tool for analyzing simulations in Artery using the CP Service.
