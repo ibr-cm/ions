@@ -31,4 +31,10 @@ usage:
 `-e` checks the timestamps of the emitted signals for each vehicle and print differences  
 	 (see script for the list of checked signals)
 
+## ConvertJSON.py
+This can be used to perform conversions on JSON files.  
+Right now it just supports converting older JSON files with `draft` generation
+rule label to `dynamic`  
+usage:  
+`./ConvertJSON.py -c draft-to-dynamic -d <OUTPUT DIR> <FILES...>`
 
