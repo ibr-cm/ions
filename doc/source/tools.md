@@ -38,3 +38,5 @@ rule label to `dynamic`
 usage:  
 `./ConvertJSON.py -c draft-to-dynamic -d <OUTPUT DIR> <FILES...>`
 
+## update_docs_sphinx.sh
+Build and publish this documentation.
