@@ -8,7 +8,6 @@ API reference
 
     common.rst
     data_handling.rst
-    variable_registry.rst
     variables.rst
 
     eval.rst
