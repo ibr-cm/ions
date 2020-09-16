@@ -11,6 +11,7 @@ API reference
     variables.rst
 
     eval.rst
+    plot.rst
 
     evaluation.rst
     plotting.rst
