@@ -36,7 +36,6 @@ extensions = [
         , 'numpydoc'
         , 'sphinx.ext.ifconfig'
         , 'sphinx.ext.viewcode'
-        , 'sphinx_automodapi.automodapi'
         , 'sphinx_rtd_theme'
         , 'recommonmark'
 ]
