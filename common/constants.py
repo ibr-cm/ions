@@ -1,5 +1,5 @@
 
-version = 0.3
+version = 1.0
 
 FETCH_NUMROWS = 8912
 
