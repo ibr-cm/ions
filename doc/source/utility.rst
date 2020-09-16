@@ -16,3 +16,13 @@ Utility
     :undoc-members:
     :show-inheritance:
 
+.. automodule:: utility.stopwatch
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. automodule:: utility.data
+    :members:
+    :undoc-members:
+    :show-inheritance:
+

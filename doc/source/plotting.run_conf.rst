@@ -1,7 +1,8 @@
-Pipeline
-========
+RunConf
+=======
 
-.. automodule:: plotting.pipeline
+.. automodule:: plotting.run_conf
     :members:
     :undoc-members:
     :show-inheritance:
+

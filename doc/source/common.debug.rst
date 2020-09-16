@@ -1,7 +1,7 @@
-Data objects
-============
+Debug
+=====
 
-.. automodule:: data_objects
+.. automodule:: common.debug
     :members:
     :undoc-members:
     :show-inheritance:

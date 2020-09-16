@@ -1,7 +1,8 @@
-Plot types
-==========
+Constants
+=========
 
-.. automodule:: plotting.plot_types
+.. automodule:: common.constants
     :members:
     :undoc-members:
     :show-inheritance:
+
