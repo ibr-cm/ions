@@ -23,5 +23,7 @@ def evaluate_simple_arithmetic_expression(expression_string:str):
         and isinstance(op.right, ast.Num):
             result = allowed_operators[type(op.op)](op.left.n, op.right.n)
             return result
+    elif isinstance(op, ast.Num):
+        return op.n
     else:
         raise TypeError(f'\'{expression_string}\' is not a valid expression in this context')
