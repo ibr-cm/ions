@@ -29,6 +29,7 @@ numpydoc = "*"
 sphinx-rtd-theme = "*"
 recommonmark = "*"
 jupyterlab = "*"
+ipympl = "*"
 
 [requires]
 python_version = "3.8"
