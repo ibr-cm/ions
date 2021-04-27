@@ -28,6 +28,7 @@ sphinx = "*"
 numpydoc = "*"
 sphinx-rtd-theme = "*"
 recommonmark = "*"
+jupyterlab = "*"
 
 [requires]
 python_version = "3.8"
