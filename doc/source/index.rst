@@ -20,6 +20,7 @@ running simulation studies with Artery.
     general.md
     tools.md
     evaluation_plotting.md
+    jupyter_labs.md
     extending.md
     gdb_helper.md
     troubleshooting.md
