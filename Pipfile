@@ -31,6 +31,8 @@ recommonmark = "*"
 jupyterlab = "*"
 ipympl = "*"
 tabulate = "*"
+bottleneck = "*"
+numexpr = "*"
 
 [requires]
 python_version = "3.8"
