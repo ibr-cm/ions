@@ -33,6 +33,8 @@ ipympl = "*"
 tabulate = "*"
 bottleneck = "*"
 numexpr = "*"
+beakerx = "*"
+beakerx-tabledisplay = "*"
 
 [requires]
 python_version = "3.8"
