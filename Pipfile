@@ -35,6 +35,8 @@ bottleneck = "*"
 numexpr = "*"
 beakerx = "*"
 beakerx-tabledisplay = "*"
+pyarrow = "*"
+tables = "*"
 
 [requires]
 python_version = "3.8"
