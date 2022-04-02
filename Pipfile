@@ -33,8 +33,6 @@ ipympl = "*"
 tabulate = "*"
 bottleneck = "*"
 numexpr = "*"
-beakerx = "*"
-beakerx-tabledisplay = "*"
 pyarrow = "*"
 tables = "*"
 
