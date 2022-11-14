@@ -35,6 +35,9 @@ bottleneck = "*"
 numexpr = "*"
 pyarrow = "*"
 tables = "*"
+dask-jobqueue = "*"
+dask-labextension = "*"
+dask = {extras = ["complete"], version = "*"}
 
 [requires]
 python_version = "3.8"
