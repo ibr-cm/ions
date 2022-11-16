@@ -25,7 +25,7 @@ from dask.distributed import Client
 
 # ---
 
-from recipe import Recipe, EvaluationTask, RawExtractor
+from recipe import Recipe, RawExtractor
 
 from sql_queries import generate_signal_query
 
@@ -42,12 +42,9 @@ def execute_evaluation_phase(recipe:Recipe, options):
         print('execute_evaluation_phase: no `extractors` in recipe.Evaluation')
         return
 
-    print(recipe.evaluation.extractors)
     evaluation = recipe.evaluation
 
     data_repo = {}
-    # setattr(recipe, 'data_repo', data_repo)
-    # print(f'{recipe.evaluation.extractors=}')
     for extractor_name in recipe.evaluation.extractors:
         extractor = recipe.evaluation.extractors[extractor_name]
 
@@ -56,22 +53,19 @@ def execute_evaluation_phase(recipe:Recipe, options):
             print(f'overriding {extractor_name} with {extractor.input_files}')
 
         delayed_data = extractor.prepare()
-        print(f'{extractor=}')
+        # print(f'{extractor=}')
         # print(f'{delayed_data.memory_usage(deep=True) = }')
-        print(f'-<-<-<-<-<-<-')
-        # extracted.append(delayed_data)
+        # print(f'-<-<-<-<-<-<-')
         data_repo[extractor_name] = delayed_data
 
     if not hasattr(recipe.evaluation, 'transforms'):
         print('execute_evaluation_phase: no `transforms` in recipe.Evaluation')
         return data_repo
 
-    transformed = []
     for transform_name in recipe.evaluation.transforms:
         transform = recipe.evaluation.transforms[transform_name]
         transform.set_data_repo(data_repo)
         transform.execute()
-        # transformed.append(transformed_data)
 
     jobs = []
     for exporter_name in recipe.evaluation.exporter:
@@ -91,20 +85,6 @@ def execute_evaluation_phase(recipe:Recipe, options):
 
     # now actually compute the constructed computation graph
     dask.compute(*jobs)
-
-
-    # for task_name in recipe.evaluation.tasks:
-    #     task = recipe.evaluation.tasks[task_name]
-    #     print('-*='*30)
-    #     print(f'{task_name=}')
-    #     print(f'{task=}')
-    #     pprint.pp(task.__dict__)
-    #     print('-*='*30)
-    #     task.initialize(op_registry)
-    #     print(f'plot: executing evaluation tasks...')
-    #     task_result = task.execute(options)
-    #     print(f'{task_result=}')
-
 
     print('=-!!'*40)
 
@@ -155,7 +135,6 @@ def execute_plotting_phase(recipe:Recipe, options):
 def process_recipe(options):
     f = open(options.recipe, mode='r')
 
-    # recipe = load(f.read(), Loader=Loader)
     recipe = yaml.unsafe_load(f.read())
 
     pprint.pp(recipe)

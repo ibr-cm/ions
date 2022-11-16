@@ -94,69 +94,6 @@ class Task(YAMLObject):
     def __init__(self):
         pass
 
-class EvaluationTask(YAMLObject):
-    yaml_tag = u'!EvaluationTask'
-
-    # def __init__(self, *args, **kwargs):
-    #     print('BING')
-    #     pass
-
-    def __init__(self, op:str, name:str, result_processor:FileResultProcessor, **kwargs):
-        print('BING')
-        self.op = op
-        self.name = name
-        self.result_processor = result_processor
-
-    def initialize(self, op_registry):
-        print('>>>>  EvaluationTask.initialize')
-        # print(f'{self.op=}')
-        print(f'{self.__dict__=}')
-        # if self.op in op_registry:
-        #     operation = op_registry[self.op]
-        #     self.operation = operation(self.db_session, self.query)
-        #     print(f'> found op: {self.operation}')
-        # else:
-        #     raise Exception(f'Operation {op} is not registered in operation registry')
-
-    def __repr__(self):
-        # return f'(op={self.op}  name={self.name}\n  __dict__={self.__dict__})'
-        # return f'(op={self.op}\n  __dict__={self.__dict__})'
-        return f'(__dict__={self.__dict__})'
-
-    def execute(self, options):
-        # TODO: extract and process data
-        print('>>>>  EvaluationTask.execute')
-        # print(f'(op={self.op}\n  __dict__={self.__dict__})')
-        print(f'(__dict__={self.__dict__})')
-
-        print(f'-<-<-<-<-<-<-')
-        print(f'{options=}')
-        print(f'-<-<-<-<-<-<-')
-        # extracted = []
-
-        print(f'{data_repo=}')
-        
-
-        # result = pd.concat(transformed, ignore_index=True)
-        # print(f'{result=}')
-
-        print(f'{data_repo=}')
-        # v2x_rates = set(data_repo['cbr']['v2x_rate'])
-        # print(f'{v2x_rates=}')
-
-                # ...
-        print('> EvaluationTask done')
-
-        # return pd.concat(transformed, ignore_index=True)
-
-    # def process_result(self, result):
-    #     self.result_processor.process(result)
-
-
-class EvaluationPreProcTask(YAMLObject):
-    pass
-class EvaluationPostProcTask(YAMLObject):
-    pass
 
 class PlottingReaderFeather(YAMLObject):
     def __init__(self, input_files:str):
