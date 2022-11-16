@@ -244,6 +244,7 @@ def setup(options):
         cluster = LocalCluster(n_workers=options.worker
                              , host='localhost'
                              # , interface='lo'
+                             , local_directory = options.tmpdir
                              )
 
     # client = Client('tcp://127.0.0.1:33745')
