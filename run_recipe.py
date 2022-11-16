@@ -87,7 +87,7 @@ def execute_evaluation_phase(recipe:Recipe, options):
 
 
     print(f'{jobs=}')
-    jobs[0].visualize('/opt/tmpssd/t-its-paper/dask_graph_eval.png')
+    jobs[0].visualize(f'{options.tmpdir}/dask_graph_eval.png')
 
     # now actually compute the constructed computation graph
     dask.compute(*jobs)
@@ -146,7 +146,7 @@ def execute_plotting_phase(recipe:Recipe, options):
         # print(f'plot: {job=}')
         jobs.append(job)
 
-    jobs[0].visualize('/opt/tmpssd/t-its-paper/dask_graph_plot.png')
+    jobs[0].visualize(f'{options.tmpdir}/dask_graph_plot.png')
     print(f'plot: {jobs=}')
     r = dask.compute(*jobs)
     print(f'plot: {r=}')
@@ -202,6 +202,8 @@ def parse_args():
     parser.add_argument('--slurm', action='store_true', default=False, help='use SLURM cluster')
     parser.add_argument('--nodelist', type=str, help='nodelist for SLURM')
 
+    parser.add_argument('--tmpdir', type=str, default='/opt/tmpssd/tmp', help='directory for temporary files')
+
     args = parser.parse_args()
 
     if args.slurm:
@@ -241,7 +243,7 @@ def setup(options):
                              # , queue = "normal"
                              , job_extra_directives = [ f'--nodelist={options.nodelist}' ]
                              , interface = 'lo'
-                             , shared_temp_directory = '/opt/tmpssd/t-its-paper/tmp/'
+                             , shared_temp_directory = options.tmpdir
                              )
     else:
         print('using local cluster')
