@@ -123,6 +123,11 @@ def execute_plotting_phase(recipe:Recipe, options):
         print(f'plot: {task.dataset_name=}')
         # print(f'plot: loading data...')
         # task.load_data()
+
+        if task_name in options.plot_overrides:
+            task.output_file = options.plot_overrides[task_name]
+            print(f'overriding {task_name} with {task.output_file}')
+
         task.set_data_repo(data_repo)
         print(f'plot: executing plotting tasks...')
         job = task.execute()
@@ -178,6 +183,7 @@ def parse_args():
     parser.add_argument('--override-exporter', type=str, help='override exporter parameters')
 
     parser.add_argument('--override-reader', type=str, help='override reader parameters')
+    parser.add_argument('--override-plot', type=str, help='override plot parameters')
 
     parser.add_argument('--eval-only', action='store_true', default=False, help='run eval phase only')
     parser.add_argument('--plot-only', action='store_true', default=False, help='run plot phase only')
@@ -209,6 +215,7 @@ def parse_args():
     set_dict_arg_from_string(args.override_exporter, 'export_overrides')
 
     set_dict_arg_from_string(args.override_reader, 'reader_overrides')
+    set_dict_arg_from_string(args.override_plot, 'plot_overrides')
 
     return args
 
