@@ -188,7 +188,7 @@ def parse_args():
     parser.add_argument('--eval-only', action='store_true', default=False, help='run eval phase only')
     parser.add_argument('--plot-only', action='store_true', default=False, help='run plot phase only')
 
-    parser.add_argument('--worker', type=int, help='the number of worker processes')
+    parser.add_argument('--worker', type=int, default=4, help='the number of worker processes')
 
     parser.add_argument('--slurm', action='store_true', default=False, help='use SLURM cluster')
     parser.add_argument('--nodelist', type=str, help='nodelist for SLURM')
