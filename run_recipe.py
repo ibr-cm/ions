@@ -253,7 +253,7 @@ def setup(options):
             cluster.scale(options.worker)
             return Client(cluster)
         else:
-            print('using distributed local cluster')
+            print(f'using distributed cluster at {options.cluster}')
             client = Client(options.cluster)
             return client
 
