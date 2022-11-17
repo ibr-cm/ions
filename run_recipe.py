@@ -190,6 +190,8 @@ def parse_args():
 
     parser.add_argument('--worker', type=int, default=4, help='the number of worker processes')
 
+    parser.add_argument('--cluster', type=str, help='cluster address')
+
     parser.add_argument('--slurm', action='store_true', default=False, help='use SLURM cluster')
     parser.add_argument('--nodelist', type=str, help='nodelist for SLURM')
 
@@ -239,22 +241,29 @@ def setup(options):
                              , interface = 'lo'
                              , shared_temp_directory = options.tmpdir
                              )
-    else:
-        print('using local cluster')
-        cluster = LocalCluster(n_workers=options.worker
-                             , host='localhost'
-                             # , interface='lo'
-                             , local_directory = options.tmpdir
-                             )
+        return Client(cluster)
+    elif options.cluster:
+        if options.cluster == 'local':
+            print('using local process cluster')
+            cluster = LocalCluster(n_workers=options.worker
+                                 , host='localhost'
+                                 # , interface='lo'
+                                 , local_directory = options.tmpdir
+                                 )
+            cluster.scale(options.worker)
+            return Client(cluster)
+        else:
+            print('using distributed local cluster')
+            client = Client(options.cluster)
+            return client
 
-    # client = Client('tcp://127.0.0.1:33745')
 
 
 def main():
     options = parse_args()
     print(f'{options=}')
 
-    setup(options)
+    client = setup(options)
 
     process_recipe(options)
     print(globals())
