@@ -16,6 +16,13 @@ run_attr_query = sqla.select(TableModel.runAttr_table.c.rowId, TableModel.runAtt
 run_param_query = sqla.select(TableModel.runParam_table.c.rowId, TableModel.runParam_table.c.paramKey, TableModel.runParam_table.c.paramValue)
 
 
+# """
+# SELECT vectorName
+# FROM vector_table;
+# """
+signal_names_query = sqla.select(TableModel.vector_table.c.vectorName)
+
+
 def generate_signal_query(signal_name:str, value_label='value'):
     return generate_data_query(TableModel.vector_table.c.vectorName == signal_name, value_label=value_label)
 

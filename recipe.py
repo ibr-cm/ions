@@ -474,6 +474,75 @@ class RawExtractor(SqlLiteReader, YAMLObject):
         return result_list
 
 
+class MatchingExtractor(SqlLiteReader, YAMLObject):
+    yaml_tag = u'!recipe.MatchingExtractor'
+
+    @staticmethod
+    def get_matching_signals(db_file, pattern, alias_pattern):
+        sql_reader = SqlLiteReader(db_file)
+        # first, get the names of all the signals
+        query = sql_queries.signal_names_query
+        try:
+            data = sql_reader.execute_sql_query(query)
+        except Exception:
+            print(f'>>>> ERROR: no signal names could be extracted from {db_file}')
+            return pd.DataFrame()
+
+        # deduplicate the entries int the list of possible signals
+        signals = list(set(data['vectorName']))
+
+        # compile the signal matching regex
+        regex = re.compile(pattern)
+
+        # then check for matching signals
+        matching_signals = []
+        for signal in signals:
+            r = regex.search(signal)
+            if r:
+                # construct the new name by substituting the matched and bound variables
+                alias = alias_pattern.format(**r.groupdict())
+                matching_signals.append((signal, alias))
+
+        return matching_signals
+
+    @staticmethod
+    def extract_alls_signals(db_file, signals):
+        result_list = []
+        for signal, alias in signals:
+            alias = alias
+            res = RawExtractor.read_signals_from_file(db_file, signal, alias)
+            res = res.drop(labels=['rowId'], axis=1)
+            result_list.append((res, alias))
+
+        # pivot the signal column into new rows
+        for i in range(0, len(result_list)):
+            df = result_list[i][0]
+            alias = result_list[i][1]
+            id_columns = list(set(df.columns).difference(set([alias])))
+            df = df.melt(id_vars=id_columns, value_vars=alias, value_name='value')
+            result_list[i] = df
+
+        result = pd.concat(result_list, ignore_index=True)
+        result = RawExtractor.convert_columns_to_category(result)
+
+        return result
+
+    def prepare(self):
+        data_set = DataSet(self.input_files)
+
+        # For every input file construct a `Delayed` object, a kind of a promise
+        # on the data, and the leafs of the task graph
+        result_list = []
+        for db_file in data_set.get_file_list():
+            # get all signal names that match the given regular expression
+            matching_signals_result = dask.delayed(MatchingExtractor.get_matching_signals)(db_file, self.pattern, self.alias_pattern)
+            # get the data for the matched signals
+            res = dask.delayed(MatchingExtractor.extract_alls_signals)(db_file, matching_signals_result)
+            result_list.append(res)
+
+        return result_list
+
+
 class Transform(YAMLObject):
     yaml_tag = u'!recipe.Transform'
 
