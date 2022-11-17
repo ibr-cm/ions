@@ -435,16 +435,16 @@ class RawExtractor(SqlLiteReader, YAMLObject):
 
             try:
                 tags = sql_reader.extract_tags()
-            except Exception:
-                print(f'>>>> ERROR: no tags could be extracted from {db_file}')
+            except Exception as e:
+                print(f'>>>> ERROR: no tags could be extracted from {db_file}:\n {e}')
                 return pd.DataFrame()
 
             query = sql_queries.generate_signal_query(signal, value_label=alias)
             # print(f'{query=}')
             try:
                 data = sql_reader.execute_sql_query(query)
-            except Exception:
-                print(f'>>>> ERROR: no data could be extracted from {db_file}')
+            except Exception as e:
+                print(f'>>>> ERROR: no data could be extracted from {db_file}:\n {e}')
                 return pd.DataFrame()
 
             data = RawExtractor.apply_tags(data, tags)
@@ -484,8 +484,8 @@ class MatchingExtractor(SqlLiteReader, YAMLObject):
         query = sql_queries.signal_names_query
         try:
             data = sql_reader.execute_sql_query(query)
-        except Exception:
-            print(f'>>>> ERROR: no signal names could be extracted from {db_file}')
+        except Exception as e:
+            print(f'>>>> ERROR: no signal names could be extracted from {db_file}:\n {e}')
             return pd.DataFrame()
 
         # deduplicate the entries int the list of possible signals
