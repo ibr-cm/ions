@@ -447,6 +447,9 @@ class RawExtractor(SqlLiteReader, YAMLObject):
                 print(f'>>>> ERROR: no data could be extracted from {db_file}:\n {e}')
                 return pd.DataFrame()
 
+            if 'rowId' in data.columns:
+                data = data.drop(labels=['rowId'], axis=1)
+
             data = RawExtractor.apply_tags(data, tags)
 
             # select columns with a small enough set of possible values to
@@ -511,7 +514,6 @@ class MatchingExtractor(SqlLiteReader, YAMLObject):
         for signal, alias in signals:
             alias = alias
             res = RawExtractor.read_signals_from_file(db_file, signal, alias)
-            res = res.drop(labels=['rowId'], axis=1)
             result_list.append((res, alias))
 
         # pivot the signal column into new rows
