@@ -456,21 +456,36 @@ class RawExtractor(SqlLiteReader, YAMLObject):
 
             return data
 
+    def get_categorical_overrides(self):
+        if hasattr(self, 'categorical_columns'):
+            categorical_columns = self.categorical_columns
+        else:
+            categorical_columns = []
+
+        if hasattr(self, 'categorical_columns_excluded'):
+            categorical_columns_excluded = set(self.categorical_columns_excluded)
+        else:
+            categorical_columns_excluded = set()
+
+        return categorical_columns, categorical_columns_excluded
+
     def prepare(self):
         data_set = DataSet(self.input_files)
+
+        categorical_columns, categorical_columns_excluded = self.get_categorical_overrides()
 
         # For every input file construct a `Delayed` object, a kind of a promise
         # on the data and the leafs of the computation graph
         result_list = []
         for db_file in data_set.get_file_list():
             res = dask.delayed(RawExtractor.read_signals_from_file)\
-                               (db_file, self.signal, self.alias, self.categorical_columns, set(self.categorical_columns_excluded))
+                               (db_file, self.signal, self.alias, categorical_columns, categorical_columns_excluded)
             result_list.append(res)
 
         return result_list
 
 
-class MatchingExtractor(SqlLiteReader, YAMLObject):
+class MatchingExtractor(RawExtractor):
     yaml_tag = u'!recipe.MatchingExtractor'
 
     @staticmethod
@@ -530,6 +545,8 @@ class MatchingExtractor(SqlLiteReader, YAMLObject):
     def prepare(self):
         data_set = DataSet(self.input_files)
 
+        categorical_columns, categorical_columns_excluded = self.get_categorical_overrides()
+
         # For every input file construct a `Delayed` object, a kind of a promise
         # on the data, and the leafs of the task graph
         result_list = []
@@ -537,7 +554,7 @@ class MatchingExtractor(SqlLiteReader, YAMLObject):
             # get all signal names that match the given regular expression
             matching_signals_result = dask.delayed(MatchingExtractor.get_matching_signals)(db_file, self.pattern, self.alias_pattern)
             # get the data for the matched signals
-            res = dask.delayed(MatchingExtractor.extract_alls_signals)(db_file, matching_signals_result, self.categorical_columns, set(self.categorical_columns_excluded))
+            res = dask.delayed(MatchingExtractor.extract_alls_signals)(db_file, matching_signals_result, categorical_columns, categorical_columns_excluded)
             result_list.append(res)
 
         return result_list
