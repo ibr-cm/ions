@@ -16,4 +16,4 @@ BASE_TAGS_EXTRACTION_MINIMAL = ['v2x_rate', 'value', 'var', 'moduleName', 'repet
                      + ['replication', 'runnumber', 'seedset', 'simulationEnd', 'traciStart' ] \
                      + ['sumocfgname']
 
-
+DEFAULT_CATEGORICALS_COLUMN_EXCLUSION_SET = set(['value'])
