@@ -29,7 +29,8 @@ from data_io import DataSet, read_from_file
 from tag_extractor import ExtractRunParametersTagsOperation
 from tag_regular_expressions import parameters_regex_map, attributes_regex_map, iterationvars_regex_map
 
-from common.common_sets import BASE_TAGS_EXTRACTION, BASE_TAGS_EXTRACTION_MINIMAL
+from common.common_sets import BASE_TAGS_EXTRACTION, BASE_TAGS_EXTRACTION_MINIMAL \
+                               , DEFAULT_CATEGORICALS_COLUMN_EXCLUSION_SET
 
 # ---
 
@@ -399,29 +400,20 @@ class RawExtractor(SqlLiteReader, YAMLObject):
         return data
 
     @staticmethod
-    def convert_columns_to_category(data, additional_columns:list = []):
+    def convert_columns_to_category(data, additional_columns:list = [], excluded_columns:set = {}):
+        excluded_columns = set(excluded_columns).union(DEFAULT_CATEGORICALS_COLUMN_EXCLUSION_SET)
 
-        tag_names = list(parameters_regex_map.keys()) + list(iterationvars_regex_map.keys())
-        categoricals_list = ['rowId', 'moduleName', 'traciStart', 'dcc',
-                             'v2x_rate', 'configname', 'datetime', 'experiment', 'repetition',
-                             'replication', 'runnumber', 'seedset', 'prefix']
-        categoricals_list_ext = categoricals_list + tag_names + additional_columns
-        # only check columns actually present in the input DataFrame
-        categoricals_list_ext = list(set(categoricals_list_ext).intersection(set(data.columns)))
-
-        col_list = list()
-        threshold = len(data) / 2
-        for col in categoricals_list_ext:
-            # if not col in data.columns:
-            #     continue
+        col_list = []
+        threshold = len(data) / 4
+        for col in data.columns:
+            if col in excluded_columns:
+                continue
             # if the number of categories is larger than half the number of data
             # samples, don't convert the column
             s = len(set(data[col]))
-            # print(f'{col}: {s}')
             if s < threshold:
                 col_list.append(col)
 
-        # print(f'{col_list=}')
         # convert selected columns to Categorical
         for col in col_list:
             data[col] = data[col].astype('category')
@@ -430,7 +422,7 @@ class RawExtractor(SqlLiteReader, YAMLObject):
         return data
 
     @staticmethod
-    def read_signals_from_file(db_file, signal, alias):
+    def read_signals_from_file(db_file, signal, alias, categorical_columns=[], excluded_categorical_columns=set()):
             sql_reader = SqlLiteReader(db_file)
 
             try:
@@ -440,7 +432,7 @@ class RawExtractor(SqlLiteReader, YAMLObject):
                 return pd.DataFrame()
 
             query = sql_queries.generate_signal_query(signal, value_label=alias)
-            # print(f'{query=}')
+
             try:
                 data = sql_reader.execute_sql_query(query)
             except Exception as e:
@@ -452,28 +444,29 @@ class RawExtractor(SqlLiteReader, YAMLObject):
 
             data = RawExtractor.apply_tags(data, tags)
 
+            # don't categorize the column with the actual data
+            excluded_categorical_columns = excluded_categorical_columns.union(set([alias]))
+
             # select columns with a small enough set of possible values to
             # convert into `Categorical`
-            data = RawExtractor.convert_columns_to_category(data)
+            data = RawExtractor.convert_columns_to_category(data \
+                                                            , additional_columns=categorical_columns \
+                                                            , excluded_columns=excluded_categorical_columns
+                                                            )
 
             return data
 
     def prepare(self):
         data_set = DataSet(self.input_files)
-        # print(f'{data_set.get_file_list()=}')
 
         # For every input file construct a `Delayed` object, a kind of a promise
         # on the data and the leafs of the computation graph
         result_list = []
         for db_file in data_set.get_file_list():
-            # print(f'<-<-<-<-<--<====-=-=-=-=-==-=-=-=-=-=-<<-<-<-<--<<-<-<')
-            # print(f'{db_file=}')
-            # r = read_signals_from_file(db_file, self.signals)
-            res = dask.delayed(RawExtractor.read_signals_from_file)(db_file, self.signal, self.alias)
-            # q = dask.delayed(RawExtractor.convert_columns_to_category)(r)
+            res = dask.delayed(RawExtractor.read_signals_from_file)\
+                               (db_file, self.signal, self.alias, self.categorical_columns, set(self.categorical_columns_excluded))
             result_list.append(res)
 
-        # print(f'{result_list=}')
         return result_list
 
 
@@ -509,24 +502,29 @@ class MatchingExtractor(SqlLiteReader, YAMLObject):
         return matching_signals
 
     @staticmethod
-    def extract_alls_signals(db_file, signals):
+    def extract_alls_signals(db_file, signals, categorical_columns=[], excluded_categorical_columns=set()):
         result_list = []
         for signal, alias in signals:
-            alias = alias
-            res = RawExtractor.read_signals_from_file(db_file, signal, alias)
+            res = RawExtractor.read_signals_from_file(db_file, signal, alias \
+                                                      , categorical_columns=categorical_columns \
+                                                      , excluded_categorical_columns=excluded_categorical_columns
+                                                     )
             result_list.append((res, alias))
 
-        # pivot the signal column into new rows
         for i in range(0, len(result_list)):
             df = result_list[i][0]
             alias = result_list[i][1]
+            # use all non-value column as primary (composite) key for the value column
             id_columns = list(set(df.columns).difference(set([alias])))
+            # pivot the signal column into new rows
             df = df.melt(id_vars=id_columns, value_vars=alias, value_name='value')
             result_list[i] = df
 
         result = pd.concat(result_list, ignore_index=True)
-        result = RawExtractor.convert_columns_to_category(result)
-
+        result = RawExtractor.convert_columns_to_category(result
+                                                            , additional_columns=categorical_columns \
+                                                            , excluded_columns=excluded_categorical_columns
+                                                         )
         return result
 
     def prepare(self):
@@ -539,7 +537,7 @@ class MatchingExtractor(SqlLiteReader, YAMLObject):
             # get all signal names that match the given regular expression
             matching_signals_result = dask.delayed(MatchingExtractor.get_matching_signals)(db_file, self.pattern, self.alias_pattern)
             # get the data for the matched signals
-            res = dask.delayed(MatchingExtractor.extract_alls_signals)(db_file, matching_signals_result)
+            res = dask.delayed(MatchingExtractor.extract_alls_signals)(db_file, matching_signals_result, self.categorical_columns, set(self.categorical_columns_excluded))
             result_list.append(res)
 
         return result_list
