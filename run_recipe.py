@@ -191,6 +191,7 @@ def parse_args():
     parser.add_argument('--worker', type=int, default=4, help='the number of worker processes')
 
     parser.add_argument('--cluster', type=str, help='cluster address')
+    parser.add_argument('--single-threaded', action='store_true', default=False, help='run singlethreaded')
 
     parser.add_argument('--slurm', action='store_true', default=False, help='use SLURM cluster')
     parser.add_argument('--nodelist', type=str, help='nodelist for SLURM')
@@ -222,10 +223,18 @@ def parse_args():
     return args
 
 
-def setup(options):
+def setup_dask(options):
     # verbose printing of DataFrames
     pd.set_option('display.max_columns', None)
     pd.set_option('display.max_colwidth', None)
+
+    # single-threaded mode for debugging
+    if options.single_threaded:
+        print('using local single-threaded process cluster')
+        dask.config.set(scheduler='synchronous')
+        # no client is returned, creating a client here leads to sqlite
+        # connections objects being transported between threads
+        return None
 
     if options.slurm:
         print('using SLURM cluster')
@@ -263,7 +272,7 @@ def main():
     options = parse_args()
     print(f'{options=}')
 
-    client = setup(options)
+    client = setup_dask(options)
 
     process_recipe(options)
     print(globals())
