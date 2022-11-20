@@ -60,7 +60,6 @@ def execute_evaluation_phase(recipe:Recipe, options):
         # print(f'{delayed_data.memory_usage(deep=True) = }')
         # print(f'-<-<-<-<-<-<-')
         data_repo[extractor_name] = delayed_data
-
         print(f'added extractor {extractor_name}')
 
     if not hasattr(recipe.evaluation, 'transforms'):
@@ -105,6 +104,7 @@ def execute_evaluation_phase(recipe:Recipe, options):
             jobs[i].visualize(f'{options.tmpdir}/dask_task_graph_evaluation_job-{i}.png')
 
     # now actually compute the constructed computation graph
+    print('recombobulating splines...')
     dask.compute(*jobs)
 
     print('=-!!'*40)
@@ -348,11 +348,7 @@ def main():
     client = setup_dask(options)
 
     process_recipe(options)
-    print(globals())
-
-
 
 
 if __name__=='__main__':
     main()
-
