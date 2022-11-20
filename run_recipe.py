@@ -335,7 +335,10 @@ def setup_dask(options):
             print(f'using distributed cluster at {options.cluster}')
             client = Client(options.cluster)
             return client
-
+    else:
+        print(f'using local cluster with dashboard at localhost:8787')
+        client = Client(dashboard_address='localhost:8787')
+        return client
 
 
 def main():
