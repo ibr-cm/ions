@@ -321,10 +321,11 @@ class PlottingTask(YAMLObject):
         # print(type(ax))
         # ax.fig.get_axes()[0].legend(loc='lower left', bbox_to_anchor=(0, 1, 1, 1))
 
-        if hasattr(self, 'legend_title'):
-            sb.move_legend(grid, loc=self.legend_location, title=self.legend_title)
-        else:
-            sb.move_legend(grid, loc=self.legend_location)
+        if not grid.legend is None:
+            if hasattr(self, 'legend_title'):
+                sb.move_legend(grid, loc=self.legend_location, title=self.legend_title)
+            else:
+                sb.move_legend(grid, loc=self.legend_location)
 
         return grid
 
