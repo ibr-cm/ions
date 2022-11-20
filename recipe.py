@@ -1,6 +1,7 @@
 import time
 import pathlib
 import re
+import operator
 
 from typing import Union, List, Callable
 
@@ -62,26 +63,46 @@ class FileResultProcessor(YAMLObject):
             raise Exception('Unknown file format')
 
         stop = time.time()
-        print(f'{stop - start=}')
-        print(f'>>>> save_to_disk: {self.dataset_name} saved to {self.output_filename}')
-        print(f'>>>> save_to_disk: {df=}')
+        print(f'>>>> save_to_disk: it took {stop - start=}s to save {filename}')
+        # print(f'>>>> save_to_disk: {df=}')
+        print(f'>>>> save_to_disk: {df.memory_usage(deep=True)=}')
 
     def set_data_repo(self, data_repo):
         self.data_repo = data_repo
 
-    def execute(self):
-        # self.save_to_disk(self.data_repo[self.dataset_name], self.output_filename)
 
+    def execute_concatenated(self, data_list, job_list):
+        concat_result = dask.delayed(pd.concat)(map(operator.itemgetter(0), data_list), ignore_index=True)
+        convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(concat_result)
+        job = dask.delayed(self.save_to_disk)(convert_columns_result, self.output_filename)
+        job_list.append(job)
+
+        return job_list
+
+    def execute_separated(self, data_list, job_list):
+        for data, attributes in data_list:
+            convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(data)
+            output_filename = str(pathlib.PurePath(self.output_filename).parent) + '/' \
+                              + str(pathlib.PurePath(attributes.source_file).stem) \
+                              + '_' +attributes.alias \
+                              + '.feather'
+            job = dask.delayed(self.save_to_disk)(convert_columns_result, output_filename)
+            job_list.append(job)
+
+        return job_list
+
+    def execute(self):
         data_list = self.data_repo[self.dataset_name]
 
-        concat_result = dask.delayed(pd.concat)(data_list, ignore_index=True)
-        convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(concat_result)
+        job_list = []
 
-        job = dask.delayed(self.save_to_disk)(convert_columns_result, self.output_filename)
-        # data = self.data_repo[self.dataset_name]
-        # print(f'save_to_disk: {data.memory_usage(deep=True)=}')
-        print(f'FileResultProcessor: execute: {job=}')
-        return job
+        if self.concatenate:
+            job_list = self.execute_concatenated(data_list, job_list)
+        else:
+            job_list = self.execute_separated(data_list, job_list)
+
+        print(f'FileResultProcessor: execute: {job_list=}')
+        return job_list
 
 
 class Recipe(YAMLObject):
@@ -373,7 +394,13 @@ class SqlLiteReader():
         return tags
 
 
-class RawExtractor(SqlLiteReader, YAMLObject):
+class DataAttributes(YAMLObject):
+    def __init__(self, source_file=None, alias=None):
+        self.source_file = source_file
+        self.alias = alias
+
+
+class RawExtractor(YAMLObject):
     yaml_tag = u'!recipe.RawExtractor'
 
     def __init__(self, signals:list, /,  *args, **kwargs):
@@ -480,7 +507,8 @@ class RawExtractor(SqlLiteReader, YAMLObject):
         for db_file in data_set.get_file_list():
             res = dask.delayed(RawExtractor.read_signals_from_file)\
                                (db_file, self.signal, self.alias, categorical_columns, categorical_columns_excluded)
-            result_list.append(res)
+            attributes = DataAttributes(source_file=db_file, alias=self.alias)
+            result_list.append((res, attributes))
 
         return result_list
 
@@ -555,7 +583,8 @@ class MatchingExtractor(RawExtractor):
             matching_signals_result = dask.delayed(MatchingExtractor.get_matching_signals)(db_file, self.pattern, self.alias_pattern)
             # get the data for the matched signals
             res = dask.delayed(MatchingExtractor.extract_alls_signals)(db_file, matching_signals_result, categorical_columns, categorical_columns_excluded)
-            result_list.append(res)
+            attributes = DataAttributes(source_file=db_file, alias=self.alias)
+            result_list.append((res, attributes))
 
         return result_list
 
