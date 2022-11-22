@@ -7,9 +7,17 @@ import pandas as pd
 
 def read_from_file(path, file_format='feather'):
     if file_format == 'feather':
-        return pd.read_feather(path)
+        try:
+            data = pd.read_feather(path)
+        except Exception as e:
+            raise Exception(f'Could not read from: {path}\n{e}')
+        return data
     elif file_format == 'hdf':
-        return pd.read_hdf(path)
+        try:
+            data = pd.read_hdf(path)
+        except Exception as e:
+            raise Exception(f'Could not read from: {path}\n{e}')
+        return data
 
 class DataSet:
     def __init__(self, data_path:Union[List[str], str]):
