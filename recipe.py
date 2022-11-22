@@ -50,6 +50,10 @@ class FileResultProcessor(YAMLObject):
             print('>>>> save_to_disk: input DataFrame is empty')
             return
 
+        target_dir = pathlib.Path(pathlib.PurePath(filename).parent)
+        if not target_dir.exists():
+            target_dir.mkdir()
+
         if file_format == 'feather':
             df.reset_index().to_feather(filename
                                         , compression=compression
