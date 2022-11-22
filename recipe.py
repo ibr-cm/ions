@@ -568,12 +568,15 @@ class MatchingExtractor(RawExtractor):
             df = df.melt(id_vars=id_columns, value_vars=alias, value_name='value')
             result_list[i] = df
 
-        result = pd.concat(result_list, ignore_index=True)
-        result = RawExtractor.convert_columns_to_category(result
-                                                            , additional_columns=categorical_columns \
-                                                            , excluded_columns=excluded_categorical_columns
-                                                         )
-        return result
+        if len(result_list) > 0:
+            result = pd.concat(result_list, ignore_index=True)
+            result = RawExtractor.convert_columns_to_category(result
+                                                                , additional_columns=categorical_columns \
+                                                                , excluded_columns=excluded_categorical_columns
+                                                             )
+            return result
+        else:
+            return pd.DataFrame()
 
     def prepare(self):
         data_set = DataSet(self.input_files)
