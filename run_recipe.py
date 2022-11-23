@@ -261,7 +261,11 @@ def parse_args():
         for qualified_task_name in option.split(','):
             if len(qualified_task_name) == 0:
                 continue
-            top_level, task_name = qualified_task_name.split('.')
+            if len(r := qualified_task_name.split('.')) == 2:
+                top_level, task_name = r
+            else:
+                print(f'>>>> ERROR: bad task name: {qualified_task_name}')
+                exit(1)
             d[top_level] = d[top_level].union(set([task_name]))
         return d
 
