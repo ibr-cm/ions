@@ -127,27 +127,15 @@ class PlottingReaderFeather(YAMLObject):
 
     def read_data(self):
         data_set = DataSet(self.input_files)
-        # data_list = []
-        # for path in data_set.get_file_list():
-        #     data = dask.delayed(read_from_file)(path)
-        #     data_list.append(data)
 
         data_list = list(map(dask.delayed(read_from_file), data_set.get_file_list()))
         concat_result = dask.delayed(pd.concat)(data_list)
         convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(concat_result)
-        print(f'{data_list=}')
-        print(f'{convert_columns_result=}')
+        print(f'PlottingReaderFeather::read_data: {data_list=}')
+        print(f'PlottingReaderFeather::read_data: {convert_columns_result=}')
         # d = dask.compute(convert_columns_result)
         # print(f'{d=}')
         return [convert_columns_result]
-
-        # exit(23)
-
-        # data = pd.concat(data_list, ignore_index=True)
-        # n = len(data)
-        # # data = RawExtractor.convert_columns_to_category(data, [], n)
-        # print(f'{data=}')
-        # return data
 
 
 class PlottingTask(YAMLObject):
@@ -157,7 +145,6 @@ class PlottingTask(YAMLObject):
                  , columns:str, rows:str
                  , hue:str, style:str
                  ):
-        print('BING')
         self.data_repo = data_repo
         self.plot_type = plot_type
 
@@ -175,23 +162,12 @@ class PlottingTask(YAMLObject):
 
 
     def plot_data(self, data):
-        # print(f'{data=}')
-        print(f'{data.memory_usage(deep=True)=}')
+        # print(f'PlottingTask::plot_data: {data.memory_usage(deep=True)=}')
 
         if hasattr(self, 'selector'):
             selected_data = data.query(self.selector)
             # print(f'after selector: {data=}')
-        # print(f'{selected_data=}')
-        # print(f'{set(selected_data["prefix"])=}')
 
-        # if not hasattr(self, 'hue'):
-        #     self.hue = None
-        # if not hasattr(self, 'style'):
-        #     self.style = None
-        # if not hasattr(self, 'row'):
-        #     self.row = None
-        # if not hasattr(self, 'column'):
-        #     self.column = None
 
         for attr in [ 'hue', 'style', 'row', 'column' ]:
             if not hasattr(self, attr):
@@ -246,18 +222,18 @@ class PlottingTask(YAMLObject):
         self.set_defaults()
 
         data = self.data_repo[self.dataset_name]
-        print('----------------======-------------')
-        print(f'{self.data_repo=}')
-        print(f'{self.dataset_name=}')
+        cdata = dask.delayed(pd.concat)(data)
+        job = dask.delayed(self.plot_data)(cdata)
+
+        # print('----------------======-------------')
+        # print(f'{self.data_repo=}')
+        # print(f'{self.dataset_name=}')
         # print(f'{data=}')
         # print(f'><<<><<<<<>><<>>> execute: {data[0]=}')
         # print(f'><<<><<<<<>><<>>> execute: {data[0].compute()=}')
-        cdata = dask.delayed(pd.concat)(data)
         # print(f'><<<><<<<<>><<>>> execute: {cdata.compute()=}')
         # print(f'><<<><<<<<>><<>>> execute: {cdata.compute().memory_usage(deep=True)=}')
-        # exit(23)
 
-        job = dask.delayed(self.plot_data)(cdata)
 
         return job
 
@@ -275,19 +251,11 @@ class PlottingTask(YAMLObject):
         save_figure_with_type('pdf')
 
     def plot_catplot(self, df, x='v2x_rate', y='cbr', hue='moduleName', row='dcc', column='traciStart', plot_type='line'):
-        # fig = plt.figure()
-        # ax = fig.add_subplot()
-
-
         props_args = {
                 'boxprops': {'edgecolor': 'black'}
                 , 'medianprops': {'color':'red'}
                 , 'flierprops': dict(color='red', marker='+', markersize=3, markeredgecolor='red', linewidth=0.1, alpha=0.1)
         }
-
-        print('------    BING -------')
-        # print(f'{df=}')
-        print(f'{plot_type=}')
 
         if plot_type == 'box':
             kwargs = props_args
@@ -303,10 +271,8 @@ class PlottingTask(YAMLObject):
                         , **kwargs
                        )
 
-        print('------    BING -------')
-
         grid = self.set_grid_defaults(grid)
-        
+
         return grid
 
 
@@ -320,7 +286,6 @@ class PlottingTask(YAMLObject):
         # strings of length of zero evaluate to false, so test explicitly for None
         if not self.title_template == None:
             grid.set_titles(template=self.title_template)
-            print(f'{self.title_template=}')
 
         # print(type(ax))
         # ax.fig.get_axes()[0].legend(loc='lower left', bbox_to_anchor=(0, 1, 1, 1))
@@ -335,9 +300,6 @@ class PlottingTask(YAMLObject):
 
 
     def plot_relplot(self, df, x='v2x_rate', y='cbr', hue='moduleName', style='prefix', row='dcc', column='traciStart', plot_type='line', **kwargs):
-        # fig = plt.figure()
-        # ax = fig.add_subplot()
-
         boxprops = {'edgecolor': 'black'}
         medianprops = {'color':'red'}
         flierprops = dict(color='red', marker='+', markersize=3, markeredgecolor='red', linewidth=0.1, alpha=0.1)
@@ -357,11 +319,6 @@ class PlottingTask(YAMLObject):
 
         return grid
 
-
-class PlottingPreProcTask(YAMLObject):
-    pass
-class PlottingPostProcTask(YAMLObject):
-    pass
 
 class Extractor:
     def execute(self):
@@ -702,8 +659,6 @@ class GroupedAggregationTransform(Transform, YAMLObject):
             # print(f'{group_key=}')
             # print(f'{group_data=}')
             # result = group_data[self.input_column].mean()
-            # result = dask.dataframe.groupby.DataFrameGroupBy.sum(group_data[self.input_column])
-            # result = dask.dataframe.groupby.DataFrameGroupBy.sum(group_data[self.input_column])
             result = self.aggregation_function(group_data[self.input_column])
 
             row = group_data.head(n=1)
@@ -721,11 +676,6 @@ class GroupedAggregationTransform(Transform, YAMLObject):
 
         return result
 
-    # def concat_and_categorize(df_list):
-    #     data = pd.concat(df_list, ignore_index=True)
-    #     data = RawExtractor.convert_columns_to_category(data)
-    #     return data
-
     def execute(self):
         self.aggregation_function = eval(self.aggregation_function)
         data = self.data_repo[self.dataset_name]
@@ -736,12 +686,9 @@ class GroupedAggregationTransform(Transform, YAMLObject):
             job = dask.delayed(self.aggregate_frame)(d)
             jobs.append(job)
 
-        # self.data_repo[self.output_dataset_name] = pd.concat(jobs, ignore_index=True)
         self.data_repo[self.output_dataset_name] = jobs
-        # print('----->-----<<--------<-------<<<<---------')
-        # print(f'-----> execute: {jobs=}')
-        # print(f'-----> execute: {jobs[0].compute()=}')
-        # exit(23)
+
+        return jobs
 
 
 class GroupedStatisticsTransform(Transform, YAMLObject):
@@ -758,8 +705,6 @@ class GroupedStatisticsTransform(Transform, YAMLObject):
         self.grouping_columns = grouping_columns
 
     def calculate_stats(self, data):
-        # data = self.data_repo[self.dataset_name]
-
         result_list = []
         for group_key, group_data in data.groupby(by=self.grouping_columns, sort=False):
             result = group_data[self.input_column].describe()
@@ -770,7 +715,6 @@ class GroupedStatisticsTransform(Transform, YAMLObject):
 
             result_list.append(row)
 
-        # self.data_repo[self.output_dataset_name] = pd.concat(result_list, ignore_index=True)
         result = pd.concat(result_list, ignore_index=True)
         print(f'calculate_stats: {result=}')
 
