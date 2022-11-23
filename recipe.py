@@ -572,18 +572,26 @@ class NullTransform(Transform, YAMLObject):
     def execute(self):
         pass
 
-class FuntionTransform(Transform, YAMLObject):
+class FunctionTransform(Transform, YAMLObject):
     yaml_tag = u'!recipe.FunctionTransform'
 
-    def execute(self):
+    def process(self, data, function):
         print(f'!recipe.FunctionTransform')
-        data = self.data_repo[self.dataset_name]
-        function = eval(self.function)
 
         data[self.output_column] = data[self.input_column].apply(function)
-        self.data_repo[self.output_dataset_name] = data
-        # print(f'{self.data_repo=}')
 
+        return data
+
+    def execute(self):
+        data_list = self.data_repo[self.dataset_name]
+        function = eval(self.function)
+        job_list = []
+
+        for data in data_list:
+            job = dask.delayed(self.process)(data, function)
+            job_list.append(job)
+
+        self.data_repo[self.output_dataset_name] = job_list
 
 # class MeanTransform(Transform, YAMLObject):
 #     yaml_tag = u'!recipe.MeanTransform'
