@@ -168,6 +168,15 @@ class PlottingTask(YAMLObject):
             selected_data = data.query(self.selector)
             # print(f'after selector: {data=}')
 
+        # TODO: the default shouldn't be defined here...
+        if not hasattr(self, 'legend'):
+            setattr(self, 'legend', True)
+
+        if not hasattr(self, 'y_range'):
+            setattr(self, 'legend', None)
+        else:
+            y_range_tuple = tuple(list(map(lambda x: float(str.strip(x)), self.y_range.strip('()').split(','))))
+            setattr(self, 'y_range', y_range_tuple)
 
         for attr in [ 'hue', 'style', 'row', 'column' ]:
             if not hasattr(self, attr):
@@ -213,6 +222,9 @@ class PlottingTask(YAMLObject):
                 raise Exception(f'Unknown plot type: "{self.plot_type}"')
 
         fig.tight_layout(pad=0.1)
+
+        if self.legend is None:
+            fig.legend.remove()
 
         fig.savefig(self.output_file, bbox_inches=self.bbox_inches)
         print(f'{fig=} saved to {self.output_file}')
@@ -279,9 +291,10 @@ class PlottingTask(YAMLObject):
     def set_grid_defaults(self, grid):
         # ax.fig.gca().set_ylim(ylimit)
         for axis in grid.figure.axes:
-            # axis.set_ylim((-30, 250))
             axis.set_xlabel(self.xlabel)
             axis.set_ylabel(self.ylabel)
+            if self.y_range:
+                axis.set_ylim(self.y_range)
 
         # strings of length of zero evaluate to false, so test explicitly for None
         if not self.title_template == None:
