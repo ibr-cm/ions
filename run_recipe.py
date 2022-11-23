@@ -64,37 +64,35 @@ def execute_evaluation_phase(recipe:Recipe, options):
 
     if not hasattr(recipe.evaluation, 'transforms'):
         print('execute_evaluation_phase: no `transforms` in recipe.Evaluation')
-        return data_repo
-
-    for transform_name in recipe.evaluation.transforms:
-        if options.run_tree and not transform_name in options.run_tree['evaluation']['transforms']:
-            print(f'skipping transform {transform_name}')
-            continue
-        transform = recipe.evaluation.transforms[transform_name]
-        transform.set_data_repo(data_repo)
-        transform.execute()
-        print(f'added transform {transform_name}')
+    else:
+        for transform_name in recipe.evaluation.transforms:
+            if options.run_tree and not transform_name in options.run_tree['evaluation']['transforms']:
+                print(f'skipping transform {transform_name}')
+                continue
+            transform = recipe.evaluation.transforms[transform_name]
+            transform.set_data_repo(data_repo)
+            transform.execute()
+            print(f'added transform {transform_name}')
 
     jobs = []
 
     if recipe.evaluation.exporter is None:
         print('execute_evaluation_phase: no `exporter` in recipe.Evaluation')
-        return data_repo
+    else:
+        for exporter_name in recipe.evaluation.exporter:
+            if options.run_tree and not exporter_name in options.run_tree['evaluation']['exporter']:
+                print(f'skipping exporter {exporter_name}')
+                continue
+            exporter = recipe.evaluation.exporter[exporter_name]
 
-    for exporter_name in recipe.evaluation.exporter:
-        if options.run_tree and not exporter_name in options.run_tree['evaluation']['exporter']:
-            print(f'skipping exporter {exporter_name}')
-            continue
-        exporter = recipe.evaluation.exporter[exporter_name]
+            if exporter_name in options.export_overrides:
+                exporter.output_filename = options.export_overrides[exporter_name]
+                print(f'overriding {exporter_name} with {exporter.output_filename}')
 
-        if exporter_name in options.export_overrides:
-            exporter.output_filename = options.export_overrides[exporter_name]
-            print(f'overriding {exporter_name} with {exporter.output_filename}')
-
-        exporter.set_data_repo(data_repo)
-        job = exporter.execute()
-        jobs.extend(job)
-        print(f'added exporter {exporter_name}')
+            exporter.set_data_repo(data_repo)
+            job = exporter.execute()
+            jobs.extend(job)
+            print(f'added exporter {exporter_name}')
 
 
     print(f'{jobs=}')
@@ -132,14 +130,17 @@ def execute_plotting_phase(recipe:Recipe, options):
     print(f'plot: {data_repo=}')
     print('<<<-<-<--<-<-<--<-<-<')
 
-    for task_name in recipe.plot.transforms:
-        if options.run_tree and not task_name in options.run_tree['plot']['transforms']:
-            print(f'skipping transform {task_name}')
-            continue
-        task = recipe.plot.transforms[task_name]
-        task.set_data_repo(data_repo)
-        task.execute()
-        print(f'added transform {task_name}')
+    if not hasattr(recipe.plot, 'transforms'):
+        print('execute_plotting_phase: no `transforms` in recipe.Plot')
+    else:
+        for task_name in recipe.plot.transforms:
+            if options.run_tree and not task_name in options.run_tree['plot']['transforms']:
+                print(f'skipping transform {task_name}')
+                continue
+            task = recipe.plot.transforms[task_name]
+            task.set_data_repo(data_repo)
+            task.execute()
+            print(f'added transform {task_name}')
 
     jobs = []
     for task_name in recipe.plot.tasks:
