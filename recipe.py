@@ -576,8 +576,25 @@ class Transform(YAMLObject):
     def set_data_repo(self, data_repo:dict):
         self.data_repo = data_repo
 
+    def process(self, data:pd.DataFrame):
+        # process data here
+        return data
+
     def execute(self):
-        pass
+        # get the list of DataFrames in the dataset
+        data_list = self.data_repo[self.dataset_name]
+        job_list = []
+
+        for data in data_list:
+            # construct a promise on the data produced by applying the function
+            # to the input data
+            job = dask.delayed(self.process)(data, function)
+            job_list.append(job)
+
+        # set the output dataset to the list of promises so that other tasks can
+        # depend on and use theme
+        self.data_repo[self.output_dataset_name] = job_list
+        # return job_list
 
 class NullTransform(Transform, YAMLObject):
     yaml_tag = u'!recipe.NullTransform'
