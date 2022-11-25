@@ -243,7 +243,11 @@ def parse_args():
 
     def set_dict_arg_from_string(option, arg_name):
         if option:
-            option_dict = extract_dict_from_string(option)
+            try:
+                option_dict = extract_dict_from_string(option)
+            except Exception as e:
+                print(f'>>>> ERROR: extracting parameters for `{arg_name}` from `{option}` failed:\n>>>> {e}')
+                return
             print(f'{option_dict=}')
             setattr(args, arg_name, option_dict)
         else:
