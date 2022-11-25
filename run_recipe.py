@@ -31,7 +31,7 @@ from sql_queries import generate_signal_query
 
 # ---
 
-def execute_evaluation_phase(recipe:Recipe, options):
+def execute_evaluation_phase(recipe:Recipe, options, data_repo):
     print(f'execute_evaluation_phase: {recipe}  {recipe.name}')
 
     op_registry = {}
@@ -44,7 +44,6 @@ def execute_evaluation_phase(recipe:Recipe, options):
 
     evaluation = recipe.evaluation
 
-    data_repo = {}
     for extractor_name in recipe.evaluation.extractors:
         if options.run_tree and not extractor_name in options.run_tree['evaluation']['extractors']:
             print(f'skipping extractor {extractor_name}')
@@ -101,17 +100,11 @@ def execute_evaluation_phase(recipe:Recipe, options):
         for i in range(0, len(jobs)):
             jobs[i].visualize(f'{options.tmpdir}/dask_task_graph_evaluation_job-{i}.png')
 
-    # now actually compute the constructed computation graph
-    print('recombobulating splines...')
-    dask.compute(*jobs)
-
-    print('=-!!'*40)
+    return data_repo, jobs
 
 
-def execute_plotting_phase(recipe:Recipe, options):
+def execute_plotting_phase(recipe:Recipe, options, data_repo):
     print(f'execute_plotting_phase: {recipe}  {recipe.name}')
-
-    data_repo = {}
 
     for dataset_name in recipe.plot.reader:
         if options.run_tree and not dataset_name in options.run_tree['plot']['reader']:
@@ -169,9 +162,7 @@ def execute_plotting_phase(recipe:Recipe, options):
         for i in range(0, len(jobs)):
             jobs[i].visualize(f'{options.tmpdir}/dask_task_graph_plotting_job-{i}.png')
 
-    print(f'plot: {jobs=}')
-    r = dask.compute(*jobs)
-    print(f'plot: {r=}')
+    return data_repo, jobs
 
 
 def process_recipe(options):
@@ -185,20 +176,39 @@ def process_recipe(options):
 
     output = dump(recipe, Dumper=Dumper)
 
+    data_repo = {}
+    job_list = []
+
+    def compute_graph(jobs):
+        print('=-!!'*40)
+        print('recombobulating splines...')
+        print(f'compute_graph: {jobs=}')
+        result = dask.compute(*jobs)
+        print('=-!!'*40)
+        return result
 
     if not options.plot_only:
         if not hasattr(recipe, 'evaluation'):
             print('process_recipe: no Evaluation in recipe')
             return
-        execute_evaluation_phase(recipe, options)
+        data_repo, jobs = execute_evaluation_phase(recipe, options, data_repo)
+        job_list.extend(jobs)
 
     if options.eval_only:
-        return
+        # now actually compute the constructed computation graph
+        result = compute_graph(jobs)
+        return result
 
     if not hasattr(recipe, 'plot'):
         print('process_recipe: no Plot in recipe')
         return
-    execute_plotting_phase(recipe, options)
+
+    data_repo, jobs = execute_plotting_phase(recipe, options, data_repo)
+    job_list.extend(jobs)
+
+    # now actually compute the constructed computation graph
+    result = compute_graph(job_list)
+    return result
 
 
 def extract_dict_from_string(string):
