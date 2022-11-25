@@ -173,7 +173,7 @@ class PlottingTask(YAMLObject):
             setattr(self, 'legend', True)
 
         if not hasattr(self, 'y_range'):
-            setattr(self, 'legend', None)
+            setattr(self, 'y_range', None)
         else:
             y_range_tuple = tuple(list(map(lambda x: float(str.strip(x)), self.y_range.strip('()').split(','))))
             setattr(self, 'y_range', y_range_tuple)
