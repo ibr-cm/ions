@@ -163,6 +163,8 @@ class PlottingTask(YAMLObject):
 
     def plot_data(self, data):
         # print(f'PlottingTask::plot_data: {data.memory_usage(deep=True)=}')
+        self.set_defaults()
+
 
         if hasattr(self, 'selector'):
             selected_data = data.query(self.selector)
@@ -231,8 +233,6 @@ class PlottingTask(YAMLObject):
 
 
     def execute(self):
-        self.set_defaults()
-
         data = self.data_repo[self.dataset_name]
         cdata = dask.delayed(pd.concat)(data)
         job = dask.delayed(self.plot_data)(cdata)
