@@ -185,16 +185,19 @@ def process_recipe(options):
 
     output = dump(recipe, Dumper=Dumper)
 
-    if not hasattr(recipe, 'evaluation'):
-        print('process_recipe: no Evaluation in recipe')
-        return
 
     if not options.plot_only:
+        if not hasattr(recipe, 'evaluation'):
+            print('process_recipe: no Evaluation in recipe')
+            return
         execute_evaluation_phase(recipe, options)
 
     if options.eval_only:
         return
 
+    if not hasattr(recipe, 'plot'):
+        print('process_recipe: no Plot in recipe')
+        return
     execute_plotting_phase(recipe, options)
 
 
