@@ -135,7 +135,7 @@ class PlottingReaderFeather(YAMLObject):
         print(f'PlottingReaderFeather::read_data: {convert_columns_result=}')
         # d = dask.compute(convert_columns_result)
         # print(f'{d=}')
-        return [convert_columns_result]
+        return [(convert_columns_result, DataAttributes())]
 
 
 class PlottingTask(YAMLObject):
@@ -234,18 +234,8 @@ class PlottingTask(YAMLObject):
 
     def execute(self):
         data = self.data_repo[self.dataset_name]
-        cdata = dask.delayed(pd.concat)(data)
+        cdata = dask.delayed(pd.concat)(map(operator.itemgetter(0), data))
         job = dask.delayed(self.plot_data)(cdata)
-
-        # print('----------------======-------------')
-        # print(f'{self.data_repo=}')
-        # print(f'{self.dataset_name=}')
-        # print(f'{data=}')
-        # print(f'><<<><<<<<>><<>>> execute: {data[0]=}')
-        # print(f'><<<><<<<<>><<>>> execute: {data[0].compute()=}')
-        # print(f'><<<><<<<<>><<>>> execute: {cdata.compute()=}')
-        # print(f'><<<><<<<<>><<>>> execute: {cdata.compute().memory_usage(deep=True)=}')
-
 
         return job
 
@@ -605,11 +595,8 @@ class NullTransform(Transform, YAMLObject):
 class FunctionTransform(Transform, YAMLObject):
     yaml_tag = u'!recipe.FunctionTransform'
 
-    def process(self, data, function):
-        print(f'!recipe.FunctionTransform')
-
+    def process(self, data, function, attributes):
         data[self.output_column] = data[self.input_column].apply(function)
-
         return data
 
     def execute(self):
@@ -617,9 +604,9 @@ class FunctionTransform(Transform, YAMLObject):
         function = eval(self.function)
         job_list = []
 
-        for data in data_list:
-            job = dask.delayed(self.process)(data, function)
-            job_list.append(job)
+        for data, attributes in data_list:
+            job = dask.delayed(self.process)(data, function, attributes)
+            job_list.append((job, attributes))
 
         self.data_repo[self.output_dataset_name] = job_list
 
