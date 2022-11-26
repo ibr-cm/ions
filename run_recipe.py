@@ -179,13 +179,6 @@ def process_recipe(options):
     data_repo = {}
     job_list = []
 
-    def compute_graph(jobs):
-        print('=-!!'*40)
-        print('recombobulating splines...')
-        print(f'compute_graph: {jobs=}')
-        result = dask.compute(*jobs)
-        print('=-!!'*40)
-        return result
 
     if not options.plot_only:
         if not hasattr(recipe, 'evaluation'):
@@ -195,20 +188,16 @@ def process_recipe(options):
         job_list.extend(jobs)
 
     if options.eval_only:
-        # now actually compute the constructed computation graph
-        result = compute_graph(jobs)
-        return result
+        return data_repo, job_list
 
     if not hasattr(recipe, 'plot'):
         print('process_recipe: no Plot in recipe')
-        return
+        return data_repo, job_list
 
     data_repo, jobs = execute_plotting_phase(recipe, options, data_repo)
     job_list.extend(jobs)
 
-    # now actually compute the constructed computation graph
-    result = compute_graph(job_list)
-    return result
+    return data_repo, job_list
 
 
 def extract_dict_from_string(string):
@@ -219,7 +208,7 @@ def extract_dict_from_string(string):
     return d
 
 
-def parse_args():
+def parse_arguments(arguments):
     parser = argparse.ArgumentParser()
     parser.add_argument('recipe', help='input recipe')
 
@@ -245,7 +234,7 @@ def parse_args():
 
     parser.add_argument('--plot-task-graphs', action='store_true', default=False, help='plot the evaluation and plotting phase task graph')
 
-    args = parser.parse_args()
+    args = parser.parse_args(arguments)
 
     if args.slurm:
         if not args.nodelist:
@@ -315,11 +304,13 @@ def parse_args():
     return args
 
 
-def setup_dask(options):
+def setup_pandas():
     # verbose printing of DataFrames
     pd.set_option('display.max_columns', None)
     pd.set_option('display.max_colwidth', None)
 
+
+def setup_dask(options):
     # single-threaded mode for debugging
     if options.single_threaded:
         print('using local single-threaded process cluster')
@@ -363,14 +354,30 @@ def setup_dask(options):
         return client
 
 
+def compute_graph(jobs):
+    print('=-!!'*40)
+    print('recombobulating splines...')
+    print(f'compute_graph: {jobs=}')
+    result = dask.compute(*jobs)
+    print('=-!!'*40)
+    return result
+
 def main():
-    options = parse_args()
+    options = parse_arguments(sys.argv[1:])
     print(f'{options=}')
+    print(f'{sys.argv=}')
+
+    setup_pandas()
 
     client = setup_dask(options)
 
-    process_recipe(options)
+    data_repo, job_list = process_recipe(options)
 
+    # now actually compute the constructed computation graph
+    result = compute_graph(job_list)
+
+    # ...
+    return result
 
 if __name__=='__main__':
     main()
