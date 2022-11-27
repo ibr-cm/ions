@@ -243,6 +243,9 @@ class PlottingTask(YAMLObject):
 
 
     def execute(self):
+        # the defaults have to be set in the main thread
+        self.set_defaults()
+
         data = self.data_repo[self.dataset_name]
         cdata = dask.delayed(pd.concat)(map(operator.itemgetter(0), data))
         job = dask.delayed(self.plot_data)(cdata)
