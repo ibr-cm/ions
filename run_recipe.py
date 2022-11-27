@@ -391,13 +391,15 @@ def compute_graph(jobs):
     return result
 
 def main():
+    setup_logging_defaults(logging.WARNING)
+
     options = parse_arguments(sys.argv[1:])
 
-    setup_logging_defaults(options.log_level)
+    # setup logging level again
+    logging.getLogger().setLevel(options.log_level)
     logi(f'logging level set to {logging.getLevelName(options.log_level)}')
 
     logd(f'{options=}')
-    logd(f'{sys.argv=}')
 
     setup_pandas()
 
