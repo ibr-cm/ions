@@ -239,6 +239,8 @@ class PlottingTask(YAMLObject):
         fig.savefig(self.output_file, bbox_inches=self.bbox_inches)
         logi(f'{fig=} saved to {self.output_file}')
 
+        return fig
+
 
     def execute(self):
         data = self.data_repo[self.dataset_name]
@@ -593,13 +595,16 @@ class Transform(YAMLObject):
         # set the output dataset to the list of promises so that other tasks can
         # depend on and use theme
         self.data_repo[self.output_dataset_name] = job_list
-        # return job_list
+
+        return job_list
+
 
 class NullTransform(Transform, YAMLObject):
     yaml_tag = u'!recipe.NullTransform'
 
     def execute(self):
         pass
+
 
 class FunctionTransform(Transform, YAMLObject):
     yaml_tag = u'!recipe.FunctionTransform'
@@ -618,6 +623,8 @@ class FunctionTransform(Transform, YAMLObject):
             job_list.append((job, attributes))
 
         self.data_repo[self.output_dataset_name] = job_list
+
+        return job_list
 
 # class MeanTransform(Transform, YAMLObject):
 #     yaml_tag = u'!recipe.MeanTransform'
