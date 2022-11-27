@@ -7,6 +7,10 @@ from typing import Union, List, Callable
 
 # ---
 
+from common.logging_facilities import log, logi, loge, logd, logw
+
+# ---
+
 from yaml import YAMLObject
 
 from sqlalchemy import create_engine
@@ -43,11 +47,11 @@ class FileResultProcessor(YAMLObject):
         start = time.time()
 
         if df is None:
-            print('>>>> save_to_disk: input DataFrame is None')
+            logw('>>>> save_to_disk: input DataFrame is None')
             return
 
         if df.empty:
-            print('>>>> save_to_disk: input DataFrame is empty')
+            logw('>>>> save_to_disk: input DataFrame is empty')
             return
 
         target_dir = pathlib.Path(pathlib.PurePath(filename).parent)
@@ -67,9 +71,9 @@ class FileResultProcessor(YAMLObject):
             raise Exception('Unknown file format')
 
         stop = time.time()
-        print(f'>>>> save_to_disk: it took {stop - start=}s to save {filename}')
-        # print(f'>>>> save_to_disk: {df=}')
-        print(f'>>>> save_to_disk: {df.memory_usage(deep=True)=}')
+        logi(f'>>>> save_to_disk: it took {stop - start}s to save {filename}')
+        # logd(f'>>>> save_to_disk: {df=}')
+        logd(f'>>>> save_to_disk: {df.memory_usage(deep=True)=}')
 
     def set_data_repo(self, data_repo):
         self.data_repo = data_repo
@@ -105,7 +109,7 @@ class FileResultProcessor(YAMLObject):
         else:
             job_list = self.execute_separated(data_list, job_list)
 
-        print(f'FileResultProcessor: execute: {job_list=}')
+        logd(f'FileResultProcessor: execute: {job_list=}')
         return job_list
 
 
@@ -131,10 +135,10 @@ class PlottingReaderFeather(YAMLObject):
         data_list = list(map(dask.delayed(read_from_file), data_set.get_file_list()))
         concat_result = dask.delayed(pd.concat)(data_list)
         convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(concat_result)
-        print(f'PlottingReaderFeather::read_data: {data_list=}')
-        print(f'PlottingReaderFeather::read_data: {convert_columns_result=}')
+        logd(f'PlottingReaderFeather::read_data: {data_list=}')
+        logd(f'PlottingReaderFeather::read_data: {convert_columns_result=}')
         # d = dask.compute(convert_columns_result)
-        # print(f'{d=}')
+        # logd(f'{d=}')
         return [(convert_columns_result, DataAttributes())]
 
 
@@ -156,19 +160,20 @@ class PlottingTask(YAMLObject):
         self.data = reader.read_data()
 
     def set_defaults(self):
+        logi(f'set_defaults: using {self.matplotlib_backend=}')
         mpl.use(self.matplotlib_backend)
 
         sb.set_theme(style=self.axes_style)
 
 
     def plot_data(self, data):
-        # print(f'PlottingTask::plot_data: {data.memory_usage(deep=True)=}')
+        # logi(f'PlottingTask::plot_data: {data.memory_usage(deep=True)=}')
         self.set_defaults()
 
 
         if hasattr(self, 'selector'):
             selected_data = data.query(self.selector)
-            # print(f'after selector: {data=}')
+            # logi(f'after selector: {data=}')
 
         # TODO: the default shouldn't be defined here...
         if not hasattr(self, 'legend'):
@@ -183,6 +188,9 @@ class PlottingTask(YAMLObject):
         for attr in [ 'hue', 'style', 'row', 'column' ]:
             if not hasattr(self, attr):
                 setattr(self, attr, None)
+
+        logd(f'after selector: {selected_data[self.hue]=}')
+        # logi(f'after selector: {selected_data[self.hue].cat=}')
 
         def catplot(plot_type):
                 return self.plot_catplot(df=selected_data
@@ -229,7 +237,7 @@ class PlottingTask(YAMLObject):
             fig.legend.remove()
 
         fig.savefig(self.output_file, bbox_inches=self.bbox_inches)
-        print(f'{fig=} saved to {self.output_file}')
+        logi(f'{fig=} saved to {self.output_file}')
 
 
     def execute(self):
@@ -290,7 +298,7 @@ class PlottingTask(YAMLObject):
         if not self.title_template == None:
             grid.set_titles(template=self.title_template)
 
-        # print(type(ax))
+        # logi(type(ax))
         # ax.fig.get_axes()[0].legend(loc='lower left', bbox_to_anchor=(0, 1, 1, 1))
 
         if not grid.legend is None:
@@ -307,6 +315,7 @@ class PlottingTask(YAMLObject):
         medianprops = {'color':'red'}
         flierprops = dict(color='red', marker='+', markersize=3, markeredgecolor='red', linewidth=0.1, alpha=0.1)
 
+        logd(f'PlottingTask::plot_relplot: {df.columns=}')
         grid = sb.relplot(data=df, x=x, y=y, row=row, col=column
                         , hue=hue
                         # , hue_order=['itsg5_FFK_SCO', 'itsg5_FFK_MCO_MCM', 'itsg5_FFK_MCO_MCM-IDSM']
@@ -420,7 +429,7 @@ class RawExtractor(YAMLObject):
             try:
                 tags = sql_reader.extract_tags()
             except Exception as e:
-                print(f'>>>> ERROR: no tags could be extracted from {db_file}:\n {e}')
+                loge(f'>>>> ERROR: no tags could be extracted from {db_file}:\n {e}')
                 return pd.DataFrame()
 
             query = sql_queries.generate_signal_query(signal, value_label=alias)
@@ -428,7 +437,7 @@ class RawExtractor(YAMLObject):
             try:
                 data = sql_reader.execute_sql_query(query)
             except Exception as e:
-                print(f'>>>> ERROR: no data could be extracted from {db_file}:\n {e}')
+                loge(f'>>>> ERROR: no data could be extracted from {db_file}:\n {e}')
                 return pd.DataFrame()
 
             if 'rowId' in data.columns:
@@ -489,7 +498,7 @@ class MatchingExtractor(RawExtractor):
         try:
             data = sql_reader.execute_sql_query(query)
         except Exception as e:
-            print(f'>>>> ERROR: no signal names could be extracted from {db_file}:\n {e}')
+            loge(f'>>>> ERROR: no signal names could be extracted from {db_file}:\n {e}')
             return pd.DataFrame()
 
         # deduplicate the entries int the list of possible signals
@@ -623,7 +632,7 @@ class FunctionTransform(Transform, YAMLObject):
 #     def execute(self):
 #         data = self.data_repo[self.dataset_name]
 #         result = data[self.input_column].mean()
-#         # print(f'{result=}')
+#         # logi(f'{result=}')
 
 #         # data[self.output_column] = result
 
@@ -646,14 +655,14 @@ class FunctionTransform(Transform, YAMLObject):
 #     def execute(self):
 #         data = self.data_repo[self.dataset_name]
 #         result = data[self.input_column].describe()
-#         # print(f'{result=}')
+#         # logi(f'{result=}')
 
 #         # data[self.output_column] = result
 
 #         row = data.head(n=1)
 #         row = row.drop(labels=[self.input_column], axis=1)
 #         # row[self.output_column] = result
-#         print(pd.DataFrame(result).to_dict()[self.input_column])
+#         logi(pd.DataFrame(result).to_dict()[self.input_column])
 #         row = row.assign(**pd.DataFrame(result).to_dict()[self.input_column])
 
 #         self.data_repo[self.output_dataset_name] = row
@@ -673,7 +682,7 @@ class GroupedAggregationTransform(Transform, YAMLObject):
         self.grouping_columns = grouping_columns
 
     def aggregate_frame(self, data):
-        # print(f'aggregate_frame: {data=}')
+        # logi(f'aggregate_frame: {data=}')
         if len(self.grouping_columns) == 1:
             grouping_columns = self.grouping_columns[0]
         else:
@@ -681,8 +690,8 @@ class GroupedAggregationTransform(Transform, YAMLObject):
 
         result_list = []
         for group_key, group_data in data.groupby(by=grouping_columns, sort=False):
-            # print(f'{group_key=}')
-            # print(f'{group_data=}')
+            # logi(f'{group_key=}')
+            # logi(f'{group_data=}')
             # result = group_data[self.input_column].mean()
             result = self.aggregation_function(group_data[self.input_column])
 
@@ -691,12 +700,12 @@ class GroupedAggregationTransform(Transform, YAMLObject):
             row[self.output_column] = result
 
             result_list.append(row)
-            # print(f'{row=}')
-        # print('----->-----<<--------<-------<<<<---------')
-        # print(f'-----> aggregate_frame: {len(result_list)=}')
-        # print(f'-----> aggregate_frame: {result_list=}')
+            # logi(f'{row=}')
+        # logi('----->-----<<--------<-------<<<<---------')
+        # logi(f'-----> aggregate_frame: {len(result_list)=}')
+        # logi(f'-----> aggregate_frame: {result_list=}')
         result = pd.concat(result_list, ignore_index=True)
-        # print(f'-----> aggregate_frame: {result=}')
+        # logi(f'-----> aggregate_frame: {result=}')
         # exit(23)
 
         return result
@@ -707,7 +716,7 @@ class GroupedAggregationTransform(Transform, YAMLObject):
 
         jobs = []
         for d, attributes in data:
-            # print(f'execute: {d=}')
+            # logd(f'execute: {d=}')
             job = dask.delayed(self.aggregate_frame)(d)
             jobs.append((job, attributes))
 
@@ -741,7 +750,7 @@ class GroupedStatisticsTransform(Transform, YAMLObject):
             result_list.append(row)
 
         result = pd.concat(result_list, ignore_index=True)
-        print(f'calculate_stats: {result=}')
+        logd(f'calculate_stats: {result=}')
 
         return result
 
@@ -750,7 +759,7 @@ class GroupedStatisticsTransform(Transform, YAMLObject):
 
         jobs = []
         for d in data:
-            print(f'execute: {d=}')
+            logd(f'execute: {d=}')
             job = dask.delayed(self.calculate_stats)(d)
             jobs.append(job)
 

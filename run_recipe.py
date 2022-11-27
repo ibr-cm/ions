@@ -3,6 +3,13 @@
 import pprint
 import sys
 import argparse
+import traceback
+
+# ---
+
+import logging
+from common.logging_facilities import log, logi, loge, logd, logw \
+                                        , setup_logging_defaults
 
 # ---
 
@@ -32,69 +39,69 @@ from sql_queries import generate_signal_query
 # ---
 
 def execute_evaluation_phase(recipe:Recipe, options, data_repo):
-    print(f'execute_evaluation_phase: {recipe}  {recipe.name}')
+    logi(f'execute_evaluation_phase: {recipe}  {recipe.name}')
 
     op_registry = {}
     op_registry['raw'] = RawExtractor
 
 
     if not hasattr(recipe.evaluation, 'extractors'):
-        print('execute_evaluation_phase: no `extractors` in recipe.Evaluation')
+        logi('execute_evaluation_phase: no `extractors` in recipe.Evaluation')
         return
 
     evaluation = recipe.evaluation
 
     for extractor_name in recipe.evaluation.extractors:
         if options.run_tree and not extractor_name in options.run_tree['evaluation']['extractors']:
-            print(f'skipping extractor {extractor_name}')
+            logi(f'skipping extractor {extractor_name}')
             continue
         extractor = recipe.evaluation.extractors[extractor_name]
 
         if extractor_name in options.extraction_overrides:
             extractor.input_files = [ options.extraction_overrides[extractor_name] ]
-            print(f'overriding {extractor_name} with {extractor.input_files}')
+            logi(f'overriding {extractor_name} with {extractor.input_files}')
 
         delayed_data = extractor.prepare()
         # print(f'{extractor=}')
         # print(f'{delayed_data.memory_usage(deep=True) = }')
         # print(f'-<-<-<-<-<-<-')
         data_repo[extractor_name] = delayed_data
-        print(f'added extractor {extractor_name}')
+        logi(f'added extractor {extractor_name}')
 
     if not hasattr(recipe.evaluation, 'transforms'):
-        print('execute_evaluation_phase: no `transforms` in recipe.Evaluation')
+        logi('execute_evaluation_phase: no `transforms` in recipe.Evaluation')
     else:
         for transform_name in recipe.evaluation.transforms:
             if options.run_tree and not transform_name in options.run_tree['evaluation']['transforms']:
-                print(f'skipping transform {transform_name}')
+                logi(f'skipping transform {transform_name}')
                 continue
             transform = recipe.evaluation.transforms[transform_name]
             transform.set_data_repo(data_repo)
             transform.execute()
-            print(f'added transform {transform_name}')
+            logi(f'added transform {transform_name}')
 
     jobs = []
 
     if recipe.evaluation.exporter is None:
-        print('execute_evaluation_phase: no `exporter` in recipe.Evaluation')
+        logi('execute_evaluation_phase: no `exporter` in recipe.Evaluation')
     else:
         for exporter_name in recipe.evaluation.exporter:
             if options.run_tree and not exporter_name in options.run_tree['evaluation']['exporter']:
-                print(f'skipping exporter {exporter_name}')
+                logi(f'skipping exporter {exporter_name}')
                 continue
             exporter = recipe.evaluation.exporter[exporter_name]
 
             if exporter_name in options.export_overrides:
                 exporter.output_filename = options.export_overrides[exporter_name]
-                print(f'overriding {exporter_name} with {exporter.output_filename}')
+                logi(f'overriding {exporter_name} with {exporter.output_filename}')
 
             exporter.set_data_repo(data_repo)
             job = exporter.execute()
             jobs.extend(job)
-            print(f'added exporter {exporter_name}')
+            logi(f'added exporter {exporter_name}')
 
 
-    print(f'{jobs=}')
+    logi(f'{jobs=}')
 
     if options.plot_task_graphs:
         for i in range(0, len(jobs)):
@@ -104,63 +111,64 @@ def execute_evaluation_phase(recipe:Recipe, options, data_repo):
 
 
 def execute_plotting_phase(recipe:Recipe, options, data_repo):
-    print(f'execute_plotting_phase: {recipe}  {recipe.name}')
+    logi(f'execute_plotting_phase: {recipe}  {recipe.name}')
 
     for dataset_name in recipe.plot.reader:
         if options.run_tree and not dataset_name in options.run_tree['plot']['reader']:
-            print(f'skipping exporter {dataset_name}')
+            logi(f'skipping exporter {dataset_name}')
             continue
         reader = recipe.plot.reader[dataset_name]
-        print(f'plot: loading dataset: "{dataset_name=}"')
+        logi(f'plot: loading dataset: "{dataset_name=}"')
         if dataset_name in options.reader_overrides:
             reader.input_files = options.reader_overrides[dataset_name]
-            print(f'plot: execute_plotting_phase overriding input files for "{dataset_name}": "{reader.input_files=}"')
+            logi(f'plot: execute_plotting_phase overriding input files for "{dataset_name}": "{reader.input_files=}"')
         data = reader.read_data()
         data_repo[dataset_name] = data
-        print(f'added reader {dataset_name}')
+        logi(f'added reader {dataset_name}')
 
-    print('<<<-<-<--<-<-<--<-<-<')
-    print(f'plot: {data_repo=}')
-    print('<<<-<-<--<-<-<--<-<-<')
+    logd('<<<-<-<--<-<-<--<-<-<')
+    logd(f'plot: {data_repo=}')
+    logd('<<<-<-<--<-<-<--<-<-<')
 
     if not hasattr(recipe.plot, 'transforms'):
-        print('execute_plotting_phase: no `transforms` in recipe.Plot')
+        logi('execute_plotting_phase: no `transforms` in recipe.Plot')
     else:
         for task_name in recipe.plot.transforms:
             if options.run_tree and not task_name in options.run_tree['plot']['transforms']:
-                print(f'skipping transform {task_name}')
+                logi(f'skipping transform {task_name}')
                 continue
             task = recipe.plot.transforms[task_name]
             task.set_data_repo(data_repo)
             task.execute()
-            print(f'added transform {task_name}')
+            logi(f'added transform {task_name}')
 
     jobs = []
     for task_name in recipe.plot.tasks:
         if options.run_tree and not task_name in options.run_tree['plot']['tasks']:
-            print(f'skipping task {task_name}')
+            logi(f'skipping task {task_name}')
             continue
         task = recipe.plot.tasks[task_name]
-        print(f'plot: {task_name=}')
-        print(f'plot: {task=}')
-        print(f'plot: {task.dataset_name=}')
-        # print(f'plot: loading data...')
-        # task.load_data()
+        logd(f'plot: {task_name=}')
+        logd(f'plot: {task=}')
+        logd(f'plot: {task.dataset_name=}')
+        # logi(f'plot: loading data...')
 
         if task_name in options.plot_overrides:
             task.output_file = options.plot_overrides[task_name]
-            print(f'overriding {task_name} with {task.output_file}')
+            logi(f'overriding {task_name} with {task.output_file}')
 
         task.set_data_repo(data_repo)
-        print(f'plot: executing plotting tasks...')
+        logi(f'plot: executing plotting tasks...')
         job = task.execute()
-        # print(f'plot: {job=}')
+        # logi(f'plot: {job=}')
         jobs.append(job)
-        print(f'added task {task_name}')
+        logi(f'added task {task_name}')
 
     if options.plot_task_graphs:
         for i in range(0, len(jobs)):
-            jobs[i].visualize(f'{options.tmpdir}/dask_task_graph_plotting_job-{i}.png')
+            graph_output_file = f'{options.tmpdir}/dask_task_graph_plotting_job-{i}.png'
+            jobs[i].visualize(graph_output_file)
+            logi(f'saved the plot phase task graph for job {jobs[i]} to: {graph_output_file}')
 
     return data_repo, jobs
 
@@ -182,7 +190,7 @@ def process_recipe(options):
 
     if not options.plot_only:
         if not hasattr(recipe, 'evaluation'):
-            print('process_recipe: no Evaluation in recipe')
+            logi('process_recipe: no Evaluation in recipe')
             return
         data_repo, jobs = execute_evaluation_phase(recipe, options, data_repo)
         job_list.extend(jobs)
@@ -191,7 +199,7 @@ def process_recipe(options):
         return data_repo, job_list
 
     if not hasattr(recipe, 'plot'):
-        print('process_recipe: no Plot in recipe')
+        logi('process_recipe: no Plot in recipe')
         return data_repo, job_list
 
     data_repo, jobs = execute_plotting_phase(recipe, options, data_repo)
@@ -234,6 +242,8 @@ def parse_arguments(arguments):
 
     parser.add_argument('--plot-task-graphs', action='store_true', default=False, help='plot the evaluation and plotting phase task graph')
 
+    parser.add_argument('--verbose', '-v', action='count', default=0, help='increase logging verbosity')
+
     args = parser.parse_args(arguments)
 
     if args.slurm:
@@ -245,9 +255,9 @@ def parse_arguments(arguments):
             try:
                 option_dict = extract_dict_from_string(option)
             except Exception as e:
-                print(f'>>>> ERROR: extracting parameters for `{arg_name}` from `{option}` failed:\n>>>> {e}')
+                loge(f'>>>> ERROR: extracting parameters for `{arg_name}` from `{option}` failed:\n>>>> {e}')
                 return
-            print(f'{option_dict=}')
+            logd(f'{option_dict=}')
             setattr(args, arg_name, option_dict)
         else:
             setattr(args, arg_name, dict())
@@ -270,7 +280,7 @@ def parse_arguments(arguments):
             if len(r := qualified_task_name.split('.')) == 2:
                 top_level, task_name = r
             else:
-                print(f'>>>> ERROR: bad task name: {qualified_task_name}')
+                loge(f'>>>> ERROR: bad task name: {qualified_task_name}')
                 exit(1)
             d[top_level] = d[top_level].union(set([task_name]))
         return d
@@ -299,7 +309,17 @@ def parse_arguments(arguments):
         run_tree = None
 
     setattr(args, 'run_tree', run_tree)
-    print(f'{run_tree=}')
+    logd(f'{run_tree=}')
+
+
+    def map_verbosity_level_to_log_level(verbosity):
+        if verbosity >= 0 and verbosity <= 5:
+            return verbosity * 10
+        else:
+            raise Exception("can't match verbosity level")
+
+    log_level = map_verbosity_level_to_log_level(args.verbose)
+    setattr(args, 'log_level', log_level)
 
     return args
 
@@ -313,14 +333,14 @@ def setup_pandas():
 def setup_dask(options):
     # single-threaded mode for debugging
     if options.single_threaded:
-        print('using local single-threaded process cluster')
+        logi('using local single-threaded process cluster')
         dask.config.set(scheduler='synchronous')
         # no client is returned, creating a client here leads to sqlite
         # connections objects being transported between threads
         return None
 
     if options.slurm:
-        print('using SLURM cluster')
+        logi('using SLURM cluster')
         cluster = SLURMCluster(cores = 1
                              , n_workers = options.worker
                              # , n_workers = 1
@@ -336,7 +356,7 @@ def setup_dask(options):
         return Client(cluster)
     elif options.cluster:
         if options.cluster == 'local':
-            print('using local process cluster')
+            logi('using local process cluster')
             cluster = LocalCluster(n_workers=options.worker
                                  , host='localhost'
                                  # , interface='lo'
@@ -345,27 +365,32 @@ def setup_dask(options):
             cluster.scale(options.worker)
             return Client(cluster)
         else:
-            print(f'using distributed cluster at {options.cluster}')
+            logi(f'using distributed cluster at {options.cluster}')
             client = Client(options.cluster)
             return client
     else:
-        print(f'using local cluster with dashboard at localhost:8787')
+        logi(f'using local cluster with dashboard at localhost:8787')
         client = Client(dashboard_address='localhost:8787')
         return client
 
 
 def compute_graph(jobs):
-    print('=-!!'*40)
-    print('recombobulating splines...')
-    print(f'compute_graph: {jobs=}')
+    logi('=-!!'*40)
+    logi('recombobulating splines...')
+    logi(f'compute_graph: {jobs=}')
     result = dask.compute(*jobs)
-    print('=-!!'*40)
+    logi('=-!!'*40)
     return result
 
 def main():
+    setup_logging_defaults()
+
     options = parse_arguments(sys.argv[1:])
-    print(f'{options=}')
-    print(f'{sys.argv=}')
+
+    logging.basicConfig(level=options.log_level)
+
+    logd(f'{options=}')
+    logd(f'{sys.argv=}')
 
     setup_pandas()
 
@@ -377,7 +402,12 @@ def main():
     result = compute_graph(job_list)
 
     # ...
-    return result
+    return
 
 if __name__=='__main__':
-    main()
+    try:
+        main()
+    except Exception as e:
+        loge(f'{e=}')
+        loge(''.join(traceback.format_exception(e)))
+
