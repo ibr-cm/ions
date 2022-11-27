@@ -345,26 +345,32 @@ class Extractor:
 class SqlLiteReader():
     def __init__(self, db_file):
         self.db_file = db_file
-        self.connect()
+        self.connection = None
+        self.engine = None
 
     def connect(self):
         self.engine = create_engine("sqlite:///"+self.db_file)
         self.connection = self.engine.connect()
 
     def disconnect(self):
-        self.engine.disconnect()
-        self.engine.close()
+        self.connection.close()
 
     def execute_sql_query(self, query):
+        self.connect()
         result = pd.read_sql_query(query, self.connection)
+        self.disconnect()
         return result
 
     def parameter_extractor(self):
+        self.connect()
         result = pd.read_sql_query(sql_queries.run_param_query, self.connection)
+        self.disconnect()
         return result
 
     def attribute_extractor(self):
+        self.connect()
         result = pd.read_sql_query(sql_queries.run_attr_query, self.connection)
+        self.disconnect()
         return result
 
     def extract_tags(self):
