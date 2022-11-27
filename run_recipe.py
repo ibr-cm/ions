@@ -313,10 +313,18 @@ def parse_arguments(arguments):
 
 
     def map_verbosity_level_to_log_level(verbosity):
-        if verbosity >= 0 and verbosity <= 5:
-            return verbosity * 10
-        else:
-            raise Exception("can't match verbosity level")
+        match verbosity:
+            case 0:
+                log_level = logging.WARNING
+            case 1:
+                log_level = logging.INFO
+            case 2:
+                log_level = logging.DEBUG
+            case 3:
+                log_level = logging.NOTSET
+            case _:
+                log_level = logging.NOTSET
+        return log_level
 
     log_level = map_verbosity_level_to_log_level(args.verbose)
     setattr(args, 'log_level', log_level)
@@ -383,11 +391,10 @@ def compute_graph(jobs):
     return result
 
 def main():
-    setup_logging_defaults()
-
     options = parse_arguments(sys.argv[1:])
 
-    logging.basicConfig(level=options.log_level)
+    setup_logging_defaults(options.log_level)
+    logi(f'logging level set to {logging.getLevelName(options.log_level)}')
 
     logd(f'{options=}')
     logd(f'{sys.argv=}')

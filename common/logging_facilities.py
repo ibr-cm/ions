@@ -21,7 +21,6 @@ def logi(msg, *args):
 
 # ---
 
-def setup_logging_defaults():
-    # logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
-    logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
+def setup_logging_defaults(level=logging.WARNING):
+    logging.basicConfig(format='%(levelname)s:%(message)s', level=level)
 
