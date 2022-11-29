@@ -1,7 +1,7 @@
 
 # the list of allowed tags in a minimal DataFrame
 # TODO: extract to configuration
-BASE_TAGS_EXTRACTION = ['v2x_rate', 'red_mit', 'value', 'var', 'moduleName', 'repetition', 'simtimeRaw', 'eventNumber' ] \
+BASE_TAGS_EXTRACTION_FULL = ['v2x_rate', 'red_mit', 'value', 'var', 'moduleName', 'repetition', 'simtimeRaw', 'eventNumber' ] \
                      + ['configname', 'datetime', 'dcc', 'dcc_profile', 'experiment', 'gen_rule', 'index', 'inifile', 'iterationvars', 'iterationvarsf' ] \
                      + ['measurement', 'network', 'pathloss', 'period', 'plain_rate', 'prefix', 'processid', 'queueLength'] \
                      + ['replication', 'resultdir', 'runnumber', 'seedset', 'simulationEnd', 'traciStart', 'MCO', 'SCO'] \
@@ -10,10 +10,16 @@ BASE_TAGS_EXTRACTION = ['v2x_rate', 'red_mit', 'value', 'var', 'moduleName', 're
                      + ['mcmI', 'mcmL', 'sumocfgname'] \
                      + ['Lp_tx_min', 'delta_t']
 
-BASE_TAGS_EXTRACTION_MINIMAL = ['v2x_rate', 'value', 'var', 'moduleName', 'repetition', 'simtimeRaw', 'eventNumber' ] \
+
+BASE_TAGS_EXTRACTION_EXPANDED = ['v2x_rate', 'value', 'var', 'moduleName', 'repetition', 'simtimeRaw', 'eventNumber' ] \
                      + ['configname', 'datetime', 'dcc', 'dcc_profile', 'experiment', 'gen_rule', 'index' ] \
                      + ['prefix'] \
                      + ['replication', 'runnumber', 'seedset', 'simulationEnd', 'traciStart' ] \
                      + ['sumocfgname']
+
+
+BASE_TAGS_EXTRACTION_MINIMAL = ['v2x_rate', 'value', 'var', 'moduleName', 'repetition', 'simtimeRaw', 'eventNumber' ] \
+                             + ['configname', 'experiment', 'prefix', 'runnumber', 'sumocfgname']
+
 
 DEFAULT_CATEGORICALS_COLUMN_EXCLUSION_SET = set(['value'])

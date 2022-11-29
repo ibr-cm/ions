@@ -34,7 +34,7 @@ from data_io import DataSet, read_from_file
 from tag_extractor import ExtractRunParametersTagsOperation
 from tag_regular_expressions import parameters_regex_map, attributes_regex_map, iterationvars_regex_map
 
-from common.common_sets import BASE_TAGS_EXTRACTION, BASE_TAGS_EXTRACTION_MINIMAL \
+from common.common_sets import BASE_TAGS_EXTRACTION_FULL, BASE_TAGS_EXTRACTION_MINIMAL \
                                , DEFAULT_CATEGORICALS_COLUMN_EXCLUSION_SET
 
 # ---
@@ -409,12 +409,15 @@ class RawExtractor(YAMLObject):
             else:
                 allowed_tags = set(BASE_TAGS_EXTRACTION + additional_tags)
 
+        applied_tags = []
         # augment data with the extracted parameter tags
         for tag in tags:
             mapping = tag.get_mapping()
             if (not minimal) \
                     or (list(mapping)[0] in allowed_tags):
                 data = data.assign(**mapping)
+                applied_tags.append(tag)
+        logd(f': {applied_tags=}')
 
         return data
 
@@ -441,7 +444,11 @@ class RawExtractor(YAMLObject):
         return data
 
     @staticmethod
-    def read_signals_from_file(db_file, signal, alias, categorical_columns=[], excluded_categorical_columns=set()):
+    def read_signals_from_file(db_file, signal, alias
+                               , categorical_columns=[], excluded_categorical_columns=set()
+                               , base_tags = None, additional_tags = []
+                               , minimal_tags=True
+                               ):
             sql_reader = SqlLiteReader(db_file)
 
             try:
@@ -461,7 +468,7 @@ class RawExtractor(YAMLObject):
             if 'rowId' in data.columns:
                 data = data.drop(labels=['rowId'], axis=1)
 
-            data = RawExtractor.apply_tags(data, tags)
+            data = RawExtractor.apply_tags(data, tags, base_tags=base_tags, additional_tags=additional_tags, minimal=minimal_tags)
 
             # don't categorize the column with the actual data
             excluded_categorical_columns = excluded_categorical_columns.union(set([alias]))
@@ -488,17 +495,46 @@ class RawExtractor(YAMLObject):
 
         return categorical_columns, categorical_columns_excluded
 
+
+    def get_tag_attributes(self):
+        if hasattr(self, 'minimal_tags'):
+            minimal = self.minimal_tags
+        else:
+            minimal = True
+
+        if hasattr(self, 'base_tags'):
+            base_tags = self.base_tags
+        else:
+            if minimal:
+                base_tags = BASE_TAGS_EXTRACTION_MINIMAL
+            else:
+                base_tags = BASE_TAGS_EXTRACTION_FULL
+
+        if hasattr(self, 'additional_tags'):
+            additional_tags = self.additional_tags
+        else:
+            additional_tags = []
+
+        return minimal, base_tags, additional_tags
+
+
     def prepare(self):
         data_set = DataSet(self.input_files)
 
         categorical_columns, categorical_columns_excluded = self.get_categorical_overrides()
+        minimal_tags, base_tags, additional_tags = self.get_tag_attributes()
 
         # For every input file construct a `Delayed` object, a kind of a promise
         # on the data and the leafs of the computation graph
         result_list = []
         for db_file in data_set.get_file_list():
             res = dask.delayed(RawExtractor.read_signals_from_file)\
-                               (db_file, self.signal, self.alias, categorical_columns, categorical_columns_excluded)
+                               (db_file, self.signal, self.alias \
+                                , categorical_columns=categorical_columns \
+                                , excluded_categorical_columns=categorical_columns_excluded \
+                                , base_tags=base_tags, additional_tags=additional_tags
+                                , minimal_tags=minimal_tags
+                               )
             attributes = DataAttributes(source_file=db_file, alias=self.alias)
             result_list.append((res, attributes))
 
@@ -537,12 +573,14 @@ class MatchingExtractor(RawExtractor):
         return matching_signals
 
     @staticmethod
-    def extract_alls_signals(db_file, signals, categorical_columns=[], excluded_categorical_columns=set()):
+    def extract_alls_signals(db_file, signals, base_tags=None, additional_tags=[], categorical_columns=[], excluded_categorical_columns=set()):
         result_list = []
         for signal, alias in signals:
             res = RawExtractor.read_signals_from_file(db_file, signal, alias \
                                                       , categorical_columns=categorical_columns \
                                                       , excluded_categorical_columns=excluded_categorical_columns
+                                                      , base_tags=base_tags, additional_tags=additional_tags
+                                                      , minimal_tags=minimal_tags
                                                      )
             result_list.append((res, alias))
 
@@ -569,6 +607,7 @@ class MatchingExtractor(RawExtractor):
         data_set = DataSet(self.input_files)
 
         categorical_columns, categorical_columns_excluded = self.get_categorical_overrides()
+        minimal_tags, base_tags, additional_tags = self.get_tag_attributes()
 
         # For every input file construct a `Delayed` object, a kind of a promise
         # on the data, and the leafs of the task graph
@@ -577,7 +616,11 @@ class MatchingExtractor(RawExtractor):
             # get all signal names that match the given regular expression
             matching_signals_result = dask.delayed(MatchingExtractor.get_matching_signals)(db_file, self.pattern, self.alias_pattern)
             # get the data for the matched signals
-            res = dask.delayed(MatchingExtractor.extract_alls_signals)(db_file, matching_signals_result, categorical_columns, categorical_columns_excluded)
+            res = dask.delayed(MatchingExtractor.extract_alls_signals)(db_file, matching_signals_result
+                                                                       , categorical_columns, categorical_columns_excluded
+                                                                       , base_tags=base_tags, additional_tags=additional_tags
+                                                                       , minimal_tags=minimal_tags
+                                                                       )
             attributes = DataAttributes(source_file=db_file, alias=self.alias)
             result_list.append((res, attributes))
 
