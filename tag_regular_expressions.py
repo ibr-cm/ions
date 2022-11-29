@@ -203,6 +203,12 @@ iterationvars_regex_map = {
                         , 'transform': lambda v: float(evaluate_simple_arithmetic_expression(v.split('=')[1].translate(str.maketrans({'s':''}))))
                         }
                     ]
+                ,'sensors': [
+                {
+                    'regex': r'\$sensorConf=.*?,'
+                    ,'transform': lambda v: str(v).strip(',').split('=')[1]
+                    }
+                ]
                 }
 
 # mapping of key name to regex & value extraction function
