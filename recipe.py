@@ -174,6 +174,8 @@ class PlottingTask(YAMLObject):
         if hasattr(self, 'selector'):
             selected_data = data.query(self.selector)
             # logi(f'after selector: {data=}')
+        else:
+            selected_data = data
 
         # TODO: the default shouldn't be defined here...
         if not hasattr(self, 'legend'):
