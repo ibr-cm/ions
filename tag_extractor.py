@@ -15,42 +15,6 @@ class ExtractRunParametersTagsOperation():
         the session object for acessing the input DB
     """
 
-    # def __init__(self, **kwds):
-    #     pass
-
-
-    def get_run_parameters(self):
-        r"""
-        Return key-value pairs of the module parameters for the run
-
-        Returns
-        -------
-        pandas.DataFrame
-            the the key-value pairs
-        """
-        query = """
-            SELECT paramKey, paramValue
-            FROM runParam AS r;
-            """
-        return self.execute_query(query)
-
-
-    def get_run_attributes(self):
-        r"""
-        Return key-value pairs of the attributes for the run
-
-        Returns
-        -------
-        pandas.DataFrame
-            the the key-value pairs
-        """
-        query = """
-            SELECT attrName, attrValue
-            FROM runAttr AS r;
-            """
-        return self.execute_query(query)
-
-
     @staticmethod
     def add_raw_tags_for_row(row, key_column, value_column, tags):
         r"""
@@ -133,17 +97,4 @@ class ExtractRunParametersTagsOperation():
         ExtractRunParametersTagsOperation.add_attributes(attributes_data, tags, attributes_regex_map, iterationvars_regex_map)
 
         return tags
-
-
-    # def exec(self):
-    #     r"""
-    #     """
-    #     self.log("----------------- extracting tags from runParam & runAttr ")
-
-    #     tags = extract_attributes_and_params(self.get_run_parameters, self.get_run_attributes)
-
-    #     self.log('-----------------')
-
-    #     return tags
-
 
