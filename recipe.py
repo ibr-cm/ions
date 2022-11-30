@@ -32,7 +32,7 @@ import sql_queries
 from data_io import DataSet, read_from_file
 
 from tag_extractor import ExtractRunParametersTagsOperation
-from tag_regular_expressions import parameters_regex_map, attributes_regex_map, iterationvars_regex_map
+import tag_regular_expressions as tag_regex
 
 from common.common_sets import BASE_TAGS_EXTRACTION_FULL, BASE_TAGS_EXTRACTION_MINIMAL \
                                , DEFAULT_CATEGORICALS_COLUMN_EXCLUSION_SET
@@ -344,10 +344,16 @@ class PlottingTask(YAMLObject):
         return grid
 
 
-class Extractor:
-    def execute(self):
+class Extractor(YAMLObject):
+    yaml_tag = u'!recipe.Extractor'
+
+    def prepare(self):
         return None
 
+    def set_tag_maps(self, attributes_regex_map, iterationvars_regex_map, parameters_regex_map):
+        setattr(self, 'attributes_regex_map', attributes_regex_map)
+        setattr(self, 'iterationvars_regex_map', iterationvars_regex_map)
+        setattr(self, 'parameters_regex_map', parameters_regex_map)
 
 class SqlLiteReader():
     def __init__(self, db_file):
@@ -380,7 +386,7 @@ class SqlLiteReader():
         self.disconnect()
         return result
 
-    def extract_tags(self):
+    def extract_tags(self, attributes_regex_map, iterationvars_regex_map, parameters_regex_map):
         tags = ExtractRunParametersTagsOperation.extract_attributes_and_params(self.parameter_extractor, self.attribute_extractor
                                                                                , parameters_regex_map, attributes_regex_map, iterationvars_regex_map)
         return tags
@@ -392,7 +398,7 @@ class DataAttributes(YAMLObject):
         self.alias = alias
 
 
-class RawExtractor(YAMLObject):
+class RawExtractor(Extractor):
     yaml_tag = u'!recipe.RawExtractor'
 
     def __init__(self, signals:list, /,  *args, **kwargs):
@@ -448,11 +454,14 @@ class RawExtractor(YAMLObject):
                                , categorical_columns=[], excluded_categorical_columns=set()
                                , base_tags = None, additional_tags = []
                                , minimal_tags=True
+                               , attributes_regex_map=tag_regex.attributes_regex_map
+                               , iterationvars_regex_map=tag_regex.iterationvars_regex_map
+                               , parameters_regex_map=tag_regex.parameters_regex_map
                                ):
             sql_reader = SqlLiteReader(db_file)
 
             try:
-                tags = sql_reader.extract_tags()
+                tags = sql_reader.extract_tags(attributes_regex_map, iterationvars_regex_map, parameters_regex_map)
             except Exception as e:
                 loge(f'>>>> ERROR: no tags could be extracted from {db_file}:\n {e}')
                 return pd.DataFrame()

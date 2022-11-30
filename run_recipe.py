@@ -38,14 +38,45 @@ from sql_queries import generate_signal_query
 
 # ---
 
+import tag_regular_expressions as tag_regex
+
+
+def eval_recipe_tag_definitions(recipe, attributes_regex_map, iterationvars_regex_map, parameters_regex_map):
+    def eval_and_add_tags(tag_set_name, regex_map):
+        for tag_name in recipe.evaluation.tags[tag_set_name]:
+            tag_list = eval(recipe.evaluation.tags[tag_set_name][tag_name])
+            logd(f'{tag_name=} {tag_list=}')
+            l = []
+            for tag in tag_list:
+                if type(tag['transform']) == str:
+                    tag['transform'] = eval(tag['transform'])
+                l.append(tag)
+            regex_map[tag_name] = l
+
+    if 'attributes' in recipe.evaluation.tags:
+        eval_and_add_tags('attributes', attributes_regex_map)
+    if 'iterationvars' in recipe.evaluation.tags:
+        eval_and_add_tags('iterationvars', iterationvars_regex_map)
+    if 'parameters' in recipe.evaluation.tags:
+        eval_and_add_tags('parameters', parameters_regex_map)
+
+    return attributes_regex_map, iterationvars_regex_map, parameters_regex_map
+
+
 def execute_evaluation_phase(recipe:Recipe, options, data_repo):
     logi(f'execute_evaluation_phase: {recipe}  {recipe.name}')
+
+    if hasattr(recipe.evaluation, 'tags'):
+        attributes_regex_map, iterationvars_regex_map, parameters_regex_map = eval_recipe_tag_definitions(recipe \
+                , tag_regex.attributes_regex_map, tag_regex.iterationvars_regex_map, tag_regex.parameters_regex_map)
+    else:
+        attributes_regex_map, iterationvars_regex_map, parameters_regex_map = \
+                tag_regex.attributes_regex_map, tag_regex.iterationvars_regex_map, tag_regex.parameters_regex_map
+
 
     if not hasattr(recipe.evaluation, 'extractors'):
         logi('execute_evaluation_phase: no `extractors` in recipe.Evaluation')
         return
-
-    evaluation = recipe.evaluation
 
     for extractor_name in recipe.evaluation.extractors:
         if options.run_tree and not extractor_name in options.run_tree['evaluation']['extractors']:
@@ -56,6 +87,8 @@ def execute_evaluation_phase(recipe:Recipe, options, data_repo):
         if extractor_name in options.extraction_overrides:
             extractor.input_files = [ options.extraction_overrides[extractor_name] ]
             logi(f'overriding {extractor_name} with {extractor.input_files}')
+
+        extractor.set_tag_maps(attributes_regex_map, iterationvars_regex_map, parameters_regex_map)
 
         delayed_data = extractor.prepare()
         # print(f'{extractor=}')
