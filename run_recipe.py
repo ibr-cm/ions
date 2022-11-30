@@ -41,10 +41,6 @@ from sql_queries import generate_signal_query
 def execute_evaluation_phase(recipe:Recipe, options, data_repo):
     logi(f'execute_evaluation_phase: {recipe}  {recipe.name}')
 
-    op_registry = {}
-    op_registry['raw'] = RawExtractor
-
-
     if not hasattr(recipe.evaluation, 'extractors'):
         logi('execute_evaluation_phase: no `extractors` in recipe.Evaluation')
         return
