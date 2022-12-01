@@ -697,55 +697,6 @@ class FunctionTransform(Transform, YAMLObject):
 
         return job_list
 
-# class MeanTransform(Transform, YAMLObject):
-#     yaml_tag = u'!recipe.MeanTransform'
-
-#     def __init__(self, dataset_name:str, output_dataset_name:str
-#                  , input_column:str, output_column:str):
-#         self.dataset_name = dataset_name
-#         self.output_dataset_name = output_dataset_name
-#         self.input_column = input_column
-#         self.output_column = output_column
-
-#     def execute(self):
-#         data = self.data_repo[self.dataset_name]
-#         result = data[self.input_column].mean()
-#         # logi(f'{result=}')
-
-#         # data[self.output_column] = result
-
-#         row = data.head(n=1)
-#         row = row.drop(labels=[self.input_column], axis=1)
-#         row[self.output_column] = result
-
-#         self.data_repo[self.output_dataset_name] = row
-
-# class StatisticsTransform(Transform, YAMLObject):
-#     yaml_tag = u'!recipe.StatisticsTransform'
-
-#     def __init__(self, dataset_name:str, output_dataset_name:str
-#                  , input_column:str, output_column:str):
-#         self.dataset_name = dataset_name
-#         self.output_dataset_name = output_dataset_name
-#         self.input_column = input_column
-#         self.output_column = output_column
-
-#     def execute(self):
-#         data = self.data_repo[self.dataset_name]
-#         result = data[self.input_column].describe()
-#         # logi(f'{result=}')
-
-#         # data[self.output_column] = result
-
-#         row = data.head(n=1)
-#         row = row.drop(labels=[self.input_column], axis=1)
-#         # row[self.output_column] = result
-#         logi(pd.DataFrame(result).to_dict()[self.input_column])
-#         row = row.assign(**pd.DataFrame(result).to_dict()[self.input_column])
-
-#         self.data_repo[self.output_dataset_name] = row
-
-
 class GroupedAggregationTransform(Transform, YAMLObject):
     yaml_tag = u'!recipe.GroupedAggregationTransform'
 
