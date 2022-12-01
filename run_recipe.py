@@ -5,6 +5,8 @@ import sys
 import argparse
 import traceback
 
+from typing import Callable
+
 # ---
 
 import logging
@@ -48,9 +50,10 @@ def eval_recipe_tag_definitions(recipe, attributes_regex_map, iterationvars_rege
             logd(f'{tag_name=} {tag_list=}')
             l = []
             for tag in tag_list:
-                if type(tag['transform']) == str:
+                if not isinstance(tag['transform'], Callable):
                     tag['transform'] = eval(tag['transform'])
                 l.append(tag)
+
             regex_map[tag_name] = l
 
     if 'attributes' in recipe.evaluation.tags:

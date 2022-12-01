@@ -683,10 +683,11 @@ class FunctionTransform(Transform, YAMLObject):
 
     def execute(self):
         data_list = self.data_repo[self.dataset_name]
-        if type(self.function) == str:
-            function = eval(self.function)
-        else:
+        if isinstance(self.function, Callable):
             function = self.function
+        else:
+            function = eval(self.function)
+
         job_list = []
 
         for data, attributes in data_list:
