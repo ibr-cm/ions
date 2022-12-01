@@ -311,7 +311,11 @@ def parse_arguments(arguments):
             else:
                 loge(f'>>>> ERROR: bad task name: {qualified_task_name}')
                 exit(1)
-            d[top_level] = d[top_level].union(set([task_name]))
+            if top_level in d:
+                d[top_level] = d[top_level].union(set([task_name]))
+            else:
+                loge(f'>>>> ERROR: not a valid phase name: {top_level}')
+                exit(1)
         return d
 
     def process_run_tree(option):
