@@ -240,7 +240,7 @@ class PlottingTask(YAMLObject):
 
         fig.tight_layout(pad=0.1)
 
-        if self.legend is None:
+        if not fig.legend is None and self.legend is None:
             fig.legend.remove()
 
         fig.savefig(self.output_file, bbox_inches=self.bbox_inches)
