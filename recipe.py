@@ -196,8 +196,6 @@ class PlottingTask(YAMLObject):
             if not hasattr(self, attr):
                 setattr(self, attr, None)
 
-        logd(f'after selector: {selected_data[self.hue]=}')
-        # logi(f'after selector: {selected_data[self.hue].cat=}')
 
         def catplot(plot_type):
                 return self.plot_catplot(df=selected_data
