@@ -786,10 +786,11 @@ class GroupedStatisticsTransform(Transform, YAMLObject):
         data = self.data_repo[self.dataset_name]
 
         jobs = []
-        for d in data:
+        for d, attributes in data:
             logd(f'execute: {d=}')
             job = dask.delayed(self.calculate_stats)(d)
-            jobs.append(job)
+            jobs.append((job, attributes))
 
         self.data_repo[self.output_dataset_name] = jobs
 
+        return jobs
