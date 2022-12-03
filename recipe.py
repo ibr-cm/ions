@@ -548,6 +548,99 @@ class RawExtractor(Extractor):
         return result_list
 
 
+class PositionExtractor(RawExtractor):
+    yaml_tag = u'!recipe.PositionExtractor'
+
+
+    @staticmethod
+    def read_position_and_signal_from_file(db_file
+                                           , x_signal:str
+                                           , y_signal:str
+                                           , x_alias:str
+                                           , y_alias:str
+                                           , signal:str
+                                           , alias:str
+                                           , restriction:tuple=None
+                               , categorical_columns=[], excluded_categorical_columns=set()
+                               , base_tags = None, additional_tags = []
+                               , minimal_tags=True
+                               , attributes_regex_map=tag_regex.attributes_regex_map
+                               , iterationvars_regex_map=tag_regex.iterationvars_regex_map
+                               , parameters_regex_map=tag_regex.parameters_regex_map
+                               ):
+            sql_reader = SqlLiteReader(db_file)
+
+            try:
+                tags = sql_reader.extract_tags(attributes_regex_map, iterationvars_regex_map, parameters_regex_map)
+            except Exception as e:
+                loge(f'>>>> ERROR: no tags could be extracted from {db_file}:\n {e}')
+                return pd.DataFrame()
+
+            query = sql_queries.get_signal_with_position(x_signal=x_signal, y_signal=y_signal
+                                              , value_label_px=x_alias, value_label_py=y_alias
+                                              , signal_name=signal, value_label=alias
+                                              , restriction=restriction
+                                              )
+
+            try:
+                data = sql_reader.execute_sql_query(query)
+            except Exception as e:
+                loge(f'>>>> ERROR: no data could be extracted from {db_file}:\n {e}')
+                return pd.DataFrame()
+
+            if 'rowId' in data.columns:
+                data = data.drop(labels=['rowId'], axis=1)
+
+            data = RawExtractor.apply_tags(data, tags, base_tags=base_tags, additional_tags=additional_tags, minimal=minimal_tags)
+
+            # don't categorize the column with the actual data
+            excluded_categorical_columns = excluded_categorical_columns.union(set([alias]))
+
+            # select columns with a small enough set of possible values to
+            # convert into `Categorical`
+            data = RawExtractor.convert_columns_to_category(data \
+                                                            , additional_columns=categorical_columns \
+                                                            , excluded_columns=excluded_categorical_columns
+                                                            )
+
+            return data
+
+    def prepare(self):
+        data_set = DataSet(self.input_files)
+
+        categorical_columns, categorical_columns_excluded = self.get_categorical_overrides()
+        minimal_tags, base_tags, additional_tags = self.get_tag_attributes()
+
+        if hasattr(self, 'restriction'):
+            restriction = eval(self.restriction)
+        else:
+            restriction = None
+            setattr(self, 'restriction', None)
+
+        # For every input file construct a `Delayed` object, a kind of a promise
+        # on the data and the leafs of the computation graph
+        result_list = []
+        for db_file in data_set.get_file_list():
+            res = dask.delayed(PositionExtractor.read_position_and_signal_from_file)\
+                               (db_file
+                                , self.x_signal
+                                , self.y_signal
+                                , self.x_alias
+                                , self.y_alias
+                                , self.signal
+                                , self.alias
+                                , restriction=restriction
+                                , categorical_columns=categorical_columns \
+                                , excluded_categorical_columns=categorical_columns_excluded \
+                                , base_tags=base_tags, additional_tags=additional_tags
+                                , minimal_tags=minimal_tags
+                               )
+            attributes = DataAttributes(source_file=db_file, alias=self.alias)
+            result_list.append((res, attributes))
+
+        return result_list
+
+
 class MatchingExtractor(RawExtractor):
     yaml_tag = u'!recipe.MatchingExtractor'
 
