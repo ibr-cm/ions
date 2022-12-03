@@ -3,7 +3,7 @@ import sqlalchemy as sqla
 from typing import Tuple
 
 
-class TableModel:
+class OmnetppTableModel:
     metadata = sqla.MetaData()
 
     vector_table = sqla.Table('vector'
