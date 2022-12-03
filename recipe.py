@@ -452,6 +452,9 @@ class RawExtractor(Extractor):
                                , categorical_columns=[], excluded_categorical_columns=set()
                                , base_tags = None, additional_tags = []
                                , minimal_tags=True
+                               , simtimeRaw=True
+                               , moduleName=True
+                               , eventNumber=True
                                , attributes_regex_map=tag_regex.attributes_regex_map
                                , iterationvars_regex_map=tag_regex.iterationvars_regex_map
                                , parameters_regex_map=tag_regex.parameters_regex_map
@@ -525,8 +528,17 @@ class RawExtractor(Extractor):
         return minimal, base_tags, additional_tags
 
 
+    def setup_output_columns(self):
+        presets = [ ('simtimeRaw', True), ('moduleName', True), ('eventNumber', True) ]
+        for k, v in presets:
+            if not hasattr(self, k):
+                setattr(self, k, v)
+
+
     def prepare(self):
         data_set = DataSet(self.input_files)
+
+        self.setup_output_columns()
 
         categorical_columns, categorical_columns_excluded = self.get_categorical_overrides()
         minimal_tags, base_tags, additional_tags = self.get_tag_attributes()
@@ -541,6 +553,9 @@ class RawExtractor(Extractor):
                                 , excluded_categorical_columns=categorical_columns_excluded \
                                 , base_tags=base_tags, additional_tags=additional_tags
                                 , minimal_tags=minimal_tags
+                               , simtimeRaw=self.simtimeRaw
+                               , moduleName=self.moduleName
+                               , eventNumber=self.eventNumber
                                )
             attributes = DataAttributes(source_file=db_file, alias=self.alias)
             result_list.append((res, attributes))
