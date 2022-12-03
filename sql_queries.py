@@ -24,15 +24,25 @@ run_param_query = sqla.select(TM.runParam_table.c.rowId, TM.runParam_table.c.par
 signal_names_query = sqla.select(TM.vector_table.c.vectorName)
 
 
-def generate_signal_query(signal_name:str, value_label:str='value'):
-    return generate_data_query(TM.vector_table.c.vectorName == signal_name, value_label=value_label)
+def generate_signal_query(signal_name:str, value_label:str='value'
+                          , moduleName:bool=True
+                          , simtimeRaw:bool=True
+                          , eventNumber:bool=False
+                          ):
+    return generate_data_query(TM.vector_table.c.vectorName == signal_name, value_label=value_label
+                               , moduleName=moduleName, simtimeRaw=simtimeRaw, eventNumber=eventNumber)
 
-def generate_signal_for_module_query(signal_name:str, module_name:str, value_label='value'):
+def generate_signal_for_module_query(signal_name:str, module_name:str, value_label='value'
+                                     , moduleName:bool=True
+                                     , simtimeRaw:bool=True
+                                     , eventNumber:bool=False
+                                     ):
     return generate_data_query(
                                sqla.and_(TM.vector_table.c.vectorName == signal_name
                                          , TM.vector_table.c.moduleName.like(module_name)
                                          )
                                , value_label=value_label
+                               , moduleName=moduleName, simtimeRaw=simtimeRaw, eventNumber=eventNumber
                               )
 
 
@@ -43,7 +53,6 @@ def generate_data_query(where_clause:sqla.sql.elements.ColumnElement
                         , simtimeRaw:bool=True
                         , eventNumber:bool=False
                         ):
-    # print(f'{where_clause=}')
     columns = []
     if vectorName:
         columns.append(TM.vector_table.c.vectorName)

@@ -467,7 +467,8 @@ class RawExtractor(Extractor):
                 loge(f'>>>> ERROR: no tags could be extracted from {db_file}:\n {e}')
                 return pd.DataFrame()
 
-            query = sql_queries.generate_signal_query(signal, value_label=alias)
+            query = sql_queries.generate_signal_query(signal, value_label=alias
+                                                      , moduleName=moduleName, simtimeRaw=simtimeRaw, eventNumber=eventNumber)
 
             try:
                 data = sql_reader.execute_sql_query(query)
@@ -576,6 +577,9 @@ class PositionExtractor(RawExtractor):
                                            , signal:str
                                            , alias:str
                                            , restriction:tuple=None
+                                           , moduleName:bool=True
+                                           , simtimeRaw:bool=True
+                                           , eventNumber:bool=False
                                , categorical_columns=[], excluded_categorical_columns=set()
                                , base_tags = None, additional_tags = []
                                , minimal_tags=True
@@ -595,6 +599,9 @@ class PositionExtractor(RawExtractor):
                                               , value_label_px=x_alias, value_label_py=y_alias
                                               , signal_name=signal, value_label=alias
                                               , restriction=restriction
+                                              , moduleName=moduleName
+                                              , simtimeRaw=simtimeRaw
+                                              , eventNumber=eventNumber
                                               )
 
             try:
@@ -623,6 +630,8 @@ class PositionExtractor(RawExtractor):
     def prepare(self):
         data_set = DataSet(self.input_files)
 
+        self.setup_output_columns()
+
         categorical_columns, categorical_columns_excluded = self.get_categorical_overrides()
         minimal_tags, base_tags, additional_tags = self.get_tag_attributes()
 
@@ -645,6 +654,9 @@ class PositionExtractor(RawExtractor):
                                 , self.signal
                                 , self.alias
                                 , restriction=restriction
+                                , moduleName=self.moduleName
+                                , simtimeRaw=self.simtimeRaw
+                                , eventNumber=self.eventNumber
                                 , categorical_columns=categorical_columns \
                                 , excluded_categorical_columns=categorical_columns_excluded \
                                 , base_tags=base_tags, additional_tags=additional_tags
@@ -688,7 +700,11 @@ class MatchingExtractor(RawExtractor):
         return matching_signals
 
     @staticmethod
-    def extract_alls_signals(db_file, signals, base_tags=None, additional_tags=[], categorical_columns=[], excluded_categorical_columns=set()):
+    def extract_alls_signals(db_file, signals, base_tags=None, additional_tags=[], categorical_columns=[], excluded_categorical_columns=set()
+                             , moduleName:bool=True
+                             , simtimeRaw:bool=True
+                             , eventNumber:bool=False
+                             ):
         result_list = []
         for signal, alias in signals:
             res = RawExtractor.read_signals_from_file(db_file, signal, alias \
@@ -696,6 +712,9 @@ class MatchingExtractor(RawExtractor):
                                                       , excluded_categorical_columns=excluded_categorical_columns
                                                       , base_tags=base_tags, additional_tags=additional_tags
                                                       , minimal_tags=minimal_tags
+                                                      , simtimeRaw=simtimeRaw
+                                                      , moduleName=moduleName
+                                                      , eventNumber=eventNumber
                                                      )
             result_list.append((res, alias))
 
@@ -721,6 +740,8 @@ class MatchingExtractor(RawExtractor):
     def prepare(self):
         data_set = DataSet(self.input_files)
 
+        self.setup_output_columns()
+
         categorical_columns, categorical_columns_excluded = self.get_categorical_overrides()
         minimal_tags, base_tags, additional_tags = self.get_tag_attributes()
 
@@ -735,6 +756,9 @@ class MatchingExtractor(RawExtractor):
                                                                        , categorical_columns, categorical_columns_excluded
                                                                        , base_tags=base_tags, additional_tags=additional_tags
                                                                        , minimal_tags=minimal_tags
+                                                                       , simtimeRaw=self.simtimeRaw
+                                                                       , moduleName=self.moduleName
+                                                                       , eventNumber=self.eventNumber
                                                                        )
             attributes = DataAttributes(source_file=db_file, alias=self.alias)
             result_list.append((res, attributes))
