@@ -616,7 +616,7 @@ class PositionExtractor(RawExtractor):
             data = RawExtractor.apply_tags(data, tags, base_tags=base_tags, additional_tags=additional_tags, minimal=minimal_tags)
 
             # don't categorize the column with the actual data
-            excluded_categorical_columns = excluded_categorical_columns.union(set([alias]))
+            excluded_categorical_columns = excluded_categorical_columns.union(set([alias, x_alias, y_alias]))
 
             # select columns with a small enough set of possible values to
             # convert into `Categorical`
