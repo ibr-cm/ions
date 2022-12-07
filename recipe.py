@@ -270,31 +270,6 @@ class PlottingTask(YAMLObject):
         #save_figure_with_type('svg')
         save_figure_with_type('pdf')
 
-    def plot_catplot(self, df, x='v2x_rate', y='cbr', hue='moduleName', row='dcc', column='traciStart', plot_type='line'):
-        props_args = {
-                'boxprops': {'edgecolor': 'black'}
-                , 'medianprops': {'color':'red'}
-                , 'flierprops': dict(color='red', marker='+', markersize=3, markeredgecolor='red', linewidth=0.1, alpha=0.1)
-        }
-
-        if plot_type == 'box':
-            kwargs = props_args
-        else:
-            kwargs = {}
-
-        grid = sb.catplot(data=df, x=x, y=y, row=row, col=column
-                        , hue=hue
-                        # , hue_order=['itsg5_FFK_SCO', 'itsg5_FFK_MCO_MCM', 'itsg5_FFK_MCO_MCM-IDSM']
-                        , kind=plot_type
-                        # , boxprops=boxprops, medianprops=medianprops, flierprops=flierprops
-                        # , legend_out=False
-                        , **kwargs
-                       )
-
-        grid = self.set_grid_defaults(grid)
-
-        return grid
-
 
     def set_grid_defaults(self, grid):
         # ax.fig.gca().set_ylim(ylimit)
@@ -320,22 +295,47 @@ class PlottingTask(YAMLObject):
         return grid
 
 
-    def plot_relplot(self, df, x='v2x_rate', y='cbr', hue='moduleName', style='prefix', row='dcc', column='traciStart', plot_type='line', **kwargs):
+    def set_plot_specific_options(self, plot_type:str, kwargs:dict):
         boxprops = {'edgecolor': 'black'}
         medianprops = {'color':'red'}
         flierprops = dict(color='red', marker='+', markersize=3, markeredgecolor='red', linewidth=0.1, alpha=0.1)
 
-        if plot_type == 'line':
-            kwargs['errorbar'] = 'sd'
+        match plot_type:
+            case 'line':
+                kwargs['errorbar'] = 'sd'
+            case 'box':
+                kwargs['boxprops'] = boxprops
+                kwargs['medianprops'] = medianprops
+                kwargs['flierprops'] = flierprops
+
+        return kwargs
+
+
+    def plot_catplot(self, df, x='v2x_rate', y='cbr', hue='moduleName', row='dcc', column='traciStart', plot_type='box', **kwargs):
+        kwargs = self.set_plot_specific_options(plot_type, kwargs)
+
+        logd(f'PlottingTask::plot_catplot: {df.columns=}')
+        grid = sb.catplot(data=df, x=x, y=y, row=row, col=column
+                        , hue=hue
+                        , kind=plot_type
+                        # , legend_out=False
+                        , **kwargs
+                       )
+
+        grid = self.set_grid_defaults(grid)
+
+        return grid
+
+
+    def plot_relplot(self, df, x='v2x_rate', y='cbr', hue='moduleName', style='prefix', row='dcc', column='traciStart', plot_type='line', **kwargs):
+        kwargs = self.set_plot_specific_options(plot_type, kwargs)
 
         logd(f'PlottingTask::plot_relplot: {df.columns=}')
         grid = sb.relplot(data=df, x=x, y=y, row=row, col=column
                         , hue=hue
-                        # , hue_order=['itsg5_FFK_SCO', 'itsg5_FFK_MCO_MCM', 'itsg5_FFK_MCO_MCM-IDSM']
                         , kind=plot_type
                         , style=style
                         , alpha=self.alpha
-                        # , boxprops=boxprops, medianprops=medianprops, flierprops=flierprops
                         # , legend_out=False
                         , **kwargs
                        )
