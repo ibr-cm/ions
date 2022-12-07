@@ -325,6 +325,9 @@ class PlottingTask(YAMLObject):
         medianprops = {'color':'red'}
         flierprops = dict(color='red', marker='+', markersize=3, markeredgecolor='red', linewidth=0.1, alpha=0.1)
 
+        if plot_type == 'line':
+            kwargs['errorbar'] = 'sd'
+
         logd(f'PlottingTask::plot_relplot: {df.columns=}')
         grid = sb.relplot(data=df, x=x, y=y, row=row, col=column
                         , hue=hue
