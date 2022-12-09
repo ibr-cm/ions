@@ -515,6 +515,7 @@ class RawExtractor(Extractor):
             minimal = self.minimal_tags
         else:
             minimal = True
+            setattr(self, 'minimal_tags', minimal)
 
         if hasattr(self, 'base_tags'):
             base_tags = self.base_tags
@@ -523,11 +524,13 @@ class RawExtractor(Extractor):
                 base_tags = BASE_TAGS_EXTRACTION_MINIMAL
             else:
                 base_tags = BASE_TAGS_EXTRACTION_FULL
+            setattr(self, 'base_tags', base_tags)
 
         if hasattr(self, 'additional_tags'):
             additional_tags = self.additional_tags
         else:
             additional_tags = []
+            setattr(self, 'additional_tags', additional_tags)
 
         return minimal, base_tags, additional_tags
 
