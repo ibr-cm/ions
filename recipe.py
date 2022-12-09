@@ -420,8 +420,7 @@ class RawExtractor(Extractor):
         # augment data with the extracted parameter tags
         for tag in tags:
             mapping = tag.get_mapping()
-            if (not minimal) \
-                    or (list(mapping)[0] in allowed_tags):
+            if list(mapping)[0] in allowed_tags:
                 data = data.assign(**mapping)
                 applied_tags.append(tag)
         logd(f': {applied_tags=}')
