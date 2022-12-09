@@ -703,11 +703,14 @@ class MatchingExtractor(RawExtractor):
         return matching_signals
 
     @staticmethod
-    def extract_alls_signals(db_file, signals, base_tags=None, additional_tags=[], categorical_columns=[], excluded_categorical_columns=set()
-                             , moduleName:bool=True
-                             , simtimeRaw:bool=True
-                             , eventNumber:bool=False
-                             ):
+    def extract_all_signals(db_file, signals
+                            , categorical_columns=[], excluded_categorical_columns=set()
+                            , base_tags=None, additional_tags=[]
+                            , minimal_tags=True
+                            , moduleName:bool=True
+                            , simtimeRaw:bool=True
+                            , eventNumber:bool=False
+                            ):
         result_list = []
         for signal, alias in signals:
             res = RawExtractor.read_signals_from_file(db_file, signal, alias \
@@ -755,7 +758,7 @@ class MatchingExtractor(RawExtractor):
             # get all signal names that match the given regular expression
             matching_signals_result = dask.delayed(MatchingExtractor.get_matching_signals)(db_file, self.pattern, self.alias_pattern)
             # get the data for the matched signals
-            res = dask.delayed(MatchingExtractor.extract_alls_signals)(db_file, matching_signals_result
+            res = dask.delayed(MatchingExtractor.extract_all_signals)(db_file, matching_signals_result
                                                                        , categorical_columns, categorical_columns_excluded
                                                                        , base_tags=base_tags, additional_tags=additional_tags
                                                                        , minimal_tags=minimal_tags
