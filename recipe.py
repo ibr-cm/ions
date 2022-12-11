@@ -213,6 +213,14 @@ class PlottingTask(YAMLObject):
                                         , row=self.row, column=self.column
                                        )
 
+        def heatplot(plot_type):
+                return self.plot_heatplot(df=selected_data
+                                        , plot_type=plot_type
+                                        , x=self.x, y=self.y
+                                        , hue=self.hue, style=self.style
+                                        , row=self.row, column=self.column
+                                       )
+
         fig = None
         match self.plot_type:
             case 'lineplot':
@@ -233,6 +241,8 @@ class PlottingTask(YAMLObject):
                 fig = catplot('count')
             case 'point':
                 fig = catplot('point')
+            case 'heat':
+                fig = heatplot('heat')
             case _:
                 raise Exception(f'Unknown plot type: "{self.plot_type}"')
 
@@ -340,6 +350,140 @@ class PlottingTask(YAMLObject):
                         , **kwargs
                        )
 
+        grid = self.set_grid_defaults(grid)
+
+        return grid
+
+
+    def plot_heatplot(self, df, x='posX', y='posX', z='cbr', hue='moduleName', style='prefix', row=None, column=None, **kwargs):
+        kwargs.pop('plot_type')
+        print(f'-'*40)
+        print(f'{df=}')
+        print(f'-'*40)
+
+        setattr(self, 'xlabel', None)
+        setattr(self, 'ylabel', None)
+
+        def bin_position_f(df, column):
+            bin_position = lambda x: int(x / self.bin_size) * self.bin_size
+            df[column] = df[column].transform(bin_position)
+
+        # bin the position data
+        bin_position_f(df, x)
+        bin_position_f(df, y)
+
+        logi(f'PlottingTask::plot_data: {df=}')
+        logd(f'PlottingTask::plot_relplot: {df.columns=}')
+
+        if not column is None:
+            return self.plot_heatmap_grid(df, x, y, z, column)
+        else:
+            return self.plot_heatmap_nogrid(df, x, y, z)
+
+
+    def plot_heatmap_grid(self, df, x, y, z, column):
+        grid = sb.FacetGrid(df, col=column)
+
+        def heatmap(*args, **kwargs):
+            df = kwargs.pop('data')
+            print('-*-'*20)
+            print(f'{df=}')
+            df.loc[y] = df[y].transform(lambda x: -x)
+            df_mean = df[[column, x, y, z]].groupby(by=[column, x, y]).aggregate(pd.Series.median).reset_index()
+            # TODO: configurable fill value
+            df_pivot = df_mean.pivot(index=y, columns=x, values=z).fillna(0.)
+            if self.yrange:
+                kwargs['vmin'] = self.yrange[0]
+                kwargs['vmax'] = self.yrange[1]
+            kwargs.pop('color')
+
+            ax = mpl.pyplot.gca()
+            mesh = ax.pcolormesh(df_pivot
+                          # , cbar=True
+                          , cmap=sb.color_palette("blend:white,red", as_cmap=True)
+                          # , cmap=self.colormap
+                          # , norm='linear'
+                          , **kwargs
+                          )
+            ax.figure.colorbar(mesh, ax=ax)
+            ax.set_xticks([])
+            ax.set_yticks([])
+            # ax.set_xlabel('')
+            # ax.set_ylabel('')
+            return ax
+
+            # ax = sb.heatmap(df_pivot
+            #               , cbar=True
+            #               , cmap=sb.color_palette(self.colormap, as_cmap=True)
+            #               # , robust=True
+            #               , square=True
+            #               , norm='linear'
+            #               # , annot=True
+            #                   # , hue='cbr'
+            #               , alpha=self.alpha
+            #             , size=9
+            #               , **kwargs
+            #                   )
+            # print(f'{ax.__dict__=}')
+            # ax.set_xticks([])
+            # ax.set_yticks([])
+            # ax.set_xlabel('')
+            # ax.set_ylabel('')
+            # print(f'{type(ax)=}')
+            # print(f'{type(ax.figure)=}')
+            # return ax
+
+        grid.map_dataframe(heatmap, z)
+
+        grid.set_axis_labels('','')
+        grid.set_xlabels('','')
+        grid.set_ylabels('','')
+        # grid.set_size((6,6))
+        grid.tight_layout()
+
+        return grid
+
+
+    def plot_heatmap_nogrid(self, df, x, y, z):
+        # tranform positions on the y-axis
+        # df.loc[y] = df[y].transform(lambda x: -x)
+        df_mean = df[[x, y, z]].groupby(by=[x, y]).aggregate(pd.Series.median).reset_index()
+        df_pivot = df_mean.pivot(index=y, columns=x, values=z).fillna(0.)
+
+        kwargs = {}
+        if self.yrange:
+            kwargs['vmin'] = self.yrange[0]
+            kwargs['vmax'] = self.yrange[1]
+
+        # fig, ax = mpl.pyplot.subplots()
+        # mesh = ax.pcolormesh(df_pivot
+        #               # , cbar=True
+        #               # , cmap=sb.color_palette("blend:white,red", as_cmap=True)
+        #                 , cmap=sb.color_palette(self.colormap, as_cmap=True)
+        #               # , cmap=self.colormap
+        #               , norm='linear'
+        #               , **kwargs
+        #               )
+        # fig.colorbar(mesh, ax=ax)
+        # ax.set_xticks([])
+        # ax.set_yticks([])
+        # return fig
+
+        grid = sb.heatmap(data=df_pivot
+                          , cbar=True
+                          , cmap=sb.color_palette(self.colormap, as_cmap=True)
+                          # , robust=True
+                          , square=True
+                          , norm='linear'
+                          # , annot=True
+                              # , hue='cbr'
+                          , alpha=self.alpha
+                          , **kwargs
+                              )
+
+        grid.set_xticks([])
+        grid.set_yticks([])
+        grid.figure.tight_layout()
         grid = self.set_grid_defaults(grid)
 
         return grid
