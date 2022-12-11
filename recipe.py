@@ -165,15 +165,76 @@ class PlottingTask(YAMLObject):
         reader = PlottingReaderFeather(self.input_files)
         self.data = reader.read_data()
 
-    def set_defaults(self):
-        logi(f'set_defaults: using {self.matplotlib_backend=}')
+    def set_backend(self):
+        if not hasattr(self, 'matplotlib_backend'):
+            setattr(self, 'matplotlib_backend', 'agg')
         mpl.use(self.matplotlib_backend)
+        logi(f'set_backend: using backend "{self.matplotlib_backend}"')
 
+    def set_theme(self):
+        if not hasattr(self, 'axes_style'):
+            setattr(self, 'axes_style', 'dark')
         sb.set_theme(style=self.axes_style)
+
+    def set_defaults(self):
+        if not hasattr(self, 'legend'):
+            setattr(self, 'legend', True)
+
+        if not hasattr(self, 'alpha'):
+            setattr(self, 'alpha', 1.)
+
+        if not hasattr(self, 'xlabel'):
+            setattr(self, 'xlabel', self.x)
+        if not hasattr(self, 'ylabel'):
+            setattr(self, 'ylabel', self.x)
+
+        if not hasattr(self, 'bin_size'):
+            setattr(self, 'bin_size', 10.)
+
+        if not hasattr(self, 'title_template'):
+            setattr(self, 'title_template', None)
+
+        if not hasattr(self, 'bbox_inches'):
+            setattr(self, 'bbox_inches', 'tight')
+
+        if not hasattr(self, 'legend_location'):
+            setattr(self, 'legend_location', 'best')
+
+        if not hasattr(self, 'yrange'):
+            setattr(self, 'yrange', None)
+        else:
+            if type(self.yrange) == str:
+                self.yrange = eval(self.yrange)
+
+        if not hasattr(self, 'colormap'):
+            setattr(self, 'colormap', sb.color_palette('prism', as_cmap=True))
+        # else:
+            # setattr(self, 'colormap', sb.color_palette(self.colormap, as_cmap=True))
+
+    # def set_defaults_from_dict(self, d):
+    #     for k in d:
+    #         if not hasattr(self, k):
+    #             setattr(self, k, d[k])
+
+    # def set_defaults(self):
+    #     d = {
+    #            'alpha': 0.9
+    #          , 'xlabel': lambda self: self.x
+    #          , 'ylabel': lambda self: self.y
+    #          , 'bin_size': 10
+    #          , 'title_template': None
+    #          , 'legend_location': 'best'
+    #          , 'yrange': None
+    #          , 'colormap': None
+    #         }
+
+    #     self.set_defaults_from_dict(d)
 
 
     def plot_data(self, data):
-        # logi(f'PlottingTask::plot_data: {data.memory_usage(deep=True)=}')
+        # the backend has to be set in the worker
+        self.set_backend()
+        self.set_theme()
         self.set_defaults()
 
 
@@ -184,14 +245,6 @@ class PlottingTask(YAMLObject):
             selected_data = data
 
         # TODO: the default shouldn't be defined here...
-        if not hasattr(self, 'legend'):
-            setattr(self, 'legend', True)
-
-        if not hasattr(self, 'y_range'):
-            setattr(self, 'y_range', None)
-        else:
-            y_range_tuple = tuple(list(map(lambda x: float(str.strip(x)), self.y_range.strip('()').split(','))))
-            setattr(self, 'y_range', y_range_tuple)
 
         for attr in [ 'hue', 'style', 'row', 'column' ]:
             if not hasattr(self, attr):
@@ -247,19 +300,29 @@ class PlottingTask(YAMLObject):
             case _:
                 raise Exception(f'Unknown plot type: "{self.plot_type}"')
 
-        fig.tight_layout(pad=0.1)
+        if hasattr(fig, 'tight_layout'):
+            fig.tight_layout(pad=0.1)
 
-        if not fig.legend is None and self.legend is None:
-            fig.legend.remove()
+        if self.legend is None and not fig.legend is None:
+            if  isinstance(fig.legend, Callable):
+                fig.legend().remove()
+            else:
+                fig.legend.remove()
 
-        fig.savefig(self.output_file, bbox_inches=self.bbox_inches)
-        logi(f'{fig=} saved to {self.output_file}')
+        if hasattr(fig, 'savefig'):
+            fig.savefig(self.output_file, bbox_inches=self.bbox_inches)
+            logi(f'{fig=} saved to {self.output_file}')
+        else:
+            mpl.pyplot.savefig(self.output_file)
+            logi(f'{fig=} saved to {self.output_file}')
 
         return fig
 
 
     def execute(self):
-        # the defaults have to be set in the main thread
+        # the backend has to be set in the worker
+        self.set_backend()
+        self.set_theme()
         self.set_defaults()
 
         data = self.data_repo[self.dataset_name]
@@ -287,8 +350,8 @@ class PlottingTask(YAMLObject):
         for axis in grid.figure.axes:
             axis.set_xlabel(self.xlabel)
             axis.set_ylabel(self.ylabel)
-            if self.y_range:
-                axis.set_ylim(self.y_range)
+            if self.yrange:
+                axis.set_ylim(self.yrange)
 
         # strings of length of zero evaluate to false, so test explicitly for None
         if not self.title_template == None:
@@ -297,7 +360,7 @@ class PlottingTask(YAMLObject):
         # logi(type(ax))
         # ax.fig.get_axes()[0].legend(loc='lower left', bbox_to_anchor=(0, 1, 1, 1))
 
-        if not grid.legend is None:
+        if grid.legend and (isinstance(grid.legend, mpl.legend.Legend) or not grid.legend() is None):
             if hasattr(self, 'legend_title'):
                 sb.move_legend(grid, loc=self.legend_location, title=self.legend_title)
             else:
