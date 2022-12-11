@@ -34,7 +34,12 @@ from dask.distributed import Client
 
 # ---
 
-from recipe import Recipe, RawExtractor
+from recipe import Recipe
+
+import extractors
+import transforms
+import exporters
+import plots
 
 from sql_queries import generate_signal_query
 
