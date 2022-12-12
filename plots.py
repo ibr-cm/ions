@@ -358,7 +358,7 @@ class PlottingTask(YAMLObject):
             print('-*-'*20)
             print(f'{df=}')
             df.loc[y] = df[y].transform(lambda x: -x)
-            df_mean = df[[column, x, y, z]].groupby(by=[column, x, y]).aggregate(pd.Series.median).reset_index()
+            df_mean = df[[column, x, y, z]].groupby(by=[column, x, y]).aggregate(pd.Series.mean).reset_index()
             # TODO: configurable fill value
             df_pivot = df_mean.pivot(index=y, columns=x, values=z).fillna(0.)
             if self.yrange:
@@ -416,7 +416,7 @@ class PlottingTask(YAMLObject):
     def plot_heatmap_nogrid(self, df, x, y, z):
         # tranform positions on the y-axis
         # df.loc[y] = df[y].transform(lambda x: -x)
-        df_mean = df[[x, y, z]].groupby(by=[x, y]).aggregate(pd.Series.median).reset_index()
+        df_mean = df[[x, y, z]].groupby(by=[x, y]).aggregate(pd.Series.mean).reset_index()
         df_pivot = df_mean.pivot(index=y, columns=x, values=z).fillna(0.)
 
         kwargs = {}
