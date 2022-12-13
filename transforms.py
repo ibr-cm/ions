@@ -5,6 +5,8 @@ from yaml import YAMLObject
 import numpy as np
 import pandas as pd
 
+import dask
+
 from common.logging_facilities import log, logi, loge, logd, logw
 
 
