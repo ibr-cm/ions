@@ -326,9 +326,9 @@ class PlottingTask(YAMLObject):
 
     def plot_heatplot(self, df, x='posX', y='posX', z='cbr', hue='moduleName', style='prefix', row=None, column=None, **kwargs):
         kwargs.pop('plot_type')
-        print(f'-'*40)
-        print(f'{df=}')
-        print(f'-'*40)
+        logd(f'-'*40)
+        logd(f'{df=}')
+        logd(f'-'*40)
 
         setattr(self, 'xlabel', None)
         setattr(self, 'ylabel', None)
@@ -355,8 +355,8 @@ class PlottingTask(YAMLObject):
 
         def heatmap(*args, **kwargs):
             df = kwargs.pop('data')
-            print('-*-'*20)
-            print(f'{df=}')
+            logd('-*-'*20)
+            logd(f'{df=}')
             df.loc[y] = df[y].transform(lambda x: -x)
             df_mean = df[[column, x, y, z]].groupby(by=[column, x, y]).aggregate(pd.Series.mean).reset_index()
             # TODO: configurable fill value
@@ -393,13 +393,13 @@ class PlottingTask(YAMLObject):
             #             , size=9
             #               , **kwargs
             #                   )
-            # print(f'{ax.__dict__=}')
+            # logd(f'{ax.__dict__=}')
             # ax.set_xticks([])
             # ax.set_yticks([])
             # ax.set_xlabel('')
             # ax.set_ylabel('')
-            # print(f'{type(ax)=}')
-            # print(f'{type(ax.figure)=}')
+            # logd(f'{type(ax)=}')
+            # logd(f'{type(ax.figure)=}')
             # return ax
 
         grid.map_dataframe(heatmap, z)
