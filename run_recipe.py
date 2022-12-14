@@ -10,7 +10,8 @@ from typing import Callable
 # ---
 
 import logging
-from common.logging_facilities import log, logi, loge, logd, logw \
+
+from common.logging_facilities import logi, loge, logd, logw \
                                         , setup_logging_defaults, set_logging_level
 
 # ---

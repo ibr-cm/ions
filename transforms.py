@@ -7,7 +7,7 @@ import pandas as pd
 
 import dask
 
-from common.logging_facilities import log, logi, loge, logd, logw
+from common.logging_facilities import logi, loge, logd, logw
 
 
 class Transform(YAMLObject):

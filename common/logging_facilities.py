@@ -1,23 +1,9 @@
 import logging
 
-# ---
-
-def log(msg, level=logging.INFO, *args):
-    logging.log(msg=msg, level=level, *args)
-
-def logd(msg, *args):
-    logging.log(msg=msg, level=logging.DEBUG, *args)
-
-def logw(msg, *args):
-    logging.log(msg=msg, level=logging.WARN, *args)
-
-def loge(msg, *args):
-    logging.log(msg='-'*40, level=logging.ERROR, *args)
-    logging.log(msg=msg, level=logging.ERROR, *args)
-    logging.log(msg='-'*40, level=logging.ERROR, *args)
-
-def logi(msg, *args):
-    logging.log(msg=msg, level=logging.INFO, *args)
+from logging import debug as logd
+from logging import info as logi
+from logging import warning as logw
+from logging import error as loge
 
 # ---
 
