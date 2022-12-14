@@ -453,7 +453,7 @@ def main():
     options = parse_arguments(sys.argv[1:])
 
     # setup logging level again
-    set_logging_level(logging.WARNING)
+    set_logging_level(options.log_level)
 
     logd(f'{options=}')
 
