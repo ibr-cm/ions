@@ -11,7 +11,7 @@ from typing import Callable
 
 import logging
 from common.logging_facilities import log, logi, loge, logd, logw \
-                                        , setup_logging_defaults
+                                        , setup_logging_defaults, set_logging_level
 
 # ---
 
@@ -379,7 +379,17 @@ def setup_pandas():
     pd.set_option('display.max_colwidth', None)
 
 
+class WorkerPlugin(dask.distributed.WorkerPlugin):
+    def __init__(self, options, *args, **kwargs):
+        self.options = options
+
+    def setup(self, worker: dask.distributed.Worker):
+        setup_logging_defaults(level=self.options.log_level)
+
+
 def setup_dask(options):
+    plugin = WorkerPlugin(options)
+
     # single-threaded mode for debugging
     if options.single_threaded:
         logi('using local single-threaded process cluster')
@@ -402,7 +412,9 @@ def setup_dask(options):
                              , interface = 'lo'
                              , shared_temp_directory = options.tmpdir
                              )
-        return Client(cluster)
+        client = Client(cluster)
+        client.register_worker_plugin(plugin)
+        return client
     elif options.cluster:
         if options.cluster == 'local':
             logi('using local process cluster')
@@ -412,14 +424,18 @@ def setup_dask(options):
                                  , local_directory = options.tmpdir
                                  )
             cluster.scale(options.worker)
-            return Client(cluster)
+            client = Client(cluster)
+            client.register_worker_plugin(plugin)
+            return client
         else:
             logi(f'using distributed cluster at {options.cluster}')
             client = Client(options.cluster)
+            client.register_worker_plugin(plugin)
             return client
     else:
         logi(f'using local cluster with dashboard at localhost:8787')
-        client = Client(dashboard_address='localhost:8787')
+        client = Client(dashboard_address='localhost:8787', n_workers=options.worker)
+        client.register_worker_plugin(plugin)
         return client
 
 
@@ -437,8 +453,7 @@ def main():
     options = parse_arguments(sys.argv[1:])
 
     # setup logging level again
-    logging.getLogger().setLevel(options.log_level)
-    logi(f'logging level set to {logging.getLevelName(options.log_level)}')
+    set_logging_level(logging.WARNING)
 
     logd(f'{options=}')
 
