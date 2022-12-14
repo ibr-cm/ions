@@ -385,6 +385,7 @@ class WorkerPlugin(dask.distributed.WorkerPlugin):
 
     def setup(self, worker: dask.distributed.Worker):
         setup_logging_defaults(level=self.options.log_level)
+        setup_pandas()
 
 
 def setup_dask(options):
