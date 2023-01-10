@@ -119,6 +119,12 @@ class PlottingTask(YAMLObject):
         if not hasattr(self, 'invert_yaxis'):
             setattr(self, 'invert_yaxis', False)
 
+        if not hasattr(self, 'size'):
+            setattr(self, 'size', None)
+        else:
+            if type(self.size) == str:
+                self.size = eval(self.size)
+
         if not hasattr(self, 'colormap'):
             setattr(self, 'colormap', sb.color_palette('prism', as_cmap=True))
         # else:
@@ -259,6 +265,9 @@ class PlottingTask(YAMLObject):
 
 
     def set_grid_defaults(self, grid):
+        if self.size:
+            grid.figure.set_size_inches(self.size)
+
         # ax.fig.gca().set_ylim(ylimit)
         for axis in grid.figure.axes:
             axis.set_xlabel(self.xlabel)
