@@ -116,6 +116,9 @@ class PlottingTask(YAMLObject):
             if type(self.yrange) == str:
                 self.yrange = eval(self.yrange)
 
+        if not hasattr(self, 'invert_yaxis'):
+            setattr(self, 'invert_yaxis', False)
+
         if not hasattr(self, 'colormap'):
             setattr(self, 'colormap', sb.color_palette('prism', as_cmap=True))
         # else:
@@ -260,6 +263,10 @@ class PlottingTask(YAMLObject):
         for axis in grid.figure.axes:
             axis.set_xlabel(self.xlabel)
             axis.set_ylabel(self.ylabel)
+
+            if self.invert_yaxis:
+                axis.invert_yaxis()
+
             if self.yrange:
                 axis.set_ylim(self.yrange)
 
