@@ -27,6 +27,11 @@ from dask.delayed import Delayed
 
 # ---
 
+from data_io import DataSet, read_from_file
+from extractors import RawExtractor, DataAttributes
+
+# ---
+
 class PlottingReaderFeather(YAMLObject):
     yaml_tag = u'!PlottingReaderFeather'
 
