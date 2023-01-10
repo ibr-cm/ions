@@ -110,6 +110,12 @@ class PlottingTask(YAMLObject):
         if not hasattr(self, 'legend_location'):
             setattr(self, 'legend_location', 'best')
 
+        if not hasattr(self, 'legend_bbox'):
+            setattr(self, 'legend_bbox', None)
+        else:
+            if type(self.legend_bbox) == str:
+                self.legend_bbox = eval(self.legend_bbox)
+
         if not hasattr(self, 'yrange'):
             setattr(self, 'yrange', None)
         else:
@@ -297,9 +303,15 @@ class PlottingTask(YAMLObject):
 
         if grid.legend and (isinstance(grid.legend, mpl.legend.Legend) or not grid.legend() is None):
             if hasattr(self, 'legend_title'):
-                sb.move_legend(grid, loc=self.legend_location, title=self.legend_title)
+                if self.legend_bbox:
+                    sb.move_legend(grid, loc=self.legend_location, title=self.legend_title, bbox_to_anchor=self.legend_bbox)
+                else:
+                    sb.move_legend(grid, loc=self.legend_location, title=self.legend_title)
             else:
-                sb.move_legend(grid, loc=self.legend_location)
+                if self.legend_bbox:
+                    sb.move_legend(grid, loc=self.legend_location, bbox_to_anchor=self.legend_bbox)
+                else:
+                    sb.move_legend(grid, loc=self.legend_location)
 
         return grid
 
