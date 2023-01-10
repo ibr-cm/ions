@@ -125,6 +125,12 @@ class PlottingTask(YAMLObject):
             if type(self.size) == str:
                 self.size = eval(self.size)
 
+        if not hasattr(self, 'xticklabels'):
+            setattr(self, 'xticklabels', None)
+        else:
+            if type(self.xticklabels) == str:
+                self.xticklabels = eval(self.xticklabels)
+
         if not hasattr(self, 'colormap'):
             setattr(self, 'colormap', sb.color_palette('prism', as_cmap=True))
         # else:
@@ -278,6 +284,9 @@ class PlottingTask(YAMLObject):
 
             if self.yrange:
                 axis.set_ylim(self.yrange)
+
+            if self.xticklabels:
+                axis.set_xticklabels(self.xticklabels)
 
         # strings of length of zero evaluate to false, so test explicitly for None
         if not self.title_template == None:
