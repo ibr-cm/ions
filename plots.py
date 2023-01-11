@@ -116,6 +116,12 @@ class PlottingTask(YAMLObject):
             if type(self.legend_bbox) == str:
                 self.legend_bbox = eval(self.legend_bbox)
 
+        if not hasattr(self, 'legend_labels'):
+            setattr(self, 'legend_labels', None)
+        else:
+            if type(self.legend_bbox) == str:
+                self.legend_labels = eval(self.legend_labels)
+
         if not hasattr(self, 'yrange'):
             setattr(self, 'yrange', None)
         else:
@@ -312,6 +318,10 @@ class PlottingTask(YAMLObject):
                     sb.move_legend(grid, loc=self.legend_location, bbox_to_anchor=self.legend_bbox)
                 else:
                     sb.move_legend(grid, loc=self.legend_location)
+
+            if self.legend_labels:
+                for t, l in zip(grid._legend.texts, self.legend_labels):
+                    t.set_text(l)
 
         return grid
 
