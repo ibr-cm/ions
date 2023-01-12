@@ -9,6 +9,11 @@ from yaml import YAMLObject
 import numpy as np
 import pandas as pd
 
+# Pandas serializing handlers
+import jsonpickle
+import jsonpickle.ext.pandas as jsonpickle_pandas
+jsonpickle_pandas.register_handlers()
+
 import dask
 
 from common.logging_facilities import logi, loge, logd, logw
@@ -47,7 +52,7 @@ class FileResultProcessor(YAMLObject):
                                    )
         elif file_format == 'json':
             f = open(filename, 'w')
-            f.write(json.dumps(df))
+            f.write(jsonpickle.encode(df, unpicklable=False, make_refs=False, keys=True))
             f.close()
 
         else:
