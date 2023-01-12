@@ -93,6 +93,11 @@ class FileResultProcessor(YAMLObject):
     def execute(self):
         data_list = self.data_repo[self.dataset_name]
 
+        if not hasattr(self, 'raw'):
+            setattr(self, 'raw', False)
+        if not hasattr(self, 'format'):
+            setattr(self, 'format', 'feather')
+
         job_list = []
 
         if self.concatenate:
