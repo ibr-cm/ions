@@ -1,3 +1,4 @@
+import operator
 from typing import Union, List, Callable
 
 from yaml import YAMLObject
@@ -17,6 +18,8 @@ import seaborn as sb
 import dask
 
 from common.logging_facilities import logi, loge, logd, logw
+
+from extractors import DataAttributes
 
 
 class Transform(YAMLObject):
@@ -95,6 +98,7 @@ class GroupedAggregationTransform(Transform, YAMLObject):
         self.output_column = output_column
         self.grouping_columns = grouping_columns
         self.raw = raw
+        self.pre_concatenate = pre_concatenate
 
     def aggregate_frame(self, data):
         # create a copy of the global environment for evaluating the extra
@@ -140,9 +144,19 @@ class GroupedAggregationTransform(Transform, YAMLObject):
         data = self.data_repo[self.dataset_name]
 
         jobs = []
-        for d, attributes in data:
-            job = dask.delayed(self.aggregate_frame)(d)
-            jobs.append((job, attributes))
+
+        if not hasattr(self, 'pre_concatenate'):
+            setattr(self, 'pre_concatenate', False)
+
+        if self.pre_concatenate:
+            concat_result = dask.delayed(pd.concat)(map(operator.itemgetter(0), data), ignore_index=True)
+            job = dask.delayed(self.aggregate_frame)(concat_result)
+            # TODO: better DataAttributes
+            jobs.append((job, DataAttributes(source_file=self.input_column, alias=self.output_column)))
+        else:
+            for d, attributes in data:
+                job = dask.delayed(self.aggregate_frame)(d)
+                jobs.append((job, attributes))
 
         self.data_repo[self.output_dataset_name] = jobs
 
