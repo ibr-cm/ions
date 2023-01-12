@@ -1,5 +1,8 @@
 import pathlib
 import time
+import operator
+
+import json
 
 from yaml import YAMLObject
 
@@ -25,7 +28,7 @@ class FileResultProcessor(YAMLObject):
             logw('>>>> save_to_disk: input DataFrame is None')
             return
 
-        if df.empty:
+        if not self.raw and df.empty:
             logw('>>>> save_to_disk: input DataFrame is empty')
             return
 
@@ -42,34 +45,47 @@ class FileResultProcessor(YAMLObject):
                                     , format='table'
                                     , key=hdf_key
                                    )
+        elif file_format == 'json':
+            f = open(filename, 'w')
+            f.write(json.dumps(df))
+            f.close()
+
         else:
             raise Exception('Unknown file format')
 
         stop = time.time()
         logi(f'>>>> save_to_disk: it took {stop - start}s to save {filename}')
-        # logd(f'>>>> save_to_disk: {df=}')
-        logd(f'>>>> save_to_disk: {df.memory_usage(deep=True)=}')
+        if not self.raw:
+            logd(f'>>>> save_to_disk: {df.memory_usage(deep=True)=}')
 
     def set_data_repo(self, data_repo):
         self.data_repo = data_repo
 
 
     def execute_concatenated(self, data_list, job_list):
-        concat_result = dask.delayed(pd.concat)(map(operator.itemgetter(0), data_list), ignore_index=True)
-        convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(concat_result)
-        job = dask.delayed(self.save_to_disk)(convert_columns_result, self.output_filename)
+        if self.raw:
+            job = dask.delayed(self.save_to_disk)(map(operator.itemgetter(0), data_list), self.output_filename, self.format)
+        else:
+            concat_result = dask.delayed(pd.concat)(map(operator.itemgetter(0), data_list), ignore_index=True)
+            convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(concat_result)
+            job = dask.delayed(self.save_to_disk)(convert_columns_result, self.output_filename, self.format)
+
         job_list.append(job)
 
         return job_list
 
     def execute_separated(self, data_list, job_list):
         for data, attributes in data_list:
-            convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(data)
             output_filename = str(pathlib.PurePath(self.output_filename).parent) + '/' \
                               + str(pathlib.PurePath(attributes.source_file).stem) \
                               + '_' +attributes.alias \
-                              + '.feather'
-            job = dask.delayed(self.save_to_disk)(convert_columns_result, output_filename)
+                              + '.' + self.format
+            if self.raw:
+                job = dask.delayed(self.save_to_disk)(data, output_filename, self.format)
+            else:
+                convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(data)
+                job = dask.delayed(self.save_to_disk)(convert_columns_result, output_filename, self.format)
+
             job_list.append(job)
 
         return job_list
