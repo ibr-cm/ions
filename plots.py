@@ -84,7 +84,10 @@ class PlottingTask(YAMLObject):
     def set_theme(self):
         if not hasattr(self, 'axes_style'):
             setattr(self, 'axes_style', 'dark')
-        sb.set_theme(style=self.axes_style)
+        if not hasattr(self, 'context'):
+            setattr(self, 'context', 'paper')
+
+        sb.set(context=self.context, style=self.axes_style, font_scale=0.9, rc=self.matplotlib_rc)
 
     def set_defaults(self):
         if not hasattr(self, 'legend'):
@@ -119,8 +122,17 @@ class PlottingTask(YAMLObject):
         if not hasattr(self, 'legend_labels'):
             setattr(self, 'legend_labels', None)
         else:
-            if type(self.legend_bbox) == str:
+            if type(self.legend_labels) == str:
                 self.legend_labels = eval(self.legend_labels)
+
+        if not hasattr(self, 'context'):
+                setattr(self, 'context', None)
+
+        if not hasattr(self, 'matplotlib_rc'):
+            setattr(self, 'matplotlib_rc', None)
+        else:
+            if type(self.matplotlib_rc) == str:
+                self.matplotlib_rc = eval(self.matplotlib_rc)
 
         if not hasattr(self, 'yrange'):
             setattr(self, 'yrange', None)
