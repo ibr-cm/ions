@@ -274,6 +274,7 @@ def parse_arguments(arguments):
     parser.add_argument('--single-threaded', action='store_true', default=False, help='run singlethreaded')
 
     parser.add_argument('--slurm', action='store_true', default=False, help='use SLURM cluster')
+    parser.add_argument('--partition', type=str, help='partition for SLURM')
     parser.add_argument('--nodelist', type=str, help='nodelist for SLURM')
 
     parser.add_argument('--tmpdir', type=str, default='/opt/tmpssd/tmp', help='directory for temporary files')
@@ -286,7 +287,9 @@ def parse_arguments(arguments):
 
     if args.slurm:
         if not args.nodelist:
-            raise Exception('A nodelist ist required when using SLURM')
+            raise Exception('A nodelist ist required when using SLURM.')
+        if not args.partition:
+            raise Exception('A partition ist required when using SLURM.')
 
     def set_dict_arg_from_string(option, arg_name):
         if option:
@@ -410,7 +413,7 @@ def setup_dask(options):
                              , memory = "1GB"
                              , account = "dask_test"
                              # , queue = "normal"
-                             , job_extra_directives = [ f'--nodelist={options.nodelist}' ]
+                             , job_extra_directives = [ f'--nodelist={options.nodelist} --partition={options.partition}' ]
                              , interface = 'lo'
                              , shared_temp_directory = options.tmpdir
                              )
