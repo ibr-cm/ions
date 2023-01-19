@@ -151,18 +151,21 @@ def execute_evaluation_phase(recipe:Recipe, options, data_repo):
 def execute_plotting_phase(recipe:Recipe, options, data_repo):
     logi(f'execute_plotting_phase: {recipe}  {recipe.name}')
 
-    for dataset_name in recipe.plot.reader:
-        if options.run_tree and not dataset_name in options.run_tree['plot']['reader']:
-            logi(f'skipping exporter {dataset_name}')
-            continue
-        reader = recipe.plot.reader[dataset_name]
-        logi(f'plot: loading dataset: "{dataset_name=}"')
-        if dataset_name in options.reader_overrides:
-            reader.input_files = options.reader_overrides[dataset_name]
-            logi(f'plot: execute_plotting_phase overriding input files for "{dataset_name}": "{reader.input_files=}"')
-        data = reader.read_data()
-        data_repo[dataset_name] = data
-        logi(f'added reader {dataset_name}')
+    if not hasattr(recipe.plot, 'reader'):
+        logi('execute_plotting_phase: no `reader` in recipe.Plot')
+    else:
+        for dataset_name in recipe.plot.reader:
+            if options.run_tree and not dataset_name in options.run_tree['plot']['reader']:
+                logi(f'skipping exporter {dataset_name}')
+                continue
+            reader = recipe.plot.reader[dataset_name]
+            logi(f'plot: loading dataset: "{dataset_name=}"')
+            if dataset_name in options.reader_overrides:
+                reader.input_files = options.reader_overrides[dataset_name]
+                logi(f'plot: execute_plotting_phase overriding input files for "{dataset_name}": "{reader.input_files=}"')
+            data = reader.read_data()
+            data_repo[dataset_name] = data
+            logi(f'added reader {dataset_name}')
 
     logd('<<<-<-<--<-<-<--<-<-<')
     logd(f'plot: {data_repo=}')
