@@ -161,3 +161,92 @@ class GroupedAggregationTransform(Transform, YAMLObject):
         self.data_repo[self.output_dataset_name] = jobs
 
         return jobs
+
+
+class GroupedFunctionTransform(Transform, YAMLObject):
+    yaml_tag = u'!GroupedFunctionTransform'
+
+    def __init__(self, dataset_name:str, output_dataset_name:str
+                 , input_column:str, output_column:str
+                 , grouping_columns:List
+                 , raw:bool=False
+                 , timestamp_selector:Callable=pd.DataFrame.head):
+        self.dataset_name = dataset_name
+        self.output_dataset_name = output_dataset_name
+        self.input_column = input_column
+        self.output_column = output_column
+        self.grouping_columns = grouping_columns
+        self.raw = raw
+        self.pre_concatenate = pre_concatenate
+
+    def aggregate_frame(self, data):
+        # create a copy of the global environment for evaluating the extra
+        # code fragment so as to not pollute the global namespace itself
+        global_env = globals().copy()
+        locals_env = locals().copy()
+
+        logd(f'{data=}')
+        # logd(f'{data.hour.unique()=}')
+
+        if type(self.extra_code) == str:
+            # compile the code fragment
+            self.extra_code = compile(self.extra_code, filename='<string>', mode='exec')
+            # actually evaluate the code within the given namespace
+            eval(self.extra_code, global_env, locals_env)
+
+        if type(self.transform_function) == str:
+            # evaluate the expression within the given environment
+            self.transform_function = eval(self.transform_function, global_env, locals_env)
+
+        if len(self.grouping_columns) == 1:
+            grouping_columns = self.grouping_columns[0]
+        else:
+            grouping_columns = self.grouping_columns
+
+        result_list = []
+        for group_key, group_data in data.groupby(by=grouping_columns, sort=False):
+            result = self.transform_function(group_data)
+
+            if self.raw:
+                result_list.append((group_key, result))
+            else:
+                if self.aggregate:
+                    row = group_data.head(n=1)
+                    row = row.drop(labels=[self.input_column], axis=1)
+                    row[self.output_column] = result
+                    # print(f'<<<<>>>>>    {row=}')
+                    result_list.append(row)
+                else:
+                    group_data[self.output_column] = result
+                    result_list.append(group_data)
+                    print(f'<<<<>>>>>    {group_data=}')
+
+        if not self.raw:
+            result = pd.concat(result_list, ignore_index=True)
+        else:
+            result = result_list
+
+        print(f'<<<<>>>>>    {result=}')
+        return result
+
+    def execute(self):
+        data = self.data_repo[self.dataset_name]
+
+        jobs = []
+
+        if not hasattr(self, 'pre_concatenate'):
+            setattr(self, 'pre_concatenate', False)
+
+        if self.pre_concatenate:
+            concat_result = dask.delayed(pd.concat)(map(operator.itemgetter(0), data), ignore_index=True)
+            job = dask.delayed(self.aggregate_frame)(concat_result)
+            # TODO: better DataAttributes
+            jobs.append((job, DataAttributes(source_file=self.input_column, alias=self.output_column)))
+        else:
+            for d, attributes in data:
+                job = dask.delayed(self.aggregate_frame)(d)
+                jobs.append((job, attributes))
+
+        self.data_repo[self.output_dataset_name] = jobs
+
+        return jobs
