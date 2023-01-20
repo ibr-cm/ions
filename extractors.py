@@ -255,6 +255,9 @@ class RawExtractor(Extractor):
                                 , excluded_categorical_columns=categorical_columns_excluded \
                                 , base_tags=base_tags, additional_tags=additional_tags
                                 , minimal_tags=minimal_tags
+                                , attributes_regex_map=self.attributes_regex_map
+                                , iterationvars_regex_map=self.iterationvars_regex_map
+                                , parameters_regex_map=self.parameters_regex_map
                                , simtimeRaw=self.simtimeRaw
                                , moduleName=self.moduleName
                                , eventNumber=self.eventNumber
@@ -405,6 +408,9 @@ class MatchingExtractor(RawExtractor):
                             , categorical_columns=[], excluded_categorical_columns=set()
                             , base_tags=None, additional_tags=[]
                             , minimal_tags=True
+                            , attributes_regex_map=tag_regex.attributes_regex_map
+                            , iterationvars_regex_map=tag_regex.iterationvars_regex_map
+                            , parameters_regex_map=tag_regex.parameters_regex_map
                             , moduleName:bool=True
                             , simtimeRaw:bool=True
                             , eventNumber:bool=False
@@ -416,6 +422,9 @@ class MatchingExtractor(RawExtractor):
                                                       , excluded_categorical_columns=excluded_categorical_columns
                                                       , base_tags=base_tags, additional_tags=additional_tags
                                                       , minimal_tags=minimal_tags
+                                                      , attributes_regex_map=attributes_regex_map
+                                                      , iterationvars_regex_map=iterationvars_regex_map
+                                                      , parameters_regex_map=parameters_regex_map
                                                       , simtimeRaw=simtimeRaw
                                                       , moduleName=moduleName
                                                       , eventNumber=eventNumber
@@ -460,6 +469,9 @@ class MatchingExtractor(RawExtractor):
                                                                        , categorical_columns, categorical_columns_excluded
                                                                        , base_tags=base_tags, additional_tags=additional_tags
                                                                        , minimal_tags=minimal_tags
+                                                                       , attributes_regex_map=self.attributes_regex_map
+                                                                       , iterationvars_regex_map=self.iterationvars_regex_map
+                                                                       , parameters_regex_map=self.parameters_regex_map
                                                                        , simtimeRaw=self.simtimeRaw
                                                                        , moduleName=self.moduleName
                                                                        , eventNumber=self.eventNumber
