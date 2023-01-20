@@ -180,6 +180,8 @@ class GroupedFunctionTransform(Transform, YAMLObject):
         self.pre_concatenate = pre_concatenate
 
     def aggregate_frame(self, data):
+        if data.empty:
+            return data
         # create a copy of the global environment for evaluating the extra
         # code fragment so as to not pollute the global namespace itself
         global_env = globals().copy()
