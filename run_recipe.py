@@ -469,6 +469,12 @@ def main():
 
     client = setup_dask(options)
 
+    # register constructors for all YAML objects
+    extractors.register_constructors()
+    transforms.register_constructors()
+    exporters.register_constructors()
+    plots.register_constructors()
+
     data_repo, job_list = process_recipe(options)
 
     # now actually compute the constructed computation graph

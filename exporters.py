@@ -4,6 +4,7 @@ import operator
 
 import json
 
+import yaml
 from yaml import YAMLObject
 
 import numpy as np
@@ -16,6 +17,8 @@ jsonpickle_pandas.register_handlers()
 
 import dask
 
+from yaml_helper import decode_node, proto_constructor
+
 from common.logging_facilities import logi, loge, logd, logw
 
 from extractors import RawExtractor
@@ -23,8 +26,17 @@ from extractors import RawExtractor
 class FileResultProcessor(YAMLObject):
     yaml_tag = u'!FileResultProcessor'
 
-    def __init__(self, output_filename, *args, **kwargs):
+    def __init__(self, output_filename
+                 , dataset_name:str
+                 , format:str = 'feather'
+                 , concatenate:bool = False
+                 , raw:bool = False
+                 , *args, **kwargs):
         self.output_filename = output_filename
+        self.dataset_name = dataset_name
+        self.format = format
+        self.concatenate = raw
+        self.raw = raw
 
     def save_to_disk(self, df, filename, file_format='feather', compression='lz4', hdf_key='data'):
         start = time.time()
@@ -98,11 +110,6 @@ class FileResultProcessor(YAMLObject):
     def execute(self):
         data_list = self.data_repo[self.dataset_name]
 
-        if not hasattr(self, 'raw'):
-            setattr(self, 'raw', False)
-        if not hasattr(self, 'format'):
-            setattr(self, 'format', 'feather')
-
         job_list = []
 
         if self.concatenate:
@@ -112,4 +119,8 @@ class FileResultProcessor(YAMLObject):
 
         logd(f'FileResultProcessor: execute: {job_list=}')
         return job_list
+
+
+def register_constructors():
+    yaml.add_constructor(u'!FileResultProcessor', proto_constructor(FileResultProcessor))
 

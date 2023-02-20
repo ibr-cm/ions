@@ -1,4 +1,6 @@
 
+from typing import Optional, List, Set, Tuple
+
 import re
 
 # ---
@@ -7,6 +9,7 @@ from common.logging_facilities import logi, loge, logd, logw
 
 # ---
 
+import yaml
 from yaml import YAMLObject
 
 # ---
@@ -30,6 +33,8 @@ from sqlalchemy import create_engine
 
 import sql_queries
 
+from yaml_helper import decode_node, proto_constructor
+
 from data_io import DataSet, read_from_file
 
 from tag_extractor import ExtractRunParametersTagsOperation
@@ -39,17 +44,6 @@ from common.common_sets import BASE_TAGS_EXTRACTION_FULL, BASE_TAGS_EXTRACTION_M
                                , DEFAULT_CATEGORICALS_COLUMN_EXCLUSION_SET
 
 # ---
-
-class Extractor(YAMLObject):
-    yaml_tag = u'!Extractor'
-
-    def prepare(self):
-        return None
-
-    def set_tag_maps(self, attributes_regex_map, iterationvars_regex_map, parameters_regex_map):
-        setattr(self, 'attributes_regex_map', attributes_regex_map)
-        setattr(self, 'iterationvars_regex_map', iterationvars_regex_map)
-        setattr(self, 'parameters_regex_map', parameters_regex_map)
 
 class SqlLiteReader():
     def __init__(self, db_file):
@@ -95,11 +89,55 @@ class DataAttributes(YAMLObject):
         self.alias = alias
 
 
-class RawExtractor(Extractor):
-    yaml_tag = u'!RawExtractor'
+# ----------------------------------------
 
-    def __init__(self, signals:list, /,  *args, **kwargs):
-        self.signals:list = signals
+
+class Extractor(YAMLObject):
+    yaml_tag = u'!Extractor'
+
+    def prepare(self):
+        return None
+
+    def set_tag_maps(self, attributes_regex_map, iterationvars_regex_map, parameters_regex_map):
+        setattr(self, 'attributes_regex_map', attributes_regex_map)
+        setattr(self, 'iterationvars_regex_map', iterationvars_regex_map)
+        setattr(self, 'parameters_regex_map', parameters_regex_map)
+
+
+class BaseExtractor(Extractor):
+    yaml_tag = u'!BaseExtractor'
+
+    def __init__(self, /,
+                 input_files:list
+                 , categorical_columns:List[str] = []
+                 , categorical_columns_excluded:List[str] = []
+                 , base_tags:Optional[List] = None
+                 , additional_tags:list = []
+                 , minimal_tags:bool = True
+                 , simtimeRaw:bool = True
+                 , moduleName:bool = True
+                 , eventNumber:bool = True
+                 , *args, **kwargs
+                 ):
+        self.input_files:list = input_files
+
+        self.categorical_columns:List[str] = categorical_columns
+        self.categorical_columns_excluded:Set[str] = set(categorical_columns_excluded)
+
+        if base_tags != None:
+            self.base_tags:list = base_tags
+        else:
+            if minimal_tags:
+                self.base_tags = BASE_TAGS_EXTRACTION_MINIMAL
+            else:
+                self.base_tags = BASE_TAGS_EXTRACTION_FULL
+
+        self.additional_tags:list = additional_tags
+        self.minimal_tags:bool = minimal_tags
+
+        self.simtimeRaw:bool = simtimeRaw
+        self.moduleName:bool = moduleName
+        self.eventNumber:bool = eventNumber
 
 
     @staticmethod
@@ -123,6 +161,7 @@ class RawExtractor(Extractor):
 
         return data
 
+
     @staticmethod
     def convert_columns_to_category(data, additional_columns:list = [], excluded_columns:set = {}):
         excluded_columns = set(excluded_columns).union(DEFAULT_CATEGORICALS_COLUMN_EXCLUSION_SET)
@@ -144,6 +183,7 @@ class RawExtractor(Extractor):
             data[col] = data[col].cat.as_ordered()
 
         return data
+
 
     @staticmethod
     def read_signals_from_file(db_file, signal, alias
@@ -177,90 +217,58 @@ class RawExtractor(Extractor):
             if 'rowId' in data.columns:
                 data = data.drop(labels=['rowId'], axis=1)
 
-            data = RawExtractor.apply_tags(data, tags, base_tags=base_tags, additional_tags=additional_tags, minimal=minimal_tags)
+            data = BaseExtractor.apply_tags(data, tags, base_tags=base_tags, additional_tags=additional_tags, minimal=minimal_tags)
 
             # don't categorize the column with the actual data
             excluded_categorical_columns = excluded_categorical_columns.union(set([alias]))
 
             # select columns with a small enough set of possible values to
             # convert into `Categorical`
-            data = RawExtractor.convert_columns_to_category(data \
+            data = BaseExtractor.convert_columns_to_category(data \
                                                             , additional_columns=categorical_columns \
                                                             , excluded_columns=excluded_categorical_columns
                                                             )
 
             return data
 
-    def get_categorical_overrides(self):
-        if hasattr(self, 'categorical_columns'):
-            categorical_columns = self.categorical_columns
-        else:
-            categorical_columns = []
 
-        if hasattr(self, 'categorical_columns_excluded'):
-            categorical_columns_excluded = set(self.categorical_columns_excluded)
-        else:
-            categorical_columns_excluded = set()
+class RawExtractor(BaseExtractor):
+    yaml_tag = u'!RawExtractor'
 
-        return categorical_columns, categorical_columns_excluded
+    def __init__(self, /,
+                 input_files:list
+                 , signal:str
+                 , alias:str
+                 , *args, **kwargs
+                 ):
+        # self.alias:str = alias
 
+        super().__init__(input_files=input_files, *args, **kwargs)
 
-    def get_tag_attributes(self):
-        if hasattr(self, 'minimal_tags'):
-            minimal = self.minimal_tags
-        else:
-            minimal = True
-            setattr(self, 'minimal_tags', minimal)
-
-        if hasattr(self, 'base_tags'):
-            base_tags = self.base_tags
-        else:
-            if minimal:
-                base_tags = BASE_TAGS_EXTRACTION_MINIMAL
-            else:
-                base_tags = BASE_TAGS_EXTRACTION_FULL
-            setattr(self, 'base_tags', base_tags)
-
-        if hasattr(self, 'additional_tags'):
-            additional_tags = self.additional_tags
-        else:
-            additional_tags = []
-            setattr(self, 'additional_tags', additional_tags)
-
-        return minimal, base_tags, additional_tags
-
-
-    def setup_output_columns(self):
-        presets = [ ('simtimeRaw', True), ('moduleName', True), ('eventNumber', True) ]
-        for k, v in presets:
-            if not hasattr(self, k):
-                setattr(self, k, v)
+        self.signal:str = signal
+        self.alias:str = alias
 
 
     def prepare(self):
         data_set = DataSet(self.input_files)
 
-        self.setup_output_columns()
-
-        categorical_columns, categorical_columns_excluded = self.get_categorical_overrides()
-        minimal_tags, base_tags, additional_tags = self.get_tag_attributes()
-
         # For every input file construct a `Delayed` object, a kind of a promise
         # on the data and the leafs of the computation graph
         result_list = []
         for db_file in data_set.get_file_list():
-            res = dask.delayed(RawExtractor.read_signals_from_file)\
+            res = dask.delayed(BaseExtractor.read_signals_from_file)\
                                (db_file, self.signal, self.alias \
-                                , categorical_columns=categorical_columns \
-                                , excluded_categorical_columns=categorical_columns_excluded \
-                                , base_tags=base_tags, additional_tags=additional_tags
-                                , minimal_tags=minimal_tags
+                                , categorical_columns=self.categorical_columns \
+                                , excluded_categorical_columns=self.categorical_columns_excluded \
+                                , base_tags=self.base_tags
+                                , additional_tags=self.additional_tags
+                                , minimal_tags=self.minimal_tags
                                 , attributes_regex_map=self.attributes_regex_map
                                 , iterationvars_regex_map=self.iterationvars_regex_map
                                 , parameters_regex_map=self.parameters_regex_map
-                               , simtimeRaw=self.simtimeRaw
-                               , moduleName=self.moduleName
-                               , eventNumber=self.eventNumber
+                                , simtimeRaw=self.simtimeRaw
+                                , moduleName=self.moduleName
+                                , eventNumber=self.eventNumber
                                )
             attributes = DataAttributes(source_file=db_file, alias=self.alias)
             result_list.append((res, attributes))
@@ -268,7 +276,7 @@ class RawExtractor(Extractor):
         return result_list
 
 
-class PositionExtractor(RawExtractor):
+class PositionExtractor(BaseExtractor):
     yaml_tag = u'!PositionExtractor'
 
 
@@ -317,14 +325,14 @@ class PositionExtractor(RawExtractor):
             if 'rowId' in data.columns:
                 data = data.drop(labels=['rowId'], axis=1)
 
-            data = RawExtractor.apply_tags(data, tags, base_tags=base_tags, additional_tags=additional_tags, minimal=minimal_tags)
+            data = BaseExtractor.apply_tags(data, tags, base_tags=base_tags, additional_tags=additional_tags, minimal=minimal_tags)
 
             # don't categorize the column with the actual data
             excluded_categorical_columns = excluded_categorical_columns.union(set([alias, x_alias, y_alias]))
 
             # select columns with a small enough set of possible values to
             # convert into `Categorical`
-            data = RawExtractor.convert_columns_to_category(data \
+            data = BaseExtractor.convert_columns_to_category(data \
                                                             , additional_columns=categorical_columns \
                                                             , excluded_columns=excluded_categorical_columns
                                                             )
@@ -333,17 +341,6 @@ class PositionExtractor(RawExtractor):
 
     def prepare(self):
         data_set = DataSet(self.input_files)
-
-        self.setup_output_columns()
-
-        categorical_columns, categorical_columns_excluded = self.get_categorical_overrides()
-        minimal_tags, base_tags, additional_tags = self.get_tag_attributes()
-
-        if hasattr(self, 'restriction'):
-            restriction = eval(self.restriction)
-        else:
-            restriction = None
-            setattr(self, 'restriction', None)
 
         # For every input file construct a `Delayed` object, a kind of a promise
         # on the data and the leafs of the computation graph
@@ -357,22 +354,46 @@ class PositionExtractor(RawExtractor):
                                 , self.y_alias
                                 , self.signal
                                 , self.alias
-                                , restriction=restriction
+                                , restriction=self.restriction
                                 , moduleName=self.moduleName
                                 , simtimeRaw=self.simtimeRaw
                                 , eventNumber=self.eventNumber
-                                , categorical_columns=categorical_columns \
-                                , excluded_categorical_columns=categorical_columns_excluded \
-                                , base_tags=base_tags, additional_tags=additional_tags
-                                , minimal_tags=minimal_tags
+                                , categorical_columns=self.categorical_columns \
+                                , excluded_categorical_columns=self.categorical_columns_excluded \
+                                , base_tags=self.base_tags, additional_tags=self.additional_tags
+                                , minimal_tags=self.minimal_tags
                                )
             attributes = DataAttributes(source_file=db_file, alias=self.alias)
             result_list.append((res, attributes))
 
         return result_list
 
+    def __init__(self, /,
+                 input_files:list
+                 , x_signal:str, x_alias:str
+                 , y_signal:str, y_alias:str
+                 , signal:str
+                 , alias:str
+                 , restriction:Optional[Tuple[float]] = None
+                 , *args, **kwargs
+                 ):
+        super().__init__(input_files=input_files, *args, **kwargs)
 
-class MatchingExtractor(RawExtractor):
+        self.x_signal:str = x_signal
+        self.x_alias:str = x_alias
+        self.y_signal:str = y_signal
+        self.y_alias:str = y_alias
+
+        self.signal:str = signal
+        self.alias:str = alias
+
+        if restriction and type(restriction) == str:
+            self.restriction = eval(restriction)
+        else:
+            self.restriction = restriction
+
+
+class MatchingExtractor(BaseExtractor):
     yaml_tag = u'!MatchingExtractor'
 
     @staticmethod
@@ -417,7 +438,7 @@ class MatchingExtractor(RawExtractor):
                             ):
         result_list = []
         for signal, alias in signals:
-            res = RawExtractor.read_signals_from_file(db_file, signal, alias \
+            res = BaseExtractor.read_signals_from_file(db_file, signal, alias \
                                                       , categorical_columns=categorical_columns \
                                                       , excluded_categorical_columns=excluded_categorical_columns
                                                       , base_tags=base_tags, additional_tags=additional_tags
@@ -442,7 +463,7 @@ class MatchingExtractor(RawExtractor):
 
         if len(result_list) > 0:
             result = pd.concat(result_list, ignore_index=True)
-            result = RawExtractor.convert_columns_to_category(result
+            result = BaseExtractor.convert_columns_to_category(result
                                                                 , additional_columns=categorical_columns \
                                                                 , excluded_columns=excluded_categorical_columns
                                                              )
@@ -453,11 +474,6 @@ class MatchingExtractor(RawExtractor):
     def prepare(self):
         data_set = DataSet(self.input_files)
 
-        self.setup_output_columns()
-
-        categorical_columns, categorical_columns_excluded = self.get_categorical_overrides()
-        minimal_tags, base_tags, additional_tags = self.get_tag_attributes()
-
         # For every input file construct a `Delayed` object, a kind of a promise
         # on the data, and the leafs of the task graph
         result_list = []
@@ -466,9 +482,9 @@ class MatchingExtractor(RawExtractor):
             matching_signals_result = dask.delayed(MatchingExtractor.get_matching_signals)(db_file, self.pattern, self.alias_pattern)
             # get the data for the matched signals
             res = dask.delayed(MatchingExtractor.extract_all_signals)(db_file, matching_signals_result
-                                                                       , categorical_columns, categorical_columns_excluded
-                                                                       , base_tags=base_tags, additional_tags=additional_tags
-                                                                       , minimal_tags=minimal_tags
+                                                                       , self.categorical_columns,self. categorical_columns_excluded
+                                                                       , base_tags=self.base_tags, additional_tags=self.additional_tags
+                                                                       , minimal_tags=self.minimal_tags
                                                                        , attributes_regex_map=self.attributes_regex_map
                                                                        , iterationvars_regex_map=self.iterationvars_regex_map
                                                                        , parameters_regex_map=self.parameters_regex_map
@@ -481,4 +497,23 @@ class MatchingExtractor(RawExtractor):
 
         return result_list
 
+
+    def __init__(self, /,
+                 input_files:list
+                 , pattern:str
+                 , alias_pattern:str
+                 , alias:str
+                 , *args, **kwargs
+                 ):
+        super().__init__(input_files=input_files, *args, **kwargs)
+
+        self.pattern:str = pattern
+        self.alias_pattern:str = alias_pattern
+        self.alias:str = alias
+
+
+def register_constructors():
+    yaml.add_constructor(u'!RawExtractor', proto_constructor(RawExtractor))
+    yaml.add_constructor(u'!PositionExtractor', proto_constructor(PositionExtractor))
+    yaml.add_constructor(u'!MatchingExtractor', proto_constructor(MatchingExtractor))
 

@@ -1,6 +1,7 @@
 import operator
-from typing import Union, List, Callable
+from typing import Union, List, Callable, Optional
 
+import yaml
 from yaml import YAMLObject
 
 # some of the imports here are just here to make a base set of libraries
@@ -16,6 +17,8 @@ import matplotlib.pyplot as plt
 import seaborn as sb
 
 import dask
+
+from yaml_helper import decode_node, proto_constructor
 
 from common.logging_facilities import logi, loge, logd, logw
 
@@ -63,6 +66,21 @@ class NullTransform(Transform, YAMLObject):
 class FunctionTransform(Transform, YAMLObject):
     yaml_tag = u'!FunctionTransform'
 
+    def __init__(self, dataset_name:str, output_dataset_name:str
+                 , input_column:str, output_column:str
+                 , function:Callable=pd.Series.mean
+                 , timestamp_selector:Callable=pd.DataFrame.head):
+        super().__init__(*args, **kwargs)
+        self.dataset_name = dataset_name
+        self.output_dataset_name = output_dataset_name
+
+        self.input_column = input_column
+        self.output_column = output_column
+
+        self.function = function
+        self.timestamp_selector = timestamp_selector
+
+
     def process(self, data, function, attributes):
         data[self.output_column] = data[self.input_column].apply(function)
         return data
@@ -91,12 +109,21 @@ class GroupedAggregationTransform(Transform, YAMLObject):
                  , input_column:str, output_column:str
                  , grouping_columns:List
                  , raw:bool=False
+                 , pre_concatenate:bool=False
+                 , extra_code:Optional[str]=None
+                 , aggregation_function:Callable=pd.Series.mean
                  , timestamp_selector:Callable=pd.DataFrame.head):
         self.dataset_name = dataset_name
         self.output_dataset_name = output_dataset_name
+
         self.input_column = input_column
         self.output_column = output_column
+
         self.grouping_columns = grouping_columns
+        self.extra_code = extra_code
+        self.aggregation_function = aggregation_function
+        self.timestamp_selector = timestamp_selector
+
         self.raw = raw
         self.pre_concatenate = pre_concatenate
 
@@ -145,9 +172,6 @@ class GroupedAggregationTransform(Transform, YAMLObject):
 
         jobs = []
 
-        if not hasattr(self, 'pre_concatenate'):
-            setattr(self, 'pre_concatenate', False)
-
         if self.pre_concatenate:
             concat_result = dask.delayed(pd.concat)(map(operator.itemgetter(0), data), ignore_index=True)
             job = dask.delayed(self.aggregate_frame)(concat_result)
@@ -170,14 +194,30 @@ class GroupedFunctionTransform(Transform, YAMLObject):
                  , input_column:str, output_column:str
                  , grouping_columns:List
                  , raw:bool=False
+                 , aggregate:bool=False
+                 , pre_concatenate:bool=False
+                 , extra_code:Optional[str]=None
+                 , transform_function:Callable=pd.DataFrame.head
                  , timestamp_selector:Callable=pd.DataFrame.head):
         self.dataset_name = dataset_name
         self.output_dataset_name = output_dataset_name
+
         self.input_column = input_column
         self.output_column = output_column
+
         self.grouping_columns = grouping_columns
+        self.extra_code = extra_code
+        self.transform_function = transform_function
+        self.timestamp_selector = timestamp_selector
+
         self.raw = raw
         self.pre_concatenate = pre_concatenate
+        self.aggregate = aggregate
+
+        print(f'{type(self.raw)=}')
+        print(f'{type(self.aggregate)=}')
+        print(f'{type(self.pre_concatenate)=}')
+
 
     def aggregate_frame(self, data):
         if data.empty:
@@ -221,7 +261,7 @@ class GroupedFunctionTransform(Transform, YAMLObject):
                 else:
                     group_data[self.output_column] = result
                     result_list.append(group_data)
-                    print(f'<<<<>>>>>    {group_data=}')
+                    # print(f'<<<<>>>>>    {group_data=}')
 
         if not self.raw:
             result = pd.concat(result_list, ignore_index=True)
@@ -236,9 +276,6 @@ class GroupedFunctionTransform(Transform, YAMLObject):
 
         jobs = []
 
-        if not hasattr(self, 'pre_concatenate'):
-            setattr(self, 'pre_concatenate', False)
-
         if self.pre_concatenate:
             concat_result = dask.delayed(pd.concat)(map(operator.itemgetter(0), data), ignore_index=True)
             job = dask.delayed(self.aggregate_frame)(concat_result)
@@ -252,3 +289,9 @@ class GroupedFunctionTransform(Transform, YAMLObject):
         self.data_repo[self.output_dataset_name] = jobs
 
         return jobs
+
+def register_constructors():
+    yaml.add_constructor(u'!GroupedAggregationTransform', proto_constructor(GroupedAggregationTransform))
+    yaml.add_constructor(u'!GroupedFunctionTransform', proto_constructor(GroupedFunctionTransform))
+    yaml.add_constructor(u'!FunctionTransform', proto_constructor(FunctionTransform))
+

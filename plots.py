@@ -1,6 +1,6 @@
 
 import operator
-from typing import Union, List, Callable
+from typing import Union, List, Callable, Optional
 
 # ---
 
@@ -8,6 +8,7 @@ from common.logging_facilities import logi, loge, logd, logw
 
 # ---
 
+import yaml
 from yaml import YAMLObject
 
 # ---
@@ -27,6 +28,7 @@ from dask.delayed import Delayed
 
 # ---
 
+from yaml_helper import decode_node, proto_constructor
 from data_io import DataSet, read_from_file
 from extractors import RawExtractor, DataAttributes
 
@@ -35,20 +37,16 @@ from extractors import RawExtractor, DataAttributes
 class PlottingReaderFeather(YAMLObject):
     yaml_tag = u'!PlottingReaderFeather'
 
-    def __init__(self, input_files:str):
+    def __init__(self, input_files:str, numerical_columns:List[str] = []):
         self.input_files = input_files
+        self.numerical_columns = numerical_columns
 
     def read_data(self):
         data_set = DataSet(self.input_files)
 
-        if hasattr(self, 'numerical_columns'):
-            numerical_columns = self.numerical_columns
-        else:
-            numerical_columns = []
-
         data_list = list(map(dask.delayed(read_from_file), data_set.get_file_list()))
         concat_result = dask.delayed(pd.concat)(data_list)
-        convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(concat_result, excluded_columns=numerical_columns)
+        convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(concat_result, excluded_columns=self.numerical_columns)
         logd(f'PlottingReaderFeather::read_data: {data_list=}')
         logd(f'PlottingReaderFeather::read_data: {convert_columns_result=}')
         # d = dask.compute(convert_columns_result)
@@ -59,14 +57,175 @@ class PlottingReaderFeather(YAMLObject):
 class PlottingTask(YAMLObject):
     yaml_tag = u'!PlottingTask'
 
-    def __init__(self, data_repo:dict
+    def __init__(self, dataset_name:str
+                 , output_file:str
                  , plot_type:str
-                 , x:str, y:str
-                 , columns:str, rows:str
-                 , hue:str, style:str
+                 , x:str
+                 , y:str
+                 , selector:Optional[Union[Callable, str]] = None
+                 , column:str = None
+                 , row:str = None
+                 , hue:str = None
+                 , style:str = None
+                 , matplotlib_backend:str = 'agg'
+                 , context:str = 'paper'
+                 , axes_style:str = 'dark'
+                 , legend:bool = True
+                 , alpha:float = 1.
+                 , xlabel:Optional[str] = None
+                 , ylabel:Optional[str] = None
+                 , bin_size:float = 10.
+                 , title_template:Optional[str] = None
+                 , bbox_inches:str = 'tight'
+                 , legend_location:str = 'best'
+                 , legend_bbox:Optional[str] = None
+                 , legend_labels:Optional[str] = None
+                 , legend_title:Optional[str] = None
+                 , matplotlib_rc:Optional[str] = None
+                 , yrange:Optional[str] = None
+                 , invert_yaxis:bool = False
+                 , size:Optional[str] = None
+                 , xticklabels:Optional[str] = None
+                 , colormap:Optional[str] = None
                  ):
-        self.data_repo = data_repo
+        self.dataset_name = dataset_name
         self.plot_type = plot_type
+        self.output_file = output_file
+
+        self.x = x
+        self.y = y
+
+        if type(selector) == str:
+            self.selector = eval(selector)
+        else:
+            self.selector = selector
+
+        self.column = column
+        self.row = row
+        self.hue = hue
+        self.style = style
+
+        self.set_legend_defaults(legend = legend
+                                 , legend_location = legend_location
+                                 , legend_bbox = legend_bbox
+                                 , legend_labels = legend_labels
+                                 , legend_title = legend_title
+                                 )
+
+        self.set_label_defaults(xlabel = xlabel
+                                , ylabel = ylabel
+                                , title_template = title_template
+                                , xticklabels = xticklabels
+                                )
+
+        self.set_misc_defaults(alpha = alpha
+                               , bin_size = bin_size
+                               , bbox_inches = bbox_inches
+                               , matplotlib_rc = matplotlib_rc
+                               , yrange = yrange
+                               , invert_yaxis = invert_yaxis
+                               , size = size
+                               , colormap = colormap
+                               )
+
+        self.set_backend(matplotlib_backend)
+        self.set_theme(context, axes_style)
+        print(f'<-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <->')
+        print(f'-=-=-=-=-=    {self.__dict__=}')
+        print(f'<-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <->')
+
+
+    def set_label_defaults(self
+                           , xlabel:Optional[str] = None
+                           , ylabel:Optional[str] = None
+                           , title_template:Optional[str] = None
+                           , xticklabels:Optional[List[str]] = None
+                           ):
+        if not xlabel:
+            self.xlabel = self.x
+        else:
+            self.xlabel = xlabel
+        if not ylabel:
+            self.ylabel = self.y
+        else:
+            self.ylabel = ylabel
+
+        self.title_template = title_template
+
+        if type(xticklabels) == str:
+            self.xticklabels = eval(xticklabels)
+        else:
+            self.xticklabels = xticklabels
+
+
+    def set_legend_defaults(self
+                            , legend:bool = True
+                            , legend_location:str = 'best'
+                            , legend_bbox:Optional[str] = None
+                            , legend_labels:Optional[str] = None
+                            , legend_title:Optional[str] = None
+                            ):
+
+        self.legend = legend
+        self.legend_location = legend_location
+
+        if type(legend_bbox) == str:
+            self.legend_bbox = eval(self.legend_bbox)
+        else:
+            self.legend_bbox = legend_bbox
+
+        if type(legend_labels) == str:
+            self.legend_labels = eval(legend_labels)
+        else:
+            self.legend_labels = legend_labels
+
+        self.legend_title = legend_title
+
+
+    def set_misc_defaults(self
+                 , alpha:float = 1.
+                 , bin_size:float = 10.
+                 , bbox_inches:str = 'tight'
+                 , matplotlib_rc:Optional[str] = None
+                 , yrange:Optional[str] = None
+                 , invert_yaxis:bool = False
+                 , size:Optional[str] = None
+                 , colormap:Optional[str] = None
+                     ):
+
+        if type(alpha) == str:
+            self.alpha = eval(alpha)
+        else:
+            self.alpha = alpha
+
+        self.bin_size = bin_size
+        self.bbox_inches = bbox_inches
+
+        # print(f'{matplotlib_rc=}')
+        # print(f'{type(matplotlib_rc)=}')
+        # if type(matplotlib_rc) == str:
+        #     self.matplotlib_rc = eval(matplotlib_rc)
+        # else:
+        #     self.matplotlib_rc = matplotlib_rc
+        self.matplotlib_rc = matplotlib_rc
+
+        if type(yrange) == str:
+            self.yrange = eval(yrange)
+        else:
+            self.yrange = yrange
+
+        self.invert_yaxis = invert_yaxis
+
+        if type(size) == str:
+            self.size = eval(size)
+        else:
+            self.size = size
+
+        if not colormap:
+            self.colormap = sb.color_palette('prism', as_cmap=True)
+        else:
+            self.colormap = colormap
+
 
     def set_data_repo(self, data_repo:dict):
         self.data_repo = data_repo
@@ -75,130 +234,31 @@ class PlottingTask(YAMLObject):
         reader = PlottingReaderFeather(self.input_files)
         self.data = reader.read_data()
 
-    def set_backend(self):
-        if not hasattr(self, 'matplotlib_backend'):
-            setattr(self, 'matplotlib_backend', 'agg')
+    def set_backend(self, backend:str = 'agg'):
+        self.matplotlib_backend = backend
         mpl.use(self.matplotlib_backend)
         logi(f'set_backend: using backend "{self.matplotlib_backend}"')
 
-    def set_theme(self):
-        if not hasattr(self, 'axes_style'):
-            setattr(self, 'axes_style', 'dark')
-        if not hasattr(self, 'context'):
-            setattr(self, 'context', 'paper')
-
+    def set_theme(self, context:str = 'paper', axes_style:str = 'dark'):
+        self.context = context
+        self.axes_style = axes_style
         sb.set(context=self.context, style=self.axes_style, font_scale=0.9, rc=self.matplotlib_rc)
 
-    def set_defaults(self):
-        if not hasattr(self, 'legend'):
-            setattr(self, 'legend', True)
-
-        if not hasattr(self, 'alpha'):
-            setattr(self, 'alpha', 1.)
-
-        if not hasattr(self, 'xlabel'):
-            setattr(self, 'xlabel', self.x)
-        if not hasattr(self, 'ylabel'):
-            setattr(self, 'ylabel', self.x)
-
-        if not hasattr(self, 'bin_size'):
-            setattr(self, 'bin_size', 10.)
-
-        if not hasattr(self, 'title_template'):
-            setattr(self, 'title_template', None)
-
-        if not hasattr(self, 'bbox_inches'):
-            setattr(self, 'bbox_inches', 'tight')
-
-        if not hasattr(self, 'legend_location'):
-            setattr(self, 'legend_location', 'best')
-
-        if not hasattr(self, 'legend_bbox'):
-            setattr(self, 'legend_bbox', None)
-        else:
-            if type(self.legend_bbox) == str:
-                self.legend_bbox = eval(self.legend_bbox)
-
-        if not hasattr(self, 'legend_labels'):
-            setattr(self, 'legend_labels', None)
-        else:
-            if type(self.legend_labels) == str:
-                self.legend_labels = eval(self.legend_labels)
-
-        if not hasattr(self, 'context'):
-                setattr(self, 'context', None)
-
-        if not hasattr(self, 'matplotlib_rc'):
-            setattr(self, 'matplotlib_rc', None)
-        else:
-            if type(self.matplotlib_rc) == str:
-                self.matplotlib_rc = eval(self.matplotlib_rc)
-
-        if not hasattr(self, 'yrange'):
-            setattr(self, 'yrange', None)
-        else:
-            if type(self.yrange) == str:
-                self.yrange = eval(self.yrange)
-
-        if not hasattr(self, 'invert_yaxis'):
-            setattr(self, 'invert_yaxis', False)
-
-        if not hasattr(self, 'size'):
-            setattr(self, 'size', None)
-        else:
-            if type(self.size) == str:
-                self.size = eval(self.size)
-
-        if not hasattr(self, 'xticklabels'):
-            setattr(self, 'xticklabels', None)
-        else:
-            if type(self.xticklabels) == str:
-                self.xticklabels = eval(self.xticklabels)
-
-        if not hasattr(self, 'colormap'):
-            setattr(self, 'colormap', sb.color_palette('prism', as_cmap=True))
-        # else:
-            # setattr(self, 'colormap', sb.color_palette(self.colormap, as_cmap=True))
-
-    # def set_defaults_from_dict(self, d):
-    #     for k in d:
-    #         if not hasattr(self, k):
-    #             setattr(self, k, d[k])
-
-    # def set_defaults(self):
-    #     d = {
-    #            'alpha': 0.9
-    #          , 'xlabel': lambda self: self.x
-    #          , 'ylabel': lambda self: self.y
-    #          , 'bin_size': 10
-    #          , 'title_template': None
-    #          , 'legend_location': 'best'
-    #          , 'yrange': None
-    #          , 'colormap': None
-    #         }
-
-    #     self.set_defaults_from_dict(d)
-
-
     def plot_data(self, data):
-        # the backend has to be set in the worker
-        self.set_backend()
-        self.set_theme()
-        self.set_defaults()
+        print(f'-0---000---<<<<>>>>>    {self.__dict__=}')
+        print(f'-0---000---<<<<>>>>>    {mpl.rcParams["backend"]=}')
 
+        # print(f'<<<<>>>>>-------------')
+        # print(f'<<<<>>>>>    {data=}')
+        # data = data.reset_index()
+        # print(f'<<<<>>>>>    {data=}')
+        # print(f'<<<<>>>>>-------------')
 
-        if hasattr(self, 'selector'):
-            selected_data = data.query(self.selector)
+        if self.selector:
+            selected_data = data.query(self.selector).reset_index()
             # logi(f'after selector: {data=}')
         else:
-            selected_data = data
-
-        # TODO: the default shouldn't be defined here...
-
-        for attr in [ 'hue', 'style', 'row', 'column' ]:
-            if not hasattr(self, attr):
-                setattr(self, attr, None)
-
+            selected_data = data.reset_index()
 
         def catplot(plot_type):
                 return self.plot_catplot(df=selected_data
@@ -269,11 +329,6 @@ class PlottingTask(YAMLObject):
 
 
     def execute(self):
-        # the backend has to be set in the worker
-        self.set_backend()
-        self.set_theme()
-        self.set_defaults()
-
         data = self.data_repo[self.dataset_name]
         cdata = dask.delayed(pd.concat)(map(operator.itemgetter(0), data))
         job = dask.delayed(self.plot_data)(cdata)
@@ -320,7 +375,7 @@ class PlottingTask(YAMLObject):
         # ax.fig.get_axes()[0].legend(loc='lower left', bbox_to_anchor=(0, 1, 1, 1))
 
         if grid.legend and (isinstance(grid.legend, mpl.legend.Legend) or not grid.legend() is None):
-            if hasattr(self, 'legend_title'):
+            if self.legend_title:
                 if self.legend_bbox:
                     sb.move_legend(grid, loc=self.legend_location, title=self.legend_title, bbox_to_anchor=self.legend_bbox)
                 else:
@@ -520,4 +575,8 @@ class PlottingTask(YAMLObject):
         grid = self.set_grid_defaults(grid)
 
         return grid
+
+def register_constructors():
+    yaml.add_constructor(u'!PlottingReaderFeather', proto_constructor(PlottingReaderFeather))
+    yaml.add_constructor(u'!PlottingTask', proto_constructor(PlottingTask))
 
