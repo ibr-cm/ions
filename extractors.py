@@ -84,10 +84,9 @@ class SqlLiteReader():
 
 
 class DataAttributes(YAMLObject):
-    def __init__(self, source_file=None, alias=None):
-        self.source_file = source_file
-        self.alias = alias
-
+    def __init__(self, /,  **kwargs):
+        for key in kwargs:
+            setattr(self, key, kwargs[key])
 
 # ----------------------------------------
 
