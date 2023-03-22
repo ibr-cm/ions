@@ -185,7 +185,51 @@ class BaseExtractor(Extractor):
 
 
     @staticmethod
+    def read_statistic_from_file(db_file, scalar, alias
+                               , runId:bool=True
+                               , moduleName:bool=True
+                               , statName:bool=False
+                               , statId:bool=False
+                               , **kwargs):
+        query = sql_queries.generate_statistic_query(scalar
+                                                  , runId=runId
+                                                  , moduleName=moduleName
+                                                  )
+
+        return BaseExtractor.read_query_from_file(db_file, query, alias, **kwargs)
+
+
+    @staticmethod
+    def read_scalars_from_file(db_file, scalar, alias
+                               , runId:bool=True
+                               , moduleName:bool=True
+                               , scalarName:bool=False
+                               , scalarId:bool=False
+                               , **kwargs):
+        query = sql_queries.generate_scalar_query(scalar, value_label=alias
+                                                  , runId=runId
+                                                  , moduleName=moduleName
+                                                  , scalarName=scalarName, scalarId=scalarId)
+
+        return BaseExtractor.read_query_from_file(db_file, query, alias, **kwargs)
+
+
+    @staticmethod
     def read_signals_from_file(db_file, signal, alias
+                               , simtimeRaw=True
+                               , moduleName=True
+                               , eventNumber=True
+                               , **kwargs):
+        query = sql_queries.generate_signal_query(signal, value_label=alias
+                                                  , moduleName=moduleName
+                                                  , simtimeRaw=simtimeRaw
+                                                  , eventNumber=eventNumber)
+
+        return BaseExtractor.read_query_from_file(db_file, query, alias, **kwargs)
+
+
+    @staticmethod
+    def read_query_from_file(db_file, query, alias
                                , categorical_columns=[], excluded_categorical_columns=set()
                                , base_tags = None, additional_tags = []
                                , minimal_tags=True
@@ -204,9 +248,7 @@ class BaseExtractor(Extractor):
                 loge(f'>>>> ERROR: no tags could be extracted from {db_file}:\n {e}')
                 return pd.DataFrame()
 
-            query = sql_queries.generate_signal_query(signal, value_label=alias
-                                                      , moduleName=moduleName, simtimeRaw=simtimeRaw, eventNumber=eventNumber)
-
+            logd(f'>>>> {str(query)=}')
             try:
                 data = sql_reader.execute_sql_query(query)
             except Exception as e:
@@ -228,6 +270,7 @@ class BaseExtractor(Extractor):
                                                             , excluded_columns=excluded_categorical_columns
                                                             )
 
+            logd(f'>>>> {data=}')
             return data
 
 
@@ -238,6 +281,11 @@ class RawExtractor(BaseExtractor):
                  input_files:list
                  , signal:str
                  , alias:str
+                 , isScalar:bool = False
+                 , isStatistic:bool = False
+                 , runId:bool=True
+                 , scalarName:bool=False
+                 , scalarId:bool=False
                  , *args, **kwargs
                  ):
         # self.alias:str = alias
@@ -247,28 +295,77 @@ class RawExtractor(BaseExtractor):
         self.signal:str = signal
         self.alias:str = alias
 
+        self.isScalar:bool = isScalar
+        self.isStatistic:bool = isStatistic
+
+        self.scalarName:bool = scalarName
+        self.scalarId:bool = scalarId
+        self.runId:bool = runId
+
 
     def prepare(self):
         data_set = DataSet(self.input_files)
+
+        options = {  'categorical_columns':self.categorical_columns
+                   , 'excluded_categorical_columns':self.categorical_columns_excluded
+                   , 'base_tags':self.base_tags
+                   , 'additional_tags':self.additional_tags
+                   , 'minimal_tags':self.minimal_tags
+                   , 'attributes_regex_map':self.attributes_regex_map
+                   , 'iterationvars_regex_map':self.iterationvars_regex_map
+                   , 'parameters_regex_map':self.parameters_regex_map
+                   }
+
+        if self.isScalar:
+            extractor = BaseExtractor.read_scalars_from_file
+            extractor_specific_options = { 'runId':self.runId
+                       , 'moduleName':self.moduleName
+                       , 'scalarName':self.scalarName
+                       , 'scalarId':self.scalarId
+                       }
+        elif self.isStatistic:
+            extractor = BaseExtractor.read_statistic_from_file
+            extractor_specific_options = { 'runId':self.runId
+                       , 'moduleName':self.moduleName
+                       , 'statName':self.scalarName
+                       , 'statId':self.scalarId
+                       }
+        else:
+            extractor = BaseExtractor.read_signals_from_file
+            extractor_specific_options = { 'simtimeRaw':self.simtimeRaw
+                       , 'moduleName':self.moduleName
+                       , 'eventNumber':self.eventNumber
+                       }
+
+        options.update(extractor_specific_options)
+
+        logd(f'>>>> {self.isScalar=}')
+        logd(f'>>>> {self.isStatistic=}')
+        logd(f'>>>> {extractor=}')
+        logd(f'>>>> {options=}')
 
         # For every input file construct a `Delayed` object, a kind of a promise
         # on the data and the leafs of the computation graph
         result_list = []
         for db_file in data_set.get_file_list():
-            res = dask.delayed(BaseExtractor.read_signals_from_file)\
+            # res = dask.delayed(BaseExtractor.read_signals_from_file)\
+            #                    (db_file, self.signal, self.alias \
+            #                     , categorical_columns=self.categorical_columns \
+            #                     , excluded_categorical_columns=self.categorical_columns_excluded \
+            #                     , base_tags=self.base_tags
+            #                     , additional_tags=self.additional_tags
+            #                     , minimal_tags=self.minimal_tags
+            #                     , attributes_regex_map=self.attributes_regex_map
+            #                     , iterationvars_regex_map=self.iterationvars_regex_map
+            #                     , parameters_regex_map=self.parameters_regex_map
+            #                     , simtimeRaw=self.simtimeRaw
+            #                     , moduleName=self.moduleName
+            #                     , eventNumber=self.eventNumber
+            #                    )
+            res = dask.delayed(extractor)\
                                (db_file, self.signal, self.alias \
-                                , categorical_columns=self.categorical_columns \
-                                , excluded_categorical_columns=self.categorical_columns_excluded \
-                                , base_tags=self.base_tags
-                                , additional_tags=self.additional_tags
-                                , minimal_tags=self.minimal_tags
-                                , attributes_regex_map=self.attributes_regex_map
-                                , iterationvars_regex_map=self.iterationvars_regex_map
-                                , parameters_regex_map=self.parameters_regex_map
-                                , simtimeRaw=self.simtimeRaw
-                                , moduleName=self.moduleName
-                                , eventNumber=self.eventNumber
-                               )
+                                       , **options)
+
             attributes = DataAttributes(source_file=db_file, alias=self.alias)
             result_list.append((res, attributes))
 
@@ -277,7 +374,6 @@ class RawExtractor(BaseExtractor):
 
 class PositionExtractor(BaseExtractor):
     yaml_tag = u'!PositionExtractor'
-
 
     @staticmethod
     def read_position_and_signal_from_file(db_file
