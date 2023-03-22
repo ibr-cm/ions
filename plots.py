@@ -100,10 +100,10 @@ class PlottingTask(YAMLObject):
         else:
             self.selector = selector
 
-        self.column = column
-        self.row = row
-        self.hue = hue
-        self.style = style
+        self.column = column if column != '' else None
+        self.row = row if row != '' else None
+        self.hue = hue if hue != '' else None
+        self.style = style if style != '' else None
 
         self.set_legend_defaults(legend = legend
                                  , legend_location = legend_location
