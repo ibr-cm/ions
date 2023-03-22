@@ -248,7 +248,6 @@ class BaseExtractor(Extractor):
                 loge(f'>>>> ERROR: no tags could be extracted from {db_file}:\n {e}')
                 return pd.DataFrame()
 
-            logd(f'>>>> {str(query)=}')
             try:
                 data = sql_reader.execute_sql_query(query)
             except Exception as e:
@@ -270,7 +269,6 @@ class BaseExtractor(Extractor):
                                                             , excluded_columns=excluded_categorical_columns
                                                             )
 
-            logd(f'>>>> {data=}')
             return data
 
 
@@ -339,29 +337,10 @@ class RawExtractor(BaseExtractor):
 
         options.update(extractor_specific_options)
 
-        logd(f'>>>> {self.isScalar=}')
-        logd(f'>>>> {self.isStatistic=}')
-        logd(f'>>>> {extractor=}')
-        logd(f'>>>> {options=}')
-
         # For every input file construct a `Delayed` object, a kind of a promise
         # on the data and the leafs of the computation graph
         result_list = []
         for db_file in data_set.get_file_list():
-            # res = dask.delayed(BaseExtractor.read_signals_from_file)\
-            #                    (db_file, self.signal, self.alias \
-            #                     , categorical_columns=self.categorical_columns \
-            #                     , excluded_categorical_columns=self.categorical_columns_excluded \
-            #                     , base_tags=self.base_tags
-            #                     , additional_tags=self.additional_tags
-            #                     , minimal_tags=self.minimal_tags
-            #                     , attributes_regex_map=self.attributes_regex_map
-            #                     , iterationvars_regex_map=self.iterationvars_regex_map
-            #                     , parameters_regex_map=self.parameters_regex_map
-            #                     , simtimeRaw=self.simtimeRaw
-            #                     , moduleName=self.moduleName
-            #                     , eventNumber=self.eventNumber
-            #                    )
             res = dask.delayed(extractor)\
                                (db_file, self.signal, self.alias \
                                        , **options)
