@@ -23,6 +23,185 @@ run_param_query = sqla.select(TM.runParam_table.c.rowId, TM.runParam_table.c.par
 # """
 signal_names_query = sqla.select(TM.vector_table.c.vectorName)
 
+# """
+# SELECT *
+# FROM scalar;
+# """
+scalar_table_query = sqla.select(  TM.scalar_table.c.scalarId
+                                 , TM.scalar_table.c.runId
+                                 , TM.scalar_table.c.moduleName
+                                 , TM.scalar_table.c.scalarName
+                                 , TM.scalar_table.c.scalarValue
+                                    )
+
+
+
+# """
+# SELECT *
+# FROM statistic;
+# """
+statistic_table_query = sqla.select(  TM.statistic_table.c.statId
+                                    , TM.statistic_table.c.runId
+                                    , TM.statistic_table.c.moduleName
+                                    , TM.statistic_table.c.statName
+                                    , TM.statistic_table.c.isHistogram
+                                    , TM.statistic_table.c.isWeighted
+                                    , TM.statistic_table.c.statCount
+                                    , TM.statistic_table.c.statMean
+                                    , TM.statistic_table.c.statStddev
+                                    , TM.statistic_table.c.statSum
+                                    , TM.statistic_table.c.statSqrsum
+                                    , TM.statistic_table.c.statMin
+                                    , TM.statistic_table.c.statMax
+                                    , TM.statistic_table.c.statWeights
+                                    , TM.statistic_table.c.statWeightedSum
+                                    , TM.statistic_table.c.statSqrSumWeights
+                                    , TM.statistic_table.c.statWeightedSqrSum
+                                    )
+
+
+def generate_statistic_data_query(where_clause:sqla.sql.elements.ColumnElement
+                                  , statId:bool=True
+                                  , runId:bool=True
+                                  , moduleName:bool=True
+                                  , statName:bool=True
+                                  , isHistogram:bool=True
+                                  , isWeighted:bool=True
+                                  , statCount:bool=True
+                                  , statMean:bool=True
+                                  , statStddev:bool=True
+                                  , statSum:bool=True
+                                  , statSqrsum:bool=True
+                                  , statMin:bool=True
+                                  , statMax:bool=True
+                                  , statWeights:bool=True
+                                  , statWeightedSum:bool=True
+                                  , statSqrSumWeights:bool=True
+                                  , statWeightedSqrSum:bool=True
+                                  ):
+    columns = []
+    if statId:
+        columns.append(TM.statistic_table.c.statId)
+    if runId:
+        columns.append(TM.statistic_table.c.runId)
+    if moduleName:
+        columns.append(TM.statistic_table.c.moduleName)
+    if statName:
+        columns.append(TM.statistic_table.c.statName)
+    if isHistogram:
+        columns.append(TM.statistic_table.c.isHistogram)
+    if isWeighted:
+        columns.append(TM.statistic_table.c.isWeighted)
+    if statCount:
+        columns.append(TM.statistic_table.c.statCount)
+    if statMean:
+        columns.append(TM.statistic_table.c.statMean)
+    if statStddev:
+        columns.append(TM.statistic_table.c.statStddev)
+    if statSum:
+        columns.append(TM.statistic_table.c.statSum)
+    if statSqrsum:
+        columns.append(TM.statistic_table.c.statSqrsum)
+    if statMin:
+        columns.append(TM.statistic_table.c.statMin)
+    if statMax:
+        columns.append(TM.statistic_table.c.statMax)
+    if statWeights:
+        columns.append(TM.statistic_table.c.statWeights)
+    if statWeightedSum:
+        columns.append(TM.statistic_table.c.statWeightedSum)
+    if statSqrSumWeights:
+        columns.append(TM.statistic_table.c.statSqrSumWeights)
+    if statWeightedSqrSum:
+        columns.append(TM.statistic_table.c.statWeightedSqrSum)
+
+    query = sqla.select(*columns)\
+                       .where(
+                              where_clause
+                             )
+
+    return query
+
+
+def generate_statistic_query(statistic_name:str
+                             , statId:bool=True
+                             , runId:bool=True
+                             , moduleName:bool=True
+                             , statName:bool=True
+                             , isHistogram:bool=True
+                             , isWeighted:bool=True
+                             , statCount:bool=True
+                             , statMean:bool=True
+                             , statStddev:bool=True
+                             , statSum:bool=True
+                             , statSqrsum:bool=True
+                             , statMin:bool=True
+                             , statMax:bool=True
+                             , statWeights:bool=True
+                             , statWeightedSum:bool=True
+                             , statSqrSumWeights:bool=True
+                             , statWeightedSqrSum:bool=True
+                             ):
+    return generate_statistic_data_query(TM.statistic_table.c.statName == statistic_name
+                                         , statId=statId
+                                         , runId=runId
+                                         , moduleName=moduleName
+                                         , statName=statName
+                                         , isHistogram=isHistogram
+                                         , isWeighted=isWeighted
+                                         , statCount=statCount
+                                         , statMean=statMean
+                                         , statStddev=statStddev
+                                         , statSum=statSum
+                                         , statSqrsum=statSqrsum
+                                         , statMin=statMin
+                                         , statMax=statMax
+                                         , statWeights=statWeights
+                                         , statWeightedSum=statWeightedSum
+                                         , statSqrSumWeights=statSqrSumWeights
+                                         , statWeightedSqrSum=statWeightedSqrSum
+                                         )
+
+
+def generate_scalar_data_query(where_clause:sqla.sql.elements.ColumnElement
+                        , value_label:str='scalarValue'
+                        , runId:bool=True
+                        , moduleName:bool=True
+                        , scalarName:bool=False
+                        , scalarId:bool=False
+                        ):
+    columns = []
+    if runId:
+        columns.append(TM.scalar_table.c.runId)
+    if moduleName:
+        columns.append(TM.scalar_table.c.moduleName)
+    if scalarName:
+        columns.append(TM.scalar_table.c.scalarName)
+    if scalarId:
+        columns.append(TM.scalar_table.c.scalarId)
+
+    query = sqla.select(*columns
+                        , TM.scalar_table.c.scalarValue.label(value_label)
+                       ) \
+                       .where(
+                              where_clause
+                             )
+
+    return query
+
+
+def generate_scalar_query(scalar_name:str, value_label:str='scalarValue'
+                          , runId:bool=True
+                          , moduleName:bool=True
+                          , scalarName:bool=False
+                          , scalarId:bool=False
+                          ):
+    return generate_scalar_data_query(TM.scalar_table.c.scalarName == scalar_name
+                                      , value_label=value_label
+                                      , runId=runId
+                                      , moduleName=moduleName
+                                      , scalarName=scalarName, scalarId=scalarId)
+
 
 def generate_signal_query(signal_name:str, value_label:str='value'
                           , moduleName:bool=True
@@ -31,6 +210,7 @@ def generate_signal_query(signal_name:str, value_label:str='value'
                           ):
     return generate_data_query(TM.vector_table.c.vectorName == signal_name, value_label=value_label
                                , moduleName=moduleName, simtimeRaw=simtimeRaw, eventNumber=eventNumber)
+
 
 def generate_signal_for_module_query(signal_name:str, module_name:str, value_label='value'
                                      , moduleName:bool=True
