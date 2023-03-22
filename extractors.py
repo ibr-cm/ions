@@ -272,6 +272,103 @@ class BaseExtractor(Extractor):
             return data
 
 
+class RawStatisticExtractor(BaseExtractor):
+    yaml_tag = u'!RawStatisticExtractor'
+
+    def __init__(self, /,
+                 input_files:list
+                 , signal:str
+                 , alias:str
+                 , runId:bool=True
+                 , statName:bool=False
+                 , statId:bool=False
+                 , *args, **kwargs):
+        super().__init__(input_files=input_files, *args, **kwargs)
+
+        self.signal:str = signal
+        self.alias:str = alias
+
+        self.statName:bool = statName
+        self.statId:bool = statId
+        self.runId:bool = runId
+
+    def prepare(self):
+        data_set = DataSet(self.input_files)
+
+        # For every input file construct a `Delayed` object, a kind of a promise
+        # on the data and the leafs of the computation graph
+        result_list = []
+        for db_file in data_set.get_file_list():
+            res = dask.delayed(BaseExtractor.read_statistic_from_file)\
+                                         (db_file, self.signal, self.alias
+                                          , moduleName = self.moduleName
+                                          , statName = self.statName
+                                          , statId = self.statId
+                                          , runId = self.runId
+                                          , categorical_columns = self.categorical_columns
+                                          , excluded_categorical_columns = self.categorical_columns_excluded
+                                          , base_tags = self.base_tags
+                                          , additional_tags = self.additional_tags
+                                          , minimal_tags = self.minimal_tags
+                                          , attributes_regex_map = self.attributes_regex_map
+                                          , iterationvars_regex_map = self.iterationvars_regex_map
+                                          , parameters_regex_map = self.parameters_regex_map
+                                          )
+            attributes = DataAttributes(source_file=db_file, alias=self.alias)
+            result_list.append((res, attributes))
+
+        return result_list
+
+
+class RawScalarExtractor(BaseExtractor):
+    yaml_tag = u'!RawScalarExtractor'
+
+    def __init__(self, /,
+                 input_files:list
+                 , signal:str
+                 , alias:str
+                 , runId:bool=True
+                 , scalarName:bool=False
+                 , scalarId:bool=False
+                 , *args, **kwargs
+                 ):
+        super().__init__(input_files=input_files, *args, **kwargs)
+
+        self.signal:str = signal
+        self.alias:str = alias
+
+        self.runId:bool = runId
+        self.scalarName:bool = scalarName
+        self.scalarId:bool = scalarId
+
+    def prepare(self):
+        data_set = DataSet(self.input_files)
+
+        # For every input file construct a `Delayed` object, a kind of a promise
+        # on the data and the leafs of the computation graph
+        result_list = []
+        for db_file in data_set.get_file_list():
+            res = dask.delayed(BaseExtractor.read_scalars_from_file)\
+                                         (db_file, self.signal, self.alias
+                                          , moduleName = self.moduleName
+                                          , scalarName = self.scalarName
+                                          , scalarId = self.scalarId
+                                          , runId = self.runId
+                                          , categorical_columns = self.categorical_columns
+                                          , excluded_categorical_columns = self.categorical_columns_excluded
+                                          , base_tags = self.base_tags
+                                          , additional_tags = self.additional_tags
+                                          , minimal_tags = self.minimal_tags
+                                          , attributes_regex_map = self.attributes_regex_map
+                                          , iterationvars_regex_map = self.iterationvars_regex_map
+                                          , parameters_regex_map = self.parameters_regex_map
+                                          )
+            attributes = DataAttributes(source_file=db_file, alias=self.alias)
+            result_list.append((res, attributes))
+
+        return result_list
+
+
 class RawExtractor(BaseExtractor):
     yaml_tag = u'!RawExtractor'
 
@@ -279,72 +376,33 @@ class RawExtractor(BaseExtractor):
                  input_files:list
                  , signal:str
                  , alias:str
-                 , isScalar:bool = False
-                 , isStatistic:bool = False
-                 , runId:bool=True
-                 , scalarName:bool=False
-                 , scalarId:bool=False
-                 , *args, **kwargs
-                 ):
-        # self.alias:str = alias
-
+                 , *args, **kwargs):
         super().__init__(input_files=input_files, *args, **kwargs)
 
         self.signal:str = signal
         self.alias:str = alias
 
-        self.isScalar:bool = isScalar
-        self.isStatistic:bool = isStatistic
-
-        self.scalarName:bool = scalarName
-        self.scalarId:bool = scalarId
-        self.runId:bool = runId
-
-
     def prepare(self):
         data_set = DataSet(self.input_files)
-
-        options = {  'categorical_columns':self.categorical_columns
-                   , 'excluded_categorical_columns':self.categorical_columns_excluded
-                   , 'base_tags':self.base_tags
-                   , 'additional_tags':self.additional_tags
-                   , 'minimal_tags':self.minimal_tags
-                   , 'attributes_regex_map':self.attributes_regex_map
-                   , 'iterationvars_regex_map':self.iterationvars_regex_map
-                   , 'parameters_regex_map':self.parameters_regex_map
-                   }
-
-        if self.isScalar:
-            extractor = BaseExtractor.read_scalars_from_file
-            extractor_specific_options = { 'runId':self.runId
-                       , 'moduleName':self.moduleName
-                       , 'scalarName':self.scalarName
-                       , 'scalarId':self.scalarId
-                       }
-        elif self.isStatistic:
-            extractor = BaseExtractor.read_statistic_from_file
-            extractor_specific_options = { 'runId':self.runId
-                       , 'moduleName':self.moduleName
-                       , 'statName':self.scalarName
-                       , 'statId':self.scalarId
-                       }
-        else:
-            extractor = BaseExtractor.read_signals_from_file
-            extractor_specific_options = { 'simtimeRaw':self.simtimeRaw
-                       , 'moduleName':self.moduleName
-                       , 'eventNumber':self.eventNumber
-                       }
-
-        options.update(extractor_specific_options)
 
         # For every input file construct a `Delayed` object, a kind of a promise
         # on the data and the leafs of the computation graph
         result_list = []
         for db_file in data_set.get_file_list():
-            res = dask.delayed(extractor)\
-                               (db_file, self.signal, self.alias \
-                                       , **options)
-
+            res = dask.delayed(BaseExtractor.read_signals_from_file)\
+                                         (db_file, self.signal, self.alias
+                                          , moduleName = self.moduleName
+                                          , eventNumber = self.eventNumber
+                                          , simtimeRaw = self.simtimeRaw
+                                          , categorical_columns = self.categorical_columns
+                                          , excluded_categorical_columns = self.categorical_columns_excluded
+                                          , base_tags = self.base_tags
+                                          , additional_tags = self.additional_tags
+                                          , minimal_tags = self.minimal_tags
+                                          , attributes_regex_map = self.attributes_regex_map
+                                          , iterationvars_regex_map = self.iterationvars_regex_map
+                                          , parameters_regex_map = self.parameters_regex_map
+                                          )
             attributes = DataAttributes(source_file=db_file, alias=self.alias)
             result_list.append((res, attributes))
 
@@ -588,6 +646,8 @@ class MatchingExtractor(BaseExtractor):
 
 def register_constructors():
     yaml.add_constructor(u'!RawExtractor', proto_constructor(RawExtractor))
+    yaml.add_constructor(u'!RawScalarExtractor', proto_constructor(RawScalarExtractor))
+    yaml.add_constructor(u'!RawStatisticExtractor', proto_constructor(RawStatisticExtractor))
     yaml.add_constructor(u'!PositionExtractor', proto_constructor(PositionExtractor))
     yaml.add_constructor(u'!MatchingExtractor', proto_constructor(MatchingExtractor))
 
