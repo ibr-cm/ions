@@ -28,9 +28,6 @@ from extractors import DataAttributes
 class Transform(YAMLObject):
     yaml_tag = u'!Transform'
 
-    def __init__(self, data_repo:dict):
-        self.data_repo = data_repo
-
     def set_data_repo(self, data_repo:dict):
         self.data_repo = data_repo
 
@@ -70,7 +67,6 @@ class FunctionTransform(Transform, YAMLObject):
                  , input_column:str, output_column:str
                  , function:Callable=pd.Series.mean
                  , timestamp_selector:Callable=pd.DataFrame.head):
-        super().__init__(*args, **kwargs)
         self.dataset_name = dataset_name
         self.output_dataset_name = output_dataset_name
 
