@@ -1,5 +1,5 @@
 
-from typing import Optional, List, Set, Tuple
+from typing import Optional, Union, List, Set, Tuple
 
 import re
 
@@ -506,7 +506,7 @@ class PositionExtractor(BaseExtractor):
                  , y_signal:str, y_alias:str
                  , signal:str
                  , alias:str
-                 , restriction:Optional[Tuple[float]] = None
+                 , restriction:Optional[Union[Tuple[float], str]] = None
                  , *args, **kwargs
                  ):
         super().__init__(input_files=input_files, *args, **kwargs)
