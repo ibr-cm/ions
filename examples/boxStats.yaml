@@ -1,0 +1,98 @@
+---
+# example recipe
+# --- !Recipe
+!Recipe
+name: !!str "example_recipe"
+
+evaluation: !Evaluation
+  # this defines the tags that can be added as columns to a DataFrame, primarily
+  # for use as a primary composite key over the extracted data in the DataFrame
+  tags:
+    attributes:
+      # these tags are extracted from the `runAttr` table
+      narf: |
+        [{
+          'regex': r'nope.*'
+          , 'transform': lambda v: str(v)
+        }]
+    iterationvars:
+      # these tags are extracted from the `iterationvars` entry in the `runAttr` table
+      sensors: |
+        [{
+              'regex': r'\$sensorConf=.*?,'
+            , 'transform': lambda v: str(v).strip(',').split('=')[1]
+        }]
+    parameters:
+      # these tags are extracted from the `runParam` table
+      zorch: |
+        [{
+          'regex': r'nope.*'
+          , 'transform': lambda v: str(v)
+        }]
+
+
+  extractors:
+    cbr: !RawExtractor
+      # the path to the input files, regular expressions can be used
+      input_files: !!python/list
+        - "/opt/tmpssd/t-its-paper/ffk/.*mcmI=1.0.*vec"
+        # - "/home/artery/t-its-paper/ffk/.*MPR=0.1.*vec"
+        # - "/home/artery/t-its-paper/ffk/.*MPR=(0.2|0.4).*vec"
+        # - "/home/artery/example/data/.*44.vec"
+      signal: "ChannelLoad:vector"
+      alias: "cbr"
+      categorical_columns: ['variable']
+      categorical_columns_excluded: ['cbr']
+      # the base set of tags to add (here common_sets.BASE_TAGS_EXTRACTION_MINIMAL is
+      # given as an example)
+      base_tags: [ 'v2x_rate', 'moduleName', 'repetition', 'simtimeRaw', 'eventNumber', 'configname', 'experiment', 'prefix', 'runnumber', 'sumocfgname' ]
+      # the additional tags to add in addition to the base set
+      additional_tags: [ 'sensors' ]
+      # only add the minimal (plus the `additional_tags`) set of tags
+      # (common_sets.BASE_TAGS_EXTRACTION_MINIMAL) to the output DataFrame
+      # (default true)
+      minimal_tags: !!bool "true"
+
+
+  transforms:
+    boxStatsTransform: !GroupedAggregationTransform
+      # the key for the data loaded by the extractor above
+      dataset_name: "cbr"
+      # the key for the generated data
+      output_dataset_name: "cbr_box"
+      # the column with the input data
+      input_column: "cbr"
+      output_column: "cbr_boxstats"
+      # the categorical variable used for splitting the input data into groups
+      # over which the mean will be calculated
+      grouping_columns: [ "moduleName", "v2x_rate" ]
+      # this is auxiliary code that can be used for defining more complex aggregation functions
+      # the evaluation of this code is contained to only a copy of the environment which is then used as context when evaluating 'aggregation_function'
+      extra_code: |
+        def calculate_box_stats(data):
+            result = mpl.cbook.boxplot_stats(data)[0]
+            # convert flier from numpy `ndarray` to python `list` for serialization to json
+            result['fliers'] = result['fliers'].tolist()
+            return result
+      # the function to execute for each group
+      # this should accept a pandas.Series as parameter and return a single value (when not outputting in raw mode)
+      aggregation_function: "calculate_box_stats"
+      # whether to output a list of the raw result from the aggregation
+      # function or add the result as a new column to to the first row of the
+      # input data (the input column having been removed beforehand)
+      raw: !!bool "true"
+      # concatenate the input dataset before partitioning it into groups
+      pre_concatenate: !!bool "false"
+
+
+  exporter:
+    boxStats: !FileResultProcessor
+      dataset_name: "cbr_box" # the key for the data loaded by the extractor above
+      # whether to concatenate all input results into one file
+      concatenate: !!bool "false"
+      format: "json"
+      raw: !!bool "true"
+      # the output file name in case of concatenation
+      output_filename: "/misc/ibr/projects/artery-lte/hagau_scripts/cbr_boxStats.json"
+
+...
