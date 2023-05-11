@@ -1,0 +1,85 @@
+---
+# example recipe
+# --- !Recipe
+!Recipe
+name: !!str "lineplot_recipe"
+
+evaluation: !Evaluation
+  # this defines the tags that can be added as columns to a DataFrame, primarily
+  # for use as a primary composite key over the extracted data in the DataFrame
+  tags:
+    iterationvars:
+      # these tags are extracted from the `iterationvars` entry in the `runAttr` table
+      sensors: |
+        [{
+              'regex': r'\$sensorConf=.*?,'
+            , 'transform': lambda v: str(v).strip(',').split('=')[1]
+        }]
+
+  extractors:
+    cbr: !RawExtractor
+      # the path to the input files, regular expressions can be used
+      input_files: !!python/list
+        - "/opt/tmpssd/t-its-paper/ffk/.*mcmI=1.0.*vec"
+      # the name of the signal (the `vectorName` column of the `vector` table)
+      signal: "ChannelLoad:vector"
+      # the column name to use for the extracted data
+      alias: "cbr"
+      categorical_columns: ['variable']
+      categorical_columns_excluded: ['cbr']
+      # the base set of tags to add (here common_sets.BASE_TAGS_EXTRACTION_MINIMAL is
+      # given as an example)
+      base_tags: [ 'v2x_rate', 'moduleName', 'repetition', 'simtimeRaw', 'eventNumber', 'configname', 'experiment', 'prefix', 'runnumber', 'sumocfgname' ]
+      # the additional tags to add in addition to the base set
+      additional_tags: [ 'sensors' ]
+      # only add the minimal (plus the `additional_tags`) set of tags
+      # (common_sets.BASE_TAGS_EXTRACTION_MINIMAL) to the output DataFrame
+      # (default true)
+      minimal_tags: !!bool "true"
+
+  exporter:
+    export_cbr: !FileResultProcessor
+      dataset_name: "cbr" # the key for the data loaded by the extractor above
+      # whether to concatenate all input results into one file
+      concatenate: !!bool "False"
+      # in this case, the file name is disregarded and only the path to the
+      # directory is being used
+      output_filename: "/opt/tmpssd/t-its-paper/ffk/extracted/cbr.feather"
+
+plot: !Plot
+  reader: # !!python/list
+    cbr: !PlottingReaderFeather
+      input_files: !!python/list
+        - "/opt/tmpssd/t-its-paper/ffk/extracted/.*feather"
+
+  tasks: # !!python/list
+    cbr: !PlottingTask
+      dataset_name: "cbr"
+      plot_type: "lineplot"
+
+      x: "v2x_rate"
+      y: "cbr"
+
+      hue: "sensor"
+      row: !!null
+      column: !!null
+
+      alpha: 0.9
+
+      xlabel: "MPR"
+      ylabel: "CBR"
+
+      # default row/column title template
+      title_template: !!null
+
+      legend_title: "Scenario"
+      legend_location: "center right"
+
+      axes_style: "dark"
+      bbox_inches: "tight"
+
+      matplotlib_backend: "agg"
+      matplotlib_rc: !null
+      output_file: "/opt/tmpssd/t-its-paper/ffk/plots/cbr_lineplot.png"
+
+...
