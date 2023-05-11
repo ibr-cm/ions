@@ -258,7 +258,7 @@ def extract_dict_from_string(string):
 
 
 def parse_arguments(arguments):
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('recipe', help='input recipe')
 
     parser.add_argument('--override-extractor', type=str, help='override extractor parameters')
