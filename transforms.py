@@ -65,8 +65,7 @@ class FunctionTransform(Transform, YAMLObject):
 
     def __init__(self, dataset_name:str, output_dataset_name:str
                  , input_column:str, output_column:str
-                 , function:Callable=pd.Series.mean
-                 , timestamp_selector:Callable=pd.DataFrame.head):
+                 , function:Callable=pd.Series.mean):
         self.dataset_name = dataset_name
         self.output_dataset_name = output_dataset_name
 
@@ -74,8 +73,6 @@ class FunctionTransform(Transform, YAMLObject):
         self.output_column = output_column
 
         self.function = function
-        self.timestamp_selector = timestamp_selector
-
 
     def process(self, data, function, attributes):
         data[self.output_column] = data[self.input_column].apply(function)
