@@ -87,11 +87,13 @@ def execute_evaluation_phase(recipe:Recipe, options, data_repo):
         logi('execute_evaluation_phase: no `extractors` in recipe.Evaluation')
         return
 
-    for extractor_name in recipe.evaluation.extractors:
+    for extractor_tuple in recipe.evaluation.extractors:
+        extractor_name = list(extractor_tuple.keys())[0]
+        extractor = list(extractor_tuple.values())[0]
+
         if options.run_tree and not extractor_name in options.run_tree['evaluation']['extractors']:
             logi(f'skipping extractor {extractor_name}')
             continue
-        extractor = recipe.evaluation.extractors[extractor_name]
 
         if extractor_name in options.extraction_overrides:
             extractor.input_files = [ options.extraction_overrides[extractor_name] ]
@@ -109,13 +111,17 @@ def execute_evaluation_phase(recipe:Recipe, options, data_repo):
     if not hasattr(recipe.evaluation, 'transforms'):
         logi('execute_evaluation_phase: no `transforms` in recipe.Evaluation')
     else:
-        for transform_name in recipe.evaluation.transforms:
+        for transform_tuple in recipe.evaluation.transforms:
+            transform_name = list(transform_tuple.keys())[0]
+            transform = list(transform_tuple.values())[0]
+
             if options.run_tree and not transform_name in options.run_tree['evaluation']['transforms']:
                 logi(f'skipping transform {transform_name}')
                 continue
-            transform = recipe.evaluation.transforms[transform_name]
+            logi(f'preparing transform {transform_name}')
             transform.set_data_repo(data_repo)
             transform.execute()
+
             logi(f'added transform {transform_name}')
 
     jobs = []
@@ -123,11 +129,13 @@ def execute_evaluation_phase(recipe:Recipe, options, data_repo):
     if recipe.evaluation.exporter is None:
         logi('execute_evaluation_phase: no `exporter` in recipe.Evaluation')
     else:
-        for exporter_name in recipe.evaluation.exporter:
+        for exporter_tuple in recipe.evaluation.exporter:
+            exporter_name = list(exporter_tuple.keys())[0]
+            exporter = list(exporter_tuple.values())[0]
+
             if options.run_tree and not exporter_name in options.run_tree['evaluation']['exporter']:
                 logi(f'skipping exporter {exporter_name}')
                 continue
-            exporter = recipe.evaluation.exporter[exporter_name]
 
             if exporter_name in options.export_overrides:
                 exporter.output_filename = options.export_overrides[exporter_name]
@@ -154,11 +162,13 @@ def execute_plotting_phase(recipe:Recipe, options, data_repo):
     if not hasattr(recipe.plot, 'reader'):
         logi('execute_plotting_phase: no `reader` in recipe.Plot')
     else:
-        for dataset_name in recipe.plot.reader:
+        for dataset_tuple in recipe.plot.reader:
+            dataset_name = list(dataset_tuple.keys())[0]
+            reader = list(dataset_tuple.values())[0]
+
             if options.run_tree and not dataset_name in options.run_tree['plot']['reader']:
-                logi(f'skipping exporter {dataset_name}')
+                logi(f'skipping reader {dataset_name}')
                 continue
-            reader = recipe.plot.reader[dataset_name]
             logi(f'plot: loading dataset: "{dataset_name=}"')
             if dataset_name in options.reader_overrides:
                 reader.input_files = options.reader_overrides[dataset_name]
@@ -174,32 +184,32 @@ def execute_plotting_phase(recipe:Recipe, options, data_repo):
     if not hasattr(recipe.plot, 'transforms'):
         logi('execute_plotting_phase: no `transforms` in recipe.Plot')
     else:
-        for task_name in recipe.plot.transforms:
-            if options.run_tree and not task_name in options.run_tree['plot']['transforms']:
-                logi(f'skipping transform {task_name}')
+        for transform_tuple in recipe.plot.transforms:
+            transform_name = list(transform_tuple.keys())[0]
+            transform = list(transform_tuple.values())[0]
+
+            if options.run_tree and not transform_name in options.run_tree['plot']['transforms']:
+                logi(f'skipping transform {transform_name}')
                 continue
-            task = recipe.plot.transforms[task_name]
-            task.set_data_repo(data_repo)
-            task.execute()
-            logi(f'added transform {task_name}')
+            transform.set_data_repo(data_repo)
+            transform.execute()
+            logi(f'added transform {transform_name}')
 
     jobs = []
-    for task_name in recipe.plot.tasks:
+    for task_tuple in recipe.plot.tasks:
+        task_name = list(task_tuple.keys())[0]
+        task = list(task_tuple.values())[0]
+
         if options.run_tree and not task_name in options.run_tree['plot']['tasks']:
             logi(f'skipping task {task_name}')
             continue
-        task = recipe.plot.tasks[task_name]
-        logd(f'plot: {task_name=}')
-        logd(f'plot: {task=}')
-        logd(f'plot: {task.dataset_name=}')
-        # logi(f'plot: loading data...')
 
         if task_name in options.plot_overrides:
             task.output_file = options.plot_overrides[task_name]
             logi(f'overriding {task_name} with {task.output_file}')
 
         task.set_data_repo(data_repo)
-        logi(f'plot: executing plotting tasks...')
+        logi(f'plot: preparing plotting task {task_name}')
         job = task.execute()
         # logi(f'plot: {job=}')
         jobs.append(job)
