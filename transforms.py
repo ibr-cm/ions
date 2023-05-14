@@ -31,13 +31,24 @@ class Transform(YAMLObject):
     def set_data_repo(self, data_repo:dict):
         self.data_repo = data_repo
 
+    def get_data(self, dataset_name:str):
+        if not dataset_name in self.data_repo:
+            raise Exception(f'"{dataset_name}" not found in data repo')
+
+        data = self.data_repo[dataset_name]
+
+        if data is None:
+            raise Exception(f'data for "{dataset_name}" is None')
+
+        return data
+
     def process(self, data:pd.DataFrame):
         # process data here
         return data
 
     def execute(self):
         # get the list of DataFrames in the dataset
-        data_list = self.data_repo[self.dataset_name]
+        data_list = self.get_data(self.dataset_name)
         job_list = []
 
         for data in data_list:
@@ -79,7 +90,8 @@ class FunctionTransform(Transform, YAMLObject):
         return data
 
     def execute(self):
-        data_list = self.data_repo[self.dataset_name]
+        data_list = self.get_data(self.dataset_name)
+
         if isinstance(self.function, Callable):
             function = self.function
         else:
@@ -161,7 +173,7 @@ class GroupedAggregationTransform(Transform, YAMLObject):
         return result
 
     def execute(self):
-        data = self.data_repo[self.dataset_name]
+        data = self.get_data(self.dataset_name)
 
         jobs = []
 
@@ -265,7 +277,7 @@ class GroupedFunctionTransform(Transform, YAMLObject):
         return result
 
     def execute(self):
-        data = self.data_repo[self.dataset_name]
+        data = self.get_data(self.dataset_name)
 
         jobs = []
 
