@@ -26,6 +26,9 @@ from extractors import DataAttributes
 
 
 class Transform(YAMLObject):
+    r"""
+    The base class for all transforms
+    """
     yaml_tag = u'!Transform'
 
     def set_data_repo(self, data_repo:dict):
@@ -47,6 +50,9 @@ class Transform(YAMLObject):
         return data
 
     def execute(self):
+        # The code below is just to illustrate the general procedure when
+        # implementing a transform, it is not used
+
         # get the list of DataFrames in the dataset
         data_list = self.get_data(self.dataset_name)
         job_list = []
@@ -54,11 +60,12 @@ class Transform(YAMLObject):
         for data in data_list:
             # construct a promise on the data produced by applying the function
             # to the input data
+            function = lambda x: x
             job = dask.delayed(self.process)(data, function)
             job_list.append(job)
 
         # set the output dataset to the list of promises so that other tasks can
-        # depend on and use theme
+        # depend on and use them
         self.data_repo[self.output_dataset_name] = job_list
 
         return job_list
@@ -72,6 +79,29 @@ class NullTransform(Transform, YAMLObject):
 
 
 class FunctionTransform(Transform, YAMLObject):
+    r"""
+    A transform for applying a function to every value in a column of a DataFrame
+
+    Parameters
+    ----------
+    dataset_name: str
+        the dataset to operate on
+
+    output_dataset_name: str
+        the name given to the output dataset
+
+    input_column: str
+        the name of the column the function should be applied to
+
+    output_column: str
+        the name given to the output column containing the results of applying
+        the function
+
+    function: Callable
+        the unary function to apply to the values in the chosen column
+
+    """
+
     yaml_tag = u'!FunctionTransform'
 
     def __init__(self, dataset_name:str, output_dataset_name:str
@@ -193,6 +223,51 @@ class GroupedAggregationTransform(Transform, YAMLObject):
 
 
 class GroupedFunctionTransform(Transform, YAMLObject):
+    r"""
+    A transform for dividing a dataset into distinct partitions with
+    `pandas.DataFrame.groupby
+    <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html#pandas.DataFrame.groupby>`__,
+    each sharing the same value in the specified list of grouping/partitioning
+    column names, and then applying a function to every value in a given column
+    of a that subset.
+
+    Parameters
+    ----------
+    dataset_name: str
+        the dataset to operate on
+
+    output_dataset_name: str
+        the name given to the output dataset
+
+    input_column: str
+        the name of the column the function should be applied to
+
+    output_column: str
+        the name given to the output column containing the results of applying
+        the function
+
+    grouping_columns: List
+        the set of columns used for partitioning the dataset
+
+    raw: bool
+        whether to append the raw output of `transform_function` to the result list
+
+    aggregate: bool
+        whether the transform function returns a scalar or an object (like a `pandas.DataFrame`)
+
+    pre_concatenate: bool
+        concatenate all input DataFrames before processing
+
+    extra_code: Optional[str]
+        this allows specifying additional code, like a more complex transform function
+
+    transform_function: Union[Callable[[pandas.DataFrame], pandas.DataFrame], Callable[[pandas.DataFrame], object]]
+        the unary function to apply to a each partition. Should expect an
+        `pandas.DataFrame` as argument and return a `pandas.DataFrame`.
+
+    timestamp_selector: Callable
+        the function to select the row in the partition data as template for the output in case of aggregation
+    """
     yaml_tag = u'!GroupedFunctionTransform'
 
     def __init__(self, dataset_name:str, output_dataset_name:str
@@ -255,20 +330,26 @@ class GroupedFunctionTransform(Transform, YAMLObject):
             result = self.transform_function(group_data)
 
             if self.raw:
+                # just append the keys for the subset and the transformed DataFrame
                 result_list.append((group_key, result))
             else:
                 if self.aggregate:
+                    # take the first row of the data and use it as a template
+                    # row for the output DataFrame
                     row = group_data.head(n=1)
                     row = row.drop(labels=[self.input_column], axis=1)
+                    # add the results a new column
                     row[self.output_column] = result
                     # print(f'<<<<>>>>>    {row=}')
                     result_list.append(row)
                 else:
+                    # add the results a new column
                     group_data[self.output_column] = result
                     result_list.append(group_data)
                     # print(f'<<<<>>>>>    {group_data=}')
 
         if not self.raw:
+            # concatenate all the partitions
             result = pd.concat(result_list, ignore_index=True)
         else:
             result = result_list
@@ -282,6 +363,7 @@ class GroupedFunctionTransform(Transform, YAMLObject):
         jobs = []
 
         if self.pre_concatenate:
+            # concatenate all input DataFrames before processing
             concat_result = dask.delayed(pd.concat)(map(operator.itemgetter(0), data), ignore_index=True)
             job = dask.delayed(self.aggregate_frame)(concat_result)
             # TODO: better DataAttributes
@@ -291,6 +373,7 @@ class GroupedFunctionTransform(Transform, YAMLObject):
                 job = dask.delayed(self.aggregate_frame)(d)
                 jobs.append((job, attributes))
 
+        # allow other tasks to depend on the output of the delayed job
         self.data_repo[self.output_dataset_name] = jobs
 
         return jobs

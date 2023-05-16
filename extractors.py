@@ -370,6 +370,20 @@ class RawScalarExtractor(BaseExtractor):
 
 
 class RawExtractor(BaseExtractor):
+    r"""
+    Extract the data for a signal from the input files specified.
+
+    Parameters
+    ----------
+    input_files: List[str]
+        the list of paths to the input files, as literal path or as a regular expression
+
+    signal: str
+        the name of the signal which is to be extracted
+
+    alias: str
+        the name given to the column with the extracted signal data
+    """
     yaml_tag = u'!RawExtractor'
 
     def __init__(self, /,
@@ -410,7 +424,62 @@ class RawExtractor(BaseExtractor):
 
 
 class PositionExtractor(BaseExtractor):
+    r"""
+    Extract the data for a signal, with the associated positions, from the input files specified.
+
+    Parameters
+    ----------
+    input_files: List[str]
+        the list of paths to the input files, as literal path or as a regular expression
+
+    x_signal: str
+        the name of the signal with the x-axis coordinates
+
+    x_alias: str
+        the name given to the column with the extracted x-axis position data
+
+    y_signal: str
+        the name of the signal with the y-axis coordinates
+
+    y_alias: str
+        the name given to the column with the extracted y-axis position data
+
+    signal: str
+        the name of the signal to extract
+
+    alias: str
+        the name given to the column with the extracted signal data
+
+    restriction: Optional[Union[Tuple[float], str]]
+        this defines a area restriction on the positions from which the signal
+        data is extracted, the tuple (x0, y0, x1, y1) defines the corners of
+        a rectangle
+    """
     yaml_tag = u'!PositionExtractor'
+
+    def __init__(self, /,
+                 input_files:list
+                 , x_signal:str, x_alias:str
+                 , y_signal:str, y_alias:str
+                 , signal:str
+                 , alias:str
+                 , restriction:Optional[Union[Tuple[float], str]] = None
+                 , *args, **kwargs
+                 ):
+        super().__init__(input_files=input_files, *args, **kwargs)
+
+        self.x_signal:str = x_signal
+        self.x_alias:str = x_alias
+        self.y_signal:str = y_signal
+        self.y_alias:str = y_alias
+
+        self.signal:str = signal
+        self.alias:str = alias
+
+        if restriction and type(restriction) == str:
+            self.restriction = eval(restriction)
+        else:
+            self.restriction = restriction
 
     @staticmethod
     def read_position_and_signal_from_file(db_file
@@ -499,30 +568,6 @@ class PositionExtractor(BaseExtractor):
             result_list.append((res, attributes))
 
         return result_list
-
-    def __init__(self, /,
-                 input_files:list
-                 , x_signal:str, x_alias:str
-                 , y_signal:str, y_alias:str
-                 , signal:str
-                 , alias:str
-                 , restriction:Optional[Union[Tuple[float], str]] = None
-                 , *args, **kwargs
-                 ):
-        super().__init__(input_files=input_files, *args, **kwargs)
-
-        self.x_signal:str = x_signal
-        self.x_alias:str = x_alias
-        self.y_signal:str = y_signal
-        self.y_alias:str = y_alias
-
-        self.signal:str = signal
-        self.alias:str = alias
-
-        if restriction and type(restriction) == str:
-            self.restriction = eval(restriction)
-        else:
-            self.restriction = restriction
 
 
 class MatchingExtractor(BaseExtractor):

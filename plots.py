@@ -35,6 +35,20 @@ from extractors import RawExtractor, DataAttributes
 # ---
 
 class PlottingReaderFeather(YAMLObject):
+    r"""
+    Import the data, saved as [feather/arrow](https://arrow.apache.org/docs/python/feather.html), from the input files
+
+    Parameters
+    ----------
+
+    input_files: List[str]
+        the list of paths to the input files, as literal path or as a regular expression
+
+    numerical_columns: List[str]
+        the columns of the input `pandas.DataFrame` which have numerical data,
+        all other will be converted to categories to save on memory and improve
+        performance
+    """
     yaml_tag = u'!PlottingReaderFeather'
 
     def __init__(self, input_files:str, numerical_columns:List[str] = []):
@@ -55,6 +69,115 @@ class PlottingReaderFeather(YAMLObject):
 
 
 class PlottingTask(YAMLObject):
+    r"""
+    Generate a plot from the given data.
+
+    See [seaborn.lineplot](https://seaborn.pydata.org/generated/seaborn.lineplot.html) for examples of using `hue` and `style`.
+    See [seaborn.catplot](https://seaborn.pydata.org/generated/seaborn.catplot.html) for examples of using `row` and `column`, .
+    See [seaborn.relplot](https://seaborn.pydata.org/generated/seaborn.relplot.html) for examples of using both `hue`, `style`, `row` and `column` concurrently.
+
+    Parameters
+    ----------
+    dataset_name: str
+        the dataset to operate on
+
+    output_file: str
+        the file path the generated plot is saved to, with the suffix choosing
+        the output format
+
+    plot_type: str
+        the kind of plot to generate, either one of:
+            `box`, 'lineplot', 'scatterplot', 'boxen', 'stripplot', 'swarm', 'bar', 'count', 'point', 'heat'
+    x: str
+        the name of the column with the data to plot on the x-axis
+
+    y: str
+        the name of the column with the data to plot on the y-axis
+
+    selector: Optional[Union[Callable, str]]
+        a query string for selecting a subset of the input DataFrame for
+        plotting, see
+        [`pandas.DataFrame.query`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.query.html)
+        and
+        [indexing](https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#the-query-method)
+
+    column: Optional[str]
+        the column of the input `DataFrame` to use for partitioning the data and
+        plotting each partition into a separate plot, aligning them all vertically into a column 
+
+    row: Optional[str]
+        the column of the input `DataFrame` to use for partitioning the data and
+        plotting each partition into a separate plot, aligning them all horizontally into a column 
+
+    hue: Optional[str]
+        the column of the input `DataFrame` to use for partitioning the data and
+        plotting each partition into the same plot, with a different color
+
+    style: Optional[str]
+        the column of the input `DataFrame` to use for partitioning the data and
+        plotting each partition into the same plot, with a different line style and marker
+
+    matplotlib_backend: str
+        the matplotlib drawing [backend](https://matplotlib.org/stable/users/explain/backends.html) to use
+
+    context: str
+        set the theme [context](https://seaborn.pydata.org/generated/seaborn.set_context.html#seaborn.set_context) for seaborn
+
+    axes_style: str
+        set the seaborn [axes style](https://seaborn.pydata.org/generated/seaborn.axes_style.html#seaborn.axes_style)
+
+    legend: bool
+        whether to add a legend to the plot
+
+    alpha: float
+        the alpha value used in lineplots for lines and markers
+
+    xlabel: str
+        the label to assign to the x-axis
+
+    ylabel: str
+        the label to assign to the y-axis
+
+    bin_size: float
+        the size of the position bin used in heatmaps
+
+    title_template: str
+        the template string to use to label one plot in a grid, for syntax see
+        [seaborn.FacetGrid](https://seaborn.pydata.org/generated/seaborn.FacetGrid.set_titles.html#seaborn.FacetGrid.set_titles)
+
+    bbox_inches: str
+        ?
+
+    legend_location: str
+        the location to place the legend
+
+    legend_bbox: str
+        the bounding box the location is placed in
+
+    legend_labels: Optional[List[str]]
+        the list of labels to assign in the legend
+
+    legend_title: Optional[str]
+        the title of the legend
+
+    matplotlib_rc: Optional[str]
+        the path to load a matplotlib.rc from
+
+    yrange: Optional[str]
+        the value range to use on the y-axis
+
+    invert_yaxis: bool
+        whether to invert the direction of the y-axis
+
+    size: Optional[str]
+        the size of the plot, as a tuple of inches
+
+    xticklabels: Optional[str]
+        the list of labels to assign to the categories on the x-axis
+
+    colormap: Optional[str]
+        the colormap to use for heatmaps
+    """
     yaml_tag = u'!PlottingTask'
 
     def __init__(self, dataset_name:str
@@ -330,6 +453,7 @@ class PlottingTask(YAMLObject):
 
     def execute(self):
         data = self.data_repo[self.dataset_name]
+        # concatenate everything first
         cdata = dask.delayed(pd.concat)(map(operator.itemgetter(0), data))
         job = dask.delayed(self.plot_data)(cdata)
 

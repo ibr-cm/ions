@@ -24,6 +24,29 @@ from common.logging_facilities import logi, loge, logd, logw
 from extractors import RawExtractor
 
 class FileResultProcessor(YAMLObject):
+    r"""
+    Export the given dataset as
+    [feather/arrow](https://arrow.apache.org/docs/python/feather.html) or JSON
+
+    Parameters
+    ----------
+
+    output_filename: str
+        the name of the output file
+
+    dataset_name: str
+        the name of the dataset to export
+
+    format: str
+        the output file format, either `feather` or `json`
+
+    concatenate: bool
+        whether to concatenate the input data before exporting
+
+    raw: bool
+        whether to save the raw input or convert the columns of the input
+        `pandas.DataFrame` to categories before saving
+    """
     yaml_tag = u'!FileResultProcessor'
 
     def __init__(self, output_filename
