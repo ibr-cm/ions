@@ -6,7 +6,7 @@ source config.sh
 
 cd doc
 
-${PYTHON_VENV_MANAGER} make html
+${PYTHON_VENV_MANAGER} ${PYTHON_VENV_MANAGER_RUN_CMD} make html
 
 rm -rf /ibr/web/www.ibr.cs.tu-bs.de/projects/collective-perception/plotting-doc/html
 

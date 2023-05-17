@@ -6,7 +6,7 @@ include ../config.sh
 # You can set these variables from the command line, and also
 # from the environment for the first two.
 SPHINXOPTS    ?=
-SPHINXBUILD   ?= $(PYTHON_VENV_MANAGER) run sphinx-build
+SPHINXBUILD   ?= $(PYTHON_VENV_MANAGER) $(PYTHON_VENV_MANAGER_RUN_CMD) sphinx-build
 SOURCEDIR     = source
 BUILDDIR      = build
 
