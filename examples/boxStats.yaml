@@ -32,7 +32,7 @@ evaluation: !Evaluation
 
 
   extractors:
-    cbr: !RawExtractor
+  - cbr: !RawExtractor
       # the path to the input files, regular expressions can be used
       input_files: !!python/list
         - "/opt/tmpssd/t-its-paper/ffk/.*mcmI=1.0.*vec"
@@ -55,7 +55,7 @@ evaluation: !Evaluation
 
 
   transforms:
-    boxStatsTransform: !GroupedAggregationTransform
+  - boxStatsTransform: !GroupedAggregationTransform
       # the key for the data loaded by the extractor above
       dataset_name: "cbr"
       # the key for the generated data
@@ -64,7 +64,7 @@ evaluation: !Evaluation
       input_column: "cbr"
       output_column: "cbr_boxstats"
       # the categorical variable used for splitting the input data into groups
-      # over which the mean will be calculated
+      # over which the boxplot statistics will be calculated
       grouping_columns: [ "moduleName", "v2x_rate" ]
       # this is auxiliary code that can be used for defining more complex aggregation functions
       # the evaluation of this code is contained to only a copy of the environment which is then used as context when evaluating 'aggregation_function'
@@ -86,7 +86,7 @@ evaluation: !Evaluation
 
 
   exporter:
-    boxStats: !FileResultProcessor
+  - boxStats: !FileResultProcessor
       dataset_name: "cbr_box" # the key for the data loaded by the extractor above
       # whether to concatenate all input results into one file
       concatenate: !!bool "false"

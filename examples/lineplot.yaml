@@ -17,7 +17,7 @@ evaluation: !Evaluation
         }]
 
   extractors:
-    cbr: !RawExtractor
+  - cbr: !RawExtractor
       # the path to the input files, regular expressions can be used
       input_files: !!python/list
         - "/opt/tmpssd/t-its-paper/ffk/.*mcmI=1.0.*vec"
@@ -38,7 +38,7 @@ evaluation: !Evaluation
       minimal_tags: !!bool "true"
 
   exporter:
-    export_cbr: !FileResultProcessor
+  - export_cbr: !FileResultProcessor
       dataset_name: "cbr" # the key for the data loaded by the extractor above
       # whether to concatenate all input results into one file
       concatenate: !!bool "False"
@@ -48,12 +48,12 @@ evaluation: !Evaluation
 
 plot: !Plot
   reader: # !!python/list
-    cbr: !PlottingReaderFeather
+  - cbr: !PlottingReaderFeather
       input_files: !!python/list
         - "/opt/tmpssd/t-its-paper/ffk/extracted/.*feather"
 
   tasks: # !!python/list
-    cbr: !PlottingTask
+  - cbr: !PlottingTask
       dataset_name: "cbr"
       plot_type: "lineplot"
 
