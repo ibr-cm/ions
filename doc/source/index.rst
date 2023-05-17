@@ -19,11 +19,15 @@ running simulation studies with Artery.
 
     general.md
     tools.md
+    quickstart.md
     evaluation_plotting.md
-    jupyter_labs.md
-    extending.md
-    gdb_helper.md
+    best_practices.md
+    cluster_managment.md
+
     troubleshooting.md
+
+    gdb_helper.md
+    jupyter_labs.md
 
     api_reference.rst
 

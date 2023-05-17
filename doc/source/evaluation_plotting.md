@@ -1,121 +1,205 @@
 # Evaluation & Plotting
 
+## Key Concepts
+
+The framework is built on top of [pandas](https://pandas.pydata.org/),
+[seaborn](https://seaborn.pydata.org/index.html) and
+[dask](https://docs.dask.org/en/stable/)
+
+Dask is used as a way to build task dependency graphs using
+[`dask.delayed`](https://docs.dask.org/en/latest/delayed.html) and for
+scalable parallelisation of the execution of those tasks, either locally on
+a desktop/laptop or remotely on a (SLURM) cluster using
+[Dask.distributed](https://distributed.dask.org/en/stable/) and
+[Dask-Jobqueue](https://jobqueue.dask.org/en/latest/index.html).
+
+There are a few key concepts necessary for using the framework effectively:
+- [`pandas.Series`](https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html#series)
+- [`pandas.DataFrame`](https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html#dataframe)
+
+The main data structure of the framework is the
+[`pandas.DataFrame`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame), which is
+similar to a spreadsheet or a table in a SQL database. For everything
+interesting you will need some knowledge how to index, partition and apply
+a function to a `DataFrame`.
+A short [introduction](https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html)
+to the data structures used in pandas.
+Reading the documentation for
+[`pandas.DataFrame.groupby`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html#pandas.DataFrame.groupby)
+is advisable.
+
+
 ## General Overview
-Plotting & evaluation happens in two steps to:
-- `eval.py` generates JSON files from the DBs produced by Artery
-- `plot.py` uses the JSON files to produce plots
 
-The two step process happens for multiple reasons:
-- processing input can take a lot of time for scenarios with large output DBs
-- plots may need to be tweaked, so a short iteration time is essential
+The evaluation and plotting is done by running `run_recipe.py` with the name of
+the 'recipe' YAML file, which contains the steps for processing the results of a batch of simulation
+runs. For a minimal introduction to YAML and some specifics of PyYAML see the [PyYAML documentation](https://pyyaml.org/wiki/PyYAMLDocumentation)
 
-## Step 1: eval.py
-Create a folder to keep your results in. E.g.,
-`mkdir eval-results`
+The recipe describes the individual tasks as a list of key-value pairs; internally the data and
+operations are constructed (by [dask](https://docs.dask.org/en/latest/)) into an
+dependency/task graph.
 
-Example:
-`pipenv run ./eval.py -d eval-results -v cbr_ca -s /path/to/results`
+A recipe can contain two phases: `evaluation` and `plot`. Each phase is optional.
+The `evaluation` phase itself consists of three sub-phases:
+- `extractors`: for extracting the desired data from the input databases
+- `transforms`: for processing the extracted data in some way
+- `exporter`: for saving the extracted and possibly processed data
 
-`-d` specify target directory  
-`-v` select variable (signal) to process  
-`-s` calculate statistics over a 100ms window  
-  
-This will produce a JSON File in the specified result folder which can be plotted in the next step.
+The `plot` phase consists of three sub-phases:
+- `reader`: for loading the data exported from the `evaluation` sub-phase
+- `transforms`: for processing the loaded data in some way
+- `tasks`: for actually plotting the loaded and possibly processed data
 
-### Options overview  
-- statistics can be calculated over different windows:
-  - '-s' uses a 100ms window
-  - '-s -g' uses the whole runtime of the given scenario run
-- Instead of specifying one variable/signal, it is possible to produce statistical data for (nearly) all signals with '-v all' as parameter
- - to get a list of all signals included in the `all` shortcut, run `eval.py --show-var-mapping`
- - all 'synthetic' variables (i.e. not just statistics over one signal, but calculated from multiple signals) need to be selected separately 
+The sub-phases are evaluated in this order. Each sub-phase consists of a list of tasks to
+execute and each task usually has a dependency on a task in the previous
+sub-phase. If a task is not depended upon by another task, it will not be part
+of the dependency/task graph and will thus not be executed.
 
-It is possible to select events emitted within a bounding box, if for those `eventNumbers` there is also position information available, i.e. signals which match the Perl regular expression (PCRE) `.*position(X|Y).*` :  
-`pipenv run ./eval.py -d eval-results -v cbr_ca -s -b 795,795,1205,1205,2000,2000 /path/to/results`  
-`-b` the circular boundary for selecting events
+Each task either creates or modifies a named 'dataset', a list of
+`pandas.DataFrame`s. Usually an extractor creates a `pandas.DataFrame` for
+each input file and stores the resulting list under the user defined
+`dataset_name` in an internal dictionary, all `transforms` are then executed
+over each `DataFrame` in that list separately and then written to disk, either
+separately or concatenated into a single `DataFrame` and then written to disk.
 
-## Step 2: plot.py  
-Plotting average CBR in a 100ms window over the simulation time for CAM & CPM into one figure (this needs `eval.py` to be run with just `-s`, not `-s -g`):  
+The basic structure of a recipe is thus, for the evaluation phase:
 ```
-pipenv run ./plot.py -w lust_cam_cpm -l -x simtimeRaw -y cbr --label gen_rule dcc_profile tag -c mean -a std \
-    -- --tag="CAM" --select-var='cbr_ca' --color='green' --linestyle='--' --marker='s' /path/to/eval/results/*.json
-    -- --tag="CPM" --select-var='cbr' --color='red' --linestyle='-' --marker='x' /path/to/eval/results/*.json 
-```  
-`-w` output file name (filetype-suffix is added automatically)  
-`-l` generate a lineplot  
-`-x` x-axis variable  
-`-y` y-axis variable  
-`--label` use these columns to label the data in the legend  
-`-c` plot this column, defaults to `mean`  
-`-a` use this column to draw a shaded area around the line, defaults to `std` if no column is given  
+evaluation:
+    extractors:
+        dataset0: !extractor_class
+            parameter0: "value"
 
-`/path/to/eval/results/*.json` the set of JSON files to be used as input
+    transforms:
+        transformed_dataset0: !transform_class
+            dataset_name: "dataset0"
+            parameter0: "value"
 
-input set options for a lineplot:  
-`--tag` tag for this set of input JSON files, used here as supplementary label  
-`--select-var='cbr'` select the variable to plot from this set (this overrides `-y`)  
-`--color='red'` select color for this line  
-`--linestyle='-'` select the line style for this line  
-`--marker='x'` select marker for this line  
-
-
-## How to plot multiple lines into one plot
-- separate the set of JSON files to be used as input data for one line by `--`
-- for every set, select the variable to be plotted with `--select-var=`:  
-  `pipenv run ./plot.py [..] -- --select-var=var0 dataset0 -- --select-var=var1 dataset1`
-
-Plotting average CBR for a simulation time over market rate for CAM & CPM into one figure (this needs `eval.py` to be run with `-s -g`):  
+    exporter:
+        name0: !exporter_class
+            dataset_name: "transformed_dataset0"
+            parameter0: "value"
 ```
-pipenv run python plot.py -w cbr_over_v2x_rate.png -l -x v2x_rate -y cbr --label gen_rule tag -c mean -a std --yrange 0,0.8
-    -- --tag="CAM" --select-var='cbr_ca' --color='red' --linestyle='-' --marker='x'  *.json
-    -- --tag="CAM" --select-var='cbr' --color='green' --linestyle='--' --marker='s'  *.json
+For the plotting phase:
 ```
-`--yrange` y-axis range, given as `<min>,<max>`
+plot:
+    reader:
+        dataset0: !reader_class
+            input_files:
+                - "/path/regular/expression0"
+                - "/path/regular/expression1"
 
-Plotting average CBR as boxplot for a simulation time over market rate for CAM & CPM into one figure:  
+    transforms:
+        transformed_dataset0: !transform_class
+            dataset_name: "dataset0"
+            output_dataset_name: "dataset0"
+            parameter0: "value"
+
+    tasks:
+        plot_task0: !plotting_class
+            dataset_name: "transformed_dataset0"
 ```
-pipenv run python plot.py -w cbr_over_v2x_rate.png -b -x v2x_rate -y cbr --label gen_rule tag
-    -- --tag="CAM" --select-var='cbr_ca' --color='red' --linestyle='-' --marker='x'  *.json
-    -- --tag="CAM" --select-var='cbr' --color='green' --linestyle='--' --marker='s'  *.json
+For simplicity only one task is listed for each sub-phase, but an arbitrary
+number of tasks is possible.
+
+For ease of use, the following omissions are possible:
+- the `transforms` phase is optional
+- the `exporter` and `reader` phases are optional, the `plot` phase can just use
+  the datasets extracted in the `evaluation` phase
+
+The first line of the definition of a task has the format '<task_name>: !<task_classname>'
+and defines the name and the type of the transform. The type is just the
+class name (or more precisely, the YAML tag assigned to the class, but they are
+literally the same) of the desired operation. What follows are the parameters
+of the constructor for the class.
+
+In the `extractors` and `reader` sub-phase, the collection of data that is to be
+extracted, processed and plotted is given a name so as to allow referencing it
+in the task of other sub-phases. In the example above, the name given is
+`dataset0`.
+Each task has at least one parameter `dataset_name`, which references the input
+dataset the task operates upon. A transform will always have parameter
+`output_dataset_name` to assign a name to the result of the operation. This
+assignment can overwrite previously defined names, and thus also free the
+associated data if they are not being depended upon by another instance.
+
+Most of the documentation of the parameters of the actual components is in the
+API documentation, e.g. the documentation one needs for just plotting is in
+`plots.PlottingTask`, specifically in the documentation of the parameters of the
+constructor for that class.
+
+##### Tags
+The `evaluation` phase also supports assigning tags to the extracted data. A tag
+is a property shared among a subset of the input data, e.g. the repetition
+number of a run, the run number or the rate at which vehicles are being equipped
+with V2X hardware.
+
+The syntax for the tag definition is as follows:
 ```
-
-## More examples
-
-Generate statistics over a whole run for all known variables:  
-`pipenv run ./eval.py -d eval-results -v all -s -g /path/to/results`  
-`-g` 'aggregate' statistics over the whole run  
-
-Plot CBR over market penetration rate as a boxplot:  
+evaluation:
+    tags:
+        attributes:
+            repetition: |
+                [{
+                    'regex': r'repetition'
+                  , 'transform': lambda v: int(v)
+                }]
+        iterationsvars:
+            tag_name_1: |
+                [{
+                    'regex': r'anotherExampleRE.*'
+                  , 'transform': lambda v: str(v)
+                }]
+        parameters:
+            tag_name_2: |
+                [{
+                    'regex': r'exampleRE.*'
+                  , 'transform': lambda v: str(v)
+                },
+                {
+                    'regex': r'exampleRE2.*'
+                  , 'transform': lambda v: str(v)
+                },
+                ]
 ```
-pipenv run ./plot.py -w tst -b -x v2x_rate -y cbr --label gen_rule --delta 0.2 --width 0.15 --legend static \
-    -- <dataset0 for all market penetration rates, static generation rules> \
-    -- <dataset0 for all market penetration rates, dynamic generation rules>
-```  
-`-b` generate boxplot  
-`--width` change width of a box (optional)  
-`--delta` distance between boxes in a group (here: the distance between `static` & `draft` boxes for a market rate)  
-`--legend` set legend generation mode; `dynamic` adds a legend item for every box  
+The `attributes`, `iterationsvars` and `parameters` are predefined categories
+for the tags and are extracted from different places in the input database.
+The general procedure involves using the regular expression (python flavour, [syntax](https://docs.python.org/3/library/re.html#regular-expression-syntax))
+defined by the `regex` key to match on the name of the attribute and
+then applying the unary function defined by the `transform` key to the value in
+the column associated with the category.
 
-Plot CBR over slot/period as a boxplot:  
-```
-pipenv run ./plot.py -w tst -b -x period -y cbr --label gen_rule --delta 0.2 --width 0.15 --legend static \
-    -- <dataset0 for all slots, static generation rules> \
-    -- <dataset0 for all slots, draft generation rules>
-```  
+The tags are extracted from:
+- `attributes`: the `runAttr` table
+    - the `regex` matches on the value in the `attrName` column
+    - the `transform` is applied to the value in the `attrValue` column
+- `iterationvars`: the row with `attrName=='iterationvars'` in the `runAttr` table
+    - the `regex` matches on the value of the `attrValue` column of the row
+    - the `transform` is applied to the value matched by the regular expression
+- `parameters`: the `runParam` table
+    - the `regex` matches on the value in the `paramKey` column
+    - the `transform` is applied to the value in the `paramValue` column
 
-Plot CDF of CPM object update interval:  
-`pipenv run ./plot.py -w tst --cdf -x object_update -y cdf --label gen_rule -- <dataset0>`  
-`--cdf` generate CDF plot  
+Multiple regular expressions can be bound to the same tag, in case of a heterogeneous data set or typing errors.
 
-Plot object update interval over MCO/SCO2/SCO3 flavor:  
-```
-pipenv run ./plot.py -w tst -b -x xco -y 10Hz_cpm --label xco --delta 0.2 --width 0.15 --legend static \
-    -- <dataset0 for MCO/SCO2/SCO3 for draft/static> \
-    -- <dataset1 for MCO/SCO2/SCO3 for draft/static>
-```  
-`-g gen_rule` group by `gen_rule` column  
-`-x xco` use auxiliary column `xco` as x-axis  
+The built-in tag definitions can be found in `tag_regular_expressions.py`.
 
-Show variable-to-signal mapping:  
-`pipenv run ./eval.py --show-var-mapping`  
+#### Examples
+
+Example recipes can be found in the `examples` directory in the root of this
+repository:
+- `lineplot.yaml`: a basic recipe for producing a CBR-over-MPR lineplot. One
+  should probably start with this as template.
+- `CUI.yaml`: this calculates, for every vehicle, the mean of the differences between consecutive receptions of
+  a CAM and plots them as a lineplot. This is probably the second template to
+  look at, as it uses `GroupedFunctionTransform` to partition the input data
+  by MPR and the name of the module emitting the signal used as marker for CAM
+  emission.
+- `recipe.yaml`: a more elaborate recipe showcasing all possible options
+- `statistic.yaml`: this extracts the results for the statName
+  `LemObjectUpdateInterval:stats` from the `statistic` table and saves them,
+  then plots the mean of the values (from the `statMean` column of the
+  table) of those over the market rate.
+- `boxstats.yaml`: showcases using a custom function to calculate the values
+  needed for a boxplot, forward them as a python list to the exporter and save
+  them as a JSON file
 
