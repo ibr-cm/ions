@@ -273,6 +273,29 @@ class BaseExtractor(Extractor):
 
 
 class RawStatisticExtractor(BaseExtractor):
+    r"""
+    Extract the data for a signal from the `statistic` table of the input files specified.
+
+    Parameters
+    ----------
+    input_files: List[str]
+        the list of paths to the input files, as literal path or as a regular expression
+
+    signal: str
+        the name of the signal which is to be extracted
+
+    alias: str
+        the name given to the column with the extracted signal data
+
+    runId: str
+        whether to extract the `runId` column as well
+
+    statName: str
+        whether to extract the `statName` column as well
+
+    statId: str
+        whether to extract the `statId` column as well
+    """
     yaml_tag = u'!RawStatisticExtractor'
 
     def __init__(self, /,
@@ -321,6 +344,29 @@ class RawStatisticExtractor(BaseExtractor):
 
 
 class RawScalarExtractor(BaseExtractor):
+    r"""
+    Extract the data for a signal from the `scalar` table of the input files specified.
+
+    Parameters
+    ----------
+    input_files: List[str]
+        the list of paths to the input files, as literal path or as a regular expression
+
+    signal: str
+        the name of the signal which is to be extracted
+
+    alias: str
+        the name given to the column with the extracted signal data
+
+    runId: str
+        whether to extract the `runId` column as well
+
+    scalarName: str
+        whether to extract the `scalarName` column as well
+
+    scalarId: str
+        whether to extract the `scalarId` column as well
+    """
     yaml_tag = u'!RawScalarExtractor'
 
     def __init__(self, /,
@@ -571,7 +617,38 @@ class PositionExtractor(BaseExtractor):
 
 
 class MatchingExtractor(BaseExtractor):
+    r"""
+    Extract the data for multiple signals matching a regular expression, with
+    the associated positions, from the input files specified.
+
+    Parameters
+    ----------
+    input_files: List[str]
+        the list of paths to the input files, as literal path or as a regular expression
+
+    pattern: str
+        the regular expression used for matching possible signal names
+
+    alias_pattern: str
+        the template string for naming the extracted signal
+
+    alias: str
+        the name given to the column with the extracted signal data
+    """
     yaml_tag = u'!MatchingExtractor'
+
+    def __init__(self, /,
+                 input_files:list
+                 , pattern:str
+                 , alias_pattern:str
+                 , alias:str
+                 , *args, **kwargs
+                 ):
+        super().__init__(input_files=input_files, *args, **kwargs)
+
+        self.pattern:str = pattern
+        self.alias_pattern:str = alias_pattern
+        self.alias:str = alias
 
     @staticmethod
     def get_matching_signals(db_file, pattern, alias_pattern):
@@ -673,20 +750,6 @@ class MatchingExtractor(BaseExtractor):
             result_list.append((res, attributes))
 
         return result_list
-
-
-    def __init__(self, /,
-                 input_files:list
-                 , pattern:str
-                 , alias_pattern:str
-                 , alias:str
-                 , *args, **kwargs
-                 ):
-        super().__init__(input_files=input_files, *args, **kwargs)
-
-        self.pattern:str = pattern
-        self.alias_pattern:str = alias_pattern
-        self.alias:str = alias
 
 
 def register_constructors():

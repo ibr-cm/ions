@@ -133,11 +133,54 @@ class FunctionTransform(Transform, YAMLObject):
             job = dask.delayed(self.process)(data, function, attributes)
             job_list.append((job, attributes))
 
+        # allow other tasks to depend on the output of the delayed jobs
         self.data_repo[self.output_dataset_name] = job_list
 
         return job_list
 
 class GroupedAggregationTransform(Transform, YAMLObject):
+    r"""
+    A transform for dividing a dataset into distinct partitions with
+    `pandas.DataFrame.groupby
+    <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html#pandas.DataFrame.groupby>`__,
+    each sharing the same value in the specified list of grouping/partitioning
+    column names, and then applying a function to the values in a given column
+    of a that partition, producing a aggregate scalar value.
+
+    Parameters
+    ----------
+    dataset_name: str
+        the dataset to operate on
+
+    output_dataset_name: str
+        the name given to the output dataset
+
+    input_column: str
+        the name of the column the function should be applied to
+
+    output_column: str
+        the name given to the output column containing the results of applying
+        the function
+
+    grouping_columns: List
+        the set of columns used for partitioning the dataset
+
+    raw: bool
+        whether to append the raw output of `transform_function` to the result list
+
+    pre_concatenate: bool
+        concatenate all input DataFrames before processing
+
+    extra_code: Optional[str]
+        this allows specifying additional code, like a more complex transform function
+
+    aggregation_function: Callable
+        the unary function to apply to a each partition. Should expect an
+        `pandas.Series` as argument and return a scalar.
+
+    timestamp_selector: Callable
+        the function to select the row in the partition data as template for the output in case of aggregation
+    """
     yaml_tag = u'!GroupedAggregationTransform'
 
     def __init__(self, dataset_name:str, output_dataset_name:str
@@ -228,8 +271,7 @@ class GroupedFunctionTransform(Transform, YAMLObject):
     `pandas.DataFrame.groupby
     <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html#pandas.DataFrame.groupby>`__,
     each sharing the same value in the specified list of grouping/partitioning
-    column names, and then applying a function to every value in a given column
-    of a that subset.
+    column names, and then applying a function to that partition.
 
     Parameters
     ----------

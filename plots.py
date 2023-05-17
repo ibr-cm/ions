@@ -145,8 +145,8 @@ class PlottingTask(YAMLObject):
         the template string to use to label one plot in a grid, for syntax see
         [seaborn.FacetGrid](https://seaborn.pydata.org/generated/seaborn.FacetGrid.set_titles.html#seaborn.FacetGrid.set_titles)
 
-    bbox_inches: str
-        ?
+    bbox_inches: Union[str, Tuple[float]]
+        the bounding box of the figure, as a tuple (xmin, ymin, xmax, ymax), or `tight`
 
     legend_location: str
         the location to place the legend
