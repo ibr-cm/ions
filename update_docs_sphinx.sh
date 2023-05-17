@@ -2,9 +2,11 @@
 
 set -x
 
+source config.sh
+
 cd doc
 
-make html
+${PYTHON_VENV_MANAGER} make html
 
 rm -rf /ibr/web/www.ibr.cs.tu-bs.de/projects/collective-perception/plotting-doc/html
 

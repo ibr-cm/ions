@@ -18,6 +18,9 @@ Or any other package manager that can import the requirement manifest of those t
 
 This step depends on the operating system and the chosen package manager.
 
+First, change the `PYTHON_VENV_MANAGER` variable in `config.sh` to the package
+manager of your choice.
+
 Install `pipenv` for your user to ~/.local (see [install instructions](https://pipenv.kennethreitz.org/en/latest/install/#pragmatic-installation-of-pipenv)):  
 `pip3 install --user pipenv`
 For [pdm](https://pdm.fming.dev/latest/#other-installation-methods):
