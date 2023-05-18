@@ -75,6 +75,10 @@ evaluation: !Evaluation
               diffs = df['simtimeRaw'].sort_values().diff().dropna()
               # print(df)
               # print(diffs)
+
+              # this drops into an interactive command line interface with access to the local variables, for data introspection and debugging purposes
+              # start_ipython_dbg_cmdline(user_ns=locals())
+
               return diffs.mean()
 
         # the function to execute for each group
