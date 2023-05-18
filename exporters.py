@@ -58,7 +58,7 @@ class FileResultProcessor(YAMLObject):
         self.output_filename = output_filename
         self.dataset_name = dataset_name
         self.format = format
-        self.concatenate = raw
+        self.concatenate = concatenate
         self.raw = raw
 
     def save_to_disk(self, df, filename, file_format='feather', compression='lz4', hdf_key='data'):
