@@ -19,8 +19,11 @@ This is a collection of best practices to consider when using this framework:
 - running `run_recipe.py` with the parameter `--plot-task-graphs` generates
   plots with the task graph in the directory for temporary files (set with
   `--tmpdir`.
-- when debugging errors, it can be really useful to start an interactive console
-  by adding `start_ipython_dbg_cmdline(user_ns=locals())` into the code in the
-  recipe and running single-threaded by adding `--worker 1 --single-threaded` to
-  the command line
+- when developing code for a transform or debugging errors, it can be really
+  useful to start an interactive console by adding:
+  ```
+  start_ipython_dbg_cmdline(user_ns=locals())
+  ```
+  into the code in the recipe and running single-threaded by adding `--worker
+  1 --single-threaded` to the command line
 

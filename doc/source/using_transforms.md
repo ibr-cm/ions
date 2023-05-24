@@ -6,6 +6,15 @@ multiple signals, the use of a transform becomes necessary.
 
 A transform should output a list of `pandas.DataFrame`.
 
+When developing code for a transform or debugging errors, it can be really
+useful to start an interactive console by adding:
+```
+start_ipython_dbg_cmdline(user_ns=locals())
+```
+into the code in the recipe and running single-threaded by adding `--worker
+1 --single-threaded` to the command line. This allows inspection and
+manipulation of the loaded data in a comfortable REPL.
+
 There are currently two types of transform implemented:
 - `FunctionTransform`
 - `GroupedFunctionTransform`
