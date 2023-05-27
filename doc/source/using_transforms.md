@@ -4,7 +4,10 @@ Using transforms
 When dealing with metrics that need to be calculated from one or by combining
 multiple signals, the use of a transform becomes necessary.
 
-A transform should output a list of `pandas.DataFrame`.
+A transform should generally receive a list of `pandas.DataFrame` as input.
+A transform should generally output a list of `pandas.DataFrame`.
+Generally, it will iterate over that list and apply the operation represented by
+the transform to every `DataFrame` in the list.
 
 When developing code for a transform or debugging errors, it can be really
 useful to start an interactive console by adding:
@@ -26,7 +29,7 @@ The user defined unary function defined by the `function` parameter is executed
 for every value, for every `pandas.DataFrame` in the selected dataset
 
 #### `GroupedFunctionTransform`
-This is for dividing the input `pandas.DataFrame`s into partitions based on 
+This is for dividing the input `pandas.DataFrame`s into partitions based on
 sharing the same values in the columns given by `grouping_columns`. On each of
 these partitions a user defined function is applied. The unary function takes
 a `DataFrame` as argument and returns either a `DataFrame`, a scalar value or an

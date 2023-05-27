@@ -6,6 +6,9 @@ This is a collection of best practices to consider when using this framework:
 - test the extraction and plotting with a subset of your data first. No need to
   waste time & energy if there's a typo somewhere or the parameters of a task are
   not appropriately set.
+- if you are working with a subset of your data, be sure to test the assumptions
+  made in your code on the whole dataset, e.g. handling of NaN values. Testing
+  for those edge cases is a good way to verify your simulation code too.
 - if you just want to extract data, add `--eval-only` to your command line. Similarly, if
   you just want to plot, add `--plot-only`
 - test the regular expression used for the paths to the input data. One might
@@ -26,4 +29,10 @@ This is a collection of best practices to consider when using this framework:
   ```
   into the code in the recipe and running single-threaded by adding `--worker
   1 --single-threaded` to the command line
+- when using `pandas.DataFrame.groupby` to partition up the data, e.g. using
+  the `GroupedFunctionTransform`, try limiting the number of keys used for
+  partitioning and the size of the input `DataFrame`s to minimise processing
+  time and memory usage. Only concatenate the input into a large `DataFrame` if
+  the operation has to happen over all data or over subsets of the data that
+  can't otherwise be easily selected.
 
