@@ -1,4 +1,4 @@
-plots module
+plots
 ============
 
 .. automodule:: plots

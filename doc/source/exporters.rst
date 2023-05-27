@@ -1,4 +1,4 @@
-exporters module
+exporters
 ================
 
 .. automodule:: exporters

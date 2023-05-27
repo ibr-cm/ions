@@ -1,4 +1,4 @@
-transforms module
+transforms
 =================
 
 .. automodule:: transforms

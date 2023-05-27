@@ -1,4 +1,4 @@
-extractors module
+extractors
 =================
 
 .. automodule:: extractors
