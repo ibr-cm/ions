@@ -339,11 +339,6 @@ class GroupedFunctionTransform(Transform, YAMLObject):
         self.pre_concatenate = pre_concatenate
         self.aggregate = aggregate
 
-        print(f'{type(self.raw)=}')
-        print(f'{type(self.aggregate)=}')
-        print(f'{type(self.pre_concatenate)=}')
-
-
     def aggregate_frame(self, data):
         if data.empty:
             return data
@@ -399,7 +394,7 @@ class GroupedFunctionTransform(Transform, YAMLObject):
         else:
             result = result_list
 
-        print(f'<<<<>>>>>    {result=}')
+        logd(f'GroupedFunctionTransform: {result=}')
         return result
 
     def prepare(self):

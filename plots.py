@@ -253,9 +253,9 @@ class PlottingTask(YAMLObject):
 
         self.set_backend(matplotlib_backend)
         self.set_theme(context, axes_style)
-        print(f'<-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <->')
-        print(f'-=-=-=-=-=    {self.__dict__=}')
-        print(f'<-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <->')
+        logd(f'<-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <->')
+        logd(f'-=-=-=-=-=    {self.__dict__=}')
+        logd(f'<-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <->')
 
 
     def set_label_defaults(self
@@ -324,8 +324,8 @@ class PlottingTask(YAMLObject):
         self.bin_size = bin_size
         self.bbox_inches = bbox_inches
 
-        # print(f'{matplotlib_rc=}')
-        # print(f'{type(matplotlib_rc)=}')
+        # logd(f'{matplotlib_rc=}')
+        # logd(f'{type(matplotlib_rc)=}')
         # if type(matplotlib_rc) == str:
         #     self.matplotlib_rc = eval(matplotlib_rc)
         # else:
@@ -353,9 +353,25 @@ class PlottingTask(YAMLObject):
     def set_data_repo(self, data_repo:dict):
         self.data_repo = data_repo
 
-    def load_data(self):
-        reader = PlottingReaderFeather(self.input_files)
-        self.data = reader.read_data()
+    def get_data(self, dataset_name:str):
+        if not dataset_name in self.data_repo:
+            raise Exception(f'"{dataset_name}" not found in data repo')
+
+        data = self.data_repo[dataset_name]
+
+        if data is None:
+            raise Exception(f'data for "{dataset_name}" is None')
+
+        return data
+
+    def prepare(self):
+        data = self.get_data(self.dataset_name)
+        # concatenate everything first
+        cdata = dask.delayed(pd.concat)(map(operator.itemgetter(0), data))
+        job = dask.delayed(self.plot_data)(cdata)
+
+        return job
+
 
     def set_backend(self, backend:str = 'agg'):
         self.matplotlib_backend = backend
@@ -368,14 +384,14 @@ class PlottingTask(YAMLObject):
         sb.set(context=self.context, style=self.axes_style, font_scale=0.9, rc=self.matplotlib_rc)
 
     def plot_data(self, data):
-        print(f'-0---000---<<<<>>>>>    {self.__dict__=}')
-        print(f'-0---000---<<<<>>>>>    {mpl.rcParams["backend"]=}')
+        logd(f'-0---000---<<<<>>>>>    {self.__dict__=}')
+        logd(f'-0---000---<<<<>>>>>    {mpl.rcParams["backend"]=}')
 
-        # print(f'<<<<>>>>>-------------')
-        # print(f'<<<<>>>>>    {data=}')
+        # logd(f'<<<<>>>>>-------------')
+        # logd(f'<<<<>>>>>    {data=}')
         # data = data.reset_index()
-        # print(f'<<<<>>>>>    {data=}')
-        # print(f'<<<<>>>>>-------------')
+        # logd(f'<<<<>>>>>    {data=}')
+        # logd(f'<<<<>>>>>-------------')
 
         if self.selector:
             selected_data = data.query(self.selector).reset_index()
@@ -449,26 +465,6 @@ class PlottingTask(YAMLObject):
             logi(f'{fig=} saved to {self.output_file}')
 
         return fig
-
-    def get_data(self, dataset_name:str):
-        if not dataset_name in self.data_repo:
-            raise Exception(f'"{dataset_name}" not found in data repo')
-
-        data = self.data_repo[dataset_name]
-
-        if data is None:
-            raise Exception(f'data for "{dataset_name}" is None')
-
-        return data
-
-    def prepare(self):
-        data = self.get_data(self.dataset_name)
-        # concatenate everything first
-        cdata = dask.delayed(pd.concat)(map(operator.itemgetter(0), data))
-        job = dask.delayed(self.plot_data)(cdata)
-
-        return job
-
 
     def savefigure(self, fig, plot_destination_dir, filename, bbox_inches='tight'):
         """
