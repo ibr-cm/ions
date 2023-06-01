@@ -450,9 +450,19 @@ class PlottingTask(YAMLObject):
 
         return fig
 
+    def get_data(self, dataset_name:str):
+        if not dataset_name in self.data_repo:
+            raise Exception(f'"{dataset_name}" not found in data repo')
+
+        data = self.data_repo[dataset_name]
+
+        if data is None:
+            raise Exception(f'data for "{dataset_name}" is None')
+
+        return data
 
     def prepare(self):
-        data = self.data_repo[self.dataset_name]
+        data = self.get_data(self.dataset_name)
         # concatenate everything first
         cdata = dask.delayed(pd.concat)(map(operator.itemgetter(0), data))
         job = dask.delayed(self.plot_data)(cdata)
