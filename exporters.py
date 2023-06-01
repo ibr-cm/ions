@@ -102,7 +102,7 @@ class FileResultProcessor(YAMLObject):
         self.data_repo = data_repo
 
 
-    def execute_concatenated(self, data_list, job_list):
+    def prepare_concatenated(self, data_list, job_list):
         if self.raw:
             job = dask.delayed(self.save_to_disk)(map(operator.itemgetter(0), data_list), self.output_filename, self.format)
         else:
@@ -114,7 +114,7 @@ class FileResultProcessor(YAMLObject):
 
         return job_list
 
-    def execute_separated(self, data_list, job_list):
+    def prepare_separated(self, data_list, job_list):
         for data, attributes in data_list:
             output_filename = str(pathlib.PurePath(self.output_filename).parent) + '/' \
                               + str(pathlib.PurePath(attributes.source_file).stem) \
@@ -130,17 +130,17 @@ class FileResultProcessor(YAMLObject):
 
         return job_list
 
-    def execute(self):
+    def prepare(self):
         data_list = self.data_repo[self.dataset_name]
 
         job_list = []
 
         if self.concatenate:
-            job_list = self.execute_concatenated(data_list, job_list)
+            job_list = self.prepare_concatenated(data_list, job_list)
         else:
-            job_list = self.execute_separated(data_list, job_list)
+            job_list = self.prepare_separated(data_list, job_list)
 
-        logd(f'FileResultProcessor: execute: {job_list=}')
+        logd(f'FileResultProcessor: prepare: {job_list=}')
         return job_list
 
 

@@ -72,8 +72,8 @@ def eval_recipe_tag_definitions(recipe, attributes_regex_map, iterationvars_rege
     return attributes_regex_map, iterationvars_regex_map, parameters_regex_map
 
 
-def execute_evaluation_phase(recipe:Recipe, options, data_repo):
-    logi(f'execute_evaluation_phase: {recipe}  {recipe.name}')
+def prepare_evaluation_phase(recipe:Recipe, options, data_repo):
+    logi(f'prepare_evaluation_phase: {recipe}  {recipe.name}')
 
     if hasattr(recipe.evaluation, 'tags'):
         attributes_regex_map, iterationvars_regex_map, parameters_regex_map = eval_recipe_tag_definitions(recipe \
@@ -84,7 +84,7 @@ def execute_evaluation_phase(recipe:Recipe, options, data_repo):
 
 
     if not hasattr(recipe.evaluation, 'extractors'):
-        logi('execute_evaluation_phase: no `extractors` in recipe.Evaluation')
+        logi('prepare_evaluation_phase: no `extractors` in recipe.Evaluation')
         return
 
     for extractor_tuple in recipe.evaluation.extractors:
@@ -109,7 +109,7 @@ def execute_evaluation_phase(recipe:Recipe, options, data_repo):
         logi(f'added extractor {extractor_name}')
 
     if not hasattr(recipe.evaluation, 'transforms'):
-        logi('execute_evaluation_phase: no `transforms` in recipe.Evaluation')
+        logi('prepare_evaluation_phase: no `transforms` in recipe.Evaluation')
     else:
         for transform_tuple in recipe.evaluation.transforms:
             transform_name = list(transform_tuple.keys())[0]
@@ -120,14 +120,14 @@ def execute_evaluation_phase(recipe:Recipe, options, data_repo):
                 continue
             logi(f'preparing transform {transform_name}')
             transform.set_data_repo(data_repo)
-            transform.execute()
+            transform.prepare()
 
             logi(f'added transform {transform_name}')
 
     jobs = []
 
     if recipe.evaluation.exporter is None:
-        logi('execute_evaluation_phase: no `exporter` in recipe.Evaluation')
+        logi('prepare_evaluation_phase: no `exporter` in recipe.Evaluation')
     else:
         for exporter_tuple in recipe.evaluation.exporter:
             exporter_name = list(exporter_tuple.keys())[0]
@@ -142,7 +142,7 @@ def execute_evaluation_phase(recipe:Recipe, options, data_repo):
                 logi(f'overriding {exporter_name} with {exporter.output_filename}')
 
             exporter.set_data_repo(data_repo)
-            job = exporter.execute()
+            job = exporter.prepare()
             jobs.extend(job)
             logi(f'added exporter {exporter_name}')
 
@@ -156,11 +156,11 @@ def execute_evaluation_phase(recipe:Recipe, options, data_repo):
     return data_repo, jobs
 
 
-def execute_plotting_phase(recipe:Recipe, options, data_repo):
-    logi(f'execute_plotting_phase: {recipe}  {recipe.name}')
+def prepare_plotting_phase(recipe:Recipe, options, data_repo):
+    logi(f'prepare_plotting_phase: {recipe}  {recipe.name}')
 
     if not hasattr(recipe.plot, 'reader'):
-        logi('execute_plotting_phase: no `reader` in recipe.Plot')
+        logi('prepare_plotting_phase: no `reader` in recipe.Plot')
     else:
         for dataset_tuple in recipe.plot.reader:
             dataset_name = list(dataset_tuple.keys())[0]
@@ -172,7 +172,7 @@ def execute_plotting_phase(recipe:Recipe, options, data_repo):
             logi(f'plot: loading dataset: "{dataset_name=}"')
             if dataset_name in options.reader_overrides:
                 reader.input_files = options.reader_overrides[dataset_name]
-                logi(f'plot: execute_plotting_phase overriding input files for "{dataset_name}": "{reader.input_files=}"')
+                logi(f'plot: prepare_plotting_phase overriding input files for "{dataset_name}": "{reader.input_files=}"')
             data = reader.read_data()
             data_repo[dataset_name] = data
             logi(f'added reader {dataset_name}')
@@ -182,7 +182,7 @@ def execute_plotting_phase(recipe:Recipe, options, data_repo):
     logd('<<<-<-<--<-<-<--<-<-<')
 
     if not hasattr(recipe.plot, 'transforms'):
-        logi('execute_plotting_phase: no `transforms` in recipe.Plot')
+        logi('prepare_plotting_phase: no `transforms` in recipe.Plot')
     else:
         for transform_tuple in recipe.plot.transforms:
             transform_name = list(transform_tuple.keys())[0]
@@ -192,7 +192,7 @@ def execute_plotting_phase(recipe:Recipe, options, data_repo):
                 logi(f'skipping transform {transform_name}')
                 continue
             transform.set_data_repo(data_repo)
-            transform.execute()
+            transform.prepare()
             logi(f'added transform {transform_name}')
 
     jobs = []
@@ -210,7 +210,7 @@ def execute_plotting_phase(recipe:Recipe, options, data_repo):
 
         task.set_data_repo(data_repo)
         logi(f'plot: preparing plotting task {task_name}')
-        job = task.execute()
+        job = task.prepare()
         # logi(f'plot: {job=}')
         jobs.append(job)
         logi(f'added task {task_name}')
@@ -243,7 +243,7 @@ def process_recipe(options):
         if not hasattr(recipe, 'evaluation'):
             logi('process_recipe: no Evaluation in recipe')
             return
-        data_repo, jobs = execute_evaluation_phase(recipe, options, data_repo)
+        data_repo, jobs = prepare_evaluation_phase(recipe, options, data_repo)
         job_list.extend(jobs)
 
     if options.eval_only:
@@ -253,7 +253,7 @@ def process_recipe(options):
         logi('process_recipe: no Plot in recipe')
         return data_repo, job_list
 
-    data_repo, jobs = execute_plotting_phase(recipe, options, data_repo)
+    data_repo, jobs = prepare_plotting_phase(recipe, options, data_repo)
     job_list.extend(jobs)
 
     return data_repo, job_list

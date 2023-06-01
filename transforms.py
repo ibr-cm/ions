@@ -52,7 +52,7 @@ class Transform(YAMLObject):
         # process data here
         return data
 
-    def execute(self):
+    def prepare(self):
         # The code below is just to illustrate the general procedure when
         # implementing a transform, it is not used
 
@@ -77,7 +77,7 @@ class Transform(YAMLObject):
 class NullTransform(Transform, YAMLObject):
     yaml_tag = u'!NullTransform'
 
-    def execute(self):
+    def prepare(self):
         pass
 
 
@@ -122,7 +122,7 @@ class FunctionTransform(Transform, YAMLObject):
         data[self.output_column] = data[self.input_column].apply(function)
         return data
 
-    def execute(self):
+    def prepare(self):
         data_list = self.get_data(self.dataset_name)
 
         if isinstance(self.function, Callable):
@@ -248,7 +248,7 @@ class GroupedAggregationTransform(Transform, YAMLObject):
 
         return result
 
-    def execute(self):
+    def prepare(self):
         data = self.get_data(self.dataset_name)
 
         jobs = []
@@ -402,7 +402,7 @@ class GroupedFunctionTransform(Transform, YAMLObject):
         print(f'<<<<>>>>>    {result=}')
         return result
 
-    def execute(self):
+    def prepare(self):
         data = self.get_data(self.dataset_name)
 
         jobs = []

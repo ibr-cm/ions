@@ -451,7 +451,7 @@ class PlottingTask(YAMLObject):
         return fig
 
 
-    def execute(self):
+    def prepare(self):
         data = self.data_repo[self.dataset_name]
         # concatenate everything first
         cdata = dask.delayed(pd.concat)(map(operator.itemgetter(0), data))
