@@ -218,10 +218,7 @@ class PlottingTask(YAMLObject):
         self.x = x
         self.y = y
 
-        if type(selector) == str:
-            self.selector = eval(selector)
-        else:
-            self.selector = selector
+        self.selector = selector
 
         self.column = column if column != '' else None
         self.row = row if row != '' else None
