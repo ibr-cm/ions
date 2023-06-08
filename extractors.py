@@ -85,8 +85,33 @@ class SqlLiteReader():
 
 class DataAttributes(YAMLObject):
     def __init__(self, /,  **kwargs):
+        self.source_files = set()
+        self.aliases = set()
+
         for key in kwargs:
             setattr(self, key, kwargs[key])
+
+    def get_source_files(self) -> Set[str]:
+        return self.source_files
+
+    def add_source_file(self, source_file:str):
+        self.source_files.add(source_file)
+
+
+    def get_aliases(self) -> Set[str]:
+        return self.aliases
+
+    def add_alias(self, alias:str):
+        self.aliases.add(alias)
+
+    def remove_source_file(self, source_file:str):
+        self.source_files.remove(source_file)
+
+    def __str__(self) -> str:
+        return str(self.__dict__)
+
+    def __repr__(self) -> str:
+        return str(self.__dict__)
 
 # ----------------------------------------
 

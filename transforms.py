@@ -81,6 +81,184 @@ class NullTransform(Transform, YAMLObject):
         pass
 
 
+class ConcatTransform(Transform, YAMLObject):
+    r"""
+    A transform for concatenating datasets.
+
+    Parameters
+    ----------
+    dataset_names: Optional[List[str]]
+        the list of datasets to concatenate
+
+    output_dataset_name: str
+        the name given to the output dataset
+    """
+
+    yaml_tag = u'!ConcatTransform'
+
+    def __init__(self, dataset_names:Optional[List[str]]
+                 , output_dataset_name:str):
+        self.dataset_names = dataset_names
+        self.output_dataset_name = output_dataset_name
+
+    def concat(self, dfs:List[pd.DataFrame]):
+        r = pd.concat(dfs)
+        return r
+
+    def prepare(self):
+        data_list = []
+        for name in self.dataset_names:
+            data_list.extend(self.get_data(name))
+
+        # concatenate all DataFrames
+        job = dask.delayed(self.concat)(map(operator.itemgetter(0), data_list))
+
+        attributes = DataAttributes()
+
+        # add all source files as attributes
+        for attribute in list(map(operator.itemgetter(1), data_list)):
+            for source_file in attribute.get_source_files():
+                attributes.add_source_file(source_file)
+
+        # allow other tasks to depend on the output of the delayed jobs
+        self.data_repo[self.output_dataset_name] = [(job, attributes)]
+
+        return [(job, attributes)]
+
+
+class MergeTransform(Transform, YAMLObject):
+    r"""
+    A transform for merging two datasets
+
+    Parameters
+    ----------
+    dataset_name_left: str
+        the left dataset to operate on
+
+    dataset_name_right: str
+        the right dataset to operate on
+
+    output_dataset_name: str
+        the name given to the output dataset
+
+    left_key_columns: str
+        the name of the column the function should be applied to
+
+    left_key_columns: str
+        the name given to the output column containing the results of applying
+        the function
+
+    """
+
+    yaml_tag = u'!MergeTransform'
+
+    def __init__(self, dataset_name_left:str
+                 , dataset_name_right:str
+                 , output_dataset_name:str
+                 , left_key_columns:Optional[List[str]] = None
+                 , right_key_columns:Optional[List[str]] = None
+                 , match_by_filename:bool = True
+                 , matching_attribute:str = 'source_file'
+                 ):
+        self.dataset_name_left = dataset_name_left
+        self.dataset_name_right = dataset_name_right
+        self.output_dataset_name = output_dataset_name
+
+        self.left_key_columns = left_key_columns
+        self.right_key_columns = right_key_columns
+
+        self.match_by_filename = match_by_filename
+        self.matching_attribute = matching_attribute
+
+    def merge(self, data_l:pd.DataFrame, data_r:pd.DataFrame
+              , left_key_columns:Optional[List[str]] = None
+              , right_key_columns:Optional[List[str]] = None):
+        def is_empty(df):
+            if not df is None:
+                if df.empty:
+                    return True
+                return False
+            return True
+
+        if is_empty(data_l):
+            logd(f'left input to merge is empty: {data_l=}')
+            return None
+        if is_empty(data_l):
+            logd(f'right input to merge is empty: {data_r=}')
+            return None
+
+        df_merged = data_l.merge(data_r, left_on=left_key_columns, right_on=right_key_columns, suffixes=['', '_r'])
+        # start_ipython_dbg_cmdline(locals())
+        return df_merged
+
+    def prepare_matched_by_filename(self):
+        data_list_l = self.get_data(self.dataset_name_left)
+        data_list_r = self.get_data(self.dataset_name_right)
+
+        job_list = []
+
+        d = dict()
+        def add_key(k, v):
+            if k in d:
+                d[k].append(v)
+            else:
+                d[k] = [v]
+
+        def add_by_source_file(data_list):
+            for data, attributes in data_list:
+                # add_key(attributes.source_file, (data, attributes))
+                add_key(getattr(attributes, self.matching_attribute), (data, attributes))
+
+        add_by_source_file(data_list_l)
+        add_by_source_file(data_list_r)
+
+        for source_file in d:
+            (data_l, attributes_l), (data_r, attributes_r) = d[source_file]
+            job = dask.delayed(self.merge)(data_l, data_r, self.left_key_columns, self.right_key_columns)
+
+            # add the source files of both datasets to the set of dataset source files
+            attributes = DataAttributes()
+            attributes.add_source_file(attributes_l.source_file)
+            attributes.add_source_file(attributes_r.source_file)
+            attributes.add_alias(attributes_l.alias)
+            attributes.add_alias(attributes_r.alias)
+            job_list.append((job, attributes))
+
+            logd(f'{attributes=}')
+            # start_ipython_dbg_cmdline(locals())
+
+        # allow other tasks to depend on the output of the delayed jobs
+        self.data_repo[self.output_dataset_name] = job_list
+
+        return job_list
+
+    def prepare_simple_sequential(self):
+        data_list_l = self.get_data(self.dataset_name_left)
+        data_list_r = self.get_data(self.dataset_name_right)
+
+        job_list = []
+
+        for (data_l, attributes_l), (data_r, attributes_r) in zip(data_list_l, data_list_r):
+            job = dask.delayed(self.merge)(data_l, data_r, self.left_key_columns, self.right_key_columns)
+            attributes = DataAttributes()
+            attributes.add_source_file(attributes_l.source_file)
+            attributes.add_source_file(attributes_r.source_file)
+            logd(f'{attributes=}')
+            job_list.append((job, attributes_l))
+            # start_ipython_dbg_cmdline(locals())
+
+        # allow other tasks to depend on the output of the delayed jobs
+        self.data_repo[self.output_dataset_name] = job_list
+
+        return job_list
+
+    def prepare(self):
+        if self.match_by_filename:
+            return self.prepare_matched_by_filename()
+        else:
+            return self.prepare_simple_sequential()
+
+
 class FunctionTransform(Transform, YAMLObject):
     r"""
     A transform for applying a function to every value in a column of a DataFrame
@@ -419,7 +597,9 @@ class GroupedFunctionTransform(Transform, YAMLObject):
         return jobs
 
 def register_constructors():
+    yaml.add_constructor(u'!ConcatTransform', proto_constructor(ConcatTransform))
+    yaml.add_constructor(u'!FunctionTransform', proto_constructor(FunctionTransform))
     yaml.add_constructor(u'!GroupedAggregationTransform', proto_constructor(GroupedAggregationTransform))
     yaml.add_constructor(u'!GroupedFunctionTransform', proto_constructor(GroupedFunctionTransform))
-    yaml.add_constructor(u'!FunctionTransform', proto_constructor(FunctionTransform))
+    yaml.add_constructor(u'!MergeTransform', proto_constructor(MergeTransform))
 
