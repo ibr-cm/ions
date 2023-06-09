@@ -32,6 +32,8 @@ from yaml_helper import decode_node, proto_constructor
 from data_io import DataSet, read_from_file
 from extractors import RawExtractor, DataAttributes
 
+from common.debug import start_ipython_dbg_cmdline
+
 # ---
 
 class PlottingReaderFeather(YAMLObject):
@@ -182,9 +184,11 @@ class PlottingTask(YAMLObject):
 
     def __init__(self, dataset_name:str
                  , output_file:str
-                 , plot_type:str
-                 , x:str
-                 , y:str
+                 , plot_type:Optional[str] = None
+                 , x:Optional[str] = None
+                 , y:Optional[str] = None
+                 , plot_types:Optional[List[str]] = None
+                 , ys:Optional[List[str]] = None
                  , selector:Optional[Union[Callable, str]] = None
                  , column:str = None
                  , row:str = None
@@ -212,11 +216,26 @@ class PlottingTask(YAMLObject):
                  , colormap:Optional[str] = None
                  ):
         self.dataset_name = dataset_name
-        self.plot_type = plot_type
         self.output_file = output_file
 
+        if plot_types:
+            self.plot_type = plot_types[0]
+            self.plot_types = plot_types[1:]
+        elif plot_type:
+            self.plot_type = plot_type
+            self.plot_types = plot_types
+        else:
+            raise Exception('Either the "plot_type" or "plot_types" parameter need to be given')
+
         self.x = x
-        self.y = y
+        if ys:
+            self.y = ys[0]
+            self.ys = ys[1:]
+        elif y:
+            self.y = y
+            self.ys = ys
+        else:
+            raise Exception('Either the "y" or "ys" parameter need to be given')
 
         self.selector = selector
 
@@ -445,6 +464,9 @@ class PlottingTask(YAMLObject):
             case _:
                 raise Exception(f'Unknown plot type: "{self.plot_type}"')
 
+        if self.ys:
+            self.plot_multiplot(fig, selected_data)
+
         if hasattr(fig, 'tight_layout'):
             fig.tight_layout(pad=0.1)
 
@@ -462,6 +484,56 @@ class PlottingTask(YAMLObject):
             logi(f'{fig=} saved to {self.output_file}')
 
         return fig
+
+    def plot_multiplot(self, figure, selected_data):
+        legend_handles = []
+
+        def multiplot(x, y, data, **kwargs):
+            if data.empty:
+                return
+
+            logd(f'next plotting pass for: {x=}  {y=}  {kwargs=}')
+
+            ax = mpl.pyplot.gca()
+
+            for v, pt in zip(self.ys, self.plot_types):
+                logi(f'trying to plot "{v}" as {pt}')
+                match pt:
+                    case 'lineplot':
+                        for k, d in data.dropna(subset=[v]).groupby(by=[self.hue]):
+                            if d.empty:
+                                continue
+                            r = mpl.pyplot.plot(d[x], d[v])[0]
+                            key_string = str(k).strip("(),'")
+                            r.set_label(f'{v},{key_string}')
+                            legend_handles.append(r)
+                    case 'scatterplot':
+                        for k, d in data.dropna(subset=[v]).groupby(by=[self.hue]):
+                            if d.empty:
+                                continue
+                            r = mpl.pyplot.scatter(d[x], d[v], alpha=self.alpha, s=8)
+                            key_string = str(k).strip("(),'")
+                            r.set_label(f'{v},{key_string}')
+                            legend_handles.append(r)
+                    case _:
+                        raise Exception(f'Unknown plot type: "{pt}"')
+
+        if type(figure) == sb.axisgrid.FacetGrid:
+            g = figure
+        else:
+            raise Exception('multipass drawing is only implemented for grids')
+
+        with sb.color_palette('Pastel1'):
+            g.map_dataframe(multiplot, self.x, self.y)
+
+
+        handles = g.legend.legend_handles + legend_handles
+        g.legend.remove()
+        g.figure.legend(handles=handles, loc='center right')
+
+        # start_ipython_dbg_cmdline(locals())
+        return g
+
 
     def savefigure(self, fig, plot_destination_dir, filename, bbox_inches='tight'):
         """
