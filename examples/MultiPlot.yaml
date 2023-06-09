@@ -1,0 +1,102 @@
+---
+# example recipe
+# --- !Recipe
+!Recipe
+name: !!str "example_recipe"
+
+evaluation: !Evaluation
+  extractors:
+    - cbr: !RawExtractor
+        # the path to the input files, regular expressions can be used
+        input_files: !!python/list
+          - "/opt/tmpssd/data/ffk/.*MPR=(0.2|0.4).*mcmI=1.0.*vec"
+        signal: "Recv_cbr:vector"
+        alias: "cbr"
+        # categorical_columns: ['variable']
+        categorical_columns_excluded: ['cbr']
+        # the base set of tags to add (here common_sets.BASE_TAGS_EXTRACTION_MINIMAL is
+        # given as an example)
+        base_tags: [ 'v2x_rate', 'moduleName', 'repetition', 'simtimeRaw', 'eventNumber', 'configname', 'experiment', 'prefix', 'runnumber', 'sumocfgname' ]
+        # the additional tags to add in addition to the base set
+        additional_tags: [ 'sensors', 'hour' ]
+        # only add the minimal (plus the `additional_tags`) set of tags
+        # (common_sets.BASE_TAGS_EXTRACTION_MINIMAL) to the output DataFrame
+        # (default true)
+        minimal_tags: !!bool "true"
+
+    - delay: !RawExtractor
+        # the path to the input files, regular expressions can be used
+        input_files: !!python/list
+          - "/opt/tmpssd/data/ffk/.*MPR=(0.2|0.4).*mcmI=1.0.*vec"
+        signal: "Recv_delay:vector"
+        alias: "delay"
+        # categorical_columns: ['variable']
+        categorical_columns_excluded: ['delay']
+        # the base set of tags to add (here common_sets.BASE_TAGS_EXTRACTION_MINIMAL is
+        # given as an example)
+        # base_tags: [ 'v2x_rate', 'moduleName', 'repetition', 'simtimeRaw', 'eventNumber', 'configname', 'experiment', 'prefix', 'runnumber', 'sumocfgname' ]
+        minimal_tags: !!bool "true"
+
+  exporter:
+    - cbr: !FileResultProcessor
+        dataset_name: "cbr" # the key for the data loaded by the extractor above
+        # whether to concatenate all input results into one file
+        concatenate: !!bool "true"
+        # output_filename: "/opt/tmpssd/t-its-paper/extracted/tmp/cui.feather"
+        output_filename: "/home/artery/t-its-paper/extracted/cbr.feather"
+
+    - delay: !FileResultProcessor
+        dataset_name: "delay" # the key for the data loaded by the extractor above
+        # whether to concatenate all input results into one file
+        concatenate: !!bool "true"
+        # output_filename: "/opt/tmpssd/t-its-paper/extracted/tmp/cui.feather"
+        output_filename: "/home/artery/t-its-paper/extracted/delay.feather"
+
+plot: !Plot
+  reader: # !!python/list
+    - cbr: !PlottingReaderFeather
+        input_files: !!python/list
+          - "/home/artery/t-its-paper/extracted/cbr.feather"
+    - delay: !PlottingReaderFeather
+        input_files: !!python/list
+          - "/home/artery/t-its-paper/extracted/delay.feather"
+
+  transforms:
+    - concatTransform: !ConcatTransform
+        # the key for the data loaded by the extractor above
+        dataset_names: ["cbr", "delay"]
+        output_dataset_name: "cbr_delay"
+
+  tasks: # !!python/list
+    - cbr_delay: !PlottingTask
+        dataset_name: "cbr_delay"
+        selector: "moduleName.str.contains('1001')"
+        plot_types: ["lineplot", "scatterplot"]
+
+        x: "simtimeRaw"
+        ys: ["cbr", "cbr"]
+
+        yrange: "(0., 0.8)"
+
+        hue: "repetition"
+        row: !!null
+        column: "v2x_rate"
+
+        alpha: 0.9
+
+        xlabel: "MPR"
+        ylabel: "CBR"
+
+        legend_title: "Repetition"
+        legend_location: "center right"
+
+        axes_style: "dark"
+        bbox_inches: "tight"
+
+        # colormap: "plasma"
+
+        matplotlib_backend: "agg"
+        matplotlib_rc: !null
+        output_file: "/opt/tmpssd/t-its-paper/plots_new/cbr_m.png"
+
+...
