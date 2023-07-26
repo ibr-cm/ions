@@ -1,6 +1,8 @@
 import operator
 from typing import Union, List, Callable, Optional
 
+from collections import defaultdict
+
 import yaml
 from yaml import YAMLObject
 
@@ -197,17 +199,11 @@ class MergeTransform(Transform, YAMLObject):
 
         job_list = []
 
-        d = dict()
-        def add_key(k, v):
-            if k in d:
-                d[k].append(v)
-            else:
-                d[k] = [v]
+        d = defaultdict(list)
 
         def add_by_source_file(data_list):
             for data, attributes in data_list:
-                # add_key(attributes.source_file, (data, attributes))
-                add_key(getattr(attributes, self.matching_attribute), (data, attributes))
+                d[getattr(attributes, self.matching_attribute)].append((data, attributes))
 
         add_by_source_file(data_list_l)
         add_by_source_file(data_list_r)
