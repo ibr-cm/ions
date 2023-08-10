@@ -235,7 +235,12 @@ class PlottingTask(YAMLObject):
             self.y = y
             self.ys = ys
         else:
-            raise Exception('Either the "y" or "ys" parameter need to be given')
+            for plot_type in [ 'ecdf', 'histogram' ]:
+                if (not (self.plot_type == plot_type)) or (self.plot_types and (not (plot_type in self.plot_types))):
+                    raise Exception('Either the "y" or "ys" parameter need to be given')
+            self.y = None
+            self.ys = None
+
 
         self.selector = selector
 
