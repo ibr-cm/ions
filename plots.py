@@ -235,8 +235,14 @@ class PlottingTask(YAMLObject):
             self.y = y
             self.ys = ys
         else:
+            # check if the plot type only needs the x-axis specified
             for plot_type in [ 'ecdf', 'histogram' ]:
-                if (not (self.plot_type == plot_type)) or (self.plot_types and (not (plot_type in self.plot_types))):
+                if (self.plot_type == plot_type):
+                    break
+                elif (self.plot_types and (plot_type in self.plot_types)):
+                    # TODO: should check if all plot types don't need the y-axis
+                    break
+                else:
                     raise Exception('Either the "y" or "ys" parameter need to be given')
             self.y = None
             self.ys = None
