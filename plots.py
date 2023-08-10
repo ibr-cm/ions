@@ -415,6 +415,14 @@ class PlottingTask(YAMLObject):
         else:
             selected_data = data.reset_index()
 
+        def distributionplot(plot_type):
+                return self.plot_distribution(df=selected_data
+                                        , plot_type=plot_type
+                                        , x=self.x, y=self.y
+                                        , hue=self.hue
+                                        , row=self.row, column=self.column
+                                       )
+
         def catplot(plot_type):
                 return self.plot_catplot(df=selected_data
                                         , plot_type=plot_type
@@ -443,6 +451,10 @@ class PlottingTask(YAMLObject):
         match self.plot_type:
             case 'lineplot':
                 fig = relplot('line')
+            case 'ecdf':
+                fig = distributionplot('ecdf')
+            case 'histogram':
+                fig = distributionplot('hist')
             case 'scatterplot':
                 fig = relplot('scatter')
             case 'box':
@@ -607,6 +619,26 @@ class PlottingTask(YAMLObject):
 
         return kwargs
 
+
+
+    def plot_distribution(self, df, x='value', y=None, hue='moduleName', row='dcc', column='traciStart', plot_type='ecdf', **kwargs):
+        kwargs = self.set_plot_specific_options(plot_type, kwargs)
+
+        logd(f'PlottingTask::plot_distribution: {df.columns=}')
+        logd(f'PlottingTask::plot_distribution: {x=}')
+        logd(f'PlottingTask::plot_distribution: {y=}')
+        logd(f'PlottingTask::plot_distribution: {plot_type=}')
+        grid = sb.displot(data=df, x=x
+                          , row=row, col=column
+                          , hue=hue
+                          , kind=plot_type
+                          # , legend_out=False
+                          # , **kwargs
+                         )
+
+        grid = self.set_grid_defaults(grid)
+
+        return grid
 
     def plot_catplot(self, df, x='v2x_rate', y='cbr', hue='moduleName', row='dcc', column='traciStart', plot_type='box', **kwargs):
         kwargs = self.set_plot_specific_options(plot_type, kwargs)
