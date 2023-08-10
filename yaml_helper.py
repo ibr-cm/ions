@@ -3,7 +3,12 @@ import yaml
 def decode_node(loader, node):
     match type(node):
         case yaml.ScalarNode:
-            x = loader.construct_scalar(node)
+            if node.tag == '!include':
+                f = open(node.value, mode='r')
+                x = yaml.unsafe_load(f.read())
+                f.close()
+            else:
+                x = loader.construct_scalar(node)
         case yaml.MappingNode:
             x = loader.construct_mapping(node)
         case yaml.SequenceNode:
