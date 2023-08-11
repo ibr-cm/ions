@@ -7,6 +7,12 @@ def decode_node(loader, node):
                 f = open(node.value, mode='r')
                 x = yaml.unsafe_load(f.read())
                 f.close()
+            elif node.tag == '!bool' or node.tag == '!!bool':
+                x = loader.construct_scalar(node)
+                if x == 'false' or x == 'False':
+                    x = False
+                else:
+                    x = True
             else:
                 x = loader.construct_scalar(node)
         case yaml.MappingNode:
