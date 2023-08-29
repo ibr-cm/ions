@@ -254,6 +254,22 @@ class BaseExtractor(Extractor):
 
 
     @staticmethod
+    def read_pattern_matched_signals_from_file(db_file, pattern, alias
+                               , vectorName:bool=True
+                               , simtimeRaw:bool=True
+                               , moduleName:bool=True
+                               , eventNumber:bool=True
+                               , **kwargs):
+        query = sql_queries.generate_signal_like_query(pattern, value_label=alias
+                                                  , vectorName=vectorName
+                                                  , moduleName=moduleName
+                                                  , simtimeRaw=simtimeRaw
+                                                  , eventNumber=eventNumber)
+
+        return BaseExtractor.read_query_from_file(db_file, query, alias, **kwargs)
+
+
+    @staticmethod
     def read_query_from_file(db_file, query, alias
                                , categorical_columns=[], excluded_categorical_columns=set()
                                , base_tags = None, additional_tags = []
@@ -777,10 +793,132 @@ class MatchingExtractor(BaseExtractor):
         return result_list
 
 
+class PatternMatchingBulkExtractor(BaseExtractor):
+    r"""
+    Extract the data for multiple signals matching a SQL LIKE pattern
+    expression from the input files specified.
+
+    Parameters
+    ----------
+    input_files: List[str]
+        the list of paths to the input files, as literal path or as a regular expression
+
+    pattern: str
+        the SQL LIKE pattern matching expression used for matching on possible signal names
+
+    alias: str
+        the name given to the column with the extracted signal data
+
+    alias_match_pattern: str
+        the regular expression used for extracting named capture groups from the matched signal names
+
+    alias_pattern: str
+        the template string for naming the extracted signal from the named capture groups matched by alias_match_pattern
+
+    """
+    yaml_tag = u'!PatternMatchingBulkExtractor'
+
+    def __init__(self, /,
+                 input_files:list
+                 , pattern:str
+                 , alias:str
+                 , alias_match_pattern:str
+                 , alias_pattern:str
+                 , *args, **kwargs
+                 ):
+        super().__init__(input_files=input_files, *args, **kwargs)
+
+        self.pattern:str = pattern
+        self.alias:str = alias
+
+        self.alias_match_pattern:str = alias_match_pattern
+        self.alias_pattern:str = alias_pattern
+
+    @staticmethod
+    def extract_all_signals(db_file, pattern, alias
+                            , alias_match_pattern:str, alias_pattern:str
+                            , categorical_columns=[], excluded_categorical_columns=set()
+                            , base_tags=None, additional_tags=[]
+                            , minimal_tags=True
+                            , attributes_regex_map=tag_regex.attributes_regex_map
+                            , iterationvars_regex_map=tag_regex.iterationvars_regex_map
+                            , parameters_regex_map=tag_regex.parameters_regex_map
+                            , vectorName:bool=True
+                            , moduleName:bool=True
+                            , simtimeRaw:bool=True
+                            , eventNumber:bool=False
+                            ):
+        data = BaseExtractor.read_pattern_matched_signals_from_file(db_file, pattern, alias \
+                                                      , categorical_columns=categorical_columns \
+                                                      , excluded_categorical_columns=excluded_categorical_columns
+                                                      , base_tags=base_tags, additional_tags=additional_tags
+                                                      , minimal_tags=minimal_tags
+                                                      , attributes_regex_map=attributes_regex_map
+                                                      , iterationvars_regex_map=iterationvars_regex_map
+                                                      , parameters_regex_map=parameters_regex_map
+                                                      , vectorName=vectorName
+                                                      , simtimeRaw=simtimeRaw
+                                                      , moduleName=moduleName
+                                                      , eventNumber=eventNumber
+                                                     )
+
+
+        def process_vectorName(d):
+            # compile the signal matching regex
+            regex = re.compile(alias_match_pattern)
+            r = regex.search(d)
+            if r:
+                # construct the new name by substituting the matched and bound variables
+                alias = alias_pattern.format(**r.groupdict())
+                return alias
+            return d
+
+        data['variable'] = data['vectorName'].apply(process_vectorName)
+
+        data = data.drop(['vectorName'], axis=1)
+
+        if not data is None and not data.empty:
+            result = BaseExtractor.convert_columns_to_category(data
+                                                                , additional_columns=categorical_columns \
+                                                                , excluded_columns=excluded_categorical_columns
+                                                             )
+            return result
+        else:
+            return pd.DataFrame()
+
+
+    def prepare(self):
+        data_set = DataSet(self.input_files)
+
+        # For every input file construct a `Delayed` object, a kind of a promise
+        # on the data, and the leafs of the task graph
+        result_list = []
+        for db_file in data_set.get_file_list():
+            # get the data for all signals that match the given SQL pattern
+            res = dask.delayed(PatternMatchingBulkExtractor.extract_all_signals)(db_file, self.pattern, self.alias
+                                                                       , self.alias_match_pattern, self.alias_pattern
+                                                                       , self.categorical_columns,self. categorical_columns_excluded
+                                                                       , base_tags=self.base_tags, additional_tags=self.additional_tags
+                                                                       , minimal_tags=self.minimal_tags
+                                                                       , attributes_regex_map=self.attributes_regex_map
+                                                                       , iterationvars_regex_map=self.iterationvars_regex_map
+                                                                       , parameters_regex_map=self.parameters_regex_map
+                                                                       , vectorName=True
+                                                                       , simtimeRaw=self.simtimeRaw
+                                                                       , moduleName=self.moduleName
+                                                                       , eventNumber=self.eventNumber
+                                                                       )
+            attributes = DataAttributes(source_file=db_file, alias=self.alias)
+            result_list.append((res, attributes))
+
+        return result_list
+
+
 def register_constructors():
     yaml.add_constructor(u'!RawExtractor', proto_constructor(RawExtractor))
     yaml.add_constructor(u'!RawScalarExtractor', proto_constructor(RawScalarExtractor))
     yaml.add_constructor(u'!RawStatisticExtractor', proto_constructor(RawStatisticExtractor))
     yaml.add_constructor(u'!PositionExtractor', proto_constructor(PositionExtractor))
     yaml.add_constructor(u'!MatchingExtractor', proto_constructor(MatchingExtractor))
+    yaml.add_constructor(u'!PatternMatchingBulkExtractor', proto_constructor(PatternMatchingBulkExtractor))
 

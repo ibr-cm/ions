@@ -212,6 +212,16 @@ def generate_signal_query(signal_name:str, value_label:str='value'
                                , moduleName=moduleName, simtimeRaw=simtimeRaw, eventNumber=eventNumber)
 
 
+def generate_signal_like_query(signal_name_pattern:str, value_label:str='value'
+                          , vectorName:bool=False
+                          , moduleName:bool=True
+                          , simtimeRaw:bool=True
+                          , eventNumber:bool=False
+                          ):
+    return generate_data_query(TM.vector_table.c.vectorName.like(signal_name_pattern), value_label=value_label
+                               , vectorName=vectorName, moduleName=moduleName, simtimeRaw=simtimeRaw, eventNumber=eventNumber)
+
+
 def generate_signal_for_module_query(signal_name:str, module_name:str, value_label='value'
                                      , moduleName:bool=True
                                      , simtimeRaw:bool=True
