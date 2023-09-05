@@ -74,7 +74,7 @@ class FileResultProcessor(YAMLObject):
 
         target_dir = pathlib.Path(pathlib.PurePath(filename).parent)
         if not target_dir.exists():
-            target_dir.mkdir()
+            target_dir.mkdir(parents=True)
 
         if file_format == 'feather':
             df.reset_index().to_feather(filename
