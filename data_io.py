@@ -24,6 +24,8 @@ class DataSet:
         self.data_path = data_path
 
         self.data_files = self.expand_data_path()
+        if len(self.data_files) == 0:
+            raise Exception(f'No input files for path(s): {data_path}\n')
 
     def get_data_path(self) -> Union[List[str], str]:
         return self.data_path
