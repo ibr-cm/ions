@@ -267,6 +267,57 @@ class FunctionTransform(Transform, YAMLObject):
     output_dataset_name: str
         the name given to the output dataset
 
+    function: Callable
+        the unary function to apply to each DataFrame of the dataset
+    """
+
+    yaml_tag = u'!FunctionTransform'
+
+    def __init__(self, dataset_name:str, output_dataset_name:str
+                 , function:Callable=pd.Series.mean):
+        self.dataset_name = dataset_name
+        self.output_dataset_name = output_dataset_name
+
+        self.function = function
+
+    def process(self, data, function, attributes) -> pd.DataFrame:
+        if data is None or (not data is None and data.empty):
+            return pd.DataFrame()
+
+        return function(data)
+
+    def prepare(self):
+        data_list = self.get_data(self.dataset_name)
+
+        if isinstance(self.function, Callable):
+            function = self.function
+        else:
+            function = eval(self.function)
+
+        job_list = []
+
+        for data, attributes in data_list:
+            job = dask.delayed(self.process)(data, function, attributes)
+            job_list.append((job, attributes))
+
+        # allow other tasks to depend on the output of the delayed jobs
+        self.data_repo[self.output_dataset_name] = job_list
+
+        return job_list
+
+
+class ColumnFunctionTransform(Transform, YAMLObject):
+    r"""
+    A transform for applying a function to every value in a column of a DataFrame
+
+    Parameters
+    ----------
+    dataset_name: str
+        the dataset to operate on
+
+    output_dataset_name: str
+        the name given to the output dataset
+
     input_column: str
         the name of the column the function should be applied to
 
@@ -279,7 +330,7 @@ class FunctionTransform(Transform, YAMLObject):
 
     """
 
-    yaml_tag = u'!FunctionTransform'
+    yaml_tag = u'!ColumnFunctionTransform'
 
     def __init__(self, dataset_name:str, output_dataset_name:str
                  , input_column:str, output_column:str
@@ -595,6 +646,7 @@ class GroupedFunctionTransform(Transform, YAMLObject):
 def register_constructors():
     yaml.add_constructor(u'!ConcatTransform', proto_constructor(ConcatTransform))
     yaml.add_constructor(u'!FunctionTransform', proto_constructor(FunctionTransform))
+    yaml.add_constructor(u'!ColumnFunctionTransform', proto_constructor(ColumnFunctionTransform))
     yaml.add_constructor(u'!GroupedAggregationTransform', proto_constructor(GroupedAggregationTransform))
     yaml.add_constructor(u'!GroupedFunctionTransform', proto_constructor(GroupedFunctionTransform))
     yaml.add_constructor(u'!MergeTransform', proto_constructor(MergeTransform))
