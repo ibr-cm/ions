@@ -229,15 +229,13 @@ def process_recipe(options):
 
     recipe = yaml.unsafe_load(f.read())
 
-    pprint.pp(recipe)
-    pprint.pp(recipe.__dict__)
-
-
-    output = dump(recipe, Dumper=Dumper)
+    if options.dump_recipe:
+        output = dump(recipe, Dumper=Dumper)
+        logd(pprint.pformat(output, width=192))
+        exit()
 
     data_repo = {}
     job_list = []
-
 
     if not options.plot_only:
         if not hasattr(recipe, 'evaluation'):
@@ -295,6 +293,8 @@ def parse_arguments(arguments):
     parser.add_argument('--plot-task-graphs', action='store_true', default=False, help='plot the evaluation and plotting phase task graph')
 
     parser.add_argument('--verbose', '-v', action='count', default=0, help='increase logging verbosity')
+
+    parser.add_argument('--dump-recipe', action='store_true', default=False, help='dump the loaded recipe, useful for finding errors in the recipe')
 
     args = parser.parse_args(arguments)
 
