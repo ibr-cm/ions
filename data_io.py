@@ -3,18 +3,30 @@ import re
 
 from typing import Union, List
 
+# ---
+
+from common.logging_facilities import logi, loge, logd, logw
+
+# ---
+
 import pandas as pd
 
-def read_from_file(path, file_format='feather'):
+def read_from_file(path, file_format='feather', sample=None, sample_seed=23):
     if file_format == 'feather':
         try:
             data = pd.read_feather(path)
+            if sample:
+                logi(f'sampling {sample*100}% of data from {path}')
+                data = data.sample(frac=sample, random_state=sample_seed)
         except Exception as e:
             raise Exception(f'Could not read from: {path}\n{e}')
         return data
     elif file_format == 'hdf':
         try:
             data = pd.read_hdf(path)
+            if sample:
+                logi(f'sampling {sample*100}% of data from {path}')
+                data = data.sample(frac=sample, random_state=sample_seed)
         except Exception as e:
             raise Exception(f'Could not read from: {path}\n{e}')
         return data
