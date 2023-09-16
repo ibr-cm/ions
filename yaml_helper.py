@@ -1,20 +1,42 @@
 import yaml
 
+def load_yaml_from_file(file):
+    f = open(file, mode='r')
+    x = yaml.unsafe_load(f.read())
+    f.close()
+    return x
+
+def construct_bool(loader, node):
+    x = loader.construct_scalar(node)
+    if x == 'false' or x == 'False':
+        x = False
+    else:
+        x = True
+    return x
+
+def construct_float(loader, node):
+    x = loader.construct_scalar(node)
+    x = float(x)
+    return x
+
 def decode_node(loader, node):
     match type(node):
         case yaml.ScalarNode:
-            if node.tag == '!include':
-                f = open(node.value, mode='r')
-                x = yaml.unsafe_load(f.read())
-                f.close()
-            elif node.tag == '!bool' or node.tag == '!!bool':
-                x = loader.construct_scalar(node)
-                if x == 'false' or x == 'False':
-                    x = False
-                else:
-                    x = True
-            else:
-                x = loader.construct_scalar(node)
+            match node.tag:
+                case '!include':
+                    x = load_yaml_from_file(node.value)
+                case 'tag:yaml.org,2002:bool' | '!bool' | '!!bool':
+                    x = construct_bool(loader, node)
+                case 'tag:yaml.org,2002:float' | '!float' | '!!float':
+                    x = construct_float(loader, node)
+                case 'tag:yaml.org,2002:null' | '!null' | '!!null':
+                    x = None
+                case 'tag:yaml.org,2002:tuple' | '!tuple' | '!!tuple':
+                    x = eval(node.value)
+                case 'tag:yaml.org,2002:code' | '!code' | '!!code':
+                    x = eval(node.value)
+                case _:
+                    x = loader.construct_scalar(node)
         case yaml.MappingNode:
             x = loader.construct_mapping(node)
         case yaml.SequenceNode:
@@ -26,10 +48,8 @@ def decode_node(loader, node):
 
 def proto_constructor(class_constructor, set_defaults = None):
     def constructor(loader, node):
-        # m = loader.construct_mapping(node)
         parameters = {}
         for pair in node.value:
-            # logi(f'------>>>>>      {pair[0]=}  {pair[1]=}')
             # decode member variable name
             x = decode_node(loader, pair[0])
             # decode member variable value
@@ -63,3 +83,13 @@ def proto_constructor(class_constructor, set_defaults = None):
 
 #     self.set_defaults_from_dict(d)
 
+
+def include_constructor(loader, node):
+    x = load_yaml_from_file(node.value)
+    return x
+
+
+def register_constructors():
+    yaml.add_constructor(u'!include', include_constructor)
+
+register_constructors()
