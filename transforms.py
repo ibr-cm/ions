@@ -150,6 +150,12 @@ class MergeTransform(Transform, YAMLObject):
         the name given to the output column containing the results of applying
         the function
 
+    match_by_filename: bool
+        whether to match merge input by the filename the data has been extracted from
+
+    matching_attribute: str
+        the attribute to match the datasets on
+
     """
 
     yaml_tag = u'!MergeTransform'
