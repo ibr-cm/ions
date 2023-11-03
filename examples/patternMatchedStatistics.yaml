@@ -96,22 +96,14 @@ plot: !Plot
         extra_code: |
 
           def calculate_mean(df):
-              # diffs = df['simtimeRaw'].sort_values().diff().dropna()
-              # print(df)
-              # print(diffs)
-
               import math
 
               if len(df) != 2:
-                # print('bad input:')
-                # print(f'{df=}')
+                print("_-*-"*10)
+                print('bad input:')
+                print(f'{df=}')
+                print("_-*-"*10)
                 return math.nan
-
-              # print("_-*-"*10)
-              # filtered = df.query('simtimeRaw > 30e12')
-
-              # if filtered.empty:
-              #   return math.nan
 
               # print(f'{df=}')
 
