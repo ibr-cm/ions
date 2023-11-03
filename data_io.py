@@ -1,7 +1,7 @@
 import pathlib
 import re
 
-from typing import Union, List
+from typing import List, Optional, Union
 
 # ---
 
@@ -11,7 +11,7 @@ from common.logging_facilities import logi, loge, logd, logw
 
 import pandas as pd
 
-def read_from_file(path, file_format='feather', sample=None, sample_seed=23):
+def read_from_file(path, file_format='feather', sample:Optional[float]=None, sample_seed:int=23):
     if file_format == 'feather':
         try:
             data = pd.read_feather(path)
