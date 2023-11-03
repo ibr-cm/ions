@@ -1,0 +1,203 @@
+---
+# example recipe
+# --- !Recipe
+!Recipe
+name: !!str "example_recipe"
+
+evaluation: !Evaluation
+  tags: !include /misc/ibr/projects/artery-lte/artery_imagine_hagau_release_t-its_paccrunch/scripts/examples/tags.yaml
+
+  extractors:
+    - raw_PPE: !PatternMatchingBulkScalarExtractor
+        # the path to the input files, regular expressions can be used
+        input_files: !!python/list
+          - "/opt/tmp/hagau/data/.*.sca"
+          # - "/opt/tmp/hagau/frast-dynamic-Generation-without-rmr_FraST_MPR=1.0_20231029-00:16:31_12.sca"
+        # the pattern used for matching on the `scalarName` column
+        # note the binding of the variable `index` to the distance coded into the
+        # signal name
+        pattern: "CpmRecv_PPE_for_ObjectID_%"
+        # this is placed into the `variable` column
+        alias: "CpmRecv_PPE"
+
+        # the pattern used for matching on the `vectorName` column
+        # note the binding of the variable `index` to the distance coded into the
+        # signal name
+        alias_match_pattern: "CpmRecv_PPE_for_ObjectID_(?P<objId>[0-9]{1,4}):(?P<type>(count|sum))"
+        # the pattern used in naming each extracted signal
+        # this is placed into the `variable` column
+        alias_pattern: "CpmRecv_PPE_{objId}_{type}"
+
+        categorical_columns: ['variable']
+        categorical_columns_excluded: ['CpmRecv_PPE']
+        simtimeRaw: !!bool "true"
+        moduleName: !!bool "true"
+        eventNumber: !!bool "true"
+        # only add the minimal (plus the `additional_tags`) set of tags
+        # (common_sets.BASE_TAGS_EXTRACTION_MINIMAL) to the output DataFrame
+        # (default true)
+        minimal_tags: !!bool "true"
+        # the additional tags to add in addition to the base set
+        additional_tags: [ 'mcmI', 'mcmL', 'ql' ]
+
+
+  exporter:
+    - raw_PPE: !FileResultProcessor
+        dataset_name: "raw_PPE" # the key for the data loaded by the extractor above
+        # whether to concatenate all input results into one file
+        concatenate: !bool "true"
+        output_filename: "/opt/tmp/hagau/ppe.feather"
+
+
+plot: !Plot
+  reader: # !!python/list
+    - raw_PPE: !PlottingReaderFeather
+        # sample: 0.5
+        # concat: !!bool false
+        numerical_columns: ['CpmRecv_PPE']
+        input_files: !!python/list
+          -  "/opt/tmp/hagau/ppe.feather"
+
+  transforms:
+    - addType: !ColumnFunctionTransform
+        # this is equivalent to the following python statement:
+        #   df['type'] = df['variable'].str.rpartition('_')[2]
+        dataset_name: "raw_PPE"
+        output_dataset_name: "raw_PPE"
+        input_column: "variable"
+        output_column: "type"
+        function: |
+          lambda x: str(x.rpartition('_')[2])
+
+    - addObjId: !ColumnFunctionTransform
+        # this is equivalent to the following python statement:
+        #   df['objId'] = df['variable'].str.split('_', expand=True)[2]
+        dataset_name: "raw_PPE"
+        output_dataset_name: "raw_PPE"
+        input_column: "variable"
+        output_column: "objId"
+        function: |
+          lambda x: int(x.split('_')[2])
+
+    - PPE_mean: !GroupedFunctionTransform
+        # the key for the data loaded by the extractor above
+        dataset_name: "raw_PPE"
+        # the key for the generated data
+        output_dataset_name: "mean_PPE"
+        # the column with the input data
+        input_column: "CpmRecv_PPE"
+        output_column: "mean_PPE"
+        # the categorical variable used for splitting the input data into groups
+        # over which the mean will be calculated
+        grouping_columns: [ "prefix", "runnumber", "v2x_rate", "repetition", "moduleName", "objId" ]
+
+        # this is auxiliary code that can be used for defining more complex aggregation functions
+        # the evaluation of this code is contained to only a copy of the environment which is then used as context when evaluating 'aggregation_function'
+        extra_code: |
+
+          def calculate_mean(df):
+              # diffs = df['simtimeRaw'].sort_values().diff().dropna()
+              # print(df)
+              # print(diffs)
+
+              import math
+
+              if len(df) != 2:
+                # print('bad input:')
+                # print(f'{df=}')
+                return math.nan
+
+              # print("_-*-"*10)
+              # filtered = df.query('simtimeRaw > 30e12')
+
+              # if filtered.empty:
+              #   return math.nan
+
+              # print(f'{df=}')
+
+              sum = df.query('type=="sum"')['CpmRecv_PPE'].iat[0]
+              count = df.query('type=="count"')['CpmRecv_PPE'].iat[0]
+              mean = sum / count
+
+              # this drops into an interactive command line interface with access to the local variables, for data introspection and debugging purposes
+              # start_ipython_dbg_cmdline(user_ns=locals())
+
+              return mean
+
+        # the function to execute for each group
+        # this should accept a pandas.Series as parameter and return a single value (when not outputting in raw mode)
+        # aggregation_function: "dask.dataframe.groupby.DataFrameGroupBy.mean"
+        # aggregation_function: "pd.Series.mean"
+        transform_function: "calculate_mean"
+
+        # whether to treat the result of the transform function as a single value (and augment it with the first row of the group data)
+        # or as a pandas.Series (and assign it as a new column)
+        aggregate: !!bool "true"
+
+        # whether to output a list of the raw result from the aggregation
+        # function or add the result as a new column to to the first row of the
+        # input data (the input column having been removed beforehand)
+        # raw: !!bool "false"
+        raw: !!null
+
+        pre_concatenate: !!bool "false"
+
+
+  tasks: # !!python/list
+    - mean_PPE_box: !PlottingTask
+        # the key used for selecting from the data loaded and/or transformed in
+        # the reader and transform phases
+        dataset_name: "mean_PPE"
+        # selector: "ql == 2"
+        # the kind of plot to draw
+        # one of { 'lineplot', 'box', 'scatterplot'
+        #        , 'boxen', 'stripplot', 'swarm', 'bar', 'count'
+        #        , 'point'
+        #        , ... }
+        plot_type: "box"
+        # plot_type: "box"
+        # plot_type: "lineplot"
+
+        # x: "v2x_rate"
+        # y: "mean_aoi"
+
+        x: "v2x_rate"
+        # y: !none
+        y: "mean_PPE"
+
+        yrange: !!tuple (0., 2750.)
+
+        hue: &hue "configname"
+        # row: "mcmL"
+        row: !!null
+        column: "prefix"
+
+        alpha: 0.9
+
+        xlabel: "MPR"
+        ylabel: "AOI [ms]"
+
+        # default row/column title template
+        # title_template: !!null
+        title_template: "{col_name}"
+
+        # no legend title
+        # legend_title: "mcmI"
+        legend_title: *hue
+        # legend_title: !!null
+        # custom legend title
+        # legend_title: "Repetition"
+        # the location of the legend
+        legend_location: "center"
+        # legend: !!null
+
+        axes_style: "dark"
+        bbox_inches: "tight"
+
+        colormap: "plasma"
+
+        matplotlib_backend: "agg"
+        matplotlib_rc: !null
+        output_file: "/opt/tmp/hagau/PPE_mean_box.png"
+
+...
