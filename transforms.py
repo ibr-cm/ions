@@ -461,7 +461,7 @@ class GroupedAggregationTransform(Transform, YAMLObject):
             grouping_columns = self.grouping_columns
 
         result_list = []
-        for group_key, group_data in data.groupby(by=grouping_columns, sort=False):
+        for group_key, group_data in data.groupby(by=grouping_columns, sort=False, observed=True):
             result = self.aggregation_function(group_data[self.input_column])
 
             if self.raw:
@@ -597,7 +597,7 @@ class GroupedFunctionTransform(Transform, YAMLObject):
             grouping_columns = self.grouping_columns
 
         result_list = []
-        for group_key, group_data in data.groupby(by=grouping_columns, sort=False):
+        for group_key, group_data in data.groupby(by=grouping_columns, sort=False, observed=True):
             result = self.transform_function(group_data)
 
             if self.raw:
