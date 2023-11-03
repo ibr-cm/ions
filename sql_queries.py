@@ -203,6 +203,19 @@ def generate_scalar_query(scalar_name:str, value_label:str='scalarValue'
                                       , scalarName=scalarName, scalarId=scalarId)
 
 
+def generate_scalar_like_query(scalar_name:str, value_label:str='scalarValue'
+                          , runId:bool=True
+                          , moduleName:bool=True
+                          , scalarName:bool=False
+                          , scalarId:bool=False
+                          ):
+    return generate_scalar_data_query(TM.scalar_table.c.scalarName.like(scalar_name)
+                                      , value_label=value_label
+                                      , runId=runId
+                                      , moduleName=moduleName
+                                      , scalarName=scalarName, scalarId=scalarId)
+
+
 def generate_signal_query(signal_name:str, value_label:str='value'
                           , moduleName:bool=True
                           , simtimeRaw:bool=True
