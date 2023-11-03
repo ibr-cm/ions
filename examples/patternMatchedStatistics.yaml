@@ -14,15 +14,14 @@ evaluation: !Evaluation
           - "/opt/tmp/hagau/data/.*.sca"
           # - "/opt/tmp/hagau/frast-dynamic-Generation-without-rmr_FraST_MPR=1.0_20231029-00:16:31_12.sca"
         # the pattern used for matching on the `scalarName` column
-        # note the binding of the variable `index` to the distance coded into the
-        # signal name
+        # this is a SQL pattern, not a regular expressions!
         pattern: "CpmRecv_PPE_for_ObjectID_%"
         # this is placed into the `variable` column
         alias: "CpmRecv_PPE"
 
-        # the pattern used for matching on the `vectorName` column
-        # note the binding of the variable `index` to the distance coded into the
-        # signal name
+        # the pattern used for matching on the `scalarName` column
+        # note the binding of the variable `objId` and `type` to the respective
+        # values in the name of the scalar
         alias_match_pattern: "CpmRecv_PPE_for_ObjectID_(?P<objId>[0-9]{1,4}):(?P<type>(count|sum))"
         # the pattern used in naming each extracted signal
         # this is placed into the `variable` column
