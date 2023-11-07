@@ -411,6 +411,8 @@ class WorkerPlugin(dask.distributed.WorkerPlugin):
 def setup_dask(options):
     plugin = WorkerPlugin(options)
 
+    dask.config.set({'distributed.scheduler.worker-ttl': None})
+
     # single-threaded mode for debugging
     if options.single_threaded:
         logi('using local single-threaded process cluster')
