@@ -402,6 +402,8 @@ class WorkerPlugin(dask.distributed.WorkerPlugin):
         self.options = options
 
     def setup(self, worker: dask.distributed.Worker):
+        # append the current path to the PYTHONPATH of the worker
+        sys.path.append('.')
         setup_logging_defaults(level=self.options.log_level)
         setup_pandas()
 
