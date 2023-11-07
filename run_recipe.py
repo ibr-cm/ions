@@ -487,6 +487,10 @@ def main():
 
     data_repo, job_list = process_recipe(options)
 
+    if len(job_list) == 0:
+        loge('No tasks to run')
+        return
+
     # now actually compute the constructed computation graph
     result = compute_graph(job_list)
 
