@@ -280,6 +280,7 @@ def parse_arguments(arguments):
     parser.add_argument('--run', type=str, default='all', help='run selected tasks/steps only') #TODO:description
 
     parser.add_argument('--worker', type=int, default=4, help='the number of worker processes')
+    parser.add_argument('--mem', type=int, default=1, help='the memory, in GB, to reserve for each worker process')
 
     parser.add_argument('--cluster', type=str, help='cluster address')
     parser.add_argument('--single-threaded', action='store_true', default=False, help='run singlethreaded')
@@ -420,12 +421,7 @@ def setup_dask(options):
         logi('using SLURM cluster')
         cluster = SLURMCluster(cores = 1
                              , n_workers = options.worker
-                             # , n_workers = 1
-                             # , processes = options.worker
-                             # , processes = 1
-                             , memory = "1GB"
-                             , account = "dask_test"
-                             # , queue = "normal"
+                             , memory = str(options.mem) + 'GB'
                              , job_extra_directives = [ f'--nodelist={options.nodelist} --partition={options.partition}' ]
                              , interface = 'lo'
                              , shared_temp_directory = options.tmpdir
