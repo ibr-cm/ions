@@ -10,8 +10,10 @@ For utilizing a SLURM cluster, add the following parameters to the
 `run_recipe.py` call:
 ```
 --slurm          \  # use SLURM
+--partition cm      # SLRUM parttion to use
 --nodelist i4,i5 \  # the SLURM nodelist, see SLURM documentation
 --worker 16         # use 16 worker
+--mem 2             # use 2GB memory per worker
 ```
 
 The amount of workers should be set to the number of cores available on one
