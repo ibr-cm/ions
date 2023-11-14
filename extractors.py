@@ -89,7 +89,18 @@ class DataAttributes(YAMLObject):
         self.aliases = set()
 
         for key in kwargs:
-            setattr(self, key, kwargs[key])
+            if key == 'source_file':
+                self.source_files.add(kwargs[key])
+            elif key == 'source_files':
+                for file in kwargs[key]:
+                    self.source_files.add(kwargs[key])
+            elif key == 'alias':
+                self.aliases.add(kwargs[key])
+            elif key == 'aliases':
+                for file in kwargs[key]:
+                    self.aliases.add(kwargs[key])
+            else:
+                setattr(self, key, kwargs[key])
 
     def get_source_files(self) -> Set[str]:
         return self.source_files
@@ -97,6 +108,9 @@ class DataAttributes(YAMLObject):
     def add_source_file(self, source_file:str):
         self.source_files.add(source_file)
 
+    def add_source_files(self, source_files:Set[str]):
+        for source_file in source_files:
+            self.source_files.add(source_file)
 
     def get_aliases(self) -> Set[str]:
         return self.aliases

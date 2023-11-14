@@ -126,10 +126,27 @@ class FileResultProcessor(YAMLObject):
 
     def prepare_separated(self, data_list, job_list):
         for data, attributes in data_list:
+            logd(f">>>>>>\n{attributes=}")
+            if len(attributes.source_files) == 1:
+                source_file_str = list(attributes.source_files)[0]
+                source_file = str(pathlib.PurePath(source_file_str).stem)
+            else:
+                logd(">>>>>> Multiple source files")
+                source_file = '_'.join(list(attributes.get_source_files()))
+
+            if len(attributes.aliases) == 1:
+                aliases = list(attributes.get_aliases())[0]
+            else:
+                aliases = '_'.join(list(attributes.get_aliases()))
+
             output_filename = str(pathlib.PurePath(self.output_filename).parent) + '/' \
-                              + str(pathlib.PurePath(attributes.source_file).stem) \
-                              + '_' +attributes.alias \
+                              + source_file \
+                              + '_' \
+                              + aliases \
                               + '.' + self.format
+
+            logd(f'{output_filename=}')
+
             if self.raw:
                 job = dask.delayed(self.save_to_disk)(data, output_filename, self.format)
             else:

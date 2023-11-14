@@ -119,8 +119,7 @@ class ConcatTransform(Transform, YAMLObject):
 
         # add all source files as attributes
         for attribute in list(map(operator.itemgetter(1), data_list)):
-            for source_file in attribute.get_source_files():
-                attributes.add_source_file(source_file)
+            attributes.add_source_files(attribute.get_source_files())
 
         # allow other tasks to depend on the output of the delayed jobs
         self.data_repo[self.output_dataset_name] = [(job, attributes)]
@@ -166,7 +165,7 @@ class MergeTransform(Transform, YAMLObject):
                  , left_key_columns:Optional[List[str]] = None
                  , right_key_columns:Optional[List[str]] = None
                  , match_by_filename:bool = True
-                 , matching_attribute:str = 'source_file'
+                 , matching_attribute:str = 'source_files'
                  ):
         self.dataset_name_left = dataset_name_left
         self.dataset_name_right = dataset_name_right
@@ -199,7 +198,7 @@ class MergeTransform(Transform, YAMLObject):
         # start_ipython_dbg_cmdline(locals())
         return df_merged
 
-    def prepare_matched_by_filename(self):
+    def prepare_matched_by_attribute(self):
         data_list_l = self.get_data(self.dataset_name_left)
         data_list_r = self.get_data(self.dataset_name_right)
 
@@ -207,23 +206,32 @@ class MergeTransform(Transform, YAMLObject):
 
         d = defaultdict(list)
 
-        def add_by_source_file(data_list):
+        def add_by_attribute(data_list):
             for data, attributes in data_list:
-                d[getattr(attributes, self.matching_attribute)].append((data, attributes))
+                attribute = getattr(attributes, self.matching_attribute)
+                if type(attribute) == set:
+                    attribute = '_'.join(list(attribute))
+                d[attribute].append((data, attributes))
 
-        add_by_source_file(data_list_l)
-        add_by_source_file(data_list_r)
+        add_by_attribute(data_list_l)
+        add_by_attribute(data_list_r)
 
-        for source_file in d:
-            (data_l, attributes_l), (data_r, attributes_r) = d[source_file]
+        for attribute in d:
+            (data_l, attributes_l), (data_r, attributes_r) = d[attribute]
             job = dask.delayed(self.merge)(data_l, data_r, self.left_key_columns, self.right_key_columns)
 
             # add the source files of both datasets to the set of dataset source files
             attributes = DataAttributes()
-            attributes.add_source_file(attributes_l.source_file)
-            attributes.add_source_file(attributes_r.source_file)
-            attributes.add_alias(attributes_l.alias)
-            attributes.add_alias(attributes_r.alias)
+
+            # add source files for both sources
+            attributes.add_source_files(attributes_l.get_source_files())
+            attributes.add_source_files(attributes_r.get_source_files())
+
+            for alias in attributes_l.get_aliases():
+                attributes.add_alias(alias)
+            for alias in attributes_r.get_aliases():
+                attributes.add_alias(alias)
+
             job_list.append((job, attributes))
 
             logd(f'{attributes=}')
@@ -243,10 +251,10 @@ class MergeTransform(Transform, YAMLObject):
         for (data_l, attributes_l), (data_r, attributes_r) in zip(data_list_l, data_list_r):
             job = dask.delayed(self.merge)(data_l, data_r, self.left_key_columns, self.right_key_columns)
             attributes = DataAttributes()
-            attributes.add_source_file(attributes_l.source_file)
-            attributes.add_source_file(attributes_r.source_file)
+            attributes.add_source_files(attributes_l.get_source_files())
+            attributes.add_source_files(attributes_r.get_source_files())
             logd(f'{attributes=}')
-            job_list.append((job, attributes_l))
+            job_list.append((job, attributes))
             # start_ipython_dbg_cmdline(locals())
 
         # allow other tasks to depend on the output of the delayed jobs
@@ -256,7 +264,7 @@ class MergeTransform(Transform, YAMLObject):
 
     def prepare(self):
         if self.match_by_filename:
-            return self.prepare_matched_by_filename()
+            return self.prepare_matched_by_attribute()
         else:
             return self.prepare_simple_sequential()
 
