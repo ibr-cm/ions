@@ -3,6 +3,9 @@ Best practices
 
 This is a collection of best practices to consider when using this framework:
 
+- keep the input data (SQLite3/feather files) on a SSD disk, otherwise the
+  random access pattern on the files over NFS will lead to rather severe
+  performance losses
 - test the extraction and plotting with a subset of your data first. No need to
   waste time & energy if there's a typo somewhere or the parameters of a task are
   not appropriately set.
