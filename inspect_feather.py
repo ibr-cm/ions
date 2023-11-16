@@ -3,11 +3,14 @@
 import time
 import argparse
 
+from typing import Optional
+
 import pyarrow
 
 import pandas as pd
 
 from IPython.display import display
+from IPython import embed
 
 from data_io import read_from_file
 
@@ -21,8 +24,14 @@ def set_environment_defaults(num_threads=4):
     pyarrow.set_cpu_count(num_threads)
 
 
-def display_full(df):
-    with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.max_colwidth', None):
+def display_full(df, max_rows:Optional[int] = None, max_columns:Optional[int] = None
+                 , max_colwidth:Optional[float] = None
+                 , precision:int = pd.options.display.precision
+                 , width:int = 1000):
+    with pd.option_context('display.max_rows', max_rows, 'display.max_columns', max_columns
+                          , 'display.max_colwidth', max_colwidth , 'display.width', width
+                          , 'display.precision', precision
+                          ):
         display(df)
 
 
@@ -32,8 +41,9 @@ def main():
     parser.add_argument('--threads', type=int, default=4)
 
     parser.add_argument('--full', action='store_true', required=False)
-    parser.add_argument('--precision', type=int, default=8)
+    parser.add_argument('--precision', type=int, default=pd.options.display.precision)
     parser.add_argument('--query', type=str, default=None)
+
 
     args = parser.parse_args()
 
@@ -46,30 +56,27 @@ def main():
     df = read_from_file(directory +'/'+ filename)
 
     print(f'{df.columns=}')
-    # print(f'{df=}')
-    # print(f'{df[["repetition", "mean"]]=}')
-    # print(f'{df["prefix"].unique()=}')
 
-
-    # default_columns=['eventNumber', 'simtimeRaw', 'vectorName', 'value']
-    default_columns=['repetition', 'moduleName', 'sender', 'specific_information_age', 'specific_reliability']
-    # default_columns=['repetition', 'moduleName', 'sender', 'specific_reliability']
+    default_columns = [ 'v2x_rate', 'repetition', 'prefix', 'moduleName', 'variable', 'ql', 'eventNumber', 'simtimeRaw', 'vectorName', 'value']
+    columns = list(set(default_columns).intersection(df.columns))
 
     format_string = '{:0.' + str(args.precision) +'f}'
     # print(f'{format_string=}')
-    # with pd.option_context('display.precision', args.precision, 'display.float_format', format_string.format):
-    with pd.option_context('display.float_format', format_string.format):
+    context_options = ['display.precision', args.precision, 'display.float_format', format_string.format]
+    with pd.option_context(*context_options):
         if args.full:
-            # display_full(df[default_columns].sort_values(by=['simtimeRaw', 'vectorName']))
-            # display_full(df[default_columns])
-            display_full(df)
-        else:
-            # display(df[default_columns].sort_values(by=['simtimeRaw', 'vectorName']))
-            # display(df[default_columns])
             if args.query:
-                display(df.query(args.query))
+                display_full(df.query(args.query)[columns])
             else:
-                display(df)
+                # print('Starting a IPython shell...\nThe data has been loaded into `df`')
+                # embed(color_info=True, colors='Linux')
+                display_full(df[columns])
+        else:
+            if args.query:
+                display(df.query(args.query)[columns])
+            else:
+                print('>>>> Starting a IPython shell...\n>>>> The data has been loaded into `df`')
+                embed(color_info=True, colors='Linux')
 
 
 if __name__=='__main__':
