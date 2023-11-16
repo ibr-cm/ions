@@ -223,6 +223,10 @@ class PlottingTask(YAMLObject):
                  , invert_yaxis:bool = False
                  , size:Optional[str] = None
                  , xticklabels:Optional[str] = None
+                 , xticks:List[float] = None
+                 , xticks_minor:List[float] = None
+                 , yticks:List[float] = None
+                 , yticks_minor:List[float] = None
                  , colormap:Optional[str] = None
                  , grid_transform:Optional[Callable] = None
                  ):
@@ -265,6 +269,11 @@ class PlottingTask(YAMLObject):
         self.row = row if row != '' else None
         self.hue = hue if hue != '' else None
         self.style = style if style != '' else None
+
+        self.xticks = xticks
+        self.xticks_minor = xticks_minor
+        self.yticks = yticks
+        self.yticks_minor = yticks_minor
 
         self.set_legend_defaults(legend = legend
                                  , legend_location = legend_location
@@ -619,6 +628,16 @@ class PlottingTask(YAMLObject):
 
         # ax.fig.gca().set_ylim(ylimit)
         for axis in grid.figure.axes:
+            if self.xticks:
+                axis.set_xticks(ticks=self.xticks, minor=False)
+            if self.yticks:
+                axis.set_yticks(ticks=self.yticks, minor=False)
+
+            if self.xticks_minor:
+                axis.set_xticks(ticks=self.xticks_minor, minor=True)
+            if self.yticks_minor:
+                axis.set_yticks(ticks=self.yticks_minor, minor=True)
+
             axis.set_xlabel(self.xlabel)
             axis.set_ylabel(self.ylabel)
 
