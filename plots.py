@@ -1,7 +1,11 @@
 
-import operator
-import functools
 from typing import Union, List, Callable, Optional
+
+import functools
+import itertools
+import operator
+
+import re
 
 # ---
 
@@ -373,6 +377,19 @@ class PlottingTask(YAMLObject):
 
         self.legend_title = legend_title
 
+    def parse_matplotlib_rc(self, matplotlib_rc:str):
+        # logd(f'{matplotlib_rc=}')
+        # parse the custom matplotlib_rc into an dictionary
+        f = open(matplotlib_rc, mode='r')
+        rc_dict = {}
+        for line in f:
+            if line[0] == '#':
+                continue
+            if ':' in line:
+                key, value = [ t.strip() for t in line.split(':') ]
+                rc_dict[key] = value
+
+        return rc_dict
 
     def set_misc_defaults(self
                  , alpha:float = 1.
@@ -394,13 +411,13 @@ class PlottingTask(YAMLObject):
         self.bin_size = bin_size
         self.bbox_inches = bbox_inches
 
-        # logd(f'{matplotlib_rc=}')
-        # logd(f'{type(matplotlib_rc)=}')
-        # if type(matplotlib_rc) == str:
-        #     self.matplotlib_rc = eval(matplotlib_rc)
-        # else:
-        #     self.matplotlib_rc = matplotlib_rc
-        self.matplotlib_rc = matplotlib_rc
+        if matplotlib_rc:
+            # parse the custom matplotlib_rc into an dictionary or None
+            self.matplotlib_rc_dict = self.parse_matplotlib_rc(matplotlib_rc)
+            self.matplotlib_rc = matplotlib_rc
+        else:
+            self.matplotlib_rc = None
+            self.matplotlib_rc_dict = None
 
         if type(xrange) == str:
             self.xrange = eval(xrange)
@@ -456,11 +473,17 @@ class PlottingTask(YAMLObject):
     def set_theme(self, context:str = 'paper', axes_style:str = 'dark'):
         self.context = context
         self.axes_style = axes_style
-        sb.set(context=self.context, style=self.axes_style, font_scale=0.9, rc=self.matplotlib_rc)
+        if self.matplotlib_rc_dict:
+            sb.set(context=self.context, style=self.axes_style, rc=self.matplotlib_rc_dict)
+        else:
+            sb.set(context=self.context, style=self.axes_style)
 
     def plot_data(self, data):
         logd(f'-0---000---<<<<>>>>>    {self.__dict__=}')
         logd(f'-0---000---<<<<>>>>>    {mpl.rcParams["backend"]=}')
+
+        self.set_backend()
+        self.set_theme()
 
         # logd(f'<<<<>>>>>-------------')
         # logd(f'<<<<>>>>>    {data=}')
@@ -677,8 +700,59 @@ class PlottingTask(YAMLObject):
 
         return grid
 
+    def parse_matplotlib_rc_to_kwargs(self, **kwargs):
+        def add_props(propname, full_key, value):
+            key = full_key.rsplit('.', maxsplit=1)[1]
+            if value.isnumeric():
+                # value is an integer
+                value = int(value)
+            elif value.replace('.', '').isnumeric():
+                # value is a float
+                value = float(value)
+            if propname in kwargs:
+                kwargs[propname][key] =  value
+            else:
+                kwargs[propname] =  {}
+                kwargs[propname][key] =  value
+
+        bpr = re.compile(r'.*.boxprops.*')
+        mpr = re.compile(r'.*.medianprops.*')
+        fpr = re.compile(r'.*.flierprops.*')
+        wpr = re.compile(r'.*.whiskerprops.*')
+        cpr = re.compile(r'.*.capprops.*')
+
+        # check every line of the matplotlib.rc for directives that need to be
+        # given as parameters to sb.{cat,rel}plot and add them to the keyword
+        # parameter dictionary
+        for k in self.matplotlib_rc_dict:
+            v = self.matplotlib_rc_dict[k]
+            if bpr.search(k):
+                add_props('boxprops', k, v)
+                continue
+            if mpr.search(k):
+                add_props('medianprops', k, v)
+                continue
+            if fpr.search(k):
+                add_props('flierprops', k, v)
+                continue
+            if wpr.search(k):
+                add_props('whiskerprops', k, v)
+                continue
+            if cpr.search(k):
+                add_props('capprops', k, v)
+                continue
+            else:
+                # No match, ignore
+                # This might still be overridden by a passed parameter in the
+                # seaborn internals, check the seaborn source if a line doesn't
+                # seem to produce any effect.
+                logd(f'not adding "{k}:{v}" to (box,median,flier,whisker,cap)props parameters')
+                pass
+
+        return kwargs
 
     def set_plot_specific_options(self, plot_type:str, kwargs:dict):
+        # defaults, can be overridden by the matplotlib.rc
         boxprops = {'edgecolor': 'black'}
         medianprops = {'color':'red'}
         flierprops = dict(color='red', marker='+', markersize=3, markeredgecolor='red', linewidth=0.1, alpha=0.1)
@@ -691,9 +765,10 @@ class PlottingTask(YAMLObject):
                 kwargs['medianprops'] = medianprops
                 kwargs['flierprops'] = flierprops
 
+        # parse the matplotlib.rc into keywords for seaborn
+        kwargs = self.parse_matplotlib_rc_to_kwargs(**kwargs)
+
         return kwargs
-
-
 
     def plot_distribution(self, df, x='value', y=None, hue='moduleName', row='dcc', column='traciStart', plot_type='ecdf', **kwargs):
         kwargs = self.set_plot_specific_options(plot_type, kwargs)
