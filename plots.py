@@ -223,6 +223,7 @@ class PlottingTask(YAMLObject):
                  , size:Optional[str] = None
                  , xticklabels:Optional[str] = None
                  , colormap:Optional[str] = None
+                 , grid_transform:Optional[Callable] = None
                  ):
         self.dataset_name = dataset_name
         self.output_file = output_file
@@ -286,6 +287,27 @@ class PlottingTask(YAMLObject):
                                , size = size
                                , colormap = colormap
                                )
+
+        #----------------------------------------
+        #----------------------------------------
+
+        self.grid_transform = grid_transform
+
+        # create a copy of the global environment for evaluating the extra
+        # code fragment so as to not pollute the global namespace itself
+        global_env = globals().copy()
+        locals_env = locals().copy()
+
+        if type(self.grid_transform) == str:
+            # compile the code fragment
+            self.grid_transform = compile(self.grid_transform, filename='<string>', mode='exec')
+            # actually evaluate the code within the given namespace
+            eval(self.grid_transform, global_env, locals_env)
+            # self.grid_transform = locals_env['grid_transform']
+            self.grid_transform = eval('grid_transform', global_env, locals_env)
+
+        #----------------------------------------
+        #----------------------------------------
 
         self.set_backend(matplotlib_backend)
         self.set_theme(context, axes_style)
@@ -507,6 +529,9 @@ class PlottingTask(YAMLObject):
                 fig.legend().remove()
             else:
                 fig.legend.remove()
+
+        if self.grid_transform:
+            fig = self.grid_transform(fig)
 
         if hasattr(fig, 'savefig'):
             fig.savefig(self.output_file, bbox_inches=self.bbox_inches)
