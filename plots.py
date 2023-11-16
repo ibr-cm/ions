@@ -218,6 +218,7 @@ class PlottingTask(YAMLObject):
                  , legend_labels:Optional[str] = None
                  , legend_title:Optional[str] = None
                  , matplotlib_rc:Optional[str] = None
+                 , xrange:Optional[str] = None
                  , yrange:Optional[str] = None
                  , invert_yaxis:bool = False
                  , size:Optional[str] = None
@@ -282,6 +283,7 @@ class PlottingTask(YAMLObject):
                                , bin_size = bin_size
                                , bbox_inches = bbox_inches
                                , matplotlib_rc = matplotlib_rc
+                               , xrange = xrange
                                , yrange = yrange
                                , invert_yaxis = invert_yaxis
                                , size = size
@@ -368,6 +370,7 @@ class PlottingTask(YAMLObject):
                  , bin_size:float = 10.
                  , bbox_inches:str = 'tight'
                  , matplotlib_rc:Optional[str] = None
+                 , xrange:Optional[str] = None
                  , yrange:Optional[str] = None
                  , invert_yaxis:bool = False
                  , size:Optional[str] = None
@@ -389,6 +392,11 @@ class PlottingTask(YAMLObject):
         # else:
         #     self.matplotlib_rc = matplotlib_rc
         self.matplotlib_rc = matplotlib_rc
+
+        if type(xrange) == str:
+            self.xrange = eval(xrange)
+        else:
+            self.xrange = xrange
 
         if type(yrange) == str:
             self.yrange = eval(yrange)
@@ -617,6 +625,8 @@ class PlottingTask(YAMLObject):
             if self.invert_yaxis:
                 axis.invert_yaxis()
 
+            if self.xrange:
+                axis.set_xlim(self.xrange)
             if self.yrange:
                 axis.set_ylim(self.yrange)
 
