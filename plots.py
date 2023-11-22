@@ -377,25 +377,39 @@ class PlottingTask(YAMLObject):
 
         self.legend_title = legend_title
 
+
     def parse_matplotlib_rc(self, matplotlib_rc:str):
-        # logd(f'{matplotlib_rc=}')
         # parse the custom matplotlib_rc into an dictionary
-        f = open(matplotlib_rc, mode='r')
         rc_dict = {}
-        for line in f:
+        for line in matplotlib_rc.split('\n'):
+            if len(line) == 0:
+                continue
             if line[0] == '#':
                 continue
             if ':' in line:
                 key, value = [ t.strip() for t in line.split(':') ]
+
+                if value.isnumeric():
+                    # value is an integer
+                    value = int(value)
+                elif value.replace('.', '').isnumeric():
+                    # value is a float
+                    value = float(value)
+                elif value == 'true':
+                    value = True
+                elif value == 'false':
+                    value = False
+
                 rc_dict[key] = value
 
         return rc_dict
+
 
     def set_misc_defaults(self
                  , alpha:float = 1.
                  , bin_size:float = 10.
                  , bbox_inches:str = 'tight'
-                 , matplotlib_rc:Optional[str] = None
+                 , matplotlib_rc:Optional[Union[str, dict]] = None
                  , xrange:Optional[str] = None
                  , yrange:Optional[str] = None
                  , invert_yaxis:bool = False
@@ -413,7 +427,13 @@ class PlottingTask(YAMLObject):
 
         if matplotlib_rc:
             # parse the custom matplotlib_rc into an dictionary or None
-            self.matplotlib_rc_dict = self.parse_matplotlib_rc(matplotlib_rc)
+            if type(matplotlib_rc) == dict:
+                # inline definition
+                self.matplotlib_rc_dict = matplotlib_rc
+            else:
+                # external file using `!include`
+                self.matplotlib_rc_dict = self.parse_matplotlib_rc(matplotlib_rc)
+
             self.matplotlib_rc = matplotlib_rc
         else:
             self.matplotlib_rc = None
@@ -703,12 +723,6 @@ class PlottingTask(YAMLObject):
     def parse_matplotlib_rc_to_kwargs(self, **kwargs):
         def add_props(propname, full_key, value):
             key = full_key.rsplit('.', maxsplit=1)[1]
-            if value.isnumeric():
-                # value is an integer
-                value = int(value)
-            elif value.replace('.', '').isnumeric():
-                # value is a float
-                value = float(value)
             if propname in kwargs:
                 kwargs[propname][key] =  value
             else:
