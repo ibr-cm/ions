@@ -77,19 +77,26 @@ class FileResultProcessor(YAMLObject):
             target_dir.mkdir(parents=True)
 
         if file_format == 'feather':
-            df.reset_index().to_feather(filename
-                                        , compression=compression
-                                       )
+            try:
+                df.reset_index().to_feather(filename, compression=compression)
+            except Exception as e:
+                loge(f'Could not save "{filename}"')
+                loge(f'=>=>  {filename=}')
+                loge(f'=>=>  {df=}')
         elif file_format == 'hdf':
             df.reset_index().to_hdf(filename
                                     , format='table'
                                     , key=hdf_key
                                    )
         elif file_format == 'json':
-            f = open(filename, 'w')
-            f.write(jsonpickle.encode(df, unpicklable=False, make_refs=False, keys=True))
-            f.close()
-
+            try:
+                f = open(filename, 'w')
+                f.write(jsonpickle.encode(df, unpicklable=False, make_refs=False, keys=True))
+                f.close()
+            except Exception as e:
+                loge(f'Could not save "{filename}"')
+                loge(f'=>=>  {filename=}')
+                loge(f'=>=>  {df=}')
         else:
             raise Exception('Unknown file format')
 
