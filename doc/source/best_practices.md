@@ -38,4 +38,22 @@ This is a collection of best practices to consider when using this framework:
   time and memory usage. Only concatenate the input into a large `DataFrame` if
   the operation has to happen over all data or over subsets of the data that
   can't otherwise be easily selected.
+- when extracting a signal with its associated position data, a lot of SQL JOIN
+  operations over the `eventNumber` are being executed. This is a fairly slow
+  procedure since there's no index over the `eventNumber` column (inspect the
+  `sqlite_master` table in the result database to verify this). To improve
+  performance, one can construct an index over `eventNumber`:
+  ```sh
+  #!/bin/sh
 
+  for file in $@
+  do
+      \time sqlite3 $file 'CREATE INDEX eventNumber_index ON vectorData(eventNumber);' \
+              && echo "created index over eventNumber in" $file
+              done
+
+  ```
+  This increases storage usage by a factor of two, so it's only to be used on a
+  copy of the dataset and the resulting files should be deleted after use.
+  Note: this only applies to extraction from the databases, all stages after
+  that are not influenced.
