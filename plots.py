@@ -7,6 +7,8 @@ import operator
 
 import re
 
+import pprint
+
 # ---
 
 from common.logging_facilities import logi, loge, logd, logw
@@ -592,6 +594,9 @@ class PlottingTask(YAMLObject):
 
         if self.grid_transform:
             fig = self.grid_transform(fig)
+
+        logd(f'mpl.rcParams:')
+        logd(pprint.pp(mpl.rcParams))
 
         if hasattr(fig, 'savefig'):
             fig.savefig(self.output_file, bbox_inches=self.bbox_inches)
