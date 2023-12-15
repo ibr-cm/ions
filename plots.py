@@ -391,6 +391,7 @@ class PlottingTask(YAMLObject):
             if ':' in line:
                 key, value = [ t.strip() for t in line.split(':') ]
 
+                # cast value to an appropriate type
                 if value.isnumeric():
                     # value is an integer
                     value = int(value)
@@ -401,6 +402,9 @@ class PlottingTask(YAMLObject):
                     value = True
                 elif value == 'false':
                     value = False
+                elif value[0] == '(' and value[-1] == ')':
+                    # value is a tuple
+                    value = eval(value)
 
                 rc_dict[key] = value
 
