@@ -83,6 +83,7 @@ class FileResultProcessor(YAMLObject):
             except Exception as e:
                 loge(f'An exception occurred while trying to save "{filename}":\n{e}')
                 loge(f'df:\n{df}')
+                return
         elif file_format == 'hdf':
             df.reset_index().to_hdf(filename
                                     , format='table'
@@ -96,6 +97,7 @@ class FileResultProcessor(YAMLObject):
             except Exception as e:
                 loge(f'An exception occurred while trying to save "{filename}":\n{e}')
                 loge(f'df:\n{df}')
+                return
         else:
             raise Exception('Unknown file format')
 
