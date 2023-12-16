@@ -11,13 +11,16 @@ from common.logging_facilities import logi, loge, logd, logw
 
 import pandas as pd
 
-def read_from_file(path, file_format='feather', sample:Optional[float]=None, sample_seed:int=23):
+def read_from_file(path, file_format='feather', sample:Optional[float]=None, sample_seed:int=23, filter_query:str = None):
     if file_format == 'feather':
         try:
             data = pd.read_feather(path)
             if sample:
                 logi(f'sampling {sample*100}% of data from {path}')
                 data = data.sample(frac=sample, random_state=sample_seed)
+            if filter_query:
+                logi(f'filtering data with the query expression "{filter_query}"')
+                data.query(filter_query, inplace=True)
         except Exception as e:
             raise Exception(f'Could not read from: {path}\n{e}')
         return data
@@ -27,6 +30,9 @@ def read_from_file(path, file_format='feather', sample:Optional[float]=None, sam
             if sample:
                 logi(f'sampling {sample*100}% of data from {path}')
                 data = data.sample(frac=sample, random_state=sample_seed)
+            if filter_query:
+                logi(f'filtering data with the query expression "{filter_query}"')
+                data.query(filter_query, inplace=True)
         except Exception as e:
             raise Exception(f'Could not read from: {path}\n{e}')
         return data

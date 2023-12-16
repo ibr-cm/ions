@@ -66,16 +66,18 @@ class PlottingReaderFeather(YAMLObject):
     """
     yaml_tag = u'!PlottingReaderFeather'
 
-    def __init__(self, input_files:str, numerical_columns:List[str] = [], sample:float = None, sample_seed:int = 23):
+    def __init__(self, input_files:str, numerical_columns:List[str] = [], sample:float = None, sample_seed:int = 23, filter_query:str = None):
         self.input_files = input_files
         self.numerical_columns = numerical_columns
         self.sample = sample
         self.sample_seed = sample_seed
+        self.filter_query = filter_query
 
     def read_data(self):
         data_set = DataSet(self.input_files)
 
-        data_list = list(map(dask.delayed(functools.partial(read_from_file, sample=self.sample, sample_seed=self.sample_seed)), data_set.get_file_list()))
+        data_list = list(map(dask.delayed(functools.partial(read_from_file, sample=self.sample, sample_seed=self.sample_seed, filter_query=self.filter_query))
+                             , data_set.get_file_list()))
         concat_result = dask.delayed(pd.concat)(data_list)
         convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(concat_result, excluded_columns=self.numerical_columns)
         logd(f'PlottingReaderFeather::read_data: {data_list=}')
