@@ -298,7 +298,9 @@ class FunctionTransform(Transform, YAMLObject):
         if data is None or (not data is None and data.empty):
             return pd.DataFrame()
 
-        return function(data)
+        result = function(data)
+        logd(f'FunctionTransform result:\n{result}')
+        return result
 
     def prepare(self):
         data_list = self.get_data(self.dataset_name)
@@ -359,6 +361,7 @@ class ColumnFunctionTransform(Transform, YAMLObject):
 
     def process(self, data, function, attributes):
         data[self.output_column] = data[self.input_column].apply(function)
+        logd(f'ColumnFunctionTransform result:\n{data}')
         return data
 
     def prepare(self):
@@ -485,6 +488,7 @@ class GroupedAggregationTransform(Transform, YAMLObject):
         else:
             result = result_list
 
+        logd(f'GroupedAggregationTransform result:\n{result}')
         return result
 
     def prepare(self):
