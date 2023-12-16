@@ -64,6 +64,7 @@ class FileResultProcessor(YAMLObject):
     def save_to_disk(self, df, filename, file_format='feather', compression='lz4', hdf_key='data'):
         start = time.time()
 
+        logi(f'Saving "{filename}" ...')
         if df is None:
             logw('>>>> save_to_disk: input DataFrame is None')
             return
@@ -80,9 +81,8 @@ class FileResultProcessor(YAMLObject):
             try:
                 df.reset_index().to_feather(filename, compression=compression)
             except Exception as e:
-                loge(f'Could not save "{filename}"')
-                loge(f'=>=>  {filename=}')
-                loge(f'=>=>  {df=}')
+                loge(f'An exception occurred while trying to save "{filename}":\n{e}')
+                loge(f'df:\n{df}')
         elif file_format == 'hdf':
             df.reset_index().to_hdf(filename
                                     , format='table'
@@ -94,9 +94,8 @@ class FileResultProcessor(YAMLObject):
                 f.write(jsonpickle.encode(df, unpicklable=False, make_refs=False, keys=True))
                 f.close()
             except Exception as e:
-                loge(f'Could not save "{filename}"')
-                loge(f'=>=>  {filename=}')
-                loge(f'=>=>  {df=}')
+                loge(f'An exception occurred while trying to save "{filename}":\n{e}')
+                loge(f'df:\n{df}')
         else:
             raise Exception('Unknown file format')
 
