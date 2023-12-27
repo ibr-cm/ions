@@ -19,11 +19,11 @@ def evaluate_simple_arithmetic_expression(expression_string:str):
     op = expression.body
     if isinstance(op, ast.BinOp) \
         and type(op.op) in allowed_operators \
-        and isinstance(op.left, ast.Num) \
-        and isinstance(op.right, ast.Num):
-            result = allowed_operators[type(op.op)](op.left.n, op.right.n)
+        and isinstance(op.left, ast.Constant) \
+        and isinstance(op.right, ast.Constant):
+            result = allowed_operators[type(op.op)](op.left.value, op.right.value)
             return result
-    elif isinstance(op, ast.Num):
-        return op.n
+    elif isinstance(op, ast.Constant):
+        return op.value
     else:
         raise TypeError(f'\'{expression_string}\' is not a valid expression in this context')
