@@ -6,9 +6,17 @@ import re
 from utility.arithmetic import evaluate_simple_arithmetic_expression
 
 
-# This contains the mapping from tag name to regular expressions and
-# transformation functions for the run parameters contained in the `runParam`
-# table mapping of key name to regex & value extraction function
+r"""
+This contains the mapping from the tag name to the regular expressions and
+transformation functions for the run parameters contained in the `runParam`
+table.
+The tag name is the key for the dictionary and is mapped to a list of
+dictionaries, each of which will be checked against every row in the `runParam`
+table. If the regular expression given under the `regex` key matches the value
+of the `paramkey` column, the unary function defined in `transform` is applied
+to the value of the `paramValue` column. The result of the function is then
+assigned to the value of the tag.
+"""
 parameters_regex_map = {
         'v2x_rate': [
             {
@@ -163,6 +171,18 @@ parameters_regex_map = {
         }
 
 
+r"""
+This contains the mapping from the tag name to the regular expressions and
+transformation functions for the value of the `iterationvars` attribute in the `runAttr`
+table.
+The tag name is the key for the dictionary and is mapped to a list of
+dictionaries, each of which will be checked against the value in the
+`attrValue` column of the row with the `attrName` of `iterationvars` in the
+`runAttr` table. If the regular expression given under the `regex` key matches the value
+of the `attrValue` column, the unary function defined in `transform` is applied
+to the value of the `attrValue` column. The result of the function is then
+assigned to the value of the tag.
+"""
 iterationvars_regex_map = {
                 'period': [
                     {
@@ -211,7 +231,18 @@ iterationvars_regex_map = {
                 ]
                 }
 
-# mapping of key name to regex & value extraction function
+
+r"""
+This contains the mapping from the tag name to the regular expressions and
+transformation functions for the run attributes contained in the `runAttr`
+table.
+The tag name is the key for the dictionary and is mapped to a list of
+dictionaries, each of which will be checked against every row in the `runAttr`
+table. If the regular expression given under the `regex` key matches the value
+of the `attrName` column, the unary function defined in `transform` is applied
+to the value of the `attrValue` column. The result of the function is then
+assigned to the value of the tag.
+"""
 attributes_regex_map = {
     'prefix': [
         {

@@ -37,9 +37,23 @@ class Transform(YAMLObject):
     yaml_tag = u'!Transform'
 
     def set_data_repo(self, data_repo:dict):
+        r"""
+        Parameters
+        ----------
+        data_repo : dict
+            The dictionary containing all loaded datasets necessary for this transform
+        """
         self.data_repo = data_repo
 
     def get_data(self, dataset_name:str):
+        r"""
+        Retrieve a dataset with the given name from the data repository associated with this transform
+
+        Parameters
+        ----------
+        dataset_name : str
+            The name of the dataset to retrieve from the data repository
+        """
         if not dataset_name in self.data_repo:
             raise Exception(f'"{dataset_name}" not found in data repo')
 
@@ -85,7 +99,7 @@ class NullTransform(Transform, YAMLObject):
 
 class ConcatTransform(Transform, YAMLObject):
     r"""
-    A transform for concatenating datasets.
+    A transform for concatenating all DataFrames from the given datasets.
 
     Parameters
     ----------
@@ -129,7 +143,10 @@ class ConcatTransform(Transform, YAMLObject):
 
 class MergeTransform(Transform, YAMLObject):
     r"""
-    A transform for merging two datasets
+    A transform for merging the columns from two DataFrames, from two distinct
+    datasets, similarly to a SQL INNER JOIN.
+
+    Basically a wrapper around `pandas.merge <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.merge.html>`_
 
     Parameters
     ----------
@@ -662,6 +679,9 @@ class GroupedFunctionTransform(Transform, YAMLObject):
         return jobs
 
 def register_constructors():
+    r"""
+    Register YAML constructors for all transforms
+    """
     yaml.add_constructor(u'!ConcatTransform', proto_constructor(ConcatTransform))
     yaml.add_constructor(u'!FunctionTransform', proto_constructor(FunctionTransform))
     yaml.add_constructor(u'!ColumnFunctionTransform', proto_constructor(ColumnFunctionTransform))

@@ -1,6 +1,9 @@
 import yaml
 
 def load_yaml_from_file(file):
+    r"""
+    Read and evaluate the YAML contained in the file with the given name
+    """
     f = open(file, mode='r')
     x = yaml.unsafe_load(f.read())
     f.close()
@@ -38,6 +41,7 @@ def decode_node(loader, node):
                 case 'tag:yaml.org,2002:dict' | '!dict' | '!!dict':
                     x = eval(node.value)
                 case _:
+                    # use the default scalar constructor
                     x = loader.construct_scalar(node)
         case yaml.MappingNode:
             x = loader.construct_mapping(node)
@@ -92,6 +96,9 @@ def include_constructor(loader, node):
 
 
 def register_constructors():
+    r"""
+    Register YAML constructors for all the custom tags
+    """
     yaml.add_constructor(u'!include', include_constructor)
 
 register_constructors()

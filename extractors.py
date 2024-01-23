@@ -46,6 +46,14 @@ from common.common_sets import BASE_TAGS_EXTRACTION_FULL, BASE_TAGS_EXTRACTION_M
 # ---
 
 class SqlLiteReader():
+    r"""
+    A utility class to run a query over a SQLite3 database or to extract the parameters and attributes for a run from a database.
+
+    Parameters
+    ----------
+    db_file : str
+        The path to the SQLite3 database file
+    """
     def __init__(self, db_file):
         self.db_file = db_file
         self.connection = None
@@ -77,6 +85,19 @@ class SqlLiteReader():
         return result
 
     def extract_tags(self, attributes_regex_map, iterationvars_regex_map, parameters_regex_map):
+        r"""
+        Parameters
+        ----------
+        attributes_regex_map : dict
+            The dictionary containing the definitions for the tags to extract from the `runAttr` table
+        iterationvars_regex_map : dict
+            The dictionary containing the definitions for the tags to extract from the `iterationvars` attribute
+        parameters_regex_map : dict
+            The dictionary containing the definitions for the tags to extract from the `runParam` table
+
+        Extract all tags defined in the given mappings from the `runAttr` and `runParam` tables and parse the value of the `iterationvars` attribute.
+        See the module `tag_regular_expressions` for the expected structure of the mappings.
+        """
         tags = ExtractRunParametersTagsOperation.extract_attributes_and_params(self.parameter_extractor, self.attribute_extractor
                                                                                , parameters_regex_map, attributes_regex_map, iterationvars_regex_map)
         return tags
@@ -84,6 +105,22 @@ class SqlLiteReader():
 
 
 class DataAttributes(YAMLObject):
+    r"""
+    A class for assigning arbitrary attributes to a dataset.
+    The constructor accept an arbitrary number of keyword arguments and turns
+    them into object attributes.
+
+    Parameters
+    ----------
+    source_file : str
+        The file name the dataset was extracted from
+    source_files : List[str]
+        The list of file names the dataset was extracted from
+    alias : List[str]
+        The alias given to the data in the dataset
+    aliases : List[str]
+        The aliases given to the data in the dataset
+    """
     def __init__(self, /,  **kwargs):
         self.source_files = set()
         self.aliases = set()
@@ -131,9 +168,17 @@ class DataAttributes(YAMLObject):
 
 
 class Extractor(YAMLObject):
+    r"""
+    A class for extracting and preprocessing data from a SQLite database.
+    This is the abstract base class.
+    """
+
     yaml_tag = u'!Extractor'
 
     def prepare(self):
+        r"""
+        Prepare and return a list or a single dask.Delayed task
+        """
         return None
 
     def set_tag_maps(self, attributes_regex_map, iterationvars_regex_map, parameters_regex_map):
@@ -143,6 +188,11 @@ class Extractor(YAMLObject):
 
 
 class BaseExtractor(Extractor):
+    r"""
+    A class for extracting and preprocessing data from a SQLite database.
+    This is the base class.
+    """
+
     yaml_tag = u'!BaseExtractor'
 
     def __init__(self, /,
@@ -1097,6 +1147,9 @@ class PatternMatchingBulkScalarExtractor(BaseExtractor):
 
 
 def register_constructors():
+    r"""
+    Register YAML constructors for all extractors
+    """
     yaml.add_constructor(u'!RawExtractor', proto_constructor(RawExtractor))
     yaml.add_constructor(u'!RawScalarExtractor', proto_constructor(RawScalarExtractor))
     yaml.add_constructor(u'!RawStatisticExtractor', proto_constructor(RawStatisticExtractor))

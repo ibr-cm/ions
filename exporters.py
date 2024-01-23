@@ -180,5 +180,8 @@ class FileResultProcessor(YAMLObject):
 
 
 def register_constructors():
+    r"""
+    Register YAML constructors for all exporters
+    """
     yaml.add_constructor(u'!FileResultProcessor', proto_constructor(FileResultProcessor))
 

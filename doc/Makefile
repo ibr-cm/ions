@@ -1,6 +1,7 @@
 # Minimal makefile for Sphinx documentation
 #
 
+# include virtual environment manager configuration
 include ../config.sh
 
 # You can set these variables from the command line, and also

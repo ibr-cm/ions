@@ -2,12 +2,12 @@ from typing import List, Mapping, Dict, Tuple
 
 class Tag():
     r"""
-    A class for adding metadata to the output data
+    A class for adding metadata to the output data in the form of a key to value mapping
 
     Parameters
     ----------
     mapping : Mapping[str, object]
-        the (key, value) mapping
+        The key to value mapping for the tag
     """
 
     def __init__(self, mapping:Mapping[str, object]):

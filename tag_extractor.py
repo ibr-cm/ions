@@ -7,12 +7,7 @@ from tag import Tag
 
 class ExtractRunParametersTagsOperation():
     r"""
-    Extract the run parameters of the input DB and create `Tags` from them
-
-    Parameters
-    ----------
-    db_session : DbSession
-        the session object for acessing the input DB
+    Extract the run parameters of from a database and create a `Tag` object for each of them
     """
 
     @staticmethod
@@ -88,6 +83,20 @@ class ExtractRunParametersTagsOperation():
     @staticmethod
     def extract_attributes_and_params(parameter_extractor, attribute_extractor
                                       , parameters_regex_map, attributes_regex_map, iterationvars_regex_map):
+        r"""
+        Parameters
+        ----------
+        parameter_extractor : Callable
+            A function that extracts the contents of the `runParam` table and returns it as a pandas.DataFrame
+        attribute_extractor : Callable
+            A function that extracts the contents of the `runAttr` table and returns it as a pandas.DataFrame
+        attributes_regex_map : dict
+            The dictionary containing the definitions for the tags to extract from the `runAttr` table
+        iterationvars_regex_map : dict
+            The dictionary containing the definitions for the tags to extract from the `iterationvars` attribute
+        parameters_regex_map : dict
+            The dictionary containing the definitions for the tags to extract from the `runParam` table
+        """
         tags:List[Tag] = []
 
         parameters_data = parameter_extractor()

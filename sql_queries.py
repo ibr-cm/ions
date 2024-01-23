@@ -4,29 +4,49 @@ from sql_model import OmnetppTableModel as TM
 
 from common.logging_facilities import logi
 
-# """
-# SELECT attrName, attrValue
-# FROM runAttr;
-# """
+r"""
+Query the `runAttr` table and return all the rows contained in it.
+The equivalent SQL query:
+
+.. code-block:: sql
+
+ SELECT attrName, attrValue FROM runAttr;
+
+"""
 run_attr_query = sqla.select(TM.runAttr_table.c.rowId, TM.runAttr_table.c.attrName, TM.runAttr_table.c.attrValue)
 
-# """
-# SELECT paramKey, paramValue
-# FROM runParam;
-# """
+r"""
+Query the `runParam` table and return all the rows contained in it.
+The equivalent SQL query:
+
+.. code-block:: sql
+
+ SELECT paramKey, paramValue FROM runParam;
+
+"""
 run_param_query = sqla.select(TM.runParam_table.c.rowId, TM.runParam_table.c.paramKey, TM.runParam_table.c.paramValue)
 
 
-# """
-# SELECT vectorName
-# FROM vector_table;
-# """
+r"""
+Query the `vector` table and return all the `vectorName`s contained in it.
+The equivalent SQL query:
+
+.. code-block:: sql
+
+ SELECT vectorName FROM vector_table;
+
+"""
 signal_names_query = sqla.select(TM.vector_table.c.vectorName)
 
-# """
-# SELECT *
-# FROM scalar;
-# """
+r"""
+Query the `scalar` table and return all the rows contained in it.
+The equivalent SQL query:
+
+.. code-block:: sql
+
+ SELECT * FROM scalar;
+
+"""
 scalar_table_query = sqla.select(  TM.scalar_table.c.scalarId
                                  , TM.scalar_table.c.runId
                                  , TM.scalar_table.c.moduleName
@@ -36,10 +56,15 @@ scalar_table_query = sqla.select(  TM.scalar_table.c.scalarId
 
 
 
-# """
-# SELECT *
-# FROM statistic;
-# """
+r"""
+Query the `scalar` table and return all the rows contained in it.
+The equivalent SQL query:
+
+.. code-block:: sql
+
+ SELECT * FROM statistic;
+
+"""
 statistic_table_query = sqla.select(  TM.statistic_table.c.statId
                                     , TM.statistic_table.c.runId
                                     , TM.statistic_table.c.moduleName
@@ -240,6 +265,9 @@ def generate_signal_for_module_query(signal_name:str, module_name:str, value_lab
                                      , simtimeRaw:bool=True
                                      , eventNumber:bool=False
                                      ):
+    r"""
+    Extract the data for the signal given by `signal_name` for the given `moduleName` only
+    """
     return generate_data_query(
                                sqla.and_(TM.vector_table.c.vectorName == signal_name
                                          , TM.vector_table.c.moduleName.like(module_name)
@@ -290,51 +318,80 @@ def get_signal_with_position(x_signal:str, y_signal:str
                   , simtimeRaw:bool=True
                   , eventNumber:bool=False
                   ):
-    '''
+    r"""
+    Get all the signal data for the signal with the name `signal_name` within
+    the rectangle described by the tuple given in `restriction`.
+
     The equivalent SQL query:
 
-    WITH pxvids
-    AS (SELECT vectorId, moduleName FROM vector AS v WHERE vectorName == '<positionX>'),
-    pyvids
-    AS (SELECT vectorId, moduleName FROM vector AS v WHERE vectorName == '<positionY>'),
-    pys AS
-        (SELECT moduleName, eventNumber, simtimeRaw, value AS posY
-         FROM
-            pyvids
-         JOIN vectorData AS vd
-            ON vd.vectorId == pyvids.vectorId
-        WHERE vd.value < <y_max> AND vd.value > <y_min>
-        ),
-    pxs AS
-        (SELECT moduleName, eventNumber, simtimeRaw, value AS posX
-         FROM
-            pxvids
-         JOIN vectorData AS vd
-            ON vd.vectorId == pxvids.vectorId
-        WHERE vd.value < <x_max> AND vd.value > <x_min>
-         ),
-    pos AS
-        (SELECT pxs.moduleName, pxs.eventNumber, pxs.simtimeRaw, posX, posY
-         FROM
-             pxs
-         JOIN
-             pys
-             ON pxs.eventNumber == pys.eventNumber
-        ),
-    val AS
-        (SELECT vd.vectorId, vd.eventNumber, vd.value
-         FROM vector AS v
-         JOIN vectorData AS vd
-            ON v.vectorId == vd.vectorId
-         WHERE v.vectorName == '<signal_name>'
-        )
-    SELECT p.moduleName, p.eventNumber, p.simtimeRaw, posX, posY, v.value
-    FROM pos AS p
-    JOIN val AS v
-        ON p.vectorId == v.vectorId
-            AND p.eventNumber == v.eventNumber
-        ;
-    '''
+    .. code-block:: sql
+
+      WITH pxvids
+      AS (SELECT vectorId, moduleName FROM vector AS v WHERE vectorName == '<positionX>'),
+      pyvids
+      AS (SELECT vectorId, moduleName FROM vector AS v WHERE vectorName == '<positionY>'),
+      pys AS
+          (SELECT moduleName, eventNumber, simtimeRaw, value AS posY
+           FROM
+              pyvids
+           JOIN vectorData AS vd
+              ON vd.vectorId == pyvids.vectorId
+          WHERE vd.value < <y_max> AND vd.value > <y_min>
+          ),
+      pxs AS
+          (SELECT moduleName, eventNumber, simtimeRaw, value AS posX
+           FROM
+              pxvids
+           JOIN vectorData AS vd
+              ON vd.vectorId == pxvids.vectorId
+          WHERE vd.value < <x_max> AND vd.value > <x_min>
+           ),
+      pos AS
+          (SELECT pxs.moduleName, pxs.eventNumber, pxs.simtimeRaw, posX, posY
+           FROM
+               pxs
+           JOIN
+               pys
+               ON pxs.eventNumber == pys.eventNumber
+          ),
+      val AS
+          (SELECT vd.vectorId, vd.eventNumber, vd.value
+           FROM vector AS v
+           JOIN vectorData AS vd
+              ON v.vectorId == vd.vectorId
+           WHERE v.vectorName == '<signal_name>'
+          )
+      SELECT p.moduleName, p.eventNumber, p.simtimeRaw, posX, posY, v.value
+      FROM pos AS p
+      JOIN val AS v
+          ON p.vectorId == v.vectorId
+              AND p.eventNumber == v.eventNumber
+          ;
+
+    Parameters
+    ----------
+    x_signal : str
+        The name of the signal containing the x-coordinate data
+    y_signal : str
+        The name of the signal containing the y-coordinate data
+    value_label_px : str
+        The name for the x-coordinate in the output
+    value_label_py : str
+        The name for the y-coordinate in the output
+    signal_name : str
+        The name of the signal to extract
+    value_label : str
+        The name for the signal in the output
+    restriction : tuple
+        The selection rectangle, defined as (x_min, y_min, x_max, y_max)
+    moduleName : bool
+        Whether to include the `moduleName` in the output
+    simtimeRaw : bool
+        Whether to include the `simtimeRaw` in the output
+    eventNumber : bool
+        Whether to include the `eventNumber` in the output
+
+    """
 
     # get the vectorIds for the x & y position signals
     pxidsq = sqla.select(TM.vector_table.c.vectorId, TM.vector_table.c.moduleName) \

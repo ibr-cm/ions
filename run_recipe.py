@@ -398,6 +398,14 @@ def setup_pandas():
 
 
 class WorkerPlugin(dask.distributed.WorkerPlugin):
+    r"""
+    A dask worker plugin for setting defaults in the worker process
+
+    Parameters
+    ----------
+    options : dict
+        The dictionary containing the configuration for the worker, usually the same as for the launcher
+    """
     def __init__(self, options, *args, **kwargs):
         self.options = options
 
@@ -405,10 +413,19 @@ class WorkerPlugin(dask.distributed.WorkerPlugin):
         # append the current path to the PYTHONPATH of the worker
         sys.path.append('.')
         setup_logging_defaults(level=self.options.log_level)
+        set_logging_level(self.options.log_level)
         setup_pandas()
 
 
 def setup_dask(options):
+    r"""
+    Setup and configure the dask cluster and its workers.
+
+    Parameters
+    ----------
+    options : dict
+        The dictionary containing the configuration for the launcher
+    """
     plugin = WorkerPlugin(options)
 
     dask.config.set({'distributed.scheduler.worker-ttl': None})
@@ -458,6 +475,14 @@ def setup_dask(options):
 
 
 def compute_graph(jobs):
+    r"""
+    Compute the task graph
+
+    Parameters
+    ----------
+    jobs : List[dask.Delayed]
+        The list of jobs/tasks to compute
+    """
     logi('=-!!'*40)
     logi('recombobulating splines...')
     logi(f'compute_graph: {jobs=}')
