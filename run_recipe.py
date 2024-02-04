@@ -2,6 +2,7 @@
 
 import pprint
 import sys
+import shutil
 import argparse
 import traceback
 
@@ -231,7 +232,8 @@ def process_recipe(options):
 
     if options.dump_recipe:
         output = dump(recipe, Dumper=Dumper)
-        logd(pprint.pformat(output, width=192))
+        terminal_size = shutil.get_terminal_size()
+        logd(pprint.pformat(output, width=terminal_size.columns))
         exit()
 
     data_repo = {}
