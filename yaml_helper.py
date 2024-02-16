@@ -55,6 +55,7 @@ def decode_node(loader, node):
 def proto_constructor(class_constructor, set_defaults = None):
     def constructor(loader, node):
         parameters = {}
+        # construct proper python objects from the YAML definitions to pass as class parameters
         for pair in node.value:
             # decode member variable name
             x = decode_node(loader, pair[0])
