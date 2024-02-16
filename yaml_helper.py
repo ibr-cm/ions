@@ -61,33 +61,10 @@ def proto_constructor(class_constructor, set_defaults = None):
             # decode member variable value
             y = decode_node(loader, pair[1])
             parameters[x] = y
-            # logi(f'------>>>>>      {x=}  {y=}')
 
-        # logi(f'------>>>>>      {d=}')
-        if set_defaults:
-            parameters = set_defaults(parameters)
         return class_constructor(**parameters)
 
     return constructor
-
-# def set_defaults_from_dict(self, d):
-#     for k in d:
-#         if not hasattr(self, k):
-#             setattr(self, k, d[k])
-
-# def set_defaults(self):
-#     d = {
-#            'alpha': 0.9
-#          , 'xlabel': lambda self: self.x
-#          , 'ylabel': lambda self: self.y
-#          , 'bin_size': 10
-#          , 'title_template': None
-#          , 'legend_location': 'best'
-#          , 'yrange': None
-#          , 'colormap': None
-#         }
-
-#     self.set_defaults_from_dict(d)
 
 
 def include_constructor(loader, node):
