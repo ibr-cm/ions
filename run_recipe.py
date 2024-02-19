@@ -285,7 +285,7 @@ def parse_arguments(arguments):
     parser.add_argument('--mem', type=int, default=1, help='the memory, in GB, to reserve for each worker process')
 
     parser.add_argument('--cluster', type=str, help='cluster address')
-    parser.add_argument('--single-threaded', action='store_true', default=False, help='run singlethreaded')
+    parser.add_argument('--single-threaded', action='store_true', default=False, help='run in single-threaded mode; this overrides the value of the `--worker` flag')
 
     parser.add_argument('--slurm', action='store_true', default=False, help='use SLURM cluster')
     parser.add_argument('--partition', type=str, help='partition for SLURM')
@@ -300,6 +300,9 @@ def parse_arguments(arguments):
     parser.add_argument('--dump-recipe', action='store_true', default=False, help='dump the loaded recipe, useful for finding errors in the recipe')
 
     args = parser.parse_args(arguments)
+
+    if args.single_threaded:
+        args.worker = 1
 
     if args.slurm:
         if not args.nodelist:
