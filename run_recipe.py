@@ -230,11 +230,12 @@ def process_recipe(options):
 
     recipe = yaml.unsafe_load(f.read())
 
-    if options.dump_recipe:
+    if options.dump_recipe or options.dump_recipe_only:
         output = dump(recipe, Dumper=Dumper)
         terminal_size = shutil.get_terminal_size()
         logd(pprint.pformat(output, width=terminal_size.columns))
-        exit()
+        if options.dump_recipe_only:
+            exit()
 
     data_repo = {}
     job_list = []
@@ -297,7 +298,8 @@ def parse_arguments(arguments):
 
     parser.add_argument('--verbose', '-v', action='count', default=0, help='increase logging verbosity')
 
-    parser.add_argument('--dump-recipe', action='store_true', default=False, help='dump the loaded recipe, useful for finding errors in the recipe')
+    parser.add_argument('--dump-recipe', action='store_true', default=False, help='dump the loaded recipe; useful for finding errors in the recipe')
+    parser.add_argument('--dump-recipe-only', action='store_true', default=False, help='dump the loaded recipe and exit; useful for finding errors in the recipe')
 
     args = parser.parse_args(arguments)
 
