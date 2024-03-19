@@ -23,6 +23,9 @@ from common.logging_facilities import logi, loge, logd, logw
 
 from extractors import RawExtractor
 
+from utility.filesystem import check_file_access_permissions, check_directory_access_permissions
+
+
 class FileResultProcessor(YAMLObject):
     r"""
     Export the given dataset as
@@ -34,6 +37,9 @@ class FileResultProcessor(YAMLObject):
     output_filename: str
         the name of the output file
 
+    output_directory: str
+        the path of the output directory
+
     dataset_name: str
         the name of the dataset to export
 
@@ -41,7 +47,9 @@ class FileResultProcessor(YAMLObject):
         the output file format, either `feather` or `json`
 
     concatenate: bool
-        whether to concatenate the input data before exporting
+        Whether to concatenate the input data before exporting it. If false,
+        the name of the output files will be derived from the input file names
+        and the aliases in the data.
 
     raw: bool
         whether to save the raw input or convert the columns of the input
@@ -49,14 +57,26 @@ class FileResultProcessor(YAMLObject):
     """
     yaml_tag = u'!FileResultProcessor'
 
-    def __init__(self, output_filename
-                 , dataset_name:str
+    def __init__(self, dataset_name:str
+                 , output_filename = None
+                 , output_directory = None
                  , format:str = 'feather'
                  , concatenate:bool = False
                  , raw:bool = False
                  , *args, **kwargs):
-        self.output_filename = output_filename
+        if (not output_filename) and concatenate:
+            raise ValueError('When concatenating a dataset into a single file, the `output_filename` must be specified')
+        if (not output_directory) and (not concatenate):
+            raise ValueError('When not concatenating a dataset into a single file, the `output_directory` must be specified')
+
+        if output_filename and concatenate:
+            check_file_access_permissions(output_filename)
+        if output_directory and (not concatenate):
+            check_directory_access_permissions(output_directory)
+
         self.dataset_name = dataset_name
+        self.output_filename = output_filename
+        self.output_directory = output_directory
         self.format = format
         self.concatenate = concatenate
         self.raw = raw
@@ -72,10 +92,6 @@ class FileResultProcessor(YAMLObject):
         if not self.raw and df.empty:
             logw('>>>> save_to_disk: input DataFrame is empty')
             return
-
-        target_dir = pathlib.Path(pathlib.PurePath(filename).parent)
-        if not target_dir.exists():
-            target_dir.mkdir(parents=True)
 
         if file_format == 'feather':
             try:
@@ -147,7 +163,7 @@ class FileResultProcessor(YAMLObject):
             else:
                 aliases = '_'.join(list(attributes.get_aliases()))
 
-            output_filename = str(pathlib.PurePath(self.output_filename).parent) + '/' \
+            output_filename = self.output_directory + '/' \
                               + source_file \
                               + '_' \
                               + aliases \

@@ -39,6 +39,8 @@ from yaml_helper import decode_node, proto_constructor
 from data_io import DataSet, read_from_file
 from extractors import RawExtractor, DataAttributes
 
+from utility.filesystem import check_file_access_permissions
+
 from common.debug import start_ipython_dbg_cmdline
 
 # ---
@@ -239,6 +241,8 @@ class PlottingTask(YAMLObject):
                  , grid_transform:Optional[Callable] = None
                  ):
         self.dataset_name = dataset_name
+
+        check_file_access_permissions(output_file)
         self.output_file = output_file
 
         if plot_types:
