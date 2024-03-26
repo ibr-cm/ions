@@ -90,13 +90,6 @@ class Transform(YAMLObject):
         return job_list
 
 
-class NullTransform(Transform, YAMLObject):
-    yaml_tag = u'!NullTransform'
-
-    def prepare(self):
-        pass
-
-
 class ConcatTransform(Transform, YAMLObject):
     r"""
     A transform for concatenating all DataFrames from the given datasets.
