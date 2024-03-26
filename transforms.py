@@ -281,18 +281,19 @@ class MergeTransform(Transform, YAMLObject):
 
 class FunctionTransform(Transform, YAMLObject):
     r"""
-    A transform for applying a function to every value in a column of a DataFrame
+    A transform for applying a arbitrary function to a whole DataFrame.
 
     Parameters
     ----------
     dataset_name: str
-        the dataset to operate on
+        The dataset to operate on.
 
     output_dataset_name: str
-        the name given to the output dataset
+        The name given to the output dataset.
 
     function: Callable
-        the unary function to apply to each DataFrame of the dataset
+        The unary function to apply to each DataFrame of the dataset.
+        It takes the full DataFrame as its only argument and returns a DataFrame.
     """
 
     yaml_tag = u'!FunctionTransform'
