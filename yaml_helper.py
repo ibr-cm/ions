@@ -49,6 +49,8 @@ def decode_node(loader, node):
                     x = eval(node.value)
                 case 'tag:yaml.org,2002:code' | '!code' | '!!code':
                     x = eval(node.value)
+                case 'tag:yaml.org,2002:eval' | '!eval' | '!!eval':
+                    x = eval(node.value)
                 case 'tag:yaml.org,2002:dict' | '!dict' | '!!dict':
                     x = eval(node.value)
                 case _:
