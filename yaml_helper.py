@@ -1,5 +1,7 @@
 import yaml
 
+from typing import Callable
+
 def load_yaml_from_file(file):
     r"""
     Read and evaluate the YAML contained in the file with the given name
@@ -17,9 +19,12 @@ def construct_bool(loader, node):
         x = True
     return x
 
-def construct_float(loader, node):
+def construct_numeral(loader, node, type_constructor:Callable = int):
+    r"""
+    Construct a numeral scalar and cast to the desired type
+    """
     x = loader.construct_scalar(node)
-    x = float(x)
+    x = type_constructor(x)
     return x
 
 def decode_node(loader, node):
@@ -31,7 +36,11 @@ def decode_node(loader, node):
                 case 'tag:yaml.org,2002:bool' | '!bool' | '!!bool':
                     x = construct_bool(loader, node)
                 case 'tag:yaml.org,2002:float' | '!float' | '!!float':
-                    x = construct_float(loader, node)
+                    x = construct_numeral(loader, node, float)
+                case 'tag:yaml.org,2002:int' | '!int' | '!!int':
+                    x = construct_numeral(loader, node, int)
+                case 'tag:yaml.org,2002:complex' | '!complex' | '!!complex':
+                    x = construct_numeral(loader, node, complex)
                 case 'tag:yaml.org,2002:null' | '!null' | '!!null':
                     x = None
                 case 'tag:yaml.org,2002:tuple' | '!tuple' | '!!tuple':
