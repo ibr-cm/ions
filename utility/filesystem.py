@@ -26,5 +26,6 @@ def check_directory_access_permissions(target_directory:str):
             # try creating a temporary file to check access permissions
             fd, path = tempfile.mkstemp(dir=target_dir)
             os.close(fd)
+            os.unlink(path)
     except PermissionError as e:
         raise PermissionError(f'Unable to write to output directory, check access permissions for directory "{target_directory}":\n{e}')
