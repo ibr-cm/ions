@@ -15,8 +15,10 @@ def construct_bool(loader, node):
     x = loader.construct_scalar(node)
     if x == 'false' or x == 'False':
         x = False
-    else:
+    elif x == 'true' or x == 'True':
         x = True
+    else:
+        raise ValueError(f'wrong value for boolean type: {x}')
     return x
 
 def construct_numeral(loader, node, type_constructor:Callable = int):
