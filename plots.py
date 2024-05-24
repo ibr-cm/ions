@@ -520,6 +520,9 @@ class PlottingTask(YAMLObject):
         logd(f'-0---000---<<<<>>>>>    {self.__dict__=}')
         logd(f'-0---000---<<<<>>>>>    {mpl.rcParams["backend"]=}')
 
+        self.set_backend(self.matplotlib_backend)
+        self.set_theme(self.context, self.axes_style)
+
         # logd(f'<<<<>>>>>-------------')
         # logd(f'<<<<>>>>>    {data=}')
         # data = data.reset_index()
