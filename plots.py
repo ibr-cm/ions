@@ -512,16 +512,13 @@ class PlottingTask(YAMLObject):
         self.context = context
         self.axes_style = axes_style
         if self.matplotlib_rc_dict:
-            sb.set(context=self.context, style=self.axes_style, rc=self.matplotlib_rc_dict)
+            sb.set_theme(context=self.context, style=self.axes_style, rc=self.matplotlib_rc_dict)
         else:
-            sb.set(context=self.context, style=self.axes_style)
+            sb.set_theme(context=self.context, style=self.axes_style)
 
     def plot_data(self, data):
         logd(f'-0---000---<<<<>>>>>    {self.__dict__=}')
         logd(f'-0---000---<<<<>>>>>    {mpl.rcParams["backend"]=}')
-
-        self.set_backend()
-        self.set_theme()
 
         # logd(f'<<<<>>>>>-------------')
         # logd(f'<<<<>>>>>    {data=}')
@@ -759,30 +756,31 @@ class PlottingTask(YAMLObject):
         # check every line of the matplotlib.rc for directives that need to be
         # given as parameters to sb.{cat,rel}plot and add them to the keyword
         # parameter dictionary
-        for k in self.matplotlib_rc_dict:
-            v = self.matplotlib_rc_dict[k]
-            if bpr.search(k):
-                add_props('boxprops', k, v)
-                continue
-            if mpr.search(k):
-                add_props('medianprops', k, v)
-                continue
-            if fpr.search(k):
-                add_props('flierprops', k, v)
-                continue
-            if wpr.search(k):
-                add_props('whiskerprops', k, v)
-                continue
-            if cpr.search(k):
-                add_props('capprops', k, v)
-                continue
-            else:
-                # No match, ignore
-                # This might still be overridden by a passed parameter in the
-                # seaborn internals, check the seaborn source if a line doesn't
-                # seem to produce any effect.
-                logd(f'not adding "{k}:{v}" to (box,median,flier,whisker,cap)props parameters')
-                pass
+        if  self.matplotlib_rc_dict:
+            for k in self.matplotlib_rc_dict:
+                v = self.matplotlib_rc_dict[k]
+                if bpr.search(k):
+                    add_props('boxprops', k, v)
+                    continue
+                if mpr.search(k):
+                    add_props('medianprops', k, v)
+                    continue
+                if fpr.search(k):
+                    add_props('flierprops', k, v)
+                    continue
+                if wpr.search(k):
+                    add_props('whiskerprops', k, v)
+                    continue
+                if cpr.search(k):
+                    add_props('capprops', k, v)
+                    continue
+                else:
+                    # No match, ignore
+                    # This might still be overridden by a passed parameter in the
+                    # seaborn internals, check the seaborn source if a line doesn't
+                    # seem to produce any effect.
+                    logd(f'not adding "{k}:{v}" to (box,median,flier,whisker,cap)props parameters')
+                    pass
 
         return kwargs
 
