@@ -134,6 +134,10 @@ class PlottingTask(YAMLObject):
         the column of the input `DataFrame` to use for partitioning the data and
         plotting each partition into the same plot, with a different color
 
+    size: Optional[str]
+        the column of the input `DataFrame` to use for partitioning the data and
+        plotting each partition into the same plot, with a different width
+
     style: Optional[str]
         the column of the input `DataFrame` to use for partitioning the data and
         plotting each partition into the same plot, with a different line style and marker
@@ -190,7 +194,7 @@ class PlottingTask(YAMLObject):
     invert_yaxis: bool
         whether to invert the direction of the y-axis
 
-    size: Optional[str]
+    plot_size: Optional[str]
         the size of the plot, as a tuple of inches
 
     xticklabels: Optional[str]
@@ -213,6 +217,7 @@ class PlottingTask(YAMLObject):
                  , row:str = None
                  , hue:str = None
                  , style:str = None
+                 , size:str = None
                  , matplotlib_backend:str = 'agg'
                  , context:str = 'paper'
                  , axes_style:str = 'dark'
@@ -231,7 +236,7 @@ class PlottingTask(YAMLObject):
                  , xrange:Optional[str] = None
                  , yrange:Optional[str] = None
                  , invert_yaxis:bool = False
-                 , size:Optional[str] = None
+                 , plot_size:Optional[str] = None
                  , xticklabels:Optional[str] = None
                  , xticks:List[float] = None
                  , xticks_minor:List[float] = None
@@ -281,6 +286,7 @@ class PlottingTask(YAMLObject):
         self.row = row if row != '' else None
         self.hue = hue if hue != '' else None
         self.style = style if style != '' else None
+        self.size = size if size != '' else None
 
         self.xticks = xticks
         self.xticks_minor = xticks_minor
@@ -307,7 +313,7 @@ class PlottingTask(YAMLObject):
                                , xrange = xrange
                                , yrange = yrange
                                , invert_yaxis = invert_yaxis
-                               , size = size
+                               , plot_size = plot_size
                                , colormap = colormap
                                )
 
@@ -425,7 +431,7 @@ class PlottingTask(YAMLObject):
                  , xrange:Optional[str] = None
                  , yrange:Optional[str] = None
                  , invert_yaxis:bool = False
-                 , size:Optional[str] = None
+                 , plot_size:Optional[str] = None
                  , colormap:Optional[str] = None
                      ):
 
@@ -463,10 +469,10 @@ class PlottingTask(YAMLObject):
 
         self.invert_yaxis = invert_yaxis
 
-        if type(size) == str:
-            self.size = eval(size)
+        if type(plot_size) == str:
+            self.plot_size = eval(plot_size)
         else:
-            self.size = size
+            self.plot_size = plot_size
 
         if not colormap:
             self.colormap = sb.color_palette('prism', as_cmap=True)
@@ -549,7 +555,7 @@ class PlottingTask(YAMLObject):
                 return self.plot_relplot(df=selected_data
                                         , plot_type=plot_type
                                         , x=self.x, y=self.y
-                                        , hue=self.hue, style=self.style
+                                        , hue=self.hue, style=self.style, size=self.size
                                         , row=self.row, column=self.column
                                        )
 
@@ -681,8 +687,8 @@ class PlottingTask(YAMLObject):
 
 
     def set_grid_defaults(self, grid):
-        if self.size:
-            grid.figure.set_size_inches(self.size)
+        if self.plot_size:
+            grid.figure.set_size_inches(self.plot_size)
 
         # ax.fig.gca().set_ylim(ylimit)
         for axis in grid.figure.axes:
@@ -834,7 +840,7 @@ class PlottingTask(YAMLObject):
         return grid
 
 
-    def plot_relplot(self, df, x='v2x_rate', y='cbr', hue='moduleName', style='prefix', row='dcc', column='traciStart', plot_type='line', **kwargs):
+    def plot_relplot(self, df, x='v2x_rate', y='cbr', hue='moduleName', style='prefix', size=None,  row='dcc', column='traciStart', plot_type='line', **kwargs):
         kwargs = self.set_plot_specific_options(plot_type, kwargs)
 
         logd(f'PlottingTask::plot_relplot: {df.columns=}')
@@ -842,6 +848,7 @@ class PlottingTask(YAMLObject):
                         , hue=hue
                         , kind=plot_type
                         , style=style
+                        , size=size
                         , alpha=self.alpha
                         # , legend_out=False
                         , **kwargs
