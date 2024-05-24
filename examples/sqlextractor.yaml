@@ -1,0 +1,114 @@
+---
+# example recipe
+# --- !Recipe
+!Recipe
+name: !!str "example_recipe"
+
+evaluation: !Evaluation
+  extractors:
+  - prr: !SqlExtractor
+      # the path to the input files, regular expressions can be used
+      input_files: !!python/list
+        - "/net/i5/opt/tmpssd/willecke/invent_pd/global_disturb_160b/invent-l2l3/.*.db"
+        - "/net/i5/opt/tmpssd/willecke/invent_pd/global_disturb_60b/invent-l2l3/.*.db"
+        # - "/net/i5/opt/tmpssd/willecke/invent_pd/global_disturb_160b/invent-invent-wout_mc/.*.db"
+      query: "SELECT run_id, payload_size, packet_drop_rate_ch1, packet_drop_rate_ch2, packet_loss_ratio FROM flows JOIN config;"
+      categorical_columns_excluded: ['packet_loss_ratio', 'packet_drop_rate_ch1']
+
+  transforms:
+  - meanTransform: !GroupedAggregationTransform
+      # the key for the data loaded by the extractor above
+      dataset_name: "prr"
+      # the key for the generated data
+      output_dataset_name: "prr"
+      # the column with the input data
+      input_column: "packet_loss_ratio"
+      output_column: "packet_loss_ratio_mean"
+      # the categorical variable used for splitting the input data into groups
+      # over which the mean will be calculated
+      grouping_columns: [ "run_id", "payload_size", "packet_drop_rate_ch1", "packet_drop_rate_ch2" ]
+      # aggregation_function: "dask.dataframe.groupby.DataFrameGroupBy.mean"
+      aggregation_function: "pd.Series.mean"
+
+  - invertTransform: !GroupedAggregationTransform
+      # the key for the data loaded by the extractor above
+      dataset_name: "prr"
+      # the key for the generated data
+      output_dataset_name: "prr"
+      # the column with the input data
+      input_column: "packet_loss_ratio_mean"
+      output_column: "packet_repection_ratio_mean"
+      # the categorical variable used for splitting the input data into groups
+      # over which the mean will be calculated
+      grouping_columns: [ "run_id", "payload_size", "packet_drop_rate_ch1", "packet_drop_rate_ch2" ]
+      # aggregation_function: "dask.dataframe.groupby.DataFrameGroupBy.mean"
+      aggregation_function: "lambda x: float(1.0-x)"
+
+
+  - invertTransform: !GroupedAggregationTransform
+      # the key for the data loaded by the extractor above
+      dataset_name: "prr"
+      # the key for the generated data
+      output_dataset_name: "prr"
+      # the column with the input data
+      input_column: "packet_drop_rate_ch1"
+      output_column: "packet_recetion_rate_ch1"
+      # the categorical variable used for splitting the input data into groups
+      # over which the mean will be calculated
+      grouping_columns: [ "run_id", "payload_size", "packet_drop_rate_ch2", "packet_repection_ratio_mean" ]
+      # aggregation_function: "dask.dataframe.groupby.DataFrameGroupBy.mean"
+      aggregation_function: "lambda x: float(1.0-x)"
+
+
+  exporter:
+  - prr: !FileResultProcessor
+      dataset_name: "prr" # the key for the data loaded by the extractor above
+      # whether to concatenate all input results into one file
+      concatenate: !!bool "false"
+      output_directory: "/net/i5/opt/tmpssd/willecke/invent_pd/extracted/"
+    #   output_filename: "/net/i5/opt/tmpssd/willecke/invent_pd/extracted/prr/prr.feather"
+
+
+plot: !Plot
+  reader: # !!python/list
+  - prr: !PlottingReaderFeather
+      numerical_columns: ['packet_repection_ratio_mean', 'packet_drop_rate_ch1']
+      input_files: !!python/list
+         - "/net/i5/opt/tmpssd/willecke/invent_pd/extracted/prr/.*.feather"
+
+  tasks: # !!python/list
+  - prr_line: !PlottingTask
+      # the key used for selecting from the data loaded and/or transformed in
+      # the reader and transform phases
+      dataset_name: "prr"
+
+      # plot_type: "box"
+      plot_type: "lineplot"
+
+      x: "packet_recetion_rate_ch1"
+      y: "packet_repection_ratio_mean"
+      hue: "payload_size"
+      style: "MC"
+
+      alpha: 0.9
+
+      ylabel: "Packet Reception Ratio"
+      xlabel: "Global Packet Delivery Ratio"
+
+      # default row/column title template
+      title_template: !!null
+      # title_template: ""
+
+      legend_location: "center right"
+      # legend_labels: [ "", "" ]
+
+      bbox_inches: "tight"
+
+      axes_style: "ticks"
+      context: "paper"
+      matplotlib_rc: !include "examples/matplotlib_example.rc"
+
+      matplotlib_backend: "agg"
+      output_file: "/ibr/home/willecke/ions/prr_line.png"
+
+...
