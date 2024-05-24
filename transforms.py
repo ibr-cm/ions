@@ -467,6 +467,10 @@ class GroupedAggregationTransform(Transform, YAMLObject):
         global_env = globals().copy()
         locals_env = locals().copy()
 
+        if (data.empty):
+            logw(f'GroupedAggregationTransform return is empty!')
+            return pd.DataFrame()
+
         if type(self.extra_code) == str:
             # compile the code fragment
             self.extra_code = compile(self.extra_code, filename='<string>', mode='exec')
@@ -494,10 +498,14 @@ class GroupedAggregationTransform(Transform, YAMLObject):
                 row[self.output_column] = result
                 result_list.append(row)
 
-        if not self.raw:
-            result = pd.concat(result_list, ignore_index=True)
+        if result_list:
+            if not self.raw:
+                result = pd.concat(result_list, ignore_index=True)
+            else:
+                result = result_list
         else:
-            result = result_list
+            logw(f'GroupedAggregationTransform result_list was empty!')
+            return result_list
 
         logd(f'GroupedAggregationTransform result:\n{result}')
         return result
@@ -600,6 +608,10 @@ class GroupedFunctionTransform(Transform, YAMLObject):
         # code fragment so as to not pollute the global namespace itself
         global_env = globals().copy()
         locals_env = locals().copy()
+
+        if (data.empty):
+            logw(f'GroupedFunctionTransform return is empty!')
+            return pd.DataFrame()
 
         logd(f'{data=}')
         # logd(f'{data.hour.unique()=}')
