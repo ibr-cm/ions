@@ -393,6 +393,79 @@ class BaseExtractor(Extractor):
             return data
 
 
+    @staticmethod
+    def read_sql_from_file(db_file, query, statics
+                               , categorical_columns=[], excluded_categorical_columns=set()
+                               ):
+            sql_reader = SqlLiteReader(db_file)
+
+            try:
+                data = sql_reader.execute_sql_query(query)
+            except Exception as e:
+                loge(f'>>>> ERROR: no data could be extracted from {db_file}:\n {e}')
+                return pd.DataFrame()
+
+            if 'rowId' in data.columns:
+                data = data.drop(labels=['rowId'], axis=1)
+
+            # don't categorize the column with the actual data
+            # excluded_categorical_columns = excluded_categorical_columns.union(set([alias]))
+
+            # select columns with a small enough set of possible values to
+            # convert into `Categorical`
+            data = BaseExtractor.convert_columns_to_category(data \
+                                                            , additional_columns=categorical_columns \
+                                                            , excluded_columns=excluded_categorical_columns
+                                                            )
+            if (data.empty):
+                logw(f'Extractor: extraction yields no data for {db_file}')
+                return pd.DataFrame()
+
+            return data
+
+
+class SqlExtractor(BaseExtractor):
+    r"""
+    Extract the data from files using a SQL statement
+
+    Parameters
+    ----------
+    input_files: List[str]
+        the list of paths to the input files, as literal path or as a regular expression
+
+    query: str
+        the name of the signal which is to be extracted
+
+    """
+    yaml_tag = u'!SqlExtractor'
+
+    def __init__(self, /,
+                 input_files:list
+                 , query:str
+                 , *args, **kwargs):
+        super().__init__(input_files=input_files, *args, **kwargs)
+
+        self.query:str = query
+
+    def prepare(self):
+        data_set = DataSet(self.input_files)
+
+        # For every input file construct a `Delayed` object, a kind of a promise
+        # on the data and the leafs of the computation graph
+        result_list = []
+        for db_file in data_set.get_file_list():
+            res = dask.delayed(BaseExtractor.read_sql_from_file)\
+                                         (db_file, self.query, self.statics
+                                          , categorical_columns = self.categorical_columns
+                                          , excluded_categorical_columns = self.categorical_columns_excluded
+                                          )
+            attributes = DataAttributes(source_file=db_file)
+            result_list.append((res, attributes))
+
+        return result_list
+
+
+
 class RawStatisticExtractor(BaseExtractor):
     r"""
     Extract the data for a signal from the `statistic` table of the input files specified.
@@ -1157,4 +1230,5 @@ def register_constructors():
     yaml.add_constructor(u'!MatchingExtractor', proto_constructor(MatchingExtractor))
     yaml.add_constructor(u'!PatternMatchingBulkExtractor', proto_constructor(PatternMatchingBulkExtractor))
     yaml.add_constructor(u'!PatternMatchingBulkScalarExtractor', proto_constructor(PatternMatchingBulkScalarExtractor))
+    yaml.add_constructor(u'!SqlExtractor', proto_constructor(SqlExtractor))
 
