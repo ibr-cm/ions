@@ -294,37 +294,72 @@ class FunctionTransform(Transform, YAMLObject):
     function: Callable
         The unary function to apply to each DataFrame of the dataset.
         It takes the full DataFrame as its only argument and returns a DataFrame.
+
+    extra_code: Optional[str]
+        This can contain additional code for the transform function, such as
+        the definition of a function over multiple lines or split into multiple
+        functions for readibility.
     """
 
     yaml_tag = u'!FunctionTransform'
 
     def __init__(self, dataset_name:str, output_dataset_name:str
-                 , function:Callable=pd.Series.mean):
+                 , function:Callable=None
+                 , extra_code:Optional[str]=None
+                 ):
         self.dataset_name = dataset_name
         self.output_dataset_name = output_dataset_name
 
-        self.function = function
+        if not function:
+            msg = 'No processing function has been defined for FunctionTransform!'
+            loge(msg)
+            raise(TypeError(msg))
 
-    def process(self, data, function, attributes) -> pd.DataFrame:
+        self.function = function
+        self.extra_code = extra_code
+
+    def eval_function(self) -> Callable:
+        # create a copy of the global environment for evaluating the extra
+        # code fragment so as to not pollute the global namespace itself
+        global_env = globals().copy()
+
+        # the compilation of the extra code has to happen in the thread/process
+        # of the processing worker since code objects can't be serialized
+        if type(self.extra_code) == str:
+            # compile the code fragment
+            extra_code = compile(self.extra_code, filename='<string>', mode='exec')
+            # actually evaluate the code within the given namespace to allow
+            # access to all the defined symbols, such as helper functions that are not defined inline
+            eval(extra_code, global_env)
+
+        if isinstance(self.function, Callable):
+            function = self.function
+        else:
+            function = eval(self.function, global_env)
+
+        return function
+
+    def process(self, data, attributes) -> pd.DataFrame:
         if data is None or (not data is None and data.empty):
             return pd.DataFrame()
 
+
+        # get the function to call and possibly compile and evaluate the code defined in
+        # extra_code in a separate global namespace
+        function = self.eval_function()
+
         result = function(data)
+
         logd(f'FunctionTransform result:\n{result}')
         return result
 
     def prepare(self):
         data_list = self.get_data(self.dataset_name)
 
-        if isinstance(self.function, Callable):
-            function = self.function
-        else:
-            function = eval(self.function)
-
         job_list = []
 
         for data, attributes in data_list:
-            job = dask.delayed(self.process)(data, function, attributes)
+            job = dask.delayed(self.process)(data, attributes)
             job_list.append((job, attributes))
 
         # allow other tasks to depend on the output of the delayed jobs
