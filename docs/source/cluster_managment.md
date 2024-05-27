@@ -31,8 +31,12 @@ for details on configuring the numexpr threadpool.
 Note that not every operation can be parallelized (and I/O speed can sometimes
 limit performance as well), therefore the actual performance is often more
 limited by the framework code and the code in the recipe than by the available
-cores. To achieve (near) optimal performance, some experimentation with the
-actual workload is most likely necessary.
+cores. Note also that the dask documentation suggests setting the number of numexpr
+threads to one (see [here](https://github.com/dask/dask/discussions/8098) and
+[here](https://docs.dask.org/en/latest/generated/dask.dataframe.DataFrame.query.html)).
+This might not be the most optimal suggestion for every workload, so to achieve
+more optimal performance, some experimentation with the actual workload is most
+likely necessary.
 
 If you are using a SLURM node on a partition other than the default (check with
 `sinfo -Nl`), add `--partition <partition_name>` to the call.
