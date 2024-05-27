@@ -323,8 +323,6 @@ class FunctionTransform(Transform, YAMLObject):
         # code fragment so as to not pollute the global namespace itself
         global_env = globals().copy()
 
-        # the compilation of the extra code has to happen in the thread/process
-        # of the processing worker since code objects can't be serialized
         if type(self.extra_code) == str:
             # compile the code fragment
             extra_code = compile(self.extra_code, filename='<string>', mode='exec')
@@ -343,8 +341,10 @@ class FunctionTransform(Transform, YAMLObject):
         if data is None or (not data is None and data.empty):
             return pd.DataFrame()
 
-        # get the function to call and possibly compile and evaluate the code defined in
-        # extra_code in a separate global namespace
+        # Get the function to call and possibly compile and evaluate the code defined in
+        # extra_code in a separate global namespace.
+        # The compilation of the extra code has to happen in the thread/process
+        # of the processing worker since code objects can't be serialized.
         function = self.eval_function()
 
         result = function(data)
