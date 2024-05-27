@@ -343,7 +343,6 @@ class FunctionTransform(Transform, YAMLObject):
         if data is None or (not data is None and data.empty):
             return pd.DataFrame()
 
-
         # get the function to call and possibly compile and evaluate the code defined in
         # extra_code in a separate global namespace
         function = self.eval_function()
