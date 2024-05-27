@@ -317,29 +317,11 @@ class PlottingTask(YAMLObject):
                                , colormap = colormap
                                )
 
-        #----------------------------------------
-        #----------------------------------------
-
         self.grid_transform = grid_transform
-
-        # create a copy of the global environment for evaluating the extra
-        # code fragment so as to not pollute the global namespace itself
-        global_env = globals().copy()
-        locals_env = locals().copy()
-
-        if type(self.grid_transform) == str:
-            # compile the code fragment
-            self.grid_transform = compile(self.grid_transform, filename='<string>', mode='exec')
-            # actually evaluate the code within the given namespace
-            eval(self.grid_transform, global_env, locals_env)
-            # self.grid_transform = locals_env['grid_transform']
-            self.grid_transform = eval('grid_transform', global_env, locals_env)
-
-        #----------------------------------------
-        #----------------------------------------
 
         self.set_backend(matplotlib_backend)
         self.set_theme(context, axes_style)
+
         logd(f'<-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <->')
         logd(f'-=-=-=-=-=    {self.__dict__=}')
         logd(f'<-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <-> <->')
@@ -516,12 +498,35 @@ class PlottingTask(YAMLObject):
         else:
             sb.set_theme(context=self.context, style=self.axes_style)
 
+    def eval_grid_transform(self):
+        # Create a copy of the global environment for evaluating the extra
+        # code fragment so as to not pollute the global namespace itself.
+        global_env = globals().copy()
+
+        # Compile the code fragment
+        compiled_grid_transform = compile(self.grid_transform, filename='<string>', mode='exec')
+        # Actually evaluate the code within the given namespace to allow
+        # access to all the defined symbols, such as helper functions that are not defined inline.
+        eval(compiled_grid_transform, global_env)
+        grid_transform = eval('grid_transform', global_env)
+
+        return grid_transform
+
     def plot_data(self, data):
         logd(f'-0---000---<<<<>>>>>    {self.__dict__=}')
         logd(f'-0---000---<<<<>>>>>    {mpl.rcParams["backend"]=}')
 
         self.set_backend(self.matplotlib_backend)
         self.set_theme(self.context, self.axes_style)
+
+        if type(self.grid_transform) == str:
+            # The compilation of the extra code has to happen in the thread/process
+            # of the processing worker since code objects can't be serialized.
+            grid_transform = self.eval_grid_transform()
+        elif isinstance(self.grid_transform, Callable):
+            grid_transform = self.grid_transform
+        else:
+            grid_transform = None
 
         # logd(f'<<<<>>>>>-------------')
         # logd(f'<<<<>>>>>    {data=}')
@@ -608,8 +613,8 @@ class PlottingTask(YAMLObject):
             else:
                 fig.legend.remove()
 
-        if self.grid_transform:
-            fig = self.grid_transform(fig)
+        if grid_transform:
+            fig = grid_transform(fig)
 
         logd(f'mpl.rcParams:')
         logd(pprint.pp(mpl.rcParams))
