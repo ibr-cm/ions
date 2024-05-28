@@ -114,8 +114,12 @@ for details on configuring the numexpr threadpool.
 Note that not every operation can be parallelized (and I/O speed can sometimes
 limit performance as well), therefore the actual performance is often more
 limited by the framework code and the code in the recipe than by the available
-cores. To achieve (near) optimal performance, some experimentation with the
-actual workload is most likely necessary.</p>
+cores. Note also that the dask documentation suggests setting the number of numexpr
+threads to one (see <a class="reference external" href="https://github.com/dask/dask/discussions/8098">here</a> and
+<a class="reference external" href="https://docs.dask.org/en/latest/generated/dask.dataframe.DataFrame.query.html">here</a>).
+This might not be the most optimal suggestion for every workload, so to achieve
+more optimal performance, some experimentation with the actual workload is most
+likely necessary.</p>
 <p>If you are using a SLURM node on a partition other than the default (check with
 <code class="docutils literal notranslate"><span class="pre">sinfo</span> <span class="pre">-Nl</span></code>), add <code class="docutils literal notranslate"><span class="pre">--partition</span> <span class="pre">&lt;partition_name&gt;</span></code> to the call.</p>
 <p>A already running dask cluster can be used by appending <code class="docutils literal notranslate"><span class="pre">--cluster</span> <span class="pre">&lt;cluster_address&gt;</span></code> to the command line. See the setup
