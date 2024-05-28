@@ -1,5 +1,6 @@
 pipenv
 sphinx>=6.1.3
+sphinx-rtd-theme
 numpydoc
 docutils>=0.19
 furo==2021.11.16
