@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tag module &mdash; artery-scripts  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            artery-scripts
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="general.html">Insight on Network Simulations (IoNS)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html#general-instructions">General Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html#how-to-get-started">How to get started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start for analysing and plotting a signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation_plotting.html">Evaluation &amp; Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="best_practices.html">Best practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cluster_managment.html">Running on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gdb_helper.html">GDB Helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jupyter_labs.html">JupyterLabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">artery-scripts</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">tag module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tag.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-tag">
+<span id="tag-module"></span><h1>tag module<a class="headerlink" href="#module-tag" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="tag.Tag">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tag.</span></span><span class="sig-name descname"><span class="pre">Tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">object</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tag.html#Tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tag.Tag" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class for adding metadata to the output data in the form of a key to value mapping</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mapping</strong><span class="classifier">Mapping[str, object]</span></dt><dd><p>The key to value mapping for the tag</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tag.Tag.get_dcc_state_tag" title="tag.Tag.get_dcc_state_tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dcc_state_tag</span></code></a>(dcc_state)</p></td>
+<td><p>Return a tag indicating the associated data is generated for a DCC state</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#tag.Tag.get_global_tag" title="tag.Tag.get_global_tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_global_tag</span></code></a>()</p></td>
+<td><p>Return a tag indicating the associated data is generated over a whole run</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tag.Tag.get_key_value" title="tag.Tag.get_key_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_key_value</span></code></a>()</p></td>
+<td><p>Return the metadata contained in this tag as (key, value) tuple</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#tag.Tag.get_mapping" title="tag.Tag.get_mapping"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mapping</span></code></a>()</p></td>
+<td><p>Return the <cite>Mapping</cite> object holding the metadata</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tag.Tag.get_module_tag" title="tag.Tag.get_module_tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_module_tag</span></code></a>(module)</p></td>
+<td><p>Return a tag indicating the associated data is generated for a module</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#tag.Tag.get_roadtype_tag" title="tag.Tag.get_roadtype_tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_roadtype_tag</span></code></a>(roadtype)</p></td>
+<td><p>Return a tag indicating the associated data is generated for a roadtype</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tag.Tag.get_scale_tag" title="tag.Tag.get_scale_tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_scale_tag</span></code></a>(scale)</p></td>
+<td><p>Return a tag indicating the associated data is scaled by this factor</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="tag.Tag.get_dcc_state_tag">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_dcc_state_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dcc_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tag.html#Tag.get_dcc_state_tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tag.Tag.get_dcc_state_tag" title="Permalink to this definition"></a></dt>
+<dd><p>Return a tag indicating the associated data is generated for a DCC state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dcc_state</strong><span class="classifier">int</span></dt><dd><p>the DCC state</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tag</dt><dd><p>the tag</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tag.Tag.get_global_tag">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_global_tag</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tag.html#Tag.get_global_tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tag.Tag.get_global_tag" title="Permalink to this definition"></a></dt>
+<dd><p>Return a tag indicating the associated data is generated over a whole run</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Tag</dt><dd><p>the tag</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tag.Tag.get_key_value">
+<span class="sig-name descname"><span class="pre">get_key_value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">object</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tag.html#Tag.get_key_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tag.Tag.get_key_value" title="Permalink to this definition"></a></dt>
+<dd><p>Return the metadata contained in this tag as (key, value) tuple</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>tuple</dt><dd><p>the encapsulated (key, value) pair</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tag.Tag.get_mapping">
+<span class="sig-name descname"><span class="pre">get_mapping</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">object</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tag.html#Tag.get_mapping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tag.Tag.get_mapping" title="Permalink to this definition"></a></dt>
+<dd><p>Return the <cite>Mapping</cite> object holding the metadata</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>Mapping[str, object]</dt><dd><p>the encapsulated (key, value) mapping</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tag.Tag.get_module_tag">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_module_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tag.html#Tag.get_module_tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tag.Tag.get_module_tag" title="Permalink to this definition"></a></dt>
+<dd><p>Return a tag indicating the associated data is generated for a module</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>module</strong><span class="classifier">str</span></dt><dd><p>the module of the input data</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tag</dt><dd><p>the tag</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tag.Tag.get_roadtype_tag">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_roadtype_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">roadtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tag.html#Tag.get_roadtype_tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tag.Tag.get_roadtype_tag" title="Permalink to this definition"></a></dt>
+<dd><p>Return a tag indicating the associated data is generated for a roadtype</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>roadtype</strong><span class="classifier">float</span></dt><dd><p>the roadtype</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tag</dt><dd><p>the tag</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tag.Tag.get_scale_tag">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_scale_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tag.html#Tag.get_scale_tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tag.Tag.get_scale_tag" title="Permalink to this definition"></a></dt>
+<dd><p>Return a tag indicating the associated data is scaled by this factor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>scale</strong><span class="classifier">float</span></dt><dd><p>the scaling factor</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tag</dt><dd><p>the tag</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Christian Hagau.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

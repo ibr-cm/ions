@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tag_extractor module &mdash; artery-scripts  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            artery-scripts
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="general.html">Insight on Network Simulations (IoNS)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html#general-instructions">General Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html#how-to-get-started">How to get started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start for analysing and plotting a signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation_plotting.html">Evaluation &amp; Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="best_practices.html">Best practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cluster_managment.html">Running on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gdb_helper.html">GDB Helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jupyter_labs.html">JupyterLabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">artery-scripts</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">tag_extractor module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tag_extractor.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-tag_extractor">
+<span id="tag-extractor-module"></span><h1>tag_extractor module<a class="headerlink" href="#module-tag_extractor" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="tag_extractor.ExtractRunParametersTagsOperation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tag_extractor.</span></span><span class="sig-name descname"><span class="pre">ExtractRunParametersTagsOperation</span></span><a class="reference internal" href="_modules/tag_extractor.html#ExtractRunParametersTagsOperation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tag_extractor.ExtractRunParametersTagsOperation" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Extract the run parameters of from a database and create a <cite>Tag</cite> object for each of them</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tag_extractor.ExtractRunParametersTagsOperation.add_tags" title="tag_extractor.ExtractRunParametersTagsOperation.add_tags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_tags</span></code></a>(data, key_column, value_column, ...)</p></td>
+<td><p>Create run-specific parameters &amp; attributes</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#tag_extractor.ExtractRunParametersTagsOperation.extract_attributes_and_params" title="tag_extractor.ExtractRunParametersTagsOperation.extract_attributes_and_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_attributes_and_params</span></code></a>(...)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>add_attributes</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>add_iterationvars</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>add_parameters</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>add_raw_tags_for_row</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>add_regex_matches_for_row</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="tag_extractor.ExtractRunParametersTagsOperation.add_attributes">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes_regex_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterationvars_regex_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tag_extractor.html#ExtractRunParametersTagsOperation.add_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tag_extractor.ExtractRunParametersTagsOperation.add_attributes" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tag_extractor.ExtractRunParametersTagsOperation.add_iterationvars">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_iterationvars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterationvars_regex_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tag_extractor.html#ExtractRunParametersTagsOperation.add_iterationvars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tag_extractor.ExtractRunParametersTagsOperation.add_iterationvars" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tag_extractor.ExtractRunParametersTagsOperation.add_parameters">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters_regex_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tag_extractor.html#ExtractRunParametersTagsOperation.add_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tag_extractor.ExtractRunParametersTagsOperation.add_parameters" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tag_extractor.ExtractRunParametersTagsOperation.add_raw_tags_for_row">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_raw_tags_for_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tag_extractor.html#ExtractRunParametersTagsOperation.add_raw_tags_for_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tag_extractor.ExtractRunParametersTagsOperation.add_raw_tags_for_row" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tag_extractor.ExtractRunParametersTagsOperation.add_regex_matches_for_row">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_regex_matches_for_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regex_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tag_extractor.html#ExtractRunParametersTagsOperation.add_regex_matches_for_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tag_extractor.ExtractRunParametersTagsOperation.add_regex_matches_for_row" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tag_extractor.ExtractRunParametersTagsOperation.add_tags">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_tags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regex_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tag_extractor.html#ExtractRunParametersTagsOperation.add_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tag_extractor.ExtractRunParametersTagsOperation.add_tags" title="Permalink to this definition"></a></dt>
+<dd><p>Create run-specific parameters &amp; attributes</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tag_extractor.ExtractRunParametersTagsOperation.extract_attributes_and_params">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extract_attributes_and_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter_extractor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute_extractor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters_regex_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes_regex_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterationvars_regex_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tag_extractor.html#ExtractRunParametersTagsOperation.extract_attributes_and_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tag_extractor.ExtractRunParametersTagsOperation.extract_attributes_and_params" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>parameter_extractor</strong><span class="classifier">Callable</span></dt><dd><p>A function that extracts the contents of the <cite>runParam</cite> table and returns it as a pandas.DataFrame</p>
+</dd>
+<dt><strong>attribute_extractor</strong><span class="classifier">Callable</span></dt><dd><p>A function that extracts the contents of the <cite>runAttr</cite> table and returns it as a pandas.DataFrame</p>
+</dd>
+<dt><strong>attributes_regex_map</strong><span class="classifier">dict</span></dt><dd><p>The dictionary containing the definitions for the tags to extract from the <cite>runAttr</cite> table</p>
+</dd>
+<dt><strong>iterationvars_regex_map</strong><span class="classifier">dict</span></dt><dd><p>The dictionary containing the definitions for the tags to extract from the <cite>iterationvars</cite> attribute</p>
+</dd>
+<dt><strong>parameters_regex_map</strong><span class="classifier">dict</span></dt><dd><p>The dictionary containing the definitions for the tags to extract from the <cite>runParam</cite> table</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Christian Hagau.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

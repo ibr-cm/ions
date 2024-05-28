@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tag_regular_expressions module &mdash; artery-scripts  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            artery-scripts
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="general.html">Insight on Network Simulations (IoNS)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html#general-instructions">General Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html#how-to-get-started">How to get started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start for analysing and plotting a signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation_plotting.html">Evaluation &amp; Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="best_practices.html">Best practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cluster_managment.html">Running on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gdb_helper.html">GDB Helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jupyter_labs.html">JupyterLabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">artery-scripts</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">tag_regular_expressions module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tag_regular_expressions.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-tag_regular_expressions">
+<span id="tag-regular-expressions-module"></span><h1>tag_regular_expressions module<a class="headerlink" href="#module-tag_regular_expressions" title="Permalink to this heading"></a></h1>
+<dl class="py data">
+<dt class="sig sig-object py" id="tag_regular_expressions.iterationvars_regex_map">
+<span class="sig-prename descclassname"><span class="pre">tag_regular_expressions.</span></span><span class="sig-name descname"><span class="pre">iterationvars_regex_map</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'cp_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'services-ca-((.\\..)|(.\\...))-cp-((.\\..)|(.\\...))',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'limit':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$limit=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'period':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$period=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'sensors':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$sensorConf=.*?,',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'simulationEnd':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$1=.*?s\\+.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'simulationStart':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$simulationStart=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'traciStart':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$traciStart=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'v2x_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'vehicles-((.\\..)|(.\\...))-plain-((.\\..\\.)|(.\\...\\.))',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}]}</span></em><a class="headerlink" href="#tag_regular_expressions.iterationvars_regex_map" title="Permalink to this definition"></a></dt>
+<dd><p>This contains the mapping from the tag name to the regular expressions and
+transformation functions for the run attributes contained in the <cite>runAttr</cite>
+table.
+The tag name is the key for the dictionary and is mapped to a list of
+dictionaries, each of which will be checked against every row in the <cite>runAttr</cite>
+table. If the regular expression given under the <cite>regex</cite> key matches the value
+of the <cite>attrName</cite> column, the unary function defined in <cite>transform</cite> is applied
+to the value of the <cite>attrValue</cite> column. The result of the function is then
+assigned to the value of the tag.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="tag_regular_expressions.parameters_regex_map">
+<span class="sig-prename descclassname"><span class="pre">tag_regular_expressions.</span></span><span class="sig-name descname"><span class="pre">parameters_regex_map</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'ca_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.ca_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'ca_weight':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.ca_weight',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cam_length':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.ExampleServiceCam\\.packetLength',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cp_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.cp_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cp_weight':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.cp_weight',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cpm_length':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.ExampleServiceCpm\\.packetLength',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'dcc':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.vanetza\\[\\*\\]\\.dcc\\.typename',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'dcc_profile':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.dccProfile',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'gen_rule':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.generationRule',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'limit':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$limit=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'n_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_N_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'p_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_P_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'pathloss':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.radioMedium\\.pathLossType',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'plain_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.plain_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'queueLength':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.vanetza\\[\\*\\]\\.dcc\\.queueLength',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'red_mit':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_Method',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'s_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_S_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'scheduler_parameter_alpha':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.facDcc\\.schedulerParameterAlpha',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'traciStart':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.traci\\.core\\.startTime',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'v2x_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.vehicle_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'w_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_W_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'warmup':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$warmup-period=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'wd_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_WD_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'wfq_scheduler':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.facDcc\\.useWfqScheduler',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'wfq_selector':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.facDcc\\.useWfqSelector',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}]}</span></em><a class="headerlink" href="#tag_regular_expressions.parameters_regex_map" title="Permalink to this definition"></a></dt>
+<dd><p>This contains the mapping from the tag name to the regular expressions and
+transformation functions for the value of the <cite>iterationvars</cite> attribute in the <cite>runAttr</cite>
+table.
+The tag name is the key for the dictionary and is mapped to a list of
+dictionaries, each of which will be checked against the value in the
+<cite>attrValue</cite> column of the row with the <cite>attrName</cite> of <cite>iterationvars</cite> in the
+<cite>runAttr</cite> table. If the regular expression given under the <cite>regex</cite> key matches the value
+of the <cite>attrValue</cite> column, the unary function defined in <cite>transform</cite> is applied
+to the value of the <cite>attrValue</cite> column. The result of the function is then
+assigned to the value of the tag.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Christian Hagau.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

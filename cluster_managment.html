@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Running on a cluster &mdash; artery-scripts  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Troubleshooting" href="troubleshooting.html" />
+    <link rel="prev" title="Best practices" href="best_practices.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            artery-scripts
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="general.html">Insight on Network Simulations (IoNS)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html#general-instructions">General Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html#how-to-get-started">How to get started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start for analysing and plotting a signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation_plotting.html">Evaluation &amp; Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="best_practices.html">Best practices</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Running on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gdb_helper.html">GDB Helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jupyter_labs.html">JupyterLabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">artery-scripts</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Running on a cluster</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cluster_managment.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="running-on-a-cluster">
+<h1>Running on a cluster<a class="headerlink" href="#running-on-a-cluster" title="Permalink to this heading"></a></h1>
+<p>By default, the framework launches a local dask cluster with four workers, which
+is good enough for testing and preparing a recipe on a subset of data. But for
+evaluating large datasets, one will want to make better use of the resources
+available.</p>
+<p>For utilizing a SLURM cluster, add the following parameters to the
+<code class="docutils literal notranslate"><span class="pre">run_recipe.py</span></code> call:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--</span><span class="n">slurm</span>          \  <span class="c1"># use SLURM</span>
+<span class="o">--</span><span class="n">partition</span> <span class="n">cm</span>      <span class="c1"># SLRUM parttion to use</span>
+<span class="o">--</span><span class="n">nodelist</span> <span class="n">i4</span><span class="p">,</span><span class="n">i5</span> \  <span class="c1"># the SLURM nodelist, see SLURM documentation</span>
+<span class="o">--</span><span class="n">worker</span> <span class="mi">16</span>         <span class="c1"># use 16 worker</span>
+<span class="o">--</span><span class="n">mem</span> <span class="mi">2</span>             <span class="c1"># use 2GB memory per worker</span>
+</pre></div>
+</div>
+<p>The amount of workers should be set to the number of cores available on one
+node. Be aware that pandas uses
+<a class="reference external" href="https://github.com/pydata/numexpr#what-is-numexpr">numexpr</a> to accelerate some
+calculations and may spawn multiple threads in each worker. For better
+performance, scalability and resource utilization, one should set
+the environment variable <code class="docutils literal notranslate"><span class="pre">NUMEXPR_MAX_THREADS</span></code> appropriately, either to <code class="docutils literal notranslate"><span class="pre">1</span></code> or
+<code class="docutils literal notranslate"><span class="pre">2</span></code>, after testing and observing with a small subset of the data. Default is the
+number of cores or 8, whichever is less. This only sets the maximum
+number of threads, to set the initial number of threads spawned to a specific
+value, set <code class="docutils literal notranslate"><span class="pre">NUMEXPR_NUM_THREADS</span></code> to the desired value.
+See <a class="reference external" href="https://numexpr.readthedocs.io/en/latest/user_guide.html#threadpool-configuration">here</a>
+for details on configuring the numexpr threadpool.
+Note that not every operation can be parallelized (and I/O speed can sometimes
+limit performance as well), therefore the actual performance is often more
+limited by the framework code and the code in the recipe than by the available
+cores. To achieve (near) optimal performance, some experimentation with the
+actual workload is most likely necessary.</p>
+<p>If you are using a SLURM node on a partition other than the default (check with
+<code class="docutils literal notranslate"><span class="pre">sinfo</span> <span class="pre">-Nl</span></code>), add <code class="docutils literal notranslate"><span class="pre">--partition</span> <span class="pre">&lt;partition_name&gt;</span></code> to the call.</p>
+<p>A already running dask cluster can be used by appending <code class="docutils literal notranslate"><span class="pre">--cluster</span> <span class="pre">&lt;cluster_address&gt;</span></code> to the command line. See the setup
+<a class="reference external" href="https://distributed.dask.org/en/stable/quickstart.html#setup-dask-distributed-the-hard-way">here</a></p>
+<p>For debugging purposes a single-threaded mode is available, selectable by adding
+<code class="docutils literal notranslate"><span class="pre">--single-threaded</span></code> to the command line.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="best_practices.html" class="btn btn-neutral float-left" title="Best practices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="troubleshooting.html" class="btn btn-neutral float-right" title="Troubleshooting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Christian Hagau.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

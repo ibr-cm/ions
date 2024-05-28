@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evaluation &amp; Plotting &mdash; artery-scripts  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Best practices" href="best_practices.html" />
+    <link rel="prev" title="Quick start for analysing and plotting a signal" href="quickstart.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            artery-scripts
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="general.html">Insight on Network Simulations (IoNS)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html#general-instructions">General Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html#how-to-get-started">How to get started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start for analysing and plotting a signal</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Evaluation &amp; Plotting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#key-concepts">Key Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#general-overview">General Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tags">Tags</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="best_practices.html">Best practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cluster_managment.html">Running on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gdb_helper.html">GDB Helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jupyter_labs.html">JupyterLabs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">artery-scripts</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Evaluation &amp; Plotting</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/evaluation_plotting.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="evaluation-plotting">
+<h1>Evaluation &amp; Plotting<a class="headerlink" href="#evaluation-plotting" title="Permalink to this heading"></a></h1>
+<section id="key-concepts">
+<h2>Key Concepts<a class="headerlink" href="#key-concepts" title="Permalink to this heading"></a></h2>
+<p>The framework is built on top of <a class="reference external" href="https://pandas.pydata.org/">pandas</a>,
+<a class="reference external" href="https://seaborn.pydata.org/index.html">seaborn</a> and
+<a class="reference external" href="https://docs.dask.org/en/stable/">dask</a></p>
+<p>Dask is used as a way to build task dependency graphs using
+<a class="reference external" href="https://docs.dask.org/en/latest/delayed.html"><code class="docutils literal notranslate"><span class="pre">dask.delayed</span></code></a> and for
+scalable parallelisation of the execution of those tasks, either locally on
+a desktop/laptop or remotely on a (SLURM) cluster using
+<a class="reference external" href="https://distributed.dask.org/en/stable/">Dask.distributed</a> and
+<a class="reference external" href="https://jobqueue.dask.org/en/latest/index.html">Dask-Jobqueue</a>.</p>
+<p>There are a few key concepts necessary for using the framework effectively:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html#series"><code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code></a></p></li>
+<li><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html#dataframe"><code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a></p></li>
+</ul>
+<p>The main data structure of the framework is the
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame"><code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>, which is
+similar to a spreadsheet or a table in a SQL database. For everything
+interesting you will need some knowledge how to index, partition and apply
+a function to a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.
+A short <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html">introduction</a>
+to the data structures used in pandas.
+Reading the documentation for
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html#pandas.DataFrame.groupby"><code class="docutils literal notranslate"><span class="pre">pandas.DataFrame.groupby</span></code></a>
+is advisable.</p>
+</section>
+<section id="general-overview">
+<h2>General Overview<a class="headerlink" href="#general-overview" title="Permalink to this heading"></a></h2>
+<p>The evaluation and plotting is done by running <code class="docutils literal notranslate"><span class="pre">run_recipe.py</span></code> with the name of
+the ‘recipe’ YAML file, which contains the steps for processing the results of a batch of simulation
+runs. For a minimal introduction to YAML and some specifics of PyYAML see the <a class="reference external" href="https://pyyaml.org/wiki/PyYAMLDocumentation">PyYAML documentation</a></p>
+<p>The recipe describes the individual tasks as a list of key-value pairs; internally the data and
+operations are constructed (by <a class="reference external" href="https://docs.dask.org/en/latest/">dask</a>) into an
+dependency/task graph.</p>
+<p>A recipe can contain two phases: <code class="docutils literal notranslate"><span class="pre">evaluation</span></code> and <code class="docutils literal notranslate"><span class="pre">plot</span></code>. Each phase is optional.
+The <code class="docutils literal notranslate"><span class="pre">evaluation</span></code> phase itself consists of three sub-phases:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">extractors</span></code>: for extracting the desired data from the input databases</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">transforms</span></code>: for processing the extracted data in some way</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">exporter</span></code>: for saving the extracted and possibly processed data</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">plot</span></code> phase consists of three sub-phases:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">reader</span></code>: for loading the data exported from the <code class="docutils literal notranslate"><span class="pre">evaluation</span></code> sub-phase</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">transforms</span></code>: for processing the loaded data in some way</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tasks</span></code>: for actually plotting the loaded and possibly processed data</p></li>
+</ul>
+<p>The sub-phases are evaluated in this order. Each sub-phase consists of a list of tasks to
+execute and each task usually has a dependency on a task in the previous
+sub-phase. If a task is not depended upon by another task, it will not be part
+of the dependency/task graph and will thus not be executed.</p>
+<p>Each task either creates or modifies a named ‘dataset’, a list of
+<code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>s. Usually an extractor creates a <code class="docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code> for
+each input file and stores the resulting list under the user defined
+<code class="docutils literal notranslate"><span class="pre">dataset_name</span></code> in an internal dictionary, all <code class="docutils literal notranslate"><span class="pre">transforms</span></code> are then executed
+over each <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> in that list separately and then written to disk, either
+separately or concatenated into a single <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> and then written to disk.</p>
+<p>The basic structure of a recipe is thus, for the evaluation phase:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>evaluation:
+    extractors:
+        dataset0: !extractor_class
+            parameter0: &quot;value&quot;
+
+    transforms:
+        transformed_dataset0: !transform_class
+            dataset_name: &quot;dataset0&quot;
+            parameter0: &quot;value&quot;
+
+    exporter:
+        name0: !exporter_class
+            dataset_name: &quot;transformed_dataset0&quot;
+            parameter0: &quot;value&quot;
+</pre></div>
+</div>
+<p>For the plotting phase:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>plot:
+    reader:
+        dataset0: !reader_class
+            input_files:
+                - &quot;/path/regular/expression0&quot;
+                - &quot;/path/regular/expression1&quot;
+
+    transforms:
+        transformed_dataset0: !transform_class
+            dataset_name: &quot;dataset0&quot;
+            output_dataset_name: &quot;dataset0&quot;
+            parameter0: &quot;value&quot;
+
+    tasks:
+        plot_task0: !plotting_class
+            dataset_name: &quot;transformed_dataset0&quot;
+</pre></div>
+</div>
+<p>For simplicity only one task is listed for each sub-phase, but an arbitrary
+number of tasks is possible.</p>
+<p>For ease of use, the following omissions are possible:</p>
+<ul class="simple">
+<li><p>the <code class="docutils literal notranslate"><span class="pre">transforms</span></code> phase is optional</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">exporter</span></code> and <code class="docutils literal notranslate"><span class="pre">reader</span></code> phases are optional, the <code class="docutils literal notranslate"><span class="pre">plot</span></code> phase can just use
+the datasets extracted in the <code class="docutils literal notranslate"><span class="pre">evaluation</span></code> phase</p></li>
+</ul>
+<p>The first line of the definition of a task has the format ‘&lt;task_name&gt;: !&lt;task_classname&gt;’
+and defines the name and the type of the transform. The type is just the
+class name (or more precisely, the YAML tag assigned to the class, but they are
+literally the same) of the desired operation. What follows are the parameters
+of the constructor for the class.</p>
+<p>In the <code class="docutils literal notranslate"><span class="pre">extractors</span></code> and <code class="docutils literal notranslate"><span class="pre">reader</span></code> sub-phase, the collection of data that is to be
+extracted, processed and plotted is given a name so as to allow referencing it
+in the task of other sub-phases. In the example above, the name given is
+<code class="docutils literal notranslate"><span class="pre">dataset0</span></code>.
+Each task has at least one parameter <code class="docutils literal notranslate"><span class="pre">dataset_name</span></code>, which references the input
+dataset the task operates upon. A transform will always have parameter
+<code class="docutils literal notranslate"><span class="pre">output_dataset_name</span></code> to assign a name to the result of the operation. This
+assignment can overwrite previously defined names, and thus also free the
+associated data if they are not being depended upon by another instance.</p>
+<p>Most of the documentation of the parameters of the actual components is in the
+API documentation, e.g. the documentation one needs for just plotting is in
+<code class="docutils literal notranslate"><span class="pre">plots.PlottingTask</span></code>, specifically in the documentation of the parameters of the
+constructor for that class.</p>
+<section id="tags">
+<h3>Tags<a class="headerlink" href="#tags" title="Permalink to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">evaluation</span></code> phase also supports assigning tags to the extracted data. A tag
+is a property shared among a subset of the input data, e.g. the repetition
+number of a run, the run number or the rate at which vehicles are being equipped
+with V2X hardware.</p>
+<p>The syntax for the tag definition is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">evaluation</span><span class="p">:</span>
+    <span class="n">tags</span><span class="p">:</span>
+        <span class="n">attributes</span><span class="p">:</span>
+            <span class="n">repetition</span><span class="p">:</span> <span class="o">|</span>
+                <span class="p">[{</span>
+                    <span class="s1">&#39;regex&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;repetition&#39;</span>
+                  <span class="p">,</span> <span class="s1">&#39;transform&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="p">}]</span>
+        <span class="n">iterationsvars</span><span class="p">:</span>
+            <span class="n">tag_name_1</span><span class="p">:</span> <span class="o">|</span>
+                <span class="p">[{</span>
+                    <span class="s1">&#39;regex&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;anotherExampleRE.*&#39;</span>
+                  <span class="p">,</span> <span class="s1">&#39;transform&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="p">}]</span>
+        <span class="n">parameters</span><span class="p">:</span>
+            <span class="n">tag_name_2</span><span class="p">:</span> <span class="o">|</span>
+                <span class="p">[{</span>
+                    <span class="s1">&#39;regex&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;exampleRE.*&#39;</span>
+                  <span class="p">,</span> <span class="s1">&#39;transform&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="p">},</span>
+                <span class="p">{</span>
+                    <span class="s1">&#39;regex&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;exampleRE2.*&#39;</span>
+                  <span class="p">,</span> <span class="s1">&#39;transform&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="p">},</span>
+                <span class="p">]</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">attributes</span></code>, <code class="docutils literal notranslate"><span class="pre">iterationsvars</span></code> and <code class="docutils literal notranslate"><span class="pre">parameters</span></code> are predefined categories
+for the tags and are extracted from different places in the input database.
+The general procedure involves using the regular expression (python flavour, <a class="reference external" href="https://docs.python.org/3/library/re.html#regular-expression-syntax">syntax</a>)
+defined by the <code class="docutils literal notranslate"><span class="pre">regex</span></code> key to match on the name of the attribute and
+then applying the unary function defined by the <code class="docutils literal notranslate"><span class="pre">transform</span></code> key to the value in
+the column associated with the category.</p>
+<p>The tags are extracted from:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">attributes</span></code>: the <code class="docutils literal notranslate"><span class="pre">runAttr</span></code> table</p>
+<ul>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">regex</span></code> matches on the value in the <code class="docutils literal notranslate"><span class="pre">attrName</span></code> column</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">transform</span></code> is applied to the value in the <code class="docutils literal notranslate"><span class="pre">attrValue</span></code> column</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">iterationvars</span></code>: the row with <code class="docutils literal notranslate"><span class="pre">attrName=='iterationvars'</span></code> in the <code class="docutils literal notranslate"><span class="pre">runAttr</span></code> table</p>
+<ul>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">regex</span></code> matches on the value of the <code class="docutils literal notranslate"><span class="pre">attrValue</span></code> column of the row</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">transform</span></code> is applied to the value matched by the regular expression</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parameters</span></code>: the <code class="docutils literal notranslate"><span class="pre">runParam</span></code> table</p>
+<ul>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">regex</span></code> matches on the value in the <code class="docutils literal notranslate"><span class="pre">paramKey</span></code> column</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">transform</span></code> is applied to the value in the <code class="docutils literal notranslate"><span class="pre">paramValue</span></code> column</p></li>
+</ul>
+</li>
+</ul>
+<p>Multiple regular expressions can be bound to the same tag, in case of a heterogeneous data set or typing errors.</p>
+<p>The built-in tag definitions can be found in <code class="docutils literal notranslate"><span class="pre">tag_regular_expressions.py</span></code>.</p>
+</section>
+<section id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h3>
+<p>Example recipes can be found in the <code class="docutils literal notranslate"><span class="pre">examples</span></code> directory in the root of this
+repository:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">lineplot.yaml</span></code>: a basic recipe for producing a CBR-over-MPR lineplot. One
+should probably start with this as template.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CUI.yaml</span></code>: this calculates, for every vehicle, the mean of the differences between consecutive receptions of
+a CAM and plots them as a lineplot. This is probably the second template to
+look at, as it uses <code class="docutils literal notranslate"><span class="pre">GroupedFunctionTransform</span></code> to partition the input data
+by MPR and the name of the module emitting the signal used as marker for CAM
+emission.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">recipe.yaml</span></code>: a more elaborate recipe showcasing all possible options</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">statistic.yaml</span></code>: this extracts the results for the statName
+<code class="docutils literal notranslate"><span class="pre">LemObjectUpdateInterval:stats</span></code> from the <code class="docutils literal notranslate"><span class="pre">statistic</span></code> table and saves them,
+then plots the mean of the values (from the <code class="docutils literal notranslate"><span class="pre">statMean</span></code> column of the
+table) of those over the market rate.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">boxstats.yaml</span></code>: showcases using a custom function to calculate the values
+needed for a boxplot, forward them as a python list to the exporter and save
+them as a JSON file</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quick start for analysing and plotting a signal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="best_practices.html" class="btn btn-neutral float-right" title="Best practices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Christian Hagau.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
