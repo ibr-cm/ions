@@ -344,7 +344,7 @@ class FunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
     yaml_tag = u'!FunctionTransform'
 
     def __init__(self, dataset_name:str, output_dataset_name:str
-                 , function:Union[Callable[[pandas.DataFrame], pandas.DataFrame], str]=None
+                 , function:Union[Callable[[pd.DataFrame], pd.DataFrame], str]=None
                  , extra_code:Optional[str]=None
                  ):
         self.dataset_name = dataset_name
@@ -420,7 +420,7 @@ class ColumnFunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
 
     def __init__(self, dataset_name:str, output_dataset_name:str
                  , input_column:str, output_column:str
-                 , function:Union[Callable[[pandas.Series], pandas.Series], str]=None
+                 , function:Union[Callable[[pd.Series], pd.Series], str]=None
                  , extra_code:Optional[str]=None
                  ):
         self.dataset_name = dataset_name
@@ -514,7 +514,7 @@ class GroupedAggregationTransform(Transform, ExtraCodeFunctionMixin, YAMLObject)
                  , grouping_columns:List
                  , raw:bool=False
                  , pre_concatenate:bool=False
-                 , aggregation_function:Union[Callable[[pandas.Series], object], str]=None
+                 , aggregation_function:Union[Callable[[pd.Series], object], str]=None
                  , extra_code:Optional[str]=None
                  , timestamp_selector:Callable=pd.DataFrame.head):
         self.dataset_name = dataset_name
@@ -653,7 +653,7 @@ class GroupedFunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
                  , raw:bool=False
                  , aggregate:bool=False
                  , pre_concatenate:bool=False
-                 , transform_function:Union[Callable[[pandas.DataFrame], pandas.DataFrame], Callable[[pandas.DataFrame], object], str]=None
+                 , transform_function:Union[Callable[[pd.DataFrame], pd.DataFrame], Callable[[pd.DataFrame], object], str]=None
                  , extra_code:Optional[str]=None
                  , timestamp_selector:Callable=pd.DataFrame.head):
         self.dataset_name = dataset_name

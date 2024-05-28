@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'artery-scripts'
+project = 'Insight on Network Simulations'
 copyright = '2020, Christian Hagau'
 author = 'Christian Hagau'
 

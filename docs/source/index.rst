@@ -3,31 +3,28 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to artery-scripts's documentation!
+Welcome to the IoNS documentation!
 ==========================================
 
-Artery Scripts
-==============
-
-This is a collection of Python & shell scripts that have proven useful when
-running simulation studies with Artery.
-
+IoNS is a tool for generating plots from large amounts of data for evaluation purposes with the help [pandas](https://pandas.pydata.org/), [Seaborn](https://seaborn.pydata.org/) and [dask](https://www.dask.org/).
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 2
     :caption: Contents:
 
-    general.md
-    tools.md
-    quickstart.md
+
     evaluation_plotting.md
+    installation.md
+
+    quickstart.md
     best_practices.md
     cluster_managment.md
+    tools.md
+    documentation.md
 
     troubleshooting.md
 
-    gdb_helper.md
-    jupyter_labs.md
+    .. jupyter_labs.md
 
     api_reference.rst
 
