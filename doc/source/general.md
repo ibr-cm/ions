@@ -7,7 +7,7 @@ The installation instructions assume a Linux OS of the Debian/Ubuntu variety,
 ## Setup
 
 ### Clone this repository  
-`git clone https://gitlab.ibr.cs.tu-bs.de/artery-lte/artery-scripts.git`  
+`git clone https://github.com/ibr-cm/ions.git`
 
 ### Install the dependencies
 
