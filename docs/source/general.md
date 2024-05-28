@@ -69,7 +69,7 @@ The theme being used is [Read the Docs Sphinx Theme](https://sphinx-rtd-theme.re
 
 To generate the documentation (in HTML format, see `doc/Makefile` for other formats), execute:
 ```
-cd doc
+cd docs
 make html
 ```
 
