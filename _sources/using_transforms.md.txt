@@ -1,4 +1,4 @@
-Using transforms
+Using Transforms
 ================
 
 When dealing with metrics that need to be calculated from one or by combining

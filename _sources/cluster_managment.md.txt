@@ -1,4 +1,4 @@
-Running on a cluster
+Running IoNS on a cluster
 ====================
 
 By default, the framework launches a local dask cluster with four workers, which

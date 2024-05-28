@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to artery-scripts’s documentation! &mdash; artery-scripts  documentation</title>
+  <title>Welcome to the IoNS documentation! &mdash; Insight on Network Simulations  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -21,7 +21,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Insight on Network Simulations (IoNS)" href="general.html" /> 
+    <link rel="next" title="Installation" href="installation.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -33,7 +33,7 @@
           
           
           <a href="#" class="icon icon-home">
-            artery-scripts
+            Insight on Network Simulations
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -45,17 +45,15 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="general.html">Insight on Network Simulations (IoNS)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general.html#general-instructions">General Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general.html#how-to-get-started">How to get started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start for analysing and plotting a signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="evaluation_plotting.html">Evaluation &amp; Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_transforms.html">Using Transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="best_practices.html">Best practices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cluster_managment.html">Running on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cluster_managment.html">Running IoNS on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gdb_helper.html">GDB Helper</a></li>
-<li class="toctree-l1"><a class="reference internal" href="jupyter_labs.html">JupyterLabs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html">API reference</a></li>
 </ul>
 
@@ -65,7 +63,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">artery-scripts</a>
+          <a href="#">Insight on Network Simulations</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -73,7 +71,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Welcome to artery-scripts’s documentation!</li>
+      <li class="breadcrumb-item active">Welcome to the IoNS documentation!</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -83,86 +81,49 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="welcome-to-artery-scripts-s-documentation">
-<h1>Welcome to artery-scripts’s documentation!<a class="headerlink" href="#welcome-to-artery-scripts-s-documentation" title="Permalink to this heading"></a></h1>
-</section>
-<section id="artery-scripts">
-<h1>Artery Scripts<a class="headerlink" href="#artery-scripts" title="Permalink to this heading"></a></h1>
-<p>This is a collection of Python &amp; shell scripts that have proven useful when
-running simulation studies with Artery.</p>
+  <section id="welcome-to-the-ions-documentation">
+<h1>Welcome to the IoNS documentation!<a class="headerlink" href="#welcome-to-the-ions-documentation" title="Permalink to this heading"></a></h1>
+<p>IoNS is a tool for generating plots from large amounts of data for evaluation purposes with the help [pandas](<a class="reference external" href="https://pandas.pydata.org/">https://pandas.pydata.org/</a>), [Seaborn](<a class="reference external" href="https://seaborn.pydata.org/">https://seaborn.pydata.org/</a>) and [dask](<a class="reference external" href="https://www.dask.org/">https://www.dask.org/</a>).</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="general.html">Insight on Network Simulations (IoNS)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general.html#general-instructions">General Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general.html#how-to-get-started">How to get started</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="general.html#setup">Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="general.html#clone-this-repository">Clone this repository</a></li>
-<li class="toctree-l3"><a class="reference internal" href="general.html#install-the-dependencies">Install the dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#get-the-code">Get the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-the-dependencies">Install the Dependencies</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="general.html#documentation">Documentation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tools.html#run-recipe-py">run_recipe.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tools.html#genslurmbatch-py">GenSlurmBatch.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tools.html#genslurmbatcheval-py">GenSlurmBatchEval.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tools.html#launch-slurm-batch-sh">launch_slurm_batch.sh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tools.html#zjqc-sh">zjqc.sh</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tools.html#update-docs-sphinx-sh">update_docs_sphinx.sh</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start for analysing and plotting a signal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="evaluation_plotting.html">Evaluation &amp; Plotting</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="evaluation_plotting.html#key-concepts">Key Concepts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="evaluation_plotting.html#general-overview">General Overview</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="evaluation_plotting.html#tags">Tags</a></li>
-<li class="toctree-l3"><a class="reference internal" href="evaluation_plotting.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="evaluation_plotting.html#key-technologies">Key Technologies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="evaluation_plotting.html#getting-insight">Getting Insight</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="using_transforms.html">Using Transforms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="using_transforms.html#functiontransform"><code class="docutils literal notranslate"><span class="pre">FunctionTransform</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="using_transforms.html#groupedfunctiontransform"><code class="docutils literal notranslate"><span class="pre">GroupedFunctionTransform</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#analysing-and-plotting-an-omnet-signal">Analysing and plotting an OMNeT++ signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#analyzing-and-plotting-from-sqlite-databases">Analyzing and plotting from SQLite databases</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="best_practices.html">Best practices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cluster_managment.html">Running on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cluster_managment.html">Running IoNS on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tools.html#run-recipe-py">run_recipe.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools.html#zjqc-sh">zjqc.sh</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#visual-studio-code">Visual Studio Code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#json">µjson</a></li>
 <li class="toctree-l2"><a class="reference internal" href="troubleshooting.html#slurm">SLURM</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="gdb_helper.html">GDB Helper</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="gdb_helper.html#load-on-startup">Load on startup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gdb_helper.html#jump-to-just-after-omnet-has-loaded-all-extension-libraries">Jump to just after OMNet++ has loaded all extension libraries</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="jupyter_labs.html">JupyterLabs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="jupyter_labs.html#installation">Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="jupyter_labs.html#generate-certificates-for-tls">Generate certificates for TLS</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jupyter_labs.html#launch-jupyterlabs">Launch JupyterLabs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jupyter_labs.html#forward-from-a-remote-server-to-locahost-via-ssh">Forward from a remote server to locahost via SSH</a></li>
-<li class="toctree-l3"><a class="reference internal" href="jupyter_labs.html#open-jupyterlabs-in-browser">Open JupyterLabs in browser</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="jupyter_labs.html#jupyterlabs-documentation">JupyterLabs documentation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="jupyter_labs.html#basic-usage">Basic usage</a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html">API reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="common.html">Common</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="common.constants.html">Constants</a></li>
-<li class="toctree-l3"><a class="reference internal" href="common.debug.html">Debug</a></li>
-<li class="toctree-l3"><a class="reference internal" href="common.globals.html">Globals</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="utility.html">Utility</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="utility.html#utility.arithmetic.evaluate_simple_arithmetic_expression"><code class="docutils literal notranslate"><span class="pre">evaluate_simple_arithmetic_expression()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="utility.html#utility.stopwatch.startWatch"><code class="docutils literal notranslate"><span class="pre">startWatch()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="utility.html#utility.stopwatch.stopWatch"><code class="docutils literal notranslate"><span class="pre">stopWatch()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="common.html">Common</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utility.html">Utility</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exporters.html">exporters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extractors.html">extractors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plots.html">plots</a></li>
@@ -185,7 +146,7 @@ running simulation studies with Artery.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="general.html" class="btn btn-neutral float-right" title="Insight on Network Simulations (IoNS)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

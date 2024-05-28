@@ -1,5 +1,6 @@
-Quick start for analysing and plotting a signal
-===============================================
+# Quick Start
+
+## Analysing and plotting an OMNeT++ signal
 
 If one just wants to create a simple line/boxplot, this can be easily achieved 
 by making a copy of `examples/lineplot.yaml` and changing a few paths,
@@ -53,3 +54,7 @@ Using pipenv as package manager:
 ```
 pipenv python run run_recipe.py <path to the recipe>
 ```
+
+## Analyzing and plotting from SQLite databases
+
+TBD

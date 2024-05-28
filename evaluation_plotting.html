@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Evaluation &amp; Plotting &mdash; artery-scripts  documentation</title>
+  <title>Evaluation &amp; Plotting &mdash; Insight on Network Simulations  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -21,8 +21,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Best practices" href="best_practices.html" />
-    <link rel="prev" title="Quick start for analysing and plotting a signal" href="quickstart.html" /> 
+    <link rel="next" title="Using Transforms" href="using_transforms.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -34,7 +34,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            artery-scripts
+            Insight on Network Simulations
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -46,25 +46,26 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="general.html">Insight on Network Simulations (IoNS)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general.html#general-instructions">General Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general.html#how-to-get-started">How to get started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start for analysing and plotting a signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Evaluation &amp; Plotting</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#key-concepts">Key Concepts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#general-overview">General Overview</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#tags">Tags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-technologies">Key Technologies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-insight">Getting Insight</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#recipes">Recipes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tags">Tags</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="using_transforms.html">Using Transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="best_practices.html">Best practices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cluster_managment.html">Running on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cluster_managment.html">Running IoNS on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gdb_helper.html">GDB Helper</a></li>
-<li class="toctree-l1"><a class="reference internal" href="jupyter_labs.html">JupyterLabs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html">API reference</a></li>
 </ul>
 
@@ -74,7 +75,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">artery-scripts</a>
+          <a href="index.html">Insight on Network Simulations</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -94,8 +95,8 @@
              
   <section id="evaluation-plotting">
 <h1>Evaluation &amp; Plotting<a class="headerlink" href="#evaluation-plotting" title="Permalink to this heading"></a></h1>
-<section id="key-concepts">
-<h2>Key Concepts<a class="headerlink" href="#key-concepts" title="Permalink to this heading"></a></h2>
+<section id="key-technologies">
+<h2>Key Technologies<a class="headerlink" href="#key-technologies" title="Permalink to this heading"></a></h2>
 <p>The framework is built on top of <a class="reference external" href="https://pandas.pydata.org/">pandas</a>,
 <a class="reference external" href="https://seaborn.pydata.org/index.html">seaborn</a> and
 <a class="reference external" href="https://docs.dask.org/en/stable/">dask</a></p>
@@ -121,11 +122,13 @@ Reading the documentation for
 <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html#pandas.DataFrame.groupby"><code class="docutils literal notranslate"><span class="pre">pandas.DataFrame.groupby</span></code></a>
 is advisable.</p>
 </section>
-<section id="general-overview">
-<h2>General Overview<a class="headerlink" href="#general-overview" title="Permalink to this heading"></a></h2>
+<section id="getting-insight">
+<h2>Getting Insight<a class="headerlink" href="#getting-insight" title="Permalink to this heading"></a></h2>
 <p>The evaluation and plotting is done by running <code class="docutils literal notranslate"><span class="pre">run_recipe.py</span></code> with the name of
 the ‘recipe’ YAML file, which contains the steps for processing the results of a batch of simulation
 runs. For a minimal introduction to YAML and some specifics of PyYAML see the <a class="reference external" href="https://pyyaml.org/wiki/PyYAMLDocumentation">PyYAML documentation</a></p>
+<section id="recipes">
+<h3>Recipes<a class="headerlink" href="#recipes" title="Permalink to this heading"></a></h3>
 <p>The recipe describes the individual tasks as a list of key-value pairs; internally the data and
 operations are constructed (by <a class="reference external" href="https://docs.dask.org/en/latest/">dask</a>) into an
 dependency/task graph.</p>
@@ -215,7 +218,7 @@ API documentation, e.g. the documentation one needs for just plotting is in
 <code class="docutils literal notranslate"><span class="pre">plots.PlottingTask</span></code>, specifically in the documentation of the parameters of the
 constructor for that class.</p>
 <section id="tags">
-<h3>Tags<a class="headerlink" href="#tags" title="Permalink to this heading"></a></h3>
+<h4>Tags<a class="headerlink" href="#tags" title="Permalink to this heading"></a></h4>
 <p>The <code class="docutils literal notranslate"><span class="pre">evaluation</span></code> phase also supports assigning tags to the extracted data. A tag
 is a property shared among a subset of the input data, e.g. the repetition
 number of a run, the run number or the rate at which vehicles are being equipped
@@ -278,6 +281,7 @@ the column associated with the category.</p>
 <p>Multiple regular expressions can be bound to the same tag, in case of a heterogeneous data set or typing errors.</p>
 <p>The built-in tag definitions can be found in <code class="docutils literal notranslate"><span class="pre">tag_regular_expressions.py</span></code>.</p>
 </section>
+</section>
 <section id="examples">
 <h3>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h3>
 <p>Example recipes can be found in the <code class="docutils literal notranslate"><span class="pre">examples</span></code> directory in the root of this
@@ -298,6 +302,7 @@ table) of those over the market rate.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">boxstats.yaml</span></code>: showcases using a custom function to calculate the values
 needed for a boxplot, forward them as a python list to the exporter and save
 them as a JSON file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sqlextractor.yaml</span></code>: a showcase for the generic SQLite extractor</p></li>
 </ul>
 </section>
 </section>
@@ -307,8 +312,8 @@ them as a JSON file</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quick start for analysing and plotting a signal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="best_practices.html" class="btn btn-neutral float-right" title="Best practices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="using_transforms.html" class="btn btn-neutral float-right" title="Using Transforms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

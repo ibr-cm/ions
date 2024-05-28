@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GDB Helper &mdash; artery-scripts  documentation</title>
+  <title>Documentation &mdash; Insight on Network Simulations  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -21,8 +21,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="JupyterLabs" href="jupyter_labs.html" />
-    <link rel="prev" title="Troubleshooting" href="troubleshooting.html" /> 
+    <link rel="next" title="Troubleshooting" href="troubleshooting.html" />
+    <link rel="prev" title="Tools" href="tools.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -34,7 +34,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            artery-scripts
+            Insight on Network Simulations
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -46,21 +46,15 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="general.html">Insight on Network Simulations (IoNS)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general.html#general-instructions">General Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general.html#how-to-get-started">How to get started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start for analysing and plotting a signal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="evaluation_plotting.html">Evaluation &amp; Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_transforms.html">Using Transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="best_practices.html">Best practices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cluster_managment.html">Running on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cluster_managment.html">Running IoNS on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">GDB Helper</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#load-on-startup">Load on startup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#jump-to-just-after-omnet-has-loaded-all-extension-libraries">Jump to just after OMNet++ has loaded all extension libraries</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="jupyter_labs.html">JupyterLabs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html">API reference</a></li>
 </ul>
 
@@ -70,7 +64,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">artery-scripts</a>
+          <a href="index.html">Insight on Network Simulations</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -78,9 +72,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">GDB Helper</li>
+      <li class="breadcrumb-item active">Documentation</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/gdb_helper.md.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/documentation.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -88,33 +82,25 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="gdb-helper">
-<h1>GDB Helper<a class="headerlink" href="#gdb-helper" title="Permalink to this heading"></a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">artery_gdb_debug_helper.py</span></code> includes custom GDB commands for easier debugging of
-OMNet++ and artery binaries</p>
-<section id="load-on-startup">
-<h2>Load on startup<a class="headerlink" href="#load-on-startup" title="Permalink to this heading"></a></h2>
-<p>Add:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>source ${PATH_TO_ARTERY_SCRIPTS_DIR}/artery_gdb_debug_helper.py
+  <section id="documentation">
+<h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading"></a></h1>
+<p>This project is documented using
+<a class="reference external" href="https://www.sphinx-doc.org">Sphinx</a>
+and
+<a class="reference external" href="https://numpydoc.readthedocs.io">numpydoc</a>.<br />The theme being used is <a class="reference external" href="https://sphinx-rtd-theme.readthedocs.io">Read the Docs Sphinx Theme</a>.</p>
+<p>To generate the documentation (in HTML format, see <code class="docutils literal notranslate"><span class="pre">doc/Makefile</span></code> for other formats), execute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">docs</span>
+<span class="n">make</span> <span class="n">html</span>
 </pre></div>
 </div>
-<p>to <code class="docutils literal notranslate"><span class="pre">~/.gdbinit</span></code></p>
-</section>
-<section id="jump-to-just-after-omnet-has-loaded-all-extension-libraries">
-<h2>Jump to just after OMNet++ has loaded all extension libraries<a class="headerlink" href="#jump-to-just-after-omnet-has-loaded-all-extension-libraries" title="Permalink to this heading"></a></h2>
-<p>Execute in GDB:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">omnetpp_load_extension_libraries</span>
-</pre></div>
-</div>
-</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="troubleshooting.html" class="btn btn-neutral float-left" title="Troubleshooting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="jupyter_labs.html" class="btn btn-neutral float-right" title="JupyterLabs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tools.html" class="btn btn-neutral float-left" title="Tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="troubleshooting.html" class="btn btn-neutral float-right" title="Troubleshooting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

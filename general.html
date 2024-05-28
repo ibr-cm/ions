@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Insight on Network Simulations (IoNS) &mdash; artery-scripts  documentation</title>
+  <title>Insight on Network Simulations (IoNS) &mdash; Insight on Network Simulations  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -20,9 +20,7 @@
         <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Tools" href="tools.html" />
-    <link rel="prev" title="Welcome to artery-scripts’s documentation!" href="index.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -34,7 +32,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            artery-scripts
+            Insight on Network Simulations
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -45,32 +43,16 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Insight on Network Simulations (IoNS)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#general-instructions">General Instructions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#how-to-get-started">How to get started</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#setup">Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#clone-this-repository">Clone this repository</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#install-the-dependencies">Install the dependencies</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#install-the-package-manager">Install the package manager</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#install-the-dependencies-using-pipenv">Install the dependencies using pipenv</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#install-the-dependencies-using-pdm">Install the dependencies using pdm</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#install-the-dependencies-using-pip">Install the dependencies using pip</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start for analysing and plotting a signal</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="evaluation_plotting.html">Evaluation &amp; Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_transforms.html">Using Transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="best_practices.html">Best practices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cluster_managment.html">Running on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cluster_managment.html">Running IoNS on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gdb_helper.html">GDB Helper</a></li>
-<li class="toctree-l1"><a class="reference internal" href="jupyter_labs.html">JupyterLabs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html">API reference</a></li>
 </ul>
 
@@ -80,7 +62,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">artery-scripts</a>
+          <a href="index.html">Insight on Network Simulations</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -100,79 +82,28 @@
              
   <section id="insight-on-network-simulations-ions">
 <h1>Insight on Network Simulations (IoNS)<a class="headerlink" href="#insight-on-network-simulations-ions" title="Permalink to this heading"></a></h1>
-<p>IoNS is a tool for generating plots from large amounts of data for evaluation purposes with the help <a class="reference external" href="https://pandas.pydata.org/">pandas</a> and <a class="reference external" href="https://seaborn.pydata.org/">Seaborn</a>.</p>
+<p>IoNS is a tool for generating plots from large amounts of data for evaluation purposes with the help <a class="reference external" href="https://pandas.pydata.org/">pandas</a>, <a class="reference external" href="https://seaborn.pydata.org/">Seaborn</a> and <a class="reference external" href="https://www.dask.org/">dask</a>.</p>
 <p>Originally, it was developed for evaluating results generated with <a class="reference external" href="http://artery.v2x-research.eu/">Artery</a>.
-IoNS can also be used for processing results generated by other simulations frameworks based on <a class="reference external" href="https://omnetpp.org/">OMNeT++</a>, as it supports its SQLite database format used for result recording.
-However, it can be used to process databases from all sorts of sources, be it ns-3 or real-world experiments.</p>
-</section>
-<section id="general-instructions">
-<h1>General Instructions<a class="headerlink" href="#general-instructions" title="Permalink to this heading"></a></h1>
-<p>This page provides a detailed description on how to setup the evaluation and plotting tool for analyzing simulation results.
-The installation instructions assume a Linux OS of the Debian/Ubuntu variety,</p>
-</section>
-<section id="how-to-get-started">
-<h1>How to get started<a class="headerlink" href="#how-to-get-started" title="Permalink to this heading"></a></h1>
-<section id="setup">
-<h2>Setup<a class="headerlink" href="#setup" title="Permalink to this heading"></a></h2>
-<section id="clone-this-repository">
-<h3>Clone this repository<a class="headerlink" href="#clone-this-repository" title="Permalink to this heading"></a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/ibr-cm/ions.git</span></code></p>
-</section>
-<section id="install-the-dependencies">
-<h3>Install the dependencies<a class="headerlink" href="#install-the-dependencies" title="Permalink to this heading"></a></h3>
-<p>The dependencies for this toolkit can be managed with either <a class="reference external" href="https://pipenv.kennethreitz.org/en/latest/">pipenv</a>, <a class="reference external" href="https://pdm.fming.dev/latest/">pdm</a> or <a class="reference external" href="https://pip.pypa.io/en/stable/">pip</a>.
-Or any other package manager that can import the requirement manifest of those tools (see <a class="reference external" href="https://packaging.python.org/en/latest/guides/tool-recommendations/">tool recommendations</a>)</p>
-<section id="install-the-package-manager">
-<h4>Install the package manager<a class="headerlink" href="#install-the-package-manager" title="Permalink to this heading"></a></h4>
-<p>This step depends on the operating system and the chosen package manager.</p>
-<p>First, change the <code class="docutils literal notranslate"><span class="pre">PYTHON_VENV_MANAGER</span></code> variable in <code class="docutils literal notranslate"><span class="pre">config.sh</span></code> to the package
-manager of your choice and the <code class="docutils literal notranslate"><span class="pre">PYTHON_VENV_MANAGER_RUN_CMD</span></code> to the command of
-the manager that allows for running arbitrary commands within the virtual
-environment, e.g. <code class="docutils literal notranslate"><span class="pre">run</span></code> for pipenv and pdm or an empty string for pip.</p>
-<p>Install <code class="docutils literal notranslate"><span class="pre">pipenv</span></code> for your user to ~/.local (see <a class="reference external" href="https://pipenv.kennethreitz.org/en/latest/install/#pragmatic-installation-of-pipenv">install instructions</a>):<br /><code class="docutils literal notranslate"><span class="pre">pip3</span> <span class="pre">install</span> <span class="pre">--user</span> <span class="pre">pipenv</span></code>
-For <a class="reference external" href="https://pdm.fming.dev/latest/#other-installation-methods">pdm</a>:
-<code class="docutils literal notranslate"><span class="pre">pip3</span> <span class="pre">install</span> <span class="pre">--user</span> <span class="pre">pdm</span></code></p>
-<p>For easier access to the binaries installed by pip, add <code class="docutils literal notranslate"><span class="pre">~/.local/bin</span></code> to the PATH environment variable (possibly add this to your <code class="docutils literal notranslate"><span class="pre">~/.bashrc</span></code> or <code class="docutils literal notranslate"><span class="pre">~/.zshrc</span></code>):<br /><code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=$PATH:~/.local/bin</span></code></p>
-</section>
-<section id="install-the-dependencies-using-pipenv">
-<h4>Install the dependencies using pipenv<a class="headerlink" href="#install-the-dependencies-using-pipenv" title="Permalink to this heading"></a></h4>
-<p>Install dependencies from <code class="docutils literal notranslate"><span class="pre">Pipfile.lock</span></code> to a virtualenv in <code class="docutils literal notranslate"><span class="pre">~/.local/share</span></code>:<br /><code class="docutils literal notranslate"><span class="pre">pipenv</span> <span class="pre">install</span> <span class="pre">--ignore-pipfile</span></code><br />This install the last versions known to be good.<br />If you prefer to install the latest versions (possibly incompatible or unsafe &amp; untrusted; installing from <code class="docutils literal notranslate"><span class="pre">Pipfile.lock</span></code> checks the hashes of the installed packages), run:<br /><code class="docutils literal notranslate"><span class="pre">pipenv</span> <span class="pre">install</span></code><br />If you prefer to install the packages into the project directory, set the <code class="docutils literal notranslate"><span class="pre">PIPENV_VENV_IN_PROJECT</span></code> environment variable to <code class="docutils literal notranslate"><span class="pre">1</span></code>, see <a class="reference external" href="https://pipenv.kennethreitz.org/en/latest/install/#virtualenv-mapping-caveat">virtualenv mapping caveat</a>.</p>
-</section>
-<section id="install-the-dependencies-using-pdm">
-<h4>Install the dependencies using pdm<a class="headerlink" href="#install-the-dependencies-using-pdm" title="Permalink to this heading"></a></h4>
-<p>If you want to install the versions specified in the lock file:
-<code class="docutils literal notranslate"><span class="pre">pdm</span> <span class="pre">sync</span></code>
-Or install the latest versions instead, with the already mentioned caveats:
-<code class="docutils literal notranslate"><span class="pre">pdm</span> <span class="pre">install</span></code></p>
-</section>
-<section id="install-the-dependencies-using-pip">
-<h4>Install the dependencies using pip<a class="headerlink" href="#install-the-dependencies-using-pip" title="Permalink to this heading"></a></h4>
-<p>If you want to install the versions specified in the lock file:
-<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">requirements.txt</span></code></p>
-</section>
-</section>
-</section>
-<section id="documentation">
-<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading"></a></h2>
-<p>This project is documented using
-<a class="reference external" href="https://www.sphinx-doc.org">Sphinx</a>
-and
-<a class="reference external" href="https://numpydoc.readthedocs.io">numpydoc</a>.<br />The theme being used is <a class="reference external" href="https://sphinx-rtd-theme.readthedocs.io">Read the Docs Sphinx Theme</a>.</p>
-<p>To generate the documentation (in HTML format, see <code class="docutils literal notranslate"><span class="pre">doc/Makefile</span></code> for other formats), execute:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">docs</span>
-<span class="n">make</span> <span class="n">html</span>
-</pre></div>
-</div>
-</section>
+However, IoNS can also be used for processing results generated by other simulations frameworks based on <a class="reference external" href="https://omnetpp.org/">OMNeT++</a>, as it supports its SQLite database format used for result recording.
+Further, it can be used to process databases from all sorts of sources, be it ns-3 or real-world experiments.</p>
+<p>IoNS main benefits are:</p>
+<ul class="simple">
+<li><p>Describing plots and their generation from data sources as recipes in YAML</p></li>
+<li><p>Two-staged plot generation:</p>
+<ul>
+<li><p>Evaluation: preprocessing and storing data as <a class="reference external" href="https://arrow.apache.org/docs/python/feather.html">feather</a> files</p></li>
+<li><p>Plot: generation of plots from preprocessed feather files</p></li>
+</ul>
+</li>
+<li><p>Parallel data processing with <a class="reference external" href="https://www.dask.org/">dask</a> and SLURM support</p></li>
+</ul>
+<p>Key concepts, installation instructions and further guidance can be found in the <a class="reference external" href="https://ibr-cm.github.io/ions/">documentation</a>.</p>
 </section>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to artery-scripts’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tools.html" class="btn btn-neutral float-right" title="Tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

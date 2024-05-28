@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation &mdash; Insight on Network Simulations  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Evaluation &amp; Plotting" href="evaluation_plotting.html" />
+    <link rel="prev" title="Welcome to the IoNS documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Insight on Network Simulations
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#get-the-code">Get the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-the-dependencies">Install the Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#install-a-python-package-manager">Install a Python Package Manager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Install the Dependencies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#using-pipenv">Using pipenv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-pdm">Using pdm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-pip">Using pip</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation_plotting.html">Evaluation &amp; Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_transforms.html">Using Transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="best_practices.html">Best practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cluster_managment.html">Running IoNS on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Insight on Network Simulations</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Installation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/installation.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
+<p>This page provides a detailed description on how to setup the evaluation and plotting tool for analyzing simulation results.
+The installation instructions assume a Linux OS of the Debian/Ubuntu variety.</p>
+<section id="get-the-code">
+<h2>Get the Code<a class="headerlink" href="#get-the-code" title="Permalink to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/ibr-cm/ions.git</span></code></p>
+</section>
+<section id="install-the-dependencies">
+<h2>Install the Dependencies<a class="headerlink" href="#install-the-dependencies" title="Permalink to this heading"></a></h2>
+<p>The dependencies for this toolkit can be managed with either <a class="reference external" href="https://pipenv.kennethreitz.org/en/latest/">pipenv</a>, <a class="reference external" href="https://pdm.fming.dev/latest/">pdm</a> or <a class="reference external" href="https://pip.pypa.io/en/stable/">pip</a>.
+Or any other package manager that can import the requirement manifest of those tools (see <a class="reference external" href="https://packaging.python.org/en/latest/guides/tool-recommendations/">tool recommendations</a>)</p>
+<section id="install-a-python-package-manager">
+<h3>Install a Python Package Manager<a class="headerlink" href="#install-a-python-package-manager" title="Permalink to this heading"></a></h3>
+<p>This step depends on the operating system and the chosen package manager.</p>
+<p>First, change the <code class="docutils literal notranslate"><span class="pre">PYTHON_VENV_MANAGER</span></code> variable in <code class="docutils literal notranslate"><span class="pre">config.sh</span></code> to the package
+manager of your choice and the <code class="docutils literal notranslate"><span class="pre">PYTHON_VENV_MANAGER_RUN_CMD</span></code> to the command of
+the manager that allows for running arbitrary commands within the virtual
+environment, e.g. <code class="docutils literal notranslate"><span class="pre">run</span></code> for pipenv and pdm or an empty string for pip.</p>
+<p>Install <code class="docutils literal notranslate"><span class="pre">pipenv</span></code> for your user to ~/.local (see <a class="reference external" href="https://pipenv.kennethreitz.org/en/latest/install/#pragmatic-installation-of-pipenv">install instructions</a>):<br /><code class="docutils literal notranslate"><span class="pre">pip3</span> <span class="pre">install</span> <span class="pre">--user</span> <span class="pre">pipenv</span></code>
+For <a class="reference external" href="https://pdm.fming.dev/latest/#other-installation-methods">pdm</a>:
+<code class="docutils literal notranslate"><span class="pre">pip3</span> <span class="pre">install</span> <span class="pre">--user</span> <span class="pre">pdm</span></code></p>
+<p>For easier access to the binaries installed by pip, add <code class="docutils literal notranslate"><span class="pre">~/.local/bin</span></code> to the PATH environment variable (possibly add this to your <code class="docutils literal notranslate"><span class="pre">~/.bashrc</span></code> or <code class="docutils literal notranslate"><span class="pre">~/.zshrc</span></code>):<br /><code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=$PATH:~/.local/bin</span></code></p>
+</section>
+<section id="id1">
+<h3>Install the Dependencies<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
+<section id="using-pipenv">
+<h4>Using pipenv<a class="headerlink" href="#using-pipenv" title="Permalink to this heading"></a></h4>
+<p>Install dependencies from <code class="docutils literal notranslate"><span class="pre">Pipfile.lock</span></code> to a virtualenv in <code class="docutils literal notranslate"><span class="pre">~/.local/share</span></code>:<br /><code class="docutils literal notranslate"><span class="pre">pipenv</span> <span class="pre">install</span> <span class="pre">--ignore-pipfile</span></code><br />This install the last versions known to be good.<br />If you prefer to install the latest versions (possibly incompatible or unsafe &amp; untrusted; installing from <code class="docutils literal notranslate"><span class="pre">Pipfile.lock</span></code> checks the hashes of the installed packages), run:<br /><code class="docutils literal notranslate"><span class="pre">pipenv</span> <span class="pre">install</span></code><br />If you prefer to install the packages into the project directory, set the <code class="docutils literal notranslate"><span class="pre">PIPENV_VENV_IN_PROJECT</span></code> environment variable to <code class="docutils literal notranslate"><span class="pre">1</span></code>, see <a class="reference external" href="https://pipenv.kennethreitz.org/en/latest/install/#virtualenv-mapping-caveat">virtualenv mapping caveat</a>.</p>
+</section>
+<section id="using-pdm">
+<h4>Using pdm<a class="headerlink" href="#using-pdm" title="Permalink to this heading"></a></h4>
+<p>If you want to install the versions specified in the lock file:
+<code class="docutils literal notranslate"><span class="pre">pdm</span> <span class="pre">sync</span></code>
+Or install the latest versions instead, with the already mentioned caveats:
+<code class="docutils literal notranslate"><span class="pre">pdm</span> <span class="pre">install</span></code></p>
+</section>
+<section id="using-pip">
+<h4>Using pip<a class="headerlink" href="#using-pip" title="Permalink to this heading"></a></h4>
+<p>If you want to install the versions specified in the lock file:
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">requirements.txt</span></code></p>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to the IoNS documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="evaluation_plotting.html" class="btn btn-neutral float-right" title="Evaluation &amp; Plotting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Christian Hagau.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

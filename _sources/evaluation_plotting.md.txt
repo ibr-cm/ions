@@ -1,6 +1,6 @@
 # Evaluation & Plotting
 
-## Key Concepts
+## Key Technologies
 
 The framework is built on top of [pandas](https://pandas.pydata.org/),
 [seaborn](https://seaborn.pydata.org/index.html) and
@@ -29,11 +29,13 @@ Reading the documentation for
 is advisable.
 
 
-## General Overview
+## Getting Insight
 
 The evaluation and plotting is done by running `run_recipe.py` with the name of
 the 'recipe' YAML file, which contains the steps for processing the results of a batch of simulation
 runs. For a minimal introduction to YAML and some specifics of PyYAML see the [PyYAML documentation](https://pyyaml.org/wiki/PyYAMLDocumentation)
+
+### Recipes
 
 The recipe describes the individual tasks as a list of key-value pairs; internally the data and
 operations are constructed (by [dask](https://docs.dask.org/en/latest/)) into an
@@ -127,7 +129,7 @@ API documentation, e.g. the documentation one needs for just plotting is in
 `plots.PlottingTask`, specifically in the documentation of the parameters of the
 constructor for that class.
 
-##### Tags
+#### Tags
 The `evaluation` phase also supports assigning tags to the extracted data. A tag
 is a property shared among a subset of the input data, e.g. the repetition
 number of a run, the run number or the rate at which vehicles are being equipped
@@ -183,7 +185,7 @@ Multiple regular expressions can be bound to the same tag, in case of a heteroge
 
 The built-in tag definitions can be found in `tag_regular_expressions.py`.
 
-#### Examples
+### Examples
 
 Example recipes can be found in the `examples` directory in the root of this
 repository:
@@ -202,4 +204,5 @@ repository:
 - `boxstats.yaml`: showcases using a custom function to calculate the values
   needed for a boxplot, forward them as a python list to the exporter and save
   them as a JSON file
+- `sqlextractor.yaml`: a showcase for the generic SQLite extractor
 
