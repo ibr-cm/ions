@@ -28,7 +28,9 @@ For [pdm](https://pdm.fming.dev/latest/#other-installation-methods):
 For easier access to the binaries installed by pip, add `~/.local/bin` to the PATH environment variable (possibly add this to your `~/.bashrc` or `~/.zshrc`):  
 `export PATH=$PATH:~/.local/bin`
 
-#### Install the dependencies using pipenv
+### Install the Dependencies 
+
+#### Using pipenv
 Install dependencies from `Pipfile.lock` to a virtualenv in `~/.local/share`:  
 `pipenv install --ignore-pipfile`  
 This install the last versions known to be good.  
@@ -36,14 +38,14 @@ If you prefer to install the latest versions (possibly incompatible or unsafe & 
 `pipenv install`  
 If you prefer to install the packages into the project directory, set the `PIPENV_VENV_IN_PROJECT` environment variable to `1`, see [virtualenv mapping caveat](https://pipenv.kennethreitz.org/en/latest/install/#virtualenv-mapping-caveat).  
 
-#### Install the dependencies using pdm
+#### Using pdm
 
 If you want to install the versions specified in the lock file:
 `pdm sync`
 Or install the latest versions instead, with the already mentioned caveats:
 `pdm install`
 
-#### Install the dependencies using pip
+#### Using pip
 
 If you want to install the versions specified in the lock file:
 `pip install -r requirements.txt`

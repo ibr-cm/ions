@@ -185,7 +185,7 @@ Multiple regular expressions can be bound to the same tag, in case of a heteroge
 
 The built-in tag definitions can be found in `tag_regular_expressions.py`.
 
-#### Examples
+### Examples
 
 Example recipes can be found in the `examples` directory in the root of this
 repository:
