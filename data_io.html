@@ -80,8 +80,61 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="data-io-module">
-<h1>data_io module<a class="headerlink" href="#data-io-module" title="Permalink to this heading"></a></h1>
+  <section id="module-data_io">
+<span id="data-io-module"></span><h1>data_io module<a class="headerlink" href="#module-data_io" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="data_io.DataSet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">data_io.</span></span><span class="sig-name descname"><span class="pre">DataSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_io.html#DataSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_io.DataSet" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#data_io.DataSet.evaluate_regex_path" title="data_io.DataSet.evaluate_regex_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_regex_path</span></code></a>(data_path)</p></td>
+<td><p>Take the given path to a directory plus a regular expresion</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>expand_data_path</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>get_data_path</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>get_file_list</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="data_io.DataSet.evaluate_regex_path">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evaluate_regex_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/data_io.html#DataSet.evaluate_regex_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_io.DataSet.evaluate_regex_path" title="Permalink to this definition"></a></dt>
+<dd><p>Take the given path to a directory plus a regular expresion</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_io.DataSet.expand_data_path">
+<span class="sig-name descname"><span class="pre">expand_data_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_io.html#DataSet.expand_data_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_io.DataSet.expand_data_path" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_io.DataSet.get_data_path">
+<span class="sig-name descname"><span class="pre">get_data_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></span><a class="reference internal" href="_modules/data_io.html#DataSet.get_data_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_io.DataSet.get_data_path" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_io.DataSet.get_file_list">
+<span class="sig-name descname"><span class="pre">get_file_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/data_io.html#DataSet.get_file_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_io.DataSet.get_file_list" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_io.read_from_file">
+<span class="sig-prename descclassname"><span class="pre">data_io.</span></span><span class="sig-name descname"><span class="pre">read_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'feather'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">23</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_io.html#read_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_io.read_from_file" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 
 

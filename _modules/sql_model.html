@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sql_model &mdash; Insight on Network Simulations  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Insight on Network Simulations
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../evaluation_plotting.html">Evaluation &amp; Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_transforms.html">Using Transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../best_practices.html">Best practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cluster_managment.html">Running IoNS on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference.html">API reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Insight on Network Simulations</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sql_model</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sql_model</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sqla</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
+
+<div class="viewcode-block" id="OmnetppTableModel"><a class="viewcode-back" href="../sql_model.html#sql_model.OmnetppTableModel">[docs]</a><span class="k">class</span> <span class="nc">OmnetppTableModel</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This contains the SQLAlchemy model definitions for the tables in the OMNet++ SQLite databases.</span>
+<span class="sd">    See `here &lt;https://docs.sqlalchemy.org/en/20/core/metadata.html&gt;`_ for the concepts and classes used for this model.</span>
+
+<span class="sd">    Every table definition is preceded by the SQL statement used for creating the table.</span>
+<span class="sd">    Please note that not all relational dependencies have been implemented as the model is used for reading data, not for modifying the database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">MetaData</span><span class="p">()</span>
+
+    <span class="n">statistic_table</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s1">&#39;statistic&#39;</span>
+                              <span class="p">,</span> <span class="n">metadata</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;statId&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;runId&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;moduleName&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;statName&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;isHistogram&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;isWeighted&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;statCount&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;statMean&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Float</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;statStddev&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Float</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;statSum&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Float</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;statSqrsum&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Float</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;statMin&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Float</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;statMax&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Float</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;statWeights&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Float</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;statWeightedSum&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Float</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;statSqrSumWeights&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Float</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;statWeightedSqrSum&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Float</span><span class="p">)</span>
+                             <span class="p">)</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Equivalent SQLite statement:</span>
+
+<span class="sd">    .. code-block:: sql</span>
+
+<span class="sd">      CREATE TABLE statistic ( statId        INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL</span>
+<span class="sd">                              , runId         INTEGER NOT NULL REFERENCES run(runId) ON DELETE CASCADE</span>
+<span class="sd">                              , moduleName    TEXT NOT NULL, statName      TEXT NOT NULL</span>
+<span class="sd">                              , isHistogram   INTEGER NOT NULL</span>
+<span class="sd">                              , isWeighted    INTEGER NOT NULL</span>
+<span class="sd">                              , statCount     INTEGER NOT NULL</span>
+<span class="sd">                              , statMean      REAL</span>
+<span class="sd">                              , statStddev    REAL</span>
+<span class="sd">                              , statSum       REAL</span>
+<span class="sd">                              , statSqrsum    REAL</span>
+<span class="sd">                              , statMin       REAL</span>
+<span class="sd">                              , statMax       REAL</span>
+<span class="sd">                              , statWeights          REAL</span>
+<span class="sd">                              , statWeightedSum      REAL</span>
+<span class="sd">                              , statSqrSumWeights    REAL</span>
+<span class="sd">                              , statWeightedSqrSum   REAL );</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">scalar_table</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s1">&#39;scalar&#39;</span>
+                              <span class="p">,</span> <span class="n">metadata</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;scalarId&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;runId&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;moduleName&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;scalarName&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;scalarValue&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Float</span><span class="p">)</span>
+                             <span class="p">)</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Equivalent SQLite statement:</span>
+
+<span class="sd">    .. code-block:: sql</span>
+
+<span class="sd">      CREATE TABLE scalar ( scalarId      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL</span>
+<span class="sd">                           , runId         INTEGER  NOT NULL REFERENCES run(runId) ON DELETE CASCADE</span>
+<span class="sd">                           , moduleName    TEXT NOT NULL</span>
+<span class="sd">                           , scalarName    TEXT NOT NULL</span>
+<span class="sd">                           , scalarValue   REAL );</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="n">vector_table</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s1">&#39;vector&#39;</span>
+                              <span class="p">,</span> <span class="n">metadata</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;vectorId&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;moduleName&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                              <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;vectorName&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                             <span class="p">)</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Equivalent SQLite statement:</span>
+
+<span class="sd">    .. code-block:: sql</span>
+
+<span class="sd">      CREATE TABLE vector ( vectorId        INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL</span>
+<span class="sd">                           , runId           INTEGER NOT NULL REFERENCES run(runId) ON DELETE CASCADE</span>
+<span class="sd">                           , moduleName      TEXT NOT NULL, vectorName      TEXT NOT NULL</span>
+<span class="sd">                           , vectorCount     INTEGER</span>
+<span class="sd">                           , vectorMin       REAL</span>
+<span class="sd">                           , vectorMax       REAL</span>
+<span class="sd">                           , vectorSum       REAL</span>
+<span class="sd">                           , vectorSumSqr    REAL</span>
+<span class="sd">                           , startEventNum   INTEGER</span>
+<span class="sd">                           , endEventNum     INTEGER</span>
+<span class="sd">                           , startSimtimeRaw INTEGER</span>
+<span class="sd">                           , endSimtimeRaw   INTEGER );</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">vectorData_table</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s1">&#39;vectorData&#39;</span>
+                                  <span class="p">,</span> <span class="n">metadata</span>
+                                  <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;rowId&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                                  <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;vectorId&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s1">&#39;vector.vectorId&#39;</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                                  <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;eventNumber&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                                  <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;simtimeRaw&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                                  <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Float</span><span class="p">)</span>
+                                 <span class="p">)</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Equivalent SQLite statement:</span>
+
+<span class="sd">    .. code-block:: sql</span>
+
+<span class="sd">      CREATE TABLE vectorData ( vectorId      INTEGER NOT NULL REFERENCES vector(vectorId) ON DELETE CASCADE</span>
+<span class="sd">                               , eventNumber   INTEGER NOT NULL</span>
+<span class="sd">                               , simtimeRaw    INTEGER NOT NULL</span>
+<span class="sd">                               , value         REAL );</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">run_table</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s1">&#39;run&#39;</span>
+                           <span class="p">,</span> <span class="n">metadata</span>
+                           <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;runId&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                           <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;runName&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                           <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;simtimeExp&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                          <span class="p">)</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Equivalent SQLite statement:</span>
+
+<span class="sd">    .. code-block:: sql</span>
+
+<span class="sd">      CREATE TABLE run ( runId       INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL</span>
+<span class="sd">                        , runName     TEXT NOT NULL</span>
+<span class="sd">                        , simtimeExp  INTEGER NOT NULL );</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">runAttr_table</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s1">&#39;runAttr&#39;</span>
+                               <span class="p">,</span> <span class="n">metadata</span>
+                               <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;rowId&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                               <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;runId&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s1">&#39;run.runId&#39;</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                               <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;attrName&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                               <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;attrValue&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                              <span class="p">)</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Equivalent SQLite statement:</span>
+
+<span class="sd">    .. code-block:: sql</span>
+
+<span class="sd">      CREATE TABLE runAttr ( runId       INTEGER  NOT NULL REFERENCES run(runId) ON DELETE CASCADE</span>
+<span class="sd">                            , attrName    TEXT NOT NULL</span>
+<span class="sd">                            , attrValue   TEXT NOT NULL );</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">runParam_table</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s1">&#39;runParam&#39;</span>
+                                     <span class="p">,</span> <span class="n">metadata</span>
+                                     <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;rowId&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                                     <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;runId&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s1">&#39;run.runId&#39;</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                                     <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;paramKey&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                                     <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;paramValue&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                                     <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;paramOrder&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                                    <span class="p">)</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Equivalent SQLite statement:</span>
+
+<span class="sd">    .. code-block:: sql</span>
+
+<span class="sd">      CREATE TABLE runParam ( runId       INTEGER NOT NULL REFERENCES run(runId) ON DELETE CASCADE</span>
+<span class="sd">                             , paramKey    TEXT NOT NULL</span>
+<span class="sd">                             , paramValue  TEXT NOT NULL</span>
+<span class="sd">                             , paramOrder  INTEGER NOT NULL );</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Christian Hagau.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

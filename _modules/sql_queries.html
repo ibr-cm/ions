@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sql_queries &mdash; Insight on Network Simulations  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Insight on Network Simulations
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../evaluation_plotting.html">Evaluation &amp; Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_transforms.html">Using Transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../best_practices.html">Best practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cluster_managment.html">Running IoNS on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference.html">API reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Insight on Network Simulations</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sql_queries</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sql_queries</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sqlalchemy</span> <span class="k">as</span> <span class="nn">sqla</span>
+
+<span class="kn">from</span> <span class="nn">sql_model</span> <span class="kn">import</span> <span class="n">OmnetppTableModel</span> <span class="k">as</span> <span class="n">TM</span>
+
+<span class="kn">from</span> <span class="nn">common.logging_facilities</span> <span class="kn">import</span> <span class="n">logi</span>
+
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Query the `runAttr` table and return all the rows contained in it.</span>
+<span class="sd">The equivalent SQL query:</span>
+
+<span class="sd">.. code-block:: sql</span>
+
+<span class="sd"> SELECT attrName, attrValue FROM runAttr;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">run_attr_query</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">runAttr_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">rowId</span><span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">runAttr_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">attrName</span><span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">runAttr_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">attrValue</span><span class="p">)</span>
+
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Query the `runParam` table and return all the rows contained in it.</span>
+<span class="sd">The equivalent SQL query:</span>
+
+<span class="sd">.. code-block:: sql</span>
+
+<span class="sd"> SELECT paramKey, paramValue FROM runParam;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">run_param_query</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">runParam_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">rowId</span><span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">runParam_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">paramKey</span><span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">runParam_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">paramValue</span><span class="p">)</span>
+
+
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Query the `vector` table and return all the `vectorName`s contained in it.</span>
+<span class="sd">The equivalent SQL query:</span>
+
+<span class="sd">.. code-block:: sql</span>
+
+<span class="sd"> SELECT vectorName FROM vector_table;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">signal_names_query</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vector_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorName</span><span class="p">)</span>
+
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Query the `scalar` table and return all the rows contained in it.</span>
+<span class="sd">The equivalent SQL query:</span>
+
+<span class="sd">.. code-block:: sql</span>
+
+<span class="sd"> SELECT * FROM scalar;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">scalar_table_query</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>  <span class="n">TM</span><span class="o">.</span><span class="n">scalar_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">scalarId</span>
+                                 <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">scalar_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">runId</span>
+                                 <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">scalar_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">moduleName</span>
+                                 <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">scalar_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">scalarName</span>
+                                 <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">scalar_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">scalarValue</span>
+                                    <span class="p">)</span>
+
+
+
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Query the `scalar` table and return all the rows contained in it.</span>
+<span class="sd">The equivalent SQL query:</span>
+
+<span class="sd">.. code-block:: sql</span>
+
+<span class="sd"> SELECT * FROM statistic;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">statistic_table_query</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>  <span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statId</span>
+                                    <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">runId</span>
+                                    <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">moduleName</span>
+                                    <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statName</span>
+                                    <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">isHistogram</span>
+                                    <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">isWeighted</span>
+                                    <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statCount</span>
+                                    <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statMean</span>
+                                    <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statStddev</span>
+                                    <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statSum</span>
+                                    <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statSqrsum</span>
+                                    <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statMin</span>
+                                    <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statMax</span>
+                                    <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statWeights</span>
+                                    <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statWeightedSum</span>
+                                    <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statSqrSumWeights</span>
+                                    <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statWeightedSqrSum</span>
+                                    <span class="p">)</span>
+
+
+<div class="viewcode-block" id="generate_statistic_data_query"><a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_statistic_data_query">[docs]</a><span class="k">def</span> <span class="nf">generate_statistic_data_query</span><span class="p">(</span><span class="n">where_clause</span><span class="p">:</span><span class="n">sqla</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">ColumnElement</span>
+                                  <span class="p">,</span> <span class="n">statId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">,</span> <span class="n">runId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">,</span> <span class="n">statName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">,</span> <span class="n">isHistogram</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">,</span> <span class="n">isWeighted</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">,</span> <span class="n">statCount</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">,</span> <span class="n">statMean</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">,</span> <span class="n">statStddev</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">,</span> <span class="n">statSum</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">,</span> <span class="n">statSqrsum</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">,</span> <span class="n">statMin</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">,</span> <span class="n">statMax</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">,</span> <span class="n">statWeights</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">,</span> <span class="n">statWeightedSum</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">,</span> <span class="n">statSqrSumWeights</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">,</span> <span class="n">statWeightedSqrSum</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                  <span class="p">):</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">statId</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statId</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">runId</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">runId</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">moduleName</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">moduleName</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">statName</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statName</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">isHistogram</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">isHistogram</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">isWeighted</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">isWeighted</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">statCount</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statCount</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">statMean</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statMean</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">statStddev</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statStddev</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">statSum</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statSum</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">statSqrsum</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statSqrsum</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">statMin</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statMin</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">statMax</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statMax</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">statWeights</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statWeights</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">statWeightedSum</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statWeightedSum</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">statSqrSumWeights</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statSqrSumWeights</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">statWeightedSqrSum</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statWeightedSqrSum</span><span class="p">)</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">columns</span><span class="p">)</span>\
+                       <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                              <span class="n">where_clause</span>
+                             <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">query</span></div>
+
+
+<div class="viewcode-block" id="generate_statistic_query"><a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_statistic_query">[docs]</a><span class="k">def</span> <span class="nf">generate_statistic_query</span><span class="p">(</span><span class="n">statistic_name</span><span class="p">:</span><span class="nb">str</span>
+                             <span class="p">,</span> <span class="n">statId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">,</span> <span class="n">runId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">,</span> <span class="n">statName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">,</span> <span class="n">isHistogram</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">,</span> <span class="n">isWeighted</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">,</span> <span class="n">statCount</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">,</span> <span class="n">statMean</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">,</span> <span class="n">statStddev</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">,</span> <span class="n">statSum</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">,</span> <span class="n">statSqrsum</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">,</span> <span class="n">statMin</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">,</span> <span class="n">statMax</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">,</span> <span class="n">statWeights</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">,</span> <span class="n">statWeightedSum</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">,</span> <span class="n">statSqrSumWeights</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">,</span> <span class="n">statWeightedSqrSum</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                             <span class="p">):</span>
+    <span class="k">return</span> <span class="n">generate_statistic_data_query</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">statistic_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">statName</span> <span class="o">==</span> <span class="n">statistic_name</span>
+                                         <span class="p">,</span> <span class="n">statId</span><span class="o">=</span><span class="n">statId</span>
+                                         <span class="p">,</span> <span class="n">runId</span><span class="o">=</span><span class="n">runId</span>
+                                         <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="n">moduleName</span>
+                                         <span class="p">,</span> <span class="n">statName</span><span class="o">=</span><span class="n">statName</span>
+                                         <span class="p">,</span> <span class="n">isHistogram</span><span class="o">=</span><span class="n">isHistogram</span>
+                                         <span class="p">,</span> <span class="n">isWeighted</span><span class="o">=</span><span class="n">isWeighted</span>
+                                         <span class="p">,</span> <span class="n">statCount</span><span class="o">=</span><span class="n">statCount</span>
+                                         <span class="p">,</span> <span class="n">statMean</span><span class="o">=</span><span class="n">statMean</span>
+                                         <span class="p">,</span> <span class="n">statStddev</span><span class="o">=</span><span class="n">statStddev</span>
+                                         <span class="p">,</span> <span class="n">statSum</span><span class="o">=</span><span class="n">statSum</span>
+                                         <span class="p">,</span> <span class="n">statSqrsum</span><span class="o">=</span><span class="n">statSqrsum</span>
+                                         <span class="p">,</span> <span class="n">statMin</span><span class="o">=</span><span class="n">statMin</span>
+                                         <span class="p">,</span> <span class="n">statMax</span><span class="o">=</span><span class="n">statMax</span>
+                                         <span class="p">,</span> <span class="n">statWeights</span><span class="o">=</span><span class="n">statWeights</span>
+                                         <span class="p">,</span> <span class="n">statWeightedSum</span><span class="o">=</span><span class="n">statWeightedSum</span>
+                                         <span class="p">,</span> <span class="n">statSqrSumWeights</span><span class="o">=</span><span class="n">statSqrSumWeights</span>
+                                         <span class="p">,</span> <span class="n">statWeightedSqrSum</span><span class="o">=</span><span class="n">statWeightedSqrSum</span>
+                                         <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="generate_scalar_data_query"><a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_scalar_data_query">[docs]</a><span class="k">def</span> <span class="nf">generate_scalar_data_query</span><span class="p">(</span><span class="n">where_clause</span><span class="p">:</span><span class="n">sqla</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">ColumnElement</span>
+                        <span class="p">,</span> <span class="n">value_label</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;scalarValue&#39;</span>
+                        <span class="p">,</span> <span class="n">runId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                        <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                        <span class="p">,</span> <span class="n">scalarName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                        <span class="p">,</span> <span class="n">scalarId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                        <span class="p">):</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">runId</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">scalar_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">runId</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">moduleName</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">scalar_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">moduleName</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scalarName</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">scalar_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">scalarName</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scalarId</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">scalar_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">scalarId</span><span class="p">)</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">columns</span>
+                        <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">scalar_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">scalarValue</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">value_label</span><span class="p">)</span>
+                       <span class="p">)</span> \
+                       <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                              <span class="n">where_clause</span>
+                             <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">query</span></div>
+
+
+<div class="viewcode-block" id="generate_scalar_query"><a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_scalar_query">[docs]</a><span class="k">def</span> <span class="nf">generate_scalar_query</span><span class="p">(</span><span class="n">scalar_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;scalarValue&#39;</span>
+                          <span class="p">,</span> <span class="n">runId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                          <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                          <span class="p">,</span> <span class="n">scalarName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                          <span class="p">,</span> <span class="n">scalarId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                          <span class="p">):</span>
+    <span class="k">return</span> <span class="n">generate_scalar_data_query</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">scalar_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">scalarName</span> <span class="o">==</span> <span class="n">scalar_name</span>
+                                      <span class="p">,</span> <span class="n">value_label</span><span class="o">=</span><span class="n">value_label</span>
+                                      <span class="p">,</span> <span class="n">runId</span><span class="o">=</span><span class="n">runId</span>
+                                      <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="n">moduleName</span>
+                                      <span class="p">,</span> <span class="n">scalarName</span><span class="o">=</span><span class="n">scalarName</span><span class="p">,</span> <span class="n">scalarId</span><span class="o">=</span><span class="n">scalarId</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="generate_scalar_like_query"><a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_scalar_like_query">[docs]</a><span class="k">def</span> <span class="nf">generate_scalar_like_query</span><span class="p">(</span><span class="n">scalar_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;scalarValue&#39;</span>
+                          <span class="p">,</span> <span class="n">runId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                          <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                          <span class="p">,</span> <span class="n">scalarName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                          <span class="p">,</span> <span class="n">scalarId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                          <span class="p">):</span>
+    <span class="k">return</span> <span class="n">generate_scalar_data_query</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">scalar_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">scalarName</span><span class="o">.</span><span class="n">like</span><span class="p">(</span><span class="n">scalar_name</span><span class="p">)</span>
+                                      <span class="p">,</span> <span class="n">value_label</span><span class="o">=</span><span class="n">value_label</span>
+                                      <span class="p">,</span> <span class="n">runId</span><span class="o">=</span><span class="n">runId</span>
+                                      <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="n">moduleName</span>
+                                      <span class="p">,</span> <span class="n">scalarName</span><span class="o">=</span><span class="n">scalarName</span><span class="p">,</span> <span class="n">scalarId</span><span class="o">=</span><span class="n">scalarId</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="generate_signal_query"><a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_signal_query">[docs]</a><span class="k">def</span> <span class="nf">generate_signal_query</span><span class="p">(</span><span class="n">signal_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;value&#39;</span>
+                          <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                          <span class="p">,</span> <span class="n">simtimeRaw</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                          <span class="p">,</span> <span class="n">eventNumber</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                          <span class="p">):</span>
+    <span class="k">return</span> <span class="n">generate_data_query</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vector_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorName</span> <span class="o">==</span> <span class="n">signal_name</span><span class="p">,</span> <span class="n">value_label</span><span class="o">=</span><span class="n">value_label</span>
+                               <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="n">moduleName</span><span class="p">,</span> <span class="n">simtimeRaw</span><span class="o">=</span><span class="n">simtimeRaw</span><span class="p">,</span> <span class="n">eventNumber</span><span class="o">=</span><span class="n">eventNumber</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="generate_signal_like_query"><a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_signal_like_query">[docs]</a><span class="k">def</span> <span class="nf">generate_signal_like_query</span><span class="p">(</span><span class="n">signal_name_pattern</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;value&#39;</span>
+                          <span class="p">,</span> <span class="n">vectorName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                          <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                          <span class="p">,</span> <span class="n">simtimeRaw</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                          <span class="p">,</span> <span class="n">eventNumber</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                          <span class="p">):</span>
+    <span class="k">return</span> <span class="n">generate_data_query</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vector_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorName</span><span class="o">.</span><span class="n">like</span><span class="p">(</span><span class="n">signal_name_pattern</span><span class="p">),</span> <span class="n">value_label</span><span class="o">=</span><span class="n">value_label</span>
+                               <span class="p">,</span> <span class="n">vectorName</span><span class="o">=</span><span class="n">vectorName</span><span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="n">moduleName</span><span class="p">,</span> <span class="n">simtimeRaw</span><span class="o">=</span><span class="n">simtimeRaw</span><span class="p">,</span> <span class="n">eventNumber</span><span class="o">=</span><span class="n">eventNumber</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="generate_signal_for_module_query"><a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_signal_for_module_query">[docs]</a><span class="k">def</span> <span class="nf">generate_signal_for_module_query</span><span class="p">(</span><span class="n">signal_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">module_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label</span><span class="o">=</span><span class="s1">&#39;value&#39;</span>
+                                     <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                     <span class="p">,</span> <span class="n">simtimeRaw</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                                     <span class="p">,</span> <span class="n">eventNumber</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                                     <span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract the data for the signal given by `signal_name` for the given `moduleName` only</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">generate_data_query</span><span class="p">(</span>
+                               <span class="n">sqla</span><span class="o">.</span><span class="n">and_</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vector_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorName</span> <span class="o">==</span> <span class="n">signal_name</span>
+                                         <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">vector_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">moduleName</span><span class="o">.</span><span class="n">like</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
+                                         <span class="p">)</span>
+                               <span class="p">,</span> <span class="n">value_label</span><span class="o">=</span><span class="n">value_label</span>
+                               <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="n">moduleName</span><span class="p">,</span> <span class="n">simtimeRaw</span><span class="o">=</span><span class="n">simtimeRaw</span><span class="p">,</span> <span class="n">eventNumber</span><span class="o">=</span><span class="n">eventNumber</span>
+                              <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="generate_data_query"><a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_data_query">[docs]</a><span class="k">def</span> <span class="nf">generate_data_query</span><span class="p">(</span><span class="n">where_clause</span><span class="p">:</span><span class="n">sqla</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">ColumnElement</span>
+                        <span class="p">,</span> <span class="n">value_label</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;value&#39;</span>
+                        <span class="p">,</span> <span class="n">vectorName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                        <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                        <span class="p">,</span> <span class="n">simtimeRaw</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                        <span class="p">,</span> <span class="n">eventNumber</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                        <span class="p">):</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">vectorName</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vector_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorName</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">moduleName</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vector_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">moduleName</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">simtimeRaw</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">simtimeRaw</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">eventNumber</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">eventNumber</span><span class="p">)</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+                        <span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">rowId</span>
+                        <span class="p">,</span> <span class="o">*</span><span class="n">columns</span>
+                        <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">value_label</span><span class="p">)</span>
+                       <span class="p">)</span> \
+                       <span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                             <span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span>
+                             <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">vector_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorId</span> <span class="o">==</span> <span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorId</span>
+                            <span class="p">)</span> \
+                       <span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                              <span class="n">where_clause</span>
+                             <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">query</span></div>
+
+
+<div class="viewcode-block" id="get_signal_with_position"><a class="viewcode-back" href="../sql_queries.html#sql_queries.get_signal_with_position">[docs]</a><span class="k">def</span> <span class="nf">get_signal_with_position</span><span class="p">(</span><span class="n">x_signal</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">y_signal</span><span class="p">:</span><span class="nb">str</span>
+                  <span class="p">,</span> <span class="n">value_label_px</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label_py</span><span class="p">:</span><span class="nb">str</span>
+                  <span class="p">,</span> <span class="n">signal_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label</span><span class="p">:</span><span class="nb">str</span>
+                  <span class="p">,</span> <span class="n">restriction</span><span class="p">:</span><span class="nb">tuple</span><span class="o">=</span><span class="kc">None</span>
+                  <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                  <span class="p">,</span> <span class="n">simtimeRaw</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                  <span class="p">,</span> <span class="n">eventNumber</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                  <span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get all the signal data for the signal with the name `signal_name` within</span>
+<span class="sd">    the rectangle described by the tuple given in `restriction`.</span>
+
+<span class="sd">    The equivalent SQL query:</span>
+
+<span class="sd">    .. code-block:: sql</span>
+
+<span class="sd">      WITH pxvids</span>
+<span class="sd">      AS (SELECT vectorId, moduleName FROM vector AS v WHERE vectorName == &#39;&lt;positionX&gt;&#39;),</span>
+<span class="sd">      pyvids</span>
+<span class="sd">      AS (SELECT vectorId, moduleName FROM vector AS v WHERE vectorName == &#39;&lt;positionY&gt;&#39;),</span>
+<span class="sd">      pys AS</span>
+<span class="sd">          (SELECT moduleName, eventNumber, simtimeRaw, value AS posY</span>
+<span class="sd">           FROM</span>
+<span class="sd">              pyvids</span>
+<span class="sd">           JOIN vectorData AS vd</span>
+<span class="sd">              ON vd.vectorId == pyvids.vectorId</span>
+<span class="sd">          WHERE vd.value &lt; &lt;y_max&gt; AND vd.value &gt; &lt;y_min&gt;</span>
+<span class="sd">          ),</span>
+<span class="sd">      pxs AS</span>
+<span class="sd">          (SELECT moduleName, eventNumber, simtimeRaw, value AS posX</span>
+<span class="sd">           FROM</span>
+<span class="sd">              pxvids</span>
+<span class="sd">           JOIN vectorData AS vd</span>
+<span class="sd">              ON vd.vectorId == pxvids.vectorId</span>
+<span class="sd">          WHERE vd.value &lt; &lt;x_max&gt; AND vd.value &gt; &lt;x_min&gt;</span>
+<span class="sd">           ),</span>
+<span class="sd">      pos AS</span>
+<span class="sd">          (SELECT pxs.moduleName, pxs.eventNumber, pxs.simtimeRaw, posX, posY</span>
+<span class="sd">           FROM</span>
+<span class="sd">               pxs</span>
+<span class="sd">           JOIN</span>
+<span class="sd">               pys</span>
+<span class="sd">               ON pxs.eventNumber == pys.eventNumber</span>
+<span class="sd">          ),</span>
+<span class="sd">      val AS</span>
+<span class="sd">          (SELECT vd.vectorId, vd.eventNumber, vd.value</span>
+<span class="sd">           FROM vector AS v</span>
+<span class="sd">           JOIN vectorData AS vd</span>
+<span class="sd">              ON v.vectorId == vd.vectorId</span>
+<span class="sd">           WHERE v.vectorName == &#39;&lt;signal_name&gt;&#39;</span>
+<span class="sd">          )</span>
+<span class="sd">      SELECT p.moduleName, p.eventNumber, p.simtimeRaw, posX, posY, v.value</span>
+<span class="sd">      FROM pos AS p</span>
+<span class="sd">      JOIN val AS v</span>
+<span class="sd">          ON p.vectorId == v.vectorId</span>
+<span class="sd">              AND p.eventNumber == v.eventNumber</span>
+<span class="sd">          ;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x_signal : str</span>
+<span class="sd">        The name of the signal containing the x-coordinate data</span>
+<span class="sd">    y_signal : str</span>
+<span class="sd">        The name of the signal containing the y-coordinate data</span>
+<span class="sd">    value_label_px : str</span>
+<span class="sd">        The name for the x-coordinate in the output</span>
+<span class="sd">    value_label_py : str</span>
+<span class="sd">        The name for the y-coordinate in the output</span>
+<span class="sd">    signal_name : str</span>
+<span class="sd">        The name of the signal to extract</span>
+<span class="sd">    value_label : str</span>
+<span class="sd">        The name for the signal in the output</span>
+<span class="sd">    restriction : tuple</span>
+<span class="sd">        The selection rectangle, defined as (x_min, y_min, x_max, y_max)</span>
+<span class="sd">    moduleName : bool</span>
+<span class="sd">        Whether to include the `moduleName` in the output</span>
+<span class="sd">    simtimeRaw : bool</span>
+<span class="sd">        Whether to include the `simtimeRaw` in the output</span>
+<span class="sd">    eventNumber : bool</span>
+<span class="sd">        Whether to include the `eventNumber` in the output</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># get the vectorIds for the x &amp; y position signals</span>
+    <span class="n">pxidsq</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vector_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorId</span><span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">vector_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">moduleName</span><span class="p">)</span> \
+              <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vector_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorName</span> <span class="o">==</span> <span class="n">x_signal</span><span class="p">)</span>
+    <span class="n">pyidsq</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vector_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorId</span><span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">vector_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">moduleName</span><span class="p">)</span> \
+              <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vector_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorName</span> <span class="o">==</span> <span class="n">y_signal</span><span class="p">)</span>
+
+    <span class="c1"># get the data for the x &amp; y position vectorIds, each within a given interval</span>
+    <span class="n">pxs</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">pxidsq</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">moduleName</span>
+                      <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">eventNumber</span>
+                      <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">simtimeRaw</span>
+                      <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">value</span>
+                      <span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span>
+                             <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorId</span> <span class="o">==</span> <span class="n">pxidsq</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorId</span><span class="p">)</span>
+
+    <span class="n">pys</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">pyidsq</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">moduleName</span>
+                      <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">eventNumber</span>
+                      <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">simtimeRaw</span>
+                      <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">value</span>
+                      <span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span>
+                             <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorId</span> <span class="o">==</span> <span class="n">pyidsq</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorId</span><span class="p">)</span>
+
+    <span class="c1"># apply geographic restriction: check if the position is within a rectangular area</span>
+    <span class="k">if</span> <span class="n">restriction</span><span class="p">:</span>
+        <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;applying geographic restriction with parameters: </span><span class="si">{</span><span class="n">restriction</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">x_min</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="n">restriction</span>
+        <span class="n">pxs</span> <span class="o">=</span> <span class="n">pxs</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="n">x_max</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;=</span> <span class="n">x_min</span><span class="p">)</span>
+        <span class="n">pys</span> <span class="o">=</span> <span class="n">pys</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="n">y_max</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;=</span> <span class="n">y_min</span><span class="p">)</span>
+
+    <span class="c1"># join x &amp; y positions over the eventNumber</span>
+    <span class="n">position_join</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pxs</span><span class="p">,</span> <span class="n">pys</span><span class="p">,</span> <span class="n">pxs</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">eventNumber</span> <span class="o">==</span> <span class="n">pys</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">eventNumber</span><span class="p">)</span>
+
+    <span class="c1"># select the proper columns</span>
+    <span class="n">positions</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">pxs</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">moduleName</span><span class="p">,</span> <span class="n">pxs</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">eventNumber</span><span class="p">,</span> <span class="n">pxs</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">simtimeRaw</span>
+                    <span class="p">,</span> <span class="n">pxs</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;px&#39;</span><span class="p">),</span> <span class="n">pys</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s1">&#39;py&#39;</span><span class="p">)</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">position_join</span><span class="p">)</span>
+
+    <span class="c1"># get the actual signal values</span>
+    <span class="n">vals</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vector_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorId</span><span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">eventNumber</span><span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> \
+              <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">vector_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorName</span> <span class="o">==</span> <span class="n">signal_name</span> \
+                      <span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                              <span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span>
+                              <span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">vectorData_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorId</span> <span class="o">==</span> <span class="n">TM</span><span class="o">.</span><span class="n">vector_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">vectorId</span>
+                              <span class="p">)</span>
+
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">moduleName</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">positions</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">moduleName</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">simtimeRaw</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">positions</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">simtimeRaw</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">eventNumber</span><span class="p">:</span>
+        <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">positions</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">eventNumber</span><span class="p">)</span>
+
+    <span class="c1"># join positions with signal values</span>
+    <span class="n">position_vals_join</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">positions</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">eventNumber</span> <span class="o">==</span> <span class="n">vals</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">eventNumber</span><span class="p">)</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">columns</span>
+                    <span class="p">,</span> <span class="n">positions</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">px</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">value_label_px</span><span class="p">),</span> <span class="n">positions</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">py</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">value_label_py</span><span class="p">)</span>
+                    <span class="p">,</span> <span class="n">vals</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="n">value_label</span><span class="p">)</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">position_vals_join</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">query</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Christian Hagau.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

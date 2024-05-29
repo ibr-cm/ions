@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Overview: module code &mdash; Insight on Network Simulations  documentation</title>
+  <title>recipe &mdash; Insight on Network Simulations  documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -69,7 +69,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Overview: module code</li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">recipe</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -78,17 +79,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>All modules for which code is available</h1>
-<ul><li><a href="common/debug.html">common.debug</a></li>
-<li><a href="data_io.html">data_io</a></li>
-<li><a href="recipe.html">recipe</a></li>
-<li><a href="sql_model.html">sql_model</a></li>
-<li><a href="sql_queries.html">sql_queries</a></li>
-<li><a href="tag.html">tag</a></li>
-<li><a href="tag_extractor.html">tag_extractor</a></li>
-<li><a href="utility/arithmetic.html">utility.arithmetic</a></li>
-<li><a href="utility/stopwatch.html">utility.stopwatch</a></li>
-</ul>
+  <h1>Source code for recipe</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ---</span>
+
+<span class="kn">from</span> <span class="nn">yaml</span> <span class="kn">import</span> <span class="n">YAMLObject</span>
+
+
+<div class="viewcode-block" id="Recipe"><a class="viewcode-back" href="../recipe.html#recipe.Recipe">[docs]</a><span class="k">class</span> <span class="nc">Recipe</span><span class="p">(</span><span class="n">YAMLObject</span><span class="p">):</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!Recipe&#39;</span>
+    <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Evaluation"><a class="viewcode-back" href="../recipe.html#recipe.Evaluation">[docs]</a><span class="k">class</span> <span class="nc">Evaluation</span><span class="p">(</span><span class="n">YAMLObject</span><span class="p">):</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!Evaluation&#39;</span>
+    <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Plot"><a class="viewcode-back" href="../recipe.html#recipe.Plot">[docs]</a><span class="k">class</span> <span class="nc">Plot</span><span class="p">(</span><span class="n">YAMLObject</span><span class="p">):</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!Plot&#39;</span>
+    <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Task"><a class="viewcode-back" href="../recipe.html#recipe.Task">[docs]</a><span class="k">class</span> <span class="nc">Task</span><span class="p">(</span><span class="n">YAMLObject</span><span class="p">):</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!Task&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+</pre></div>
 
            </div>
           </div>

@@ -104,7 +104,7 @@ For simplicity only one task is listed for each sub-phase, but an arbitrary
 number of tasks is possible.
 
 For ease of use, the following omissions are possible:
-- the `transforms` phase is optional
+- the `transforms` phase is optional, chaining transforms is possible
 - the `exporter` and `reader` phases are optional, the `plot` phase can just use
   the datasets extracted in the `evaluation` phase
 
