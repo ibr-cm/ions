@@ -18,15 +18,31 @@ into the code in the recipe and running single-threaded by adding `--worker
 1 --single-threaded` to the command line. This allows inspection and
 manipulation of the loaded data in a comfortable REPL.
 
-There are currently two types of transform implemented:
+There are currently six types of transform implemented:
+- `ConcatTransform`
+- `MergeTransform`
 - `FunctionTransform`
+- `ColumnFunctionTransform`
+- `GroupedAggregationTransform`
 - `GroupedFunctionTransform`
 
+
+#### `ConcatTransform`
+This transform will concatenate all datasets into a single dataset for further processing.
+
+#### `MergeTransform`
+This transform will combine two datasets with different columns based on the given keys.
+
 #### `FunctionTransform`
+This is for applying an arbitrary function to the dataset and saving the result in another (or the same) set.
+The user can defined unary function defined by the `function` parameter that is executed for every `pandas.DataFrame` in the selected dataset.
+The `extra_code` parameter can contain arbirary Python code, such as function defintions, that can be used when more complex or individual transforming fucntions are required.
+
+#### `ColumnFunctionTransform`
 This is for applying a function to every value in a selected column of the data
 and saving the result in another (or the same) column.
-The user defined unary function defined by the `function` parameter is executed
-for every value, for every `pandas.DataFrame` in the selected dataset
+The user defined unary function defined by the `function` parameter that is executed for every value, for every `pandas.DataFrame` in the selected dataset.
+The `extra_code` parameter can contain arbirary Python code.
 
 #### `GroupedFunctionTransform`
 This is for dividing the input `pandas.DataFrame`s into partitions based on
@@ -39,3 +55,5 @@ single value output of the function is added in a new column. In the case of an
 arbitrary object, the parameter `raw` should be set; the output of the function
 is then passed on without modification, most likely for export as a JSON
 representation of the object.
+
+#### `GroupedAggregationTransform`

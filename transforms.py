@@ -192,12 +192,11 @@ class MergeTransform(Transform, YAMLObject):
     output_dataset_name: str
         the name given to the output dataset
 
-    left_key_columns: str
-        the name of the column the function should be applied to
+    right_key_columns: str
+        the name of the column from the right dataset taht is used as key for joining
 
     left_key_columns: str
-        the name given to the output column containing the results of applying
-        the function
+        the name of the column from the left dataset taht is used as key for joining
 
     match_by_filename: bool
         whether to match merge input by the filename the data has been extracted from
