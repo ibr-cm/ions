@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,9 +14,9 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -167,7 +167,9 @@
                                     <span class="p">)</span>
 
 
-<div class="viewcode-block" id="generate_statistic_data_query"><a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_statistic_data_query">[docs]</a><span class="k">def</span> <span class="nf">generate_statistic_data_query</span><span class="p">(</span><span class="n">where_clause</span><span class="p">:</span><span class="n">sqla</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">ColumnElement</span>
+<div class="viewcode-block" id="generate_statistic_data_query">
+<a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_statistic_data_query">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_statistic_data_query</span><span class="p">(</span><span class="n">where_clause</span><span class="p">:</span><span class="n">sqla</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">ColumnElement</span>
                                   <span class="p">,</span> <span class="n">statId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
                                   <span class="p">,</span> <span class="n">runId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
                                   <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
@@ -230,7 +232,10 @@
     <span class="k">return</span> <span class="n">query</span></div>
 
 
-<div class="viewcode-block" id="generate_statistic_query"><a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_statistic_query">[docs]</a><span class="k">def</span> <span class="nf">generate_statistic_query</span><span class="p">(</span><span class="n">statistic_name</span><span class="p">:</span><span class="nb">str</span>
+
+<div class="viewcode-block" id="generate_statistic_query">
+<a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_statistic_query">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_statistic_query</span><span class="p">(</span><span class="n">statistic_name</span><span class="p">:</span><span class="nb">str</span>
                              <span class="p">,</span> <span class="n">statId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
                              <span class="p">,</span> <span class="n">runId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
                              <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
@@ -270,7 +275,10 @@
                                          <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="generate_scalar_data_query"><a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_scalar_data_query">[docs]</a><span class="k">def</span> <span class="nf">generate_scalar_data_query</span><span class="p">(</span><span class="n">where_clause</span><span class="p">:</span><span class="n">sqla</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">ColumnElement</span>
+
+<div class="viewcode-block" id="generate_scalar_data_query">
+<a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_scalar_data_query">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_scalar_data_query</span><span class="p">(</span><span class="n">where_clause</span><span class="p">:</span><span class="n">sqla</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">ColumnElement</span>
                         <span class="p">,</span> <span class="n">value_label</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;scalarValue&#39;</span>
                         <span class="p">,</span> <span class="n">runId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
                         <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
@@ -297,7 +305,10 @@
     <span class="k">return</span> <span class="n">query</span></div>
 
 
-<div class="viewcode-block" id="generate_scalar_query"><a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_scalar_query">[docs]</a><span class="k">def</span> <span class="nf">generate_scalar_query</span><span class="p">(</span><span class="n">scalar_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;scalarValue&#39;</span>
+
+<div class="viewcode-block" id="generate_scalar_query">
+<a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_scalar_query">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_scalar_query</span><span class="p">(</span><span class="n">scalar_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;scalarValue&#39;</span>
                           <span class="p">,</span> <span class="n">runId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
                           <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
                           <span class="p">,</span> <span class="n">scalarName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
@@ -310,7 +321,10 @@
                                       <span class="p">,</span> <span class="n">scalarName</span><span class="o">=</span><span class="n">scalarName</span><span class="p">,</span> <span class="n">scalarId</span><span class="o">=</span><span class="n">scalarId</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="generate_scalar_like_query"><a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_scalar_like_query">[docs]</a><span class="k">def</span> <span class="nf">generate_scalar_like_query</span><span class="p">(</span><span class="n">scalar_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;scalarValue&#39;</span>
+
+<div class="viewcode-block" id="generate_scalar_like_query">
+<a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_scalar_like_query">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_scalar_like_query</span><span class="p">(</span><span class="n">scalar_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;scalarValue&#39;</span>
                           <span class="p">,</span> <span class="n">runId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
                           <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
                           <span class="p">,</span> <span class="n">scalarName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
@@ -323,7 +337,10 @@
                                       <span class="p">,</span> <span class="n">scalarName</span><span class="o">=</span><span class="n">scalarName</span><span class="p">,</span> <span class="n">scalarId</span><span class="o">=</span><span class="n">scalarId</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="generate_signal_query"><a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_signal_query">[docs]</a><span class="k">def</span> <span class="nf">generate_signal_query</span><span class="p">(</span><span class="n">signal_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;value&#39;</span>
+
+<div class="viewcode-block" id="generate_signal_query">
+<a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_signal_query">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_signal_query</span><span class="p">(</span><span class="n">signal_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;value&#39;</span>
                           <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
                           <span class="p">,</span> <span class="n">simtimeRaw</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
                           <span class="p">,</span> <span class="n">eventNumber</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
@@ -332,7 +349,10 @@
                                <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="n">moduleName</span><span class="p">,</span> <span class="n">simtimeRaw</span><span class="o">=</span><span class="n">simtimeRaw</span><span class="p">,</span> <span class="n">eventNumber</span><span class="o">=</span><span class="n">eventNumber</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="generate_signal_like_query"><a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_signal_like_query">[docs]</a><span class="k">def</span> <span class="nf">generate_signal_like_query</span><span class="p">(</span><span class="n">signal_name_pattern</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;value&#39;</span>
+
+<div class="viewcode-block" id="generate_signal_like_query">
+<a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_signal_like_query">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_signal_like_query</span><span class="p">(</span><span class="n">signal_name_pattern</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;value&#39;</span>
                           <span class="p">,</span> <span class="n">vectorName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
                           <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
                           <span class="p">,</span> <span class="n">simtimeRaw</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
@@ -342,7 +362,10 @@
                                <span class="p">,</span> <span class="n">vectorName</span><span class="o">=</span><span class="n">vectorName</span><span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="n">moduleName</span><span class="p">,</span> <span class="n">simtimeRaw</span><span class="o">=</span><span class="n">simtimeRaw</span><span class="p">,</span> <span class="n">eventNumber</span><span class="o">=</span><span class="n">eventNumber</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="generate_signal_for_module_query"><a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_signal_for_module_query">[docs]</a><span class="k">def</span> <span class="nf">generate_signal_for_module_query</span><span class="p">(</span><span class="n">signal_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">module_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label</span><span class="o">=</span><span class="s1">&#39;value&#39;</span>
+
+<div class="viewcode-block" id="generate_signal_for_module_query">
+<a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_signal_for_module_query">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_signal_for_module_query</span><span class="p">(</span><span class="n">signal_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">module_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label</span><span class="o">=</span><span class="s1">&#39;value&#39;</span>
                                      <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
                                      <span class="p">,</span> <span class="n">simtimeRaw</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
                                      <span class="p">,</span> <span class="n">eventNumber</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
@@ -359,7 +382,10 @@
                               <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="generate_data_query"><a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_data_query">[docs]</a><span class="k">def</span> <span class="nf">generate_data_query</span><span class="p">(</span><span class="n">where_clause</span><span class="p">:</span><span class="n">sqla</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">ColumnElement</span>
+
+<div class="viewcode-block" id="generate_data_query">
+<a class="viewcode-back" href="../sql_queries.html#sql_queries.generate_data_query">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_data_query</span><span class="p">(</span><span class="n">where_clause</span><span class="p">:</span><span class="n">sqla</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">ColumnElement</span>
                         <span class="p">,</span> <span class="n">value_label</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;value&#39;</span>
                         <span class="p">,</span> <span class="n">vectorName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
                         <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
@@ -392,7 +418,10 @@
     <span class="k">return</span> <span class="n">query</span></div>
 
 
-<div class="viewcode-block" id="get_signal_with_position"><a class="viewcode-back" href="../sql_queries.html#sql_queries.get_signal_with_position">[docs]</a><span class="k">def</span> <span class="nf">get_signal_with_position</span><span class="p">(</span><span class="n">x_signal</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">y_signal</span><span class="p">:</span><span class="nb">str</span>
+
+<div class="viewcode-block" id="get_signal_with_position">
+<a class="viewcode-back" href="../sql_queries.html#sql_queries.get_signal_with_position">[docs]</a>
+<span class="k">def</span> <span class="nf">get_signal_with_position</span><span class="p">(</span><span class="n">x_signal</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">y_signal</span><span class="p">:</span><span class="nb">str</span>
                   <span class="p">,</span> <span class="n">value_label_px</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label_py</span><span class="p">:</span><span class="nb">str</span>
                   <span class="p">,</span> <span class="n">signal_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">value_label</span><span class="p">:</span><span class="nb">str</span>
                   <span class="p">,</span> <span class="n">restriction</span><span class="p">:</span><span class="nb">tuple</span><span class="o">=</span><span class="kc">None</span>
@@ -535,6 +564,7 @@
                     <span class="p">)</span><span class="o">.</span><span class="n">select_from</span><span class="p">(</span><span class="n">position_vals_join</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">query</span></div>
+
 </pre></div>
 
            </div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -15,9 +15,9 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -96,19 +96,19 @@
            <div itemprop="articleBody">
              
   <section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
 <p>This page provides a detailed description on how to setup the evaluation and plotting tool for analyzing simulation results.
 The installation instructions assume a Linux OS of the Debian/Ubuntu variety.</p>
 <section id="get-the-code">
-<h2>Get the Code<a class="headerlink" href="#get-the-code" title="Permalink to this heading"></a></h2>
+<h2>Get the Code<a class="headerlink" href="#get-the-code" title="Link to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/ibr-cm/ions.git</span></code></p>
 </section>
 <section id="install-the-dependencies">
-<h2>Install the Dependencies<a class="headerlink" href="#install-the-dependencies" title="Permalink to this heading"></a></h2>
+<h2>Install the Dependencies<a class="headerlink" href="#install-the-dependencies" title="Link to this heading"></a></h2>
 <p>The dependencies for this toolkit can be managed with either <a class="reference external" href="https://pipenv.kennethreitz.org/en/latest/">pipenv</a>, <a class="reference external" href="https://pdm.fming.dev/latest/">pdm</a> or <a class="reference external" href="https://pip.pypa.io/en/stable/">pip</a>.
 Or any other package manager that can import the requirement manifest of those tools (see <a class="reference external" href="https://packaging.python.org/en/latest/guides/tool-recommendations/">tool recommendations</a>)</p>
 <section id="install-a-python-package-manager">
-<h3>Install a Python Package Manager<a class="headerlink" href="#install-a-python-package-manager" title="Permalink to this heading"></a></h3>
+<h3>Install a Python Package Manager<a class="headerlink" href="#install-a-python-package-manager" title="Link to this heading"></a></h3>
 <p>This step depends on the operating system and the chosen package manager.</p>
 <p>First, change the <code class="docutils literal notranslate"><span class="pre">PYTHON_VENV_MANAGER</span></code> variable in <code class="docutils literal notranslate"><span class="pre">config.sh</span></code> to the package
 manager of your choice and the <code class="docutils literal notranslate"><span class="pre">PYTHON_VENV_MANAGER_RUN_CMD</span></code> to the command of
@@ -120,20 +120,20 @@ For <a class="reference external" href="https://pdm.fming.dev/latest/#other-inst
 <p>For easier access to the binaries installed by pip, add <code class="docutils literal notranslate"><span class="pre">~/.local/bin</span></code> to the PATH environment variable (possibly add this to your <code class="docutils literal notranslate"><span class="pre">~/.bashrc</span></code> or <code class="docutils literal notranslate"><span class="pre">~/.zshrc</span></code>):<br /><code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=$PATH:~/.local/bin</span></code></p>
 </section>
 <section id="id1">
-<h3>Install the Dependencies<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
+<h3>Install the Dependencies<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <section id="using-pipenv">
-<h4>Using pipenv<a class="headerlink" href="#using-pipenv" title="Permalink to this heading"></a></h4>
+<h4>Using pipenv<a class="headerlink" href="#using-pipenv" title="Link to this heading"></a></h4>
 <p>Install dependencies from <code class="docutils literal notranslate"><span class="pre">Pipfile.lock</span></code> to a virtualenv in <code class="docutils literal notranslate"><span class="pre">~/.local/share</span></code>:<br /><code class="docutils literal notranslate"><span class="pre">pipenv</span> <span class="pre">install</span> <span class="pre">--ignore-pipfile</span></code><br />This install the last versions known to be good.<br />If you prefer to install the latest versions (possibly incompatible or unsafe &amp; untrusted; installing from <code class="docutils literal notranslate"><span class="pre">Pipfile.lock</span></code> checks the hashes of the installed packages), run:<br /><code class="docutils literal notranslate"><span class="pre">pipenv</span> <span class="pre">install</span></code><br />If you prefer to install the packages into the project directory, set the <code class="docutils literal notranslate"><span class="pre">PIPENV_VENV_IN_PROJECT</span></code> environment variable to <code class="docutils literal notranslate"><span class="pre">1</span></code>, see <a class="reference external" href="https://pipenv.kennethreitz.org/en/latest/install/#virtualenv-mapping-caveat">virtualenv mapping caveat</a>.</p>
 </section>
 <section id="using-pdm">
-<h4>Using pdm<a class="headerlink" href="#using-pdm" title="Permalink to this heading"></a></h4>
+<h4>Using pdm<a class="headerlink" href="#using-pdm" title="Link to this heading"></a></h4>
 <p>If you want to install the versions specified in the lock file:
 <code class="docutils literal notranslate"><span class="pre">pdm</span> <span class="pre">sync</span></code>
 Or install the latest versions instead, with the already mentioned caveats:
 <code class="docutils literal notranslate"><span class="pre">pdm</span> <span class="pre">install</span></code></p>
 </section>
 <section id="using-pip">
-<h4>Using pip<a class="headerlink" href="#using-pip" title="Permalink to this heading"></a></h4>
+<h4>Using pip<a class="headerlink" href="#using-pip" title="Link to this heading"></a></h4>
 <p>If you want to install the versions specified in the lock file:
 <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">requirements.txt</span></code></p>
 </section>

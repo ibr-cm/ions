@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -15,9 +15,9 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -80,8 +80,46 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="yaml-helper-module">
-<h1>yaml_helper module<a class="headerlink" href="#yaml-helper-module" title="Permalink to this heading"></a></h1>
+  <section id="module-yaml_helper">
+<span id="yaml-helper-module"></span><h1>yaml_helper module<a class="headerlink" href="#module-yaml_helper" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="yaml_helper.construct_bool">
+<span class="sig-prename descclassname"><span class="pre">yaml_helper.</span></span><span class="sig-name descname"><span class="pre">construct_bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/yaml_helper.html#construct_bool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#yaml_helper.construct_bool" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="yaml_helper.construct_numeral">
+<span class="sig-prename descclassname"><span class="pre">yaml_helper.</span></span><span class="sig-name descname"><span class="pre">construct_numeral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_constructor:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;class</span> <span class="pre">'int'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/yaml_helper.html#construct_numeral"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#yaml_helper.construct_numeral" title="Link to this definition"></a></dt>
+<dd><p>Construct a numeral scalar and cast to the desired type</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="yaml_helper.decode_node">
+<span class="sig-prename descclassname"><span class="pre">yaml_helper.</span></span><span class="sig-name descname"><span class="pre">decode_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/yaml_helper.html#decode_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#yaml_helper.decode_node" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="yaml_helper.include_constructor">
+<span class="sig-prename descclassname"><span class="pre">yaml_helper.</span></span><span class="sig-name descname"><span class="pre">include_constructor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/yaml_helper.html#include_constructor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#yaml_helper.include_constructor" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="yaml_helper.load_yaml_from_file">
+<span class="sig-prename descclassname"><span class="pre">yaml_helper.</span></span><span class="sig-name descname"><span class="pre">load_yaml_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/yaml_helper.html#load_yaml_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#yaml_helper.load_yaml_from_file" title="Link to this definition"></a></dt>
+<dd><p>Read and evaluate the YAML contained in the file with the given name</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="yaml_helper.proto_constructor">
+<span class="sig-prename descclassname"><span class="pre">yaml_helper.</span></span><span class="sig-name descname"><span class="pre">proto_constructor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_constructor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_defaults</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/yaml_helper.html#proto_constructor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#yaml_helper.proto_constructor" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="yaml_helper.register_constructors">
+<span class="sig-prename descclassname"><span class="pre">yaml_helper.</span></span><span class="sig-name descname"><span class="pre">register_constructors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/yaml_helper.html#register_constructors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#yaml_helper.register_constructors" title="Link to this definition"></a></dt>
+<dd><p>Register YAML constructors for all the custom tags</p>
+</dd></dl>
+
 </section>
 
 

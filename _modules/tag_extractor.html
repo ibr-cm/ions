@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,9 +14,9 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -87,12 +87,16 @@
 <span class="kn">from</span> <span class="nn">tag</span> <span class="kn">import</span> <span class="n">Tag</span>
 
 
-<div class="viewcode-block" id="ExtractRunParametersTagsOperation"><a class="viewcode-back" href="../tag_extractor.html#tag_extractor.ExtractRunParametersTagsOperation">[docs]</a><span class="k">class</span> <span class="nc">ExtractRunParametersTagsOperation</span><span class="p">():</span>
+<div class="viewcode-block" id="ExtractRunParametersTagsOperation">
+<a class="viewcode-back" href="../tag_extractor.html#tag_extractor.ExtractRunParametersTagsOperation">[docs]</a>
+<span class="k">class</span> <span class="nc">ExtractRunParametersTagsOperation</span><span class="p">():</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract the run parameters of from a database and create a `Tag` object for each of them</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="ExtractRunParametersTagsOperation.add_raw_tags_for_row"><a class="viewcode-back" href="../tag_extractor.html#tag_extractor.ExtractRunParametersTagsOperation.add_raw_tags_for_row">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ExtractRunParametersTagsOperation.add_raw_tags_for_row">
+<a class="viewcode-back" href="../tag_extractor.html#tag_extractor.ExtractRunParametersTagsOperation.add_raw_tags_for_row">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_raw_tags_for_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">key_column</span><span class="p">,</span> <span class="n">value_column</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -101,7 +105,10 @@
         <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Tag</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">}))</span></div>
 
 
-<div class="viewcode-block" id="ExtractRunParametersTagsOperation.add_regex_matches_for_row"><a class="viewcode-back" href="../tag_extractor.html#tag_extractor.ExtractRunParametersTagsOperation.add_regex_matches_for_row">[docs]</a>    <span class="nd">@staticmethod</span>
+
+<div class="viewcode-block" id="ExtractRunParametersTagsOperation.add_regex_matches_for_row">
+<a class="viewcode-back" href="../tag_extractor.html#tag_extractor.ExtractRunParametersTagsOperation.add_regex_matches_for_row">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_regex_matches_for_row</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">key_column</span><span class="p">,</span> <span class="n">value_column</span><span class="p">,</span> <span class="n">regex_map</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -117,7 +124,10 @@
                     <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Tag</span><span class="p">({</span><span class="n">tag_key</span><span class="p">:</span> <span class="n">transformed_value</span><span class="p">}))</span></div>
 
 
-<div class="viewcode-block" id="ExtractRunParametersTagsOperation.add_tags"><a class="viewcode-back" href="../tag_extractor.html#tag_extractor.ExtractRunParametersTagsOperation.add_tags">[docs]</a>    <span class="nd">@staticmethod</span>
+
+<div class="viewcode-block" id="ExtractRunParametersTagsOperation.add_tags">
+<a class="viewcode-back" href="../tag_extractor.html#tag_extractor.ExtractRunParametersTagsOperation.add_tags">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_tags</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key_column</span><span class="p">,</span> <span class="n">value_column</span><span class="p">,</span> <span class="n">regex_map</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create run-specific parameters &amp; attributes</span>
@@ -133,12 +143,18 @@
         <span class="n">data</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">add_matches</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ExtractRunParametersTagsOperation.add_parameters"><a class="viewcode-back" href="../tag_extractor.html#tag_extractor.ExtractRunParametersTagsOperation.add_parameters">[docs]</a>    <span class="nd">@staticmethod</span>
+
+<div class="viewcode-block" id="ExtractRunParametersTagsOperation.add_parameters">
+<a class="viewcode-back" href="../tag_extractor.html#tag_extractor.ExtractRunParametersTagsOperation.add_parameters">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_parameters</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">parameters_regex_map</span><span class="p">):</span>
         <span class="n">ExtractRunParametersTagsOperation</span><span class="o">.</span><span class="n">add_tags</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;paramKey&#39;</span><span class="p">,</span> <span class="s1">&#39;paramValue&#39;</span><span class="p">,</span> <span class="n">parameters_regex_map</span><span class="p">,</span> <span class="n">tags</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ExtractRunParametersTagsOperation.add_iterationvars"><a class="viewcode-back" href="../tag_extractor.html#tag_extractor.ExtractRunParametersTagsOperation.add_iterationvars">[docs]</a>    <span class="nd">@staticmethod</span>
+
+<div class="viewcode-block" id="ExtractRunParametersTagsOperation.add_iterationvars">
+<a class="viewcode-back" href="../tag_extractor.html#tag_extractor.ExtractRunParametersTagsOperation.add_iterationvars">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_iterationvars</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">iterationvars_regex_map</span><span class="p">):</span>
         <span class="n">iterationvars_value</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;attrName&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;iterationvars&#39;</span><span class="p">][</span><span class="s1">&#39;attrValue&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -154,7 +170,10 @@
                     <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Tag</span><span class="p">({</span><span class="n">tag_key</span><span class="p">:</span> <span class="n">transformed_value</span><span class="p">}))</span></div>
 
 
-<div class="viewcode-block" id="ExtractRunParametersTagsOperation.add_attributes"><a class="viewcode-back" href="../tag_extractor.html#tag_extractor.ExtractRunParametersTagsOperation.add_attributes">[docs]</a>    <span class="nd">@staticmethod</span>
+
+<div class="viewcode-block" id="ExtractRunParametersTagsOperation.add_attributes">
+<a class="viewcode-back" href="../tag_extractor.html#tag_extractor.ExtractRunParametersTagsOperation.add_attributes">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_attributes</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">iterationvars_regex_map</span><span class="p">):</span>
         <span class="n">ExtractRunParametersTagsOperation</span><span class="o">.</span><span class="n">add_tags</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;attrName&#39;</span><span class="p">,</span> <span class="s1">&#39;attrValue&#39;</span><span class="p">,</span> <span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">tags</span><span class="p">)</span>
 
@@ -162,7 +181,10 @@
         <span class="n">ExtractRunParametersTagsOperation</span><span class="o">.</span><span class="n">add_iterationvars</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">iterationvars_regex_map</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ExtractRunParametersTagsOperation.extract_attributes_and_params"><a class="viewcode-back" href="../tag_extractor.html#tag_extractor.ExtractRunParametersTagsOperation.extract_attributes_and_params">[docs]</a>    <span class="nd">@staticmethod</span>
+
+<div class="viewcode-block" id="ExtractRunParametersTagsOperation.extract_attributes_and_params">
+<a class="viewcode-back" href="../tag_extractor.html#tag_extractor.ExtractRunParametersTagsOperation.extract_attributes_and_params">[docs]</a>
+    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">extract_attributes_and_params</span><span class="p">(</span><span class="n">parameter_extractor</span><span class="p">,</span> <span class="n">attribute_extractor</span>
                                       <span class="p">,</span> <span class="n">parameters_regex_map</span><span class="p">,</span> <span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">iterationvars_regex_map</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -187,7 +209,9 @@
         <span class="n">attributes_data</span> <span class="o">=</span> <span class="n">attribute_extractor</span><span class="p">()</span>
         <span class="n">ExtractRunParametersTagsOperation</span><span class="o">.</span><span class="n">add_attributes</span><span class="p">(</span><span class="n">attributes_data</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">iterationvars_regex_map</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">tags</span></div></div>
+        <span class="k">return</span> <span class="n">tags</span></div>
+</div>
+
 
 </pre></div>
 

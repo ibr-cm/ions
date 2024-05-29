@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -15,9 +15,9 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -60,7 +60,41 @@
 <li class="toctree-l2"><a class="reference internal" href="utility.html">Utility</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exporters.html">exporters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extractors.html">extractors</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">plots</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">plots</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#plots.PlottingReaderFeather"><code class="docutils literal notranslate"><span class="pre">PlottingReaderFeather</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingReaderFeather.read_data"><code class="docutils literal notranslate"><span class="pre">PlottingReaderFeather.read_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingReaderFeather.yaml_tag"><code class="docutils literal notranslate"><span class="pre">PlottingReaderFeather.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#plots.PlottingTask"><code class="docutils literal notranslate"><span class="pre">PlottingTask</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.eval_grid_transform"><code class="docutils literal notranslate"><span class="pre">PlottingTask.eval_grid_transform()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.get_data"><code class="docutils literal notranslate"><span class="pre">PlottingTask.get_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.parse_matplotlib_rc"><code class="docutils literal notranslate"><span class="pre">PlottingTask.parse_matplotlib_rc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.parse_matplotlib_rc_to_kwargs"><code class="docutils literal notranslate"><span class="pre">PlottingTask.parse_matplotlib_rc_to_kwargs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.plot_catplot"><code class="docutils literal notranslate"><span class="pre">PlottingTask.plot_catplot()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.plot_data"><code class="docutils literal notranslate"><span class="pre">PlottingTask.plot_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.plot_distribution"><code class="docutils literal notranslate"><span class="pre">PlottingTask.plot_distribution()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.plot_heatmap_grid"><code class="docutils literal notranslate"><span class="pre">PlottingTask.plot_heatmap_grid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.plot_heatmap_nogrid"><code class="docutils literal notranslate"><span class="pre">PlottingTask.plot_heatmap_nogrid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.plot_heatplot"><code class="docutils literal notranslate"><span class="pre">PlottingTask.plot_heatplot()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.plot_multiplot"><code class="docutils literal notranslate"><span class="pre">PlottingTask.plot_multiplot()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.plot_relplot"><code class="docutils literal notranslate"><span class="pre">PlottingTask.plot_relplot()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.prepare"><code class="docutils literal notranslate"><span class="pre">PlottingTask.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.savefigure"><code class="docutils literal notranslate"><span class="pre">PlottingTask.savefigure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.set_backend"><code class="docutils literal notranslate"><span class="pre">PlottingTask.set_backend()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.set_data_repo"><code class="docutils literal notranslate"><span class="pre">PlottingTask.set_data_repo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.set_grid_defaults"><code class="docutils literal notranslate"><span class="pre">PlottingTask.set_grid_defaults()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.set_label_defaults"><code class="docutils literal notranslate"><span class="pre">PlottingTask.set_label_defaults()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.set_legend_defaults"><code class="docutils literal notranslate"><span class="pre">PlottingTask.set_legend_defaults()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.set_misc_defaults"><code class="docutils literal notranslate"><span class="pre">PlottingTask.set_misc_defaults()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.set_plot_specific_options"><code class="docutils literal notranslate"><span class="pre">PlottingTask.set_plot_specific_options()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.set_theme"><code class="docutils literal notranslate"><span class="pre">PlottingTask.set_theme()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plots.PlottingTask.yaml_tag"><code class="docutils literal notranslate"><span class="pre">PlottingTask.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#plots.register_constructors"><code class="docutils literal notranslate"><span class="pre">register_constructors()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="transforms.html">transforms</a></li>
 </ul>
 </li>
@@ -91,8 +125,369 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="plots">
-<h1>plots<a class="headerlink" href="#plots" title="Permalink to this heading"></a></h1>
+  <section id="module-plots">
+<span id="plots"></span><h1>plots<a class="headerlink" href="#module-plots" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="plots.PlottingReaderFeather">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plots.</span></span><span class="sig-name descname"><span class="pre">PlottingReaderFeather</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numerical_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">23</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingReaderFeather"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingReaderFeather" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
+<p>Import the data, saved as [feather/arrow](<a class="reference external" href="https://arrow.apache.org/docs/python/feather.html">https://arrow.apache.org/docs/python/feather.html</a>), from the input files</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_files: List[str]</strong></dt><dd><p>the list of paths to the input files, as literal path or as a regular expression</p>
+</dd>
+<dt><strong>numerical_columns: List[str]</strong></dt><dd><p>the columns of the input <cite>pandas.DataFrame</cite> which have numerical data,
+all other will be converted to categories to save on memory and improve
+performance</p>
+</dd>
+<dt><strong>sample: float</strong></dt><dd><p>if None, no sampling is done (default). If not None, it is the rate at which the input data is sampled</p>
+</dd>
+<dt><strong>sample_seed: int</strong></dt><dd><p>the seed to use for the sampling RNG</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>read_data</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingReaderFeather.read_data">
+<span class="sig-name descname"><span class="pre">read_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingReaderFeather.read_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingReaderFeather.read_data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plots.PlottingReaderFeather.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!PlottingReaderFeather'</span></em><a class="headerlink" href="#plots.PlottingReaderFeather.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plots.PlottingTask">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plots.</span></span><span class="sig-name descname"><span class="pre">PlottingTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_types</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matplotlib_backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'agg'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'paper'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes_style</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'dark'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title_template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bbox_inches</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'tight'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'best'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_bbox</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matplotlib_rc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xrange</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yrange</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_yaxis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xticklabels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xticks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xticks_minor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yticks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yticks_minor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colormap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
+<p>Generate a plot from the given data.</p>
+<p>See [seaborn.lineplot](<a class="reference external" href="https://seaborn.pydata.org/generated/seaborn.lineplot.html">https://seaborn.pydata.org/generated/seaborn.lineplot.html</a>) for examples of using <cite>hue</cite> and <cite>style</cite>.
+See [seaborn.catplot](<a class="reference external" href="https://seaborn.pydata.org/generated/seaborn.catplot.html">https://seaborn.pydata.org/generated/seaborn.catplot.html</a>) for examples of using <cite>row</cite> and <cite>column</cite>, .
+See [seaborn.relplot](<a class="reference external" href="https://seaborn.pydata.org/generated/seaborn.relplot.html">https://seaborn.pydata.org/generated/seaborn.relplot.html</a>) for examples of using both <cite>hue</cite>, <cite>style</cite>, <cite>row</cite> and <cite>column</cite> concurrently.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dataset_name: str</strong></dt><dd><p>the dataset to operate on</p>
+</dd>
+<dt><strong>output_file: str</strong></dt><dd><p>the file path the generated plot is saved to, with the suffix choosing
+the output format</p>
+</dd>
+<dt><strong>plot_type: str</strong></dt><dd><dl class="simple">
+<dt>the kind of plot to generate, either one of:</dt><dd><p><cite>box</cite>, ‘lineplot’, ‘scatterplot’, ‘boxen’, ‘stripplot’, ‘swarm’, ‘bar’, ‘count’, ‘point’, ‘heat’</p>
+</dd>
+</dl>
+</dd>
+<dt><strong>x: str</strong></dt><dd><p>the name of the column with the data to plot on the x-axis</p>
+</dd>
+<dt><strong>y: str</strong></dt><dd><p>the name of the column with the data to plot on the y-axis</p>
+</dd>
+<dt><strong>selector: Optional[Union[Callable, str]]</strong></dt><dd><p>a query string for selecting a subset of the input DataFrame for
+plotting, see
+[<cite>pandas.DataFrame.query</cite>](<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.query.html">https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.query.html</a>)
+and
+[indexing](<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#the-query-method">https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#the-query-method</a>)</p>
+</dd>
+<dt><strong>column: Optional[str]</strong></dt><dd><p>the column of the input <cite>DataFrame</cite> to use for partitioning the data and
+plotting each partition into a separate plot, aligning them all vertically into a column</p>
+</dd>
+<dt><strong>row: Optional[str]</strong></dt><dd><p>the column of the input <cite>DataFrame</cite> to use for partitioning the data and
+plotting each partition into a separate plot, aligning them all horizontally into a column</p>
+</dd>
+<dt><strong>hue: Optional[str]</strong></dt><dd><p>the column of the input <cite>DataFrame</cite> to use for partitioning the data and
+plotting each partition into the same plot, with a different color</p>
+</dd>
+<dt><strong>size: Optional[str]</strong></dt><dd><p>the column of the input <cite>DataFrame</cite> to use for partitioning the data and
+plotting each partition into the same plot, with a different width</p>
+</dd>
+<dt><strong>style: Optional[str]</strong></dt><dd><p>the column of the input <cite>DataFrame</cite> to use for partitioning the data and
+plotting each partition into the same plot, with a different line style and marker</p>
+</dd>
+<dt><strong>matplotlib_backend: str</strong></dt><dd><p>the matplotlib drawing [backend](<a class="reference external" href="https://matplotlib.org/stable/users/explain/backends.html">https://matplotlib.org/stable/users/explain/backends.html</a>) to use</p>
+</dd>
+<dt><strong>context: str</strong></dt><dd><p>set the theme [context](<a class="reference external" href="https://seaborn.pydata.org/generated/seaborn.set_context.html#seaborn.set_context">https://seaborn.pydata.org/generated/seaborn.set_context.html#seaborn.set_context</a>) for seaborn</p>
+</dd>
+<dt><strong>axes_style: str</strong></dt><dd><p>set the seaborn [axes style](<a class="reference external" href="https://seaborn.pydata.org/generated/seaborn.axes_style.html#seaborn.axes_style">https://seaborn.pydata.org/generated/seaborn.axes_style.html#seaborn.axes_style</a>)</p>
+</dd>
+<dt><strong>legend: bool</strong></dt><dd><p>whether to add a legend to the plot</p>
+</dd>
+<dt><strong>alpha: float</strong></dt><dd><p>the alpha value used in lineplots for lines and markers</p>
+</dd>
+<dt><strong>xlabel: str</strong></dt><dd><p>the label to assign to the x-axis</p>
+</dd>
+<dt><strong>ylabel: str</strong></dt><dd><p>the label to assign to the y-axis</p>
+</dd>
+<dt><strong>bin_size: float</strong></dt><dd><p>the size of the position bin used in heatmaps</p>
+</dd>
+<dt><strong>title_template: str</strong></dt><dd><p>the template string to use to label one plot in a grid, for syntax see
+[seaborn.FacetGrid](<a class="reference external" href="https://seaborn.pydata.org/generated/seaborn.FacetGrid.set_titles.html#seaborn.FacetGrid.set_titles">https://seaborn.pydata.org/generated/seaborn.FacetGrid.set_titles.html#seaborn.FacetGrid.set_titles</a>)</p>
+</dd>
+<dt><strong>bbox_inches: Union[str, Tuple[float]]</strong></dt><dd><p>the bounding box of the figure, as a tuple (xmin, ymin, xmax, ymax), or <cite>tight</cite></p>
+</dd>
+<dt><strong>legend_location: str</strong></dt><dd><p>the location to place the legend</p>
+</dd>
+<dt><strong>legend_bbox: str</strong></dt><dd><p>the bounding box the location is placed in</p>
+</dd>
+<dt><strong>legend_labels: Optional[List[str]]</strong></dt><dd><p>the list of labels to assign in the legend</p>
+</dd>
+<dt><strong>legend_title: Optional[str]</strong></dt><dd><p>the title of the legend</p>
+</dd>
+<dt><strong>matplotlib_rc: Optional[str]</strong></dt><dd><p>the path to load a matplotlib.rc from</p>
+</dd>
+<dt><strong>yrange: Optional[str]</strong></dt><dd><p>the value range to use on the y-axis</p>
+</dd>
+<dt><strong>invert_yaxis: bool</strong></dt><dd><p>whether to invert the direction of the y-axis</p>
+</dd>
+<dt><strong>plot_size: Optional[str]</strong></dt><dd><p>the size of the plot, as a tuple of inches</p>
+</dd>
+<dt><strong>xticklabels: Optional[str]</strong></dt><dd><p>the list of labels to assign to the categories on the x-axis</p>
+</dd>
+<dt><strong>colormap: Optional[str]</strong></dt><dd><p>the colormap to use for heatmaps</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#plots.PlottingTask.savefigure" title="plots.PlottingTask.savefigure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">savefigure</span></code></a>(fig, plot_destination_dir, filename)</p></td>
+<td><p>Save the given figure as PNG &amp; SVG in the given directory with the given filename</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>eval_grid_transform</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>get_data</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>parse_matplotlib_rc</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>parse_matplotlib_rc_to_kwargs</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>plot_catplot</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>plot_data</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>plot_distribution</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>plot_heatmap_grid</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>plot_heatmap_nogrid</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>plot_heatplot</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>plot_multiplot</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>plot_relplot</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>prepare</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>set_backend</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>set_data_repo</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>set_grid_defaults</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>set_label_defaults</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>set_legend_defaults</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>set_misc_defaults</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>set_plot_specific_options</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>set_theme</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.eval_grid_transform">
+<span class="sig-name descname"><span class="pre">eval_grid_transform</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.eval_grid_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.eval_grid_transform" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.get_data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.parse_matplotlib_rc">
+<span class="sig-name descname"><span class="pre">parse_matplotlib_rc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matplotlib_rc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.parse_matplotlib_rc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.parse_matplotlib_rc" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.parse_matplotlib_rc_to_kwargs">
+<span class="sig-name descname"><span class="pre">parse_matplotlib_rc_to_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.parse_matplotlib_rc_to_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.parse_matplotlib_rc_to_kwargs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.plot_catplot">
+<span class="sig-name descname"><span class="pre">plot_catplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'v2x_rate'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cbr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'moduleName'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dcc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'traciStart'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'box'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.plot_catplot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.plot_catplot" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.plot_data">
+<span class="sig-name descname"><span class="pre">plot_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.plot_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.plot_data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.plot_distribution">
+<span class="sig-name descname"><span class="pre">plot_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'value'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'moduleName'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dcc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'traciStart'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ecdf'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.plot_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.plot_distribution" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.plot_heatmap_grid">
+<span class="sig-name descname"><span class="pre">plot_heatmap_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.plot_heatmap_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.plot_heatmap_grid" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.plot_heatmap_nogrid">
+<span class="sig-name descname"><span class="pre">plot_heatmap_nogrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.plot_heatmap_nogrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.plot_heatmap_nogrid" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.plot_heatplot">
+<span class="sig-name descname"><span class="pre">plot_heatplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'posX'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'posX'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cbr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'moduleName'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prefix'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.plot_heatplot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.plot_heatplot" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.plot_multiplot">
+<span class="sig-name descname"><span class="pre">plot_multiplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.plot_multiplot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.plot_multiplot" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.plot_relplot">
+<span class="sig-name descname"><span class="pre">plot_relplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'v2x_rate'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cbr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'moduleName'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'prefix'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dcc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'traciStart'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'line'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.plot_relplot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.plot_relplot" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.prepare" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.savefigure">
+<span class="sig-name descname"><span class="pre">savefigure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_destination_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bbox_inches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tight'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.savefigure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.savefigure" title="Link to this definition"></a></dt>
+<dd><p>Save the given figure as PNG &amp; SVG in the given directory with the given filename</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.set_backend">
+<span class="sig-name descname"><span class="pre">set_backend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'agg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.set_backend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.set_backend" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.set_data_repo">
+<span class="sig-name descname"><span class="pre">set_data_repo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_repo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.set_data_repo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.set_data_repo" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.set_grid_defaults">
+<span class="sig-name descname"><span class="pre">set_grid_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.set_grid_defaults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.set_grid_defaults" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.set_label_defaults">
+<span class="sig-name descname"><span class="pre">set_label_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title_template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xticklabels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.set_label_defaults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.set_label_defaults" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.set_legend_defaults">
+<span class="sig-name descname"><span class="pre">set_legend_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'best'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_bbox</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.set_legend_defaults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.set_legend_defaults" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.set_misc_defaults">
+<span class="sig-name descname"><span class="pre">set_misc_defaults</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bbox_inches</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'tight'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matplotlib_rc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xrange</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yrange</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invert_yaxis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colormap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.set_misc_defaults"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.set_misc_defaults" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.set_plot_specific_options">
+<span class="sig-name descname"><span class="pre">set_plot_specific_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.set_plot_specific_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.set_plot_specific_options" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plots.PlottingTask.set_theme">
+<span class="sig-name descname"><span class="pre">set_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'paper'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes_style</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'dark'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#PlottingTask.set_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.PlottingTask.set_theme" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plots.PlottingTask.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!PlottingTask'</span></em><a class="headerlink" href="#plots.PlottingTask.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="plots.register_constructors">
+<span class="sig-prename descclassname"><span class="pre">plots.</span></span><span class="sig-name descname"><span class="pre">register_constructors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plots.html#register_constructors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plots.register_constructors" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 
 

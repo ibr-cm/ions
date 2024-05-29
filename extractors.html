@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -15,9 +15,9 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -59,7 +59,92 @@
 <li class="toctree-l2"><a class="reference internal" href="common.html">Common</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utility.html">Utility</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exporters.html">exporters</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">extractors</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">extractors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#extractors.BaseExtractor"><code class="docutils literal notranslate"><span class="pre">BaseExtractor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.BaseExtractor.apply_tags"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.apply_tags()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.BaseExtractor.convert_columns_to_category"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.convert_columns_to_category()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.BaseExtractor.read_pattern_matched_scalars_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_pattern_matched_scalars_from_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.BaseExtractor.read_pattern_matched_signals_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_pattern_matched_signals_from_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.BaseExtractor.read_query_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_query_from_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.BaseExtractor.read_scalars_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_scalars_from_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.BaseExtractor.read_signals_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_signals_from_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.BaseExtractor.read_sql_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_sql_from_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.BaseExtractor.read_statistic_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_statistic_from_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.BaseExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#extractors.DataAttributes"><code class="docutils literal notranslate"><span class="pre">DataAttributes</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.DataAttributes.add_alias"><code class="docutils literal notranslate"><span class="pre">DataAttributes.add_alias()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.DataAttributes.add_source_file"><code class="docutils literal notranslate"><span class="pre">DataAttributes.add_source_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.DataAttributes.add_source_files"><code class="docutils literal notranslate"><span class="pre">DataAttributes.add_source_files()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.DataAttributes.get_aliases"><code class="docutils literal notranslate"><span class="pre">DataAttributes.get_aliases()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.DataAttributes.get_source_files"><code class="docutils literal notranslate"><span class="pre">DataAttributes.get_source_files()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.DataAttributes.remove_source_file"><code class="docutils literal notranslate"><span class="pre">DataAttributes.remove_source_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#extractors.Extractor"><code class="docutils literal notranslate"><span class="pre">Extractor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.Extractor.prepare"><code class="docutils literal notranslate"><span class="pre">Extractor.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.Extractor.set_tag_maps"><code class="docutils literal notranslate"><span class="pre">Extractor.set_tag_maps()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.Extractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">Extractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#extractors.MatchingExtractor"><code class="docutils literal notranslate"><span class="pre">MatchingExtractor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.MatchingExtractor.extract_all_signals"><code class="docutils literal notranslate"><span class="pre">MatchingExtractor.extract_all_signals()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.MatchingExtractor.get_matching_signals"><code class="docutils literal notranslate"><span class="pre">MatchingExtractor.get_matching_signals()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.MatchingExtractor.prepare"><code class="docutils literal notranslate"><span class="pre">MatchingExtractor.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.MatchingExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">MatchingExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#extractors.PatternMatchingBulkExtractor"><code class="docutils literal notranslate"><span class="pre">PatternMatchingBulkExtractor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.PatternMatchingBulkExtractor.extract_all_signals"><code class="docutils literal notranslate"><span class="pre">PatternMatchingBulkExtractor.extract_all_signals()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.PatternMatchingBulkExtractor.prepare"><code class="docutils literal notranslate"><span class="pre">PatternMatchingBulkExtractor.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.PatternMatchingBulkExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">PatternMatchingBulkExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#extractors.PatternMatchingBulkScalarExtractor"><code class="docutils literal notranslate"><span class="pre">PatternMatchingBulkScalarExtractor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.PatternMatchingBulkScalarExtractor.extract_all_scalars"><code class="docutils literal notranslate"><span class="pre">PatternMatchingBulkScalarExtractor.extract_all_scalars()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.PatternMatchingBulkScalarExtractor.prepare"><code class="docutils literal notranslate"><span class="pre">PatternMatchingBulkScalarExtractor.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.PatternMatchingBulkScalarExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">PatternMatchingBulkScalarExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#extractors.PositionExtractor"><code class="docutils literal notranslate"><span class="pre">PositionExtractor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.PositionExtractor.prepare"><code class="docutils literal notranslate"><span class="pre">PositionExtractor.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.PositionExtractor.read_position_and_signal_from_file"><code class="docutils literal notranslate"><span class="pre">PositionExtractor.read_position_and_signal_from_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.PositionExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">PositionExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#extractors.RawExtractor"><code class="docutils literal notranslate"><span class="pre">RawExtractor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.RawExtractor.prepare"><code class="docutils literal notranslate"><span class="pre">RawExtractor.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.RawExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">RawExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#extractors.RawScalarExtractor"><code class="docutils literal notranslate"><span class="pre">RawScalarExtractor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.RawScalarExtractor.prepare"><code class="docutils literal notranslate"><span class="pre">RawScalarExtractor.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.RawScalarExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">RawScalarExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#extractors.RawStatisticExtractor"><code class="docutils literal notranslate"><span class="pre">RawStatisticExtractor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.RawStatisticExtractor.prepare"><code class="docutils literal notranslate"><span class="pre">RawStatisticExtractor.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.RawStatisticExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">RawStatisticExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#extractors.SqlExtractor"><code class="docutils literal notranslate"><span class="pre">SqlExtractor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.SqlExtractor.prepare"><code class="docutils literal notranslate"><span class="pre">SqlExtractor.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.SqlExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">SqlExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#extractors.SqlLiteReader"><code class="docutils literal notranslate"><span class="pre">SqlLiteReader</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.SqlLiteReader.attribute_extractor"><code class="docutils literal notranslate"><span class="pre">SqlLiteReader.attribute_extractor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.SqlLiteReader.connect"><code class="docutils literal notranslate"><span class="pre">SqlLiteReader.connect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.SqlLiteReader.disconnect"><code class="docutils literal notranslate"><span class="pre">SqlLiteReader.disconnect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.SqlLiteReader.execute_sql_query"><code class="docutils literal notranslate"><span class="pre">SqlLiteReader.execute_sql_query()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.SqlLiteReader.extract_tags"><code class="docutils literal notranslate"><span class="pre">SqlLiteReader.extract_tags()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.SqlLiteReader.parameter_extractor"><code class="docutils literal notranslate"><span class="pre">SqlLiteReader.parameter_extractor()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#extractors.register_constructors"><code class="docutils literal notranslate"><span class="pre">register_constructors()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="plots.html">plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="transforms.html">transforms</a></li>
 </ul>
@@ -91,8 +176,1143 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="extractors">
-<h1>extractors<a class="headerlink" href="#extractors" title="Permalink to this heading"></a></h1>
+  <section id="module-extractors">
+<span id="extractors"></span><h1>extractors<a class="headerlink" href="#module-extractors" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="extractors.BaseExtractor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">extractors.</span></span><span class="sig-name descname"><span class="pre">BaseExtractor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">categorical_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">categorical_columns_excluded</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimal_tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simtimeRaw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moduleName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eventNumber</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#BaseExtractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.BaseExtractor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#extractors.Extractor" title="extractors.Extractor"><code class="xref py py-class docutils literal notranslate"><span class="pre">Extractor</span></code></a></p>
+<p>A class for extracting and preprocessing data from a SQLite database.
+This is the base class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code>()</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>apply_tags</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>convert_columns_to_category</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_pattern_matched_scalars_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_pattern_matched_signals_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_query_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_scalars_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_signals_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_sql_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_statistic_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>set_tag_maps</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.BaseExtractor.apply_tags">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">apply_tags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minimal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#BaseExtractor.apply_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.BaseExtractor.apply_tags" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.BaseExtractor.convert_columns_to_category">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">convert_columns_to_category</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluded_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#BaseExtractor.convert_columns_to_category"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.BaseExtractor.convert_columns_to_category" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.BaseExtractor.read_pattern_matched_scalars_from_file">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_pattern_matched_scalars_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalarName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moduleName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalarId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#BaseExtractor.read_pattern_matched_scalars_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.BaseExtractor.read_pattern_matched_scalars_from_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.BaseExtractor.read_pattern_matched_signals_from_file">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_pattern_matched_signals_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vectorName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simtimeRaw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moduleName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eventNumber</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#BaseExtractor.read_pattern_matched_signals_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.BaseExtractor.read_pattern_matched_signals_from_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.BaseExtractor.read_query_from_file">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_query_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_file,</span> <span class="pre">query,</span> <span class="pre">alias,</span> <span class="pre">categorical_columns=[],</span> <span class="pre">excluded_categorical_columns={},</span> <span class="pre">base_tags=None,</span> <span class="pre">additional_tags=[],</span> <span class="pre">minimal_tags=True,</span> <span class="pre">simtimeRaw=True,</span> <span class="pre">moduleName=True,</span> <span class="pre">eventNumber=True,</span> <span class="pre">attributes_regex_map={'MCO':</span> <span class="pre">[{'regex':</span> <span class="pre">'configname',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'SCO':</span> <span class="pre">[{'regex':</span> <span class="pre">'configname',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'prefix':</span> <span class="pre">[{'regex':</span> <span class="pre">'configname',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}]},</span> <span class="pre">iterationvars_regex_map={'cp_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'services-ca-((.\\..)|(.\\...))-cp-((.\\..)|(.\\...))',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'limit':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$limit=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'period':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$period=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'sensors':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$sensorConf=.*?,',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'simulationEnd':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$1=.*?s\\+.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'simulationStart':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$simulationStart=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'traciStart':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$traciStart=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'v2x_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'vehicles-((.\\..)|(.\\...))-plain-((.\\..\\.)|(.\\...\\.))',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}]},</span> <span class="pre">parameters_regex_map={'ca_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.ca_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'ca_weight':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.ca_weight',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cam_length':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.ExampleServiceCam\\.packetLength',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cp_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.cp_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cp_weight':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.cp_weight',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cpm_length':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.ExampleServiceCpm\\.packetLength',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'dcc':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.vanetza\\[\\*\\]\\.dcc\\.typename',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'dcc_profile':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.dccProfile',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'gen_rule':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.generationRule',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'limit':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$limit=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'n_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_N_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'p_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_P_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'pathloss':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.radioMedium\\.pathLossType',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'plain_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.plain_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'queueLength':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.vanetza\\[\\*\\]\\.dcc\\.queueLength',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'red_mit':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_Method',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'s_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_S_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'scheduler_parameter_alpha':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.facDcc\\.schedulerParameterAlpha',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'traciStart':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.traci\\.core\\.startTime',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'v2x_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.vehicle_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'w_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_W_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'warmup':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$warmup-period=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'wd_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_WD_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'wfq_scheduler':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.facDcc\\.useWfqScheduler',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'wfq_selector':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.facDcc\\.useWfqSelector',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}]}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#BaseExtractor.read_query_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.BaseExtractor.read_query_from_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.BaseExtractor.read_scalars_from_file">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_scalars_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moduleName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalarName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalarId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#BaseExtractor.read_scalars_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.BaseExtractor.read_scalars_from_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.BaseExtractor.read_signals_from_file">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_signals_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simtimeRaw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moduleName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eventNumber</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#BaseExtractor.read_signals_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.BaseExtractor.read_signals_from_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.BaseExtractor.read_sql_from_file">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_sql_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">categorical_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excluded_categorical_columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#BaseExtractor.read_sql_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.BaseExtractor.read_sql_from_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.BaseExtractor.read_statistic_from_file">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_statistic_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moduleName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#BaseExtractor.read_statistic_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.BaseExtractor.read_statistic_from_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="extractors.BaseExtractor.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!BaseExtractor'</span></em><a class="headerlink" href="#extractors.BaseExtractor.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="extractors.DataAttributes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">extractors.</span></span><span class="sig-name descname"><span class="pre">DataAttributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#DataAttributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.DataAttributes" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
+<p>A class for assigning arbitrary attributes to a dataset.
+The constructor accept an arbitrary number of keyword arguments and turns
+them into object attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>source_file</strong><span class="classifier">str</span></dt><dd><p>The file name the dataset was extracted from</p>
+</dd>
+<dt><strong>source_files</strong><span class="classifier">List[str]</span></dt><dd><p>The list of file names the dataset was extracted from</p>
+</dd>
+<dt><strong>alias</strong><span class="classifier">List[str]</span></dt><dd><p>The alias given to the data in the dataset</p>
+</dd>
+<dt><strong>aliases</strong><span class="classifier">List[str]</span></dt><dd><p>The aliases given to the data in the dataset</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+<dt><strong>yaml_tag</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>add_alias</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>add_source_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>add_source_files</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>get_aliases</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>get_source_files</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>remove_source_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.DataAttributes.add_alias">
+<span class="sig-name descname"><span class="pre">add_alias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#DataAttributes.add_alias"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.DataAttributes.add_alias" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.DataAttributes.add_source_file">
+<span class="sig-name descname"><span class="pre">add_source_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#DataAttributes.add_source_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.DataAttributes.add_source_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.DataAttributes.add_source_files">
+<span class="sig-name descname"><span class="pre">add_source_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#DataAttributes.add_source_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.DataAttributes.add_source_files" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.DataAttributes.get_aliases">
+<span class="sig-name descname"><span class="pre">get_aliases</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/extractors.html#DataAttributes.get_aliases"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.DataAttributes.get_aliases" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.DataAttributes.get_source_files">
+<span class="sig-name descname"><span class="pre">get_source_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/extractors.html#DataAttributes.get_source_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.DataAttributes.get_source_files" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.DataAttributes.remove_source_file">
+<span class="sig-name descname"><span class="pre">remove_source_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#DataAttributes.remove_source_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.DataAttributes.remove_source_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="extractors.Extractor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">extractors.</span></span><span class="sig-name descname"><span class="pre">Extractor</span></span><a class="reference internal" href="_modules/extractors.html#Extractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.Extractor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
+<p>A class for extracting and preprocessing data from a SQLite database.
+This is the abstract base class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#extractors.Extractor.prepare" title="extractors.Extractor.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>set_tag_maps</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.Extractor.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#Extractor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.Extractor.prepare" title="Link to this definition"></a></dt>
+<dd><p>Prepare and return a list or a single dask.Delayed task</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.Extractor.set_tag_maps">
+<span class="sig-name descname"><span class="pre">set_tag_maps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attributes_regex_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterationvars_regex_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters_regex_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#Extractor.set_tag_maps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.Extractor.set_tag_maps" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="extractors.Extractor.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!Extractor'</span></em><a class="headerlink" href="#extractors.Extractor.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="extractors.MatchingExtractor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">extractors.</span></span><span class="sig-name descname"><span class="pre">MatchingExtractor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias_pattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#MatchingExtractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.MatchingExtractor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#extractors.BaseExtractor" title="extractors.BaseExtractor"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExtractor</span></code></a></p>
+<p>Extract the data for multiple signals matching a regular expression, with
+the associated positions, from the input files specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_files: List[str]</strong></dt><dd><p>the list of paths to the input files, as literal path or as a regular expression</p>
+</dd>
+<dt><strong>pattern: str</strong></dt><dd><p>the regular expression used for matching possible signal names</p>
+</dd>
+<dt><strong>alias_pattern: str</strong></dt><dd><p>the template string for naming the extracted signal</p>
+</dd>
+<dt><strong>alias: str</strong></dt><dd><p>the name given to the column with the extracted signal data</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#extractors.MatchingExtractor.prepare" title="extractors.MatchingExtractor.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>apply_tags</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>convert_columns_to_category</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>extract_all_signals</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>get_matching_signals</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_pattern_matched_scalars_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_pattern_matched_signals_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_query_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_scalars_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_signals_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_sql_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_statistic_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>set_tag_maps</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.MatchingExtractor.extract_all_signals">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extract_all_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_file,</span> <span class="pre">signals,</span> <span class="pre">categorical_columns=[],</span> <span class="pre">excluded_categorical_columns={},</span> <span class="pre">base_tags=None,</span> <span class="pre">additional_tags=[],</span> <span class="pre">minimal_tags=True,</span> <span class="pre">attributes_regex_map={'MCO':</span> <span class="pre">[{'regex':</span> <span class="pre">'configname',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'SCO':</span> <span class="pre">[{'regex':</span> <span class="pre">'configname',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'prefix':</span> <span class="pre">[{'regex':</span> <span class="pre">'configname',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}]},</span> <span class="pre">iterationvars_regex_map={'cp_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'services-ca-((.\\..)|(.\\...))-cp-((.\\..)|(.\\...))',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'limit':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$limit=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'period':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$period=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'sensors':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$sensorConf=.*?,',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'simulationEnd':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$1=.*?s\\+.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'simulationStart':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$simulationStart=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'traciStart':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$traciStart=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'v2x_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'vehicles-((.\\..)|(.\\...))-plain-((.\\..\\.)|(.\\...\\.))',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}]},</span> <span class="pre">parameters_regex_map={'ca_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.ca_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'ca_weight':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.ca_weight',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cam_length':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.ExampleServiceCam\\.packetLength',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cp_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.cp_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cp_weight':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.cp_weight',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cpm_length':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.ExampleServiceCpm\\.packetLength',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'dcc':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.vanetza\\[\\*\\]\\.dcc\\.typename',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'dcc_profile':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.dccProfile',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'gen_rule':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.generationRule',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'limit':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$limit=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'n_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_N_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'p_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_P_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'pathloss':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.radioMedium\\.pathLossType',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'plain_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.plain_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'queueLength':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.vanetza\\[\\*\\]\\.dcc\\.queueLength',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'red_mit':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_Method',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'s_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_S_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'scheduler_parameter_alpha':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.facDcc\\.schedulerParameterAlpha',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'traciStart':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.traci\\.core\\.startTime',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'v2x_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.vehicle_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'w_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_W_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'warmup':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$warmup-period=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'wd_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_WD_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'wfq_scheduler':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.facDcc\\.useWfqScheduler',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'wfq_selector':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.facDcc\\.useWfqSelector',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}]},</span> <span class="pre">moduleName:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">simtimeRaw:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">eventNumber:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#MatchingExtractor.extract_all_signals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.MatchingExtractor.extract_all_signals" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.MatchingExtractor.get_matching_signals">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_matching_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias_pattern</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#MatchingExtractor.get_matching_signals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.MatchingExtractor.get_matching_signals" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.MatchingExtractor.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#MatchingExtractor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.MatchingExtractor.prepare" title="Link to this definition"></a></dt>
+<dd><p>Prepare and return a list or a single dask.Delayed task</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="extractors.MatchingExtractor.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!MatchingExtractor'</span></em><a class="headerlink" href="#extractors.MatchingExtractor.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="extractors.PatternMatchingBulkExtractor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">extractors.</span></span><span class="sig-name descname"><span class="pre">PatternMatchingBulkExtractor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias_match_pattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias_pattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#PatternMatchingBulkExtractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.PatternMatchingBulkExtractor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#extractors.BaseExtractor" title="extractors.BaseExtractor"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExtractor</span></code></a></p>
+<p>Extract the data for multiple signals matching a SQL LIKE pattern
+expression from the input files specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_files: List[str]</strong></dt><dd><p>the list of paths to the input files, as literal path or as a regular expression</p>
+</dd>
+<dt><strong>pattern: str</strong></dt><dd><p>the SQL LIKE pattern matching expression used for matching on possible signal names</p>
+</dd>
+<dt><strong>alias: str</strong></dt><dd><p>the name given to the column with the extracted signal data</p>
+</dd>
+<dt><strong>alias_match_pattern: str</strong></dt><dd><p>the regular expression used for extracting named capture groups from the matched signal names</p>
+</dd>
+<dt><strong>alias_pattern: str</strong></dt><dd><p>the template string for naming the extracted signal from the named capture groups matched by alias_match_pattern</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#extractors.PatternMatchingBulkExtractor.prepare" title="extractors.PatternMatchingBulkExtractor.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>apply_tags</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>convert_columns_to_category</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>extract_all_signals</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_pattern_matched_scalars_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_pattern_matched_signals_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_query_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_scalars_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_signals_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_sql_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_statistic_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>set_tag_maps</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.PatternMatchingBulkExtractor.extract_all_signals">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extract_all_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_file,</span> <span class="pre">pattern,</span> <span class="pre">alias,</span> <span class="pre">alias_match_pattern:</span> <span class="pre">str,</span> <span class="pre">alias_pattern:</span> <span class="pre">str,</span> <span class="pre">categorical_columns=[],</span> <span class="pre">excluded_categorical_columns={},</span> <span class="pre">base_tags=None,</span> <span class="pre">additional_tags=[],</span> <span class="pre">minimal_tags=True,</span> <span class="pre">attributes_regex_map={'MCO':</span> <span class="pre">[{'regex':</span> <span class="pre">'configname',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'SCO':</span> <span class="pre">[{'regex':</span> <span class="pre">'configname',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'prefix':</span> <span class="pre">[{'regex':</span> <span class="pre">'configname',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}]},</span> <span class="pre">iterationvars_regex_map={'cp_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'services-ca-((.\\..)|(.\\...))-cp-((.\\..)|(.\\...))',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'limit':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$limit=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'period':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$period=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'sensors':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$sensorConf=.*?,',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'simulationEnd':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$1=.*?s\\+.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'simulationStart':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$simulationStart=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'traciStart':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$traciStart=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'v2x_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'vehicles-((.\\..)|(.\\...))-plain-((.\\..\\.)|(.\\...\\.))',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}]},</span> <span class="pre">parameters_regex_map={'ca_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.ca_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'ca_weight':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.ca_weight',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cam_length':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.ExampleServiceCam\\.packetLength',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cp_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.cp_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cp_weight':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.cp_weight',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cpm_length':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.ExampleServiceCpm\\.packetLength',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'dcc':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.vanetza\\[\\*\\]\\.dcc\\.typename',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'dcc_profile':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.dccProfile',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'gen_rule':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.generationRule',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'limit':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$limit=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'n_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_N_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'p_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_P_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'pathloss':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.radioMedium\\.pathLossType',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'plain_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.plain_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'queueLength':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.vanetza\\[\\*\\]\\.dcc\\.queueLength',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'red_mit':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_Method',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'s_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_S_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'scheduler_parameter_alpha':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.facDcc\\.schedulerParameterAlpha',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'traciStart':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.traci\\.core\\.startTime',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'v2x_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.vehicle_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'w_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_W_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'warmup':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$warmup-period=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'wd_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_WD_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'wfq_scheduler':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.facDcc\\.useWfqScheduler',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'wfq_selector':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.facDcc\\.useWfqSelector',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}]},</span> <span class="pre">vectorName:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">moduleName:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">simtimeRaw:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">eventNumber:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#PatternMatchingBulkExtractor.extract_all_signals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.PatternMatchingBulkExtractor.extract_all_signals" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.PatternMatchingBulkExtractor.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#PatternMatchingBulkExtractor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.PatternMatchingBulkExtractor.prepare" title="Link to this definition"></a></dt>
+<dd><p>Prepare and return a list or a single dask.Delayed task</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="extractors.PatternMatchingBulkExtractor.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!PatternMatchingBulkExtractor'</span></em><a class="headerlink" href="#extractors.PatternMatchingBulkExtractor.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="extractors.PatternMatchingBulkScalarExtractor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">extractors.</span></span><span class="sig-name descname"><span class="pre">PatternMatchingBulkScalarExtractor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias_match_pattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias_pattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalarName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalarId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#PatternMatchingBulkScalarExtractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.PatternMatchingBulkScalarExtractor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#extractors.BaseExtractor" title="extractors.BaseExtractor"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExtractor</span></code></a></p>
+<p>Extract the data for multiple scalars matching a SQL LIKE pattern
+expression from the input files specified.
+Equivalent to:</p>
+<blockquote>
+<div><p>SELECT * FROM scalar WHERE scalarName LIKE &lt;pattern&gt;;</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_files: List[str]</strong></dt><dd><p>the list of paths to the input files, as literal path or as a regular expression</p>
+</dd>
+<dt><strong>pattern: str</strong></dt><dd><p>the SQL LIKE pattern matching expression used for matching on possible signal names</p>
+</dd>
+<dt><strong>alias: str</strong></dt><dd><p>the name given to the column with the extracted signal data</p>
+</dd>
+<dt><strong>alias_match_pattern: str</strong></dt><dd><p>the regular expression used for extracting named capture groups from the matched signal names</p>
+</dd>
+<dt><strong>alias_pattern: str</strong></dt><dd><p>the template string for naming the extracted signal from the named capture groups matched by alias_match_pattern</p>
+</dd>
+<dt><strong>runId: bool</strong></dt><dd><p>whether to extract the runId column</p>
+</dd>
+<dt><strong>scalarId: bool</strong></dt><dd><p>whether to extract the scalarId column</p>
+</dd>
+<dt><strong>scalarName: bool</strong></dt><dd><p>whether to extract the scalarName column</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#extractors.PatternMatchingBulkScalarExtractor.prepare" title="extractors.PatternMatchingBulkScalarExtractor.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>apply_tags</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>convert_columns_to_category</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>extract_all_scalars</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_pattern_matched_scalars_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_pattern_matched_signals_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_query_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_scalars_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_signals_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_sql_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_statistic_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>set_tag_maps</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.PatternMatchingBulkScalarExtractor.extract_all_scalars">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extract_all_scalars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_file,</span> <span class="pre">pattern,</span> <span class="pre">alias,</span> <span class="pre">alias_match_pattern:</span> <span class="pre">str,</span> <span class="pre">alias_pattern:</span> <span class="pre">str,</span> <span class="pre">categorical_columns=[],</span> <span class="pre">excluded_categorical_columns={},</span> <span class="pre">base_tags=None,</span> <span class="pre">additional_tags=[],</span> <span class="pre">minimal_tags=True,</span> <span class="pre">attributes_regex_map={'MCO':</span> <span class="pre">[{'regex':</span> <span class="pre">'configname',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'SCO':</span> <span class="pre">[{'regex':</span> <span class="pre">'configname',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'prefix':</span> <span class="pre">[{'regex':</span> <span class="pre">'configname',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}]},</span> <span class="pre">iterationvars_regex_map={'cp_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'services-ca-((.\\..)|(.\\...))-cp-((.\\..)|(.\\...))',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'limit':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$limit=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'period':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$period=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'sensors':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$sensorConf=.*?,',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'simulationEnd':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$1=.*?s\\+.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'simulationStart':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$simulationStart=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'traciStart':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$traciStart=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'v2x_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'vehicles-((.\\..)|(.\\...))-plain-((.\\..\\.)|(.\\...\\.))',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}]},</span> <span class="pre">parameters_regex_map={'ca_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.ca_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'ca_weight':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.ca_weight',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cam_length':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.ExampleServiceCam\\.packetLength',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cp_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.cp_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cp_weight':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.cp_weight',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cpm_length':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.ExampleServiceCpm\\.packetLength',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'dcc':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.vanetza\\[\\*\\]\\.dcc\\.typename',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'dcc_profile':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.dccProfile',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'gen_rule':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.generationRule',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'limit':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$limit=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'n_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_N_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'p_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_P_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'pathloss':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.radioMedium\\.pathLossType',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'plain_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.plain_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'queueLength':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.vanetza\\[\\*\\]\\.dcc\\.queueLength',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'red_mit':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_Method',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'s_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_S_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'scheduler_parameter_alpha':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.facDcc\\.schedulerParameterAlpha',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'traciStart':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.traci\\.core\\.startTime',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'v2x_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.vehicle_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'w_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_W_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'warmup':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$warmup-period=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'wd_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_WD_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'wfq_scheduler':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.facDcc\\.useWfqScheduler',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'wfq_selector':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.facDcc\\.useWfqSelector',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}]},</span> <span class="pre">scalarName:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">scalarId:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">moduleName:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">runId:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#PatternMatchingBulkScalarExtractor.extract_all_scalars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.PatternMatchingBulkScalarExtractor.extract_all_scalars" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.PatternMatchingBulkScalarExtractor.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#PatternMatchingBulkScalarExtractor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.PatternMatchingBulkScalarExtractor.prepare" title="Link to this definition"></a></dt>
+<dd><p>Prepare and return a list or a single dask.Delayed task</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="extractors.PatternMatchingBulkScalarExtractor.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!PatternMatchingBulkScalarExtractor'</span></em><a class="headerlink" href="#extractors.PatternMatchingBulkScalarExtractor.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="extractors.PositionExtractor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">extractors.</span></span><span class="sig-name descname"><span class="pre">PositionExtractor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_alias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_alias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restriction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#PositionExtractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.PositionExtractor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#extractors.BaseExtractor" title="extractors.BaseExtractor"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExtractor</span></code></a></p>
+<p>Extract the data for a signal, with the associated positions, from the input files specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_files: List[str]</strong></dt><dd><p>the list of paths to the input files, as literal path or as a regular expression</p>
+</dd>
+<dt><strong>x_signal: str</strong></dt><dd><p>the name of the signal with the x-axis coordinates</p>
+</dd>
+<dt><strong>x_alias: str</strong></dt><dd><p>the name given to the column with the extracted x-axis position data</p>
+</dd>
+<dt><strong>y_signal: str</strong></dt><dd><p>the name of the signal with the y-axis coordinates</p>
+</dd>
+<dt><strong>y_alias: str</strong></dt><dd><p>the name given to the column with the extracted y-axis position data</p>
+</dd>
+<dt><strong>signal: str</strong></dt><dd><p>the name of the signal to extract</p>
+</dd>
+<dt><strong>alias: str</strong></dt><dd><p>the name given to the column with the extracted signal data</p>
+</dd>
+<dt><strong>restriction: Optional[Union[Tuple[float], str]]</strong></dt><dd><p>this defines a area restriction on the positions from which the signal
+data is extracted, the tuple (x0, y0, x1, y1) defines the corners of
+a rectangle</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#extractors.PositionExtractor.prepare" title="extractors.PositionExtractor.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>apply_tags</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>convert_columns_to_category</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_pattern_matched_scalars_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_pattern_matched_signals_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_position_and_signal_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_query_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_scalars_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_signals_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_sql_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_statistic_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>set_tag_maps</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.PositionExtractor.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#PositionExtractor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.PositionExtractor.prepare" title="Link to this definition"></a></dt>
+<dd><p>Prepare and return a list or a single dask.Delayed task</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.PositionExtractor.read_position_and_signal_from_file">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_position_and_signal_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">db_file,</span> <span class="pre">x_signal:</span> <span class="pre">str,</span> <span class="pre">y_signal:</span> <span class="pre">str,</span> <span class="pre">x_alias:</span> <span class="pre">str,</span> <span class="pre">y_alias:</span> <span class="pre">str,</span> <span class="pre">signal:</span> <span class="pre">str,</span> <span class="pre">alias:</span> <span class="pre">str,</span> <span class="pre">restriction:</span> <span class="pre">tuple</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">moduleName:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">simtimeRaw:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">eventNumber:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">categorical_columns=[],</span> <span class="pre">excluded_categorical_columns={},</span> <span class="pre">base_tags=None,</span> <span class="pre">additional_tags=[],</span> <span class="pre">minimal_tags=True,</span> <span class="pre">attributes_regex_map={'MCO':</span> <span class="pre">[{'regex':</span> <span class="pre">'configname',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'SCO':</span> <span class="pre">[{'regex':</span> <span class="pre">'configname',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'prefix':</span> <span class="pre">[{'regex':</span> <span class="pre">'configname',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}]},</span> <span class="pre">iterationvars_regex_map={'cp_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'services-ca-((.\\..)|(.\\...))-cp-((.\\..)|(.\\...))',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'limit':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$limit=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'period':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$period=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'sensors':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$sensorConf=.*?,',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'simulationEnd':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$1=.*?s\\+.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'simulationStart':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$simulationStart=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'traciStart':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$traciStart=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'v2x_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'vehicles-((.\\..)|(.\\...))-plain-((.\\..\\.)|(.\\...\\.))',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}]},</span> <span class="pre">parameters_regex_map={'ca_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.ca_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'ca_weight':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.ca_weight',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cam_length':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.ExampleServiceCam\\.packetLength',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cp_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.cp_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cp_weight':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.cp_weight',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'cpm_length':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.ExampleServiceCpm\\.packetLength',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'dcc':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.vanetza\\[\\*\\]\\.dcc\\.typename',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'dcc_profile':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.dccProfile',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'gen_rule':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.generationRule',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'limit':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$limit=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'n_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_N_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'p_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_P_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'pathloss':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.radioMedium\\.pathLossType',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'plain_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.plain_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'queueLength':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.vanetza\\[\\*\\]\\.dcc\\.queueLength',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'red_mit':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_Method',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'s_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_S_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'scheduler_parameter_alpha':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.facDcc\\.schedulerParameterAlpha',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'traciStart':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.traci\\.core\\.startTime',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'v2x_rate':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\*\\.vehicle_rate',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'w_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_W_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'warmup':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\$warmup-period=.*?s',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'wd_red':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.CpService\\.RedundancyMitigation_WD_Redundancy',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'wfq_scheduler':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.facDcc\\.useWfqScheduler',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}],</span> <span class="pre">'wfq_selector':</span> <span class="pre">[{'regex':</span> <span class="pre">'\\*\\.node\\[\\*\\]\\.middleware\\.facDcc\\.useWfqSelector',</span> <span class="pre">'transform':</span> <span class="pre">&lt;function</span> <span class="pre">&lt;lambda&gt;&gt;}]}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#PositionExtractor.read_position_and_signal_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.PositionExtractor.read_position_and_signal_from_file" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="extractors.PositionExtractor.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!PositionExtractor'</span></em><a class="headerlink" href="#extractors.PositionExtractor.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="extractors.RawExtractor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">extractors.</span></span><span class="sig-name descname"><span class="pre">RawExtractor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#RawExtractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.RawExtractor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#extractors.BaseExtractor" title="extractors.BaseExtractor"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExtractor</span></code></a></p>
+<p>Extract the data for a signal from the input files specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_files: List[str]</strong></dt><dd><p>the list of paths to the input files, as literal path or as a regular expression</p>
+</dd>
+<dt><strong>signal: str</strong></dt><dd><p>the name of the signal which is to be extracted</p>
+</dd>
+<dt><strong>alias: str</strong></dt><dd><p>the name given to the column with the extracted signal data</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#extractors.RawExtractor.prepare" title="extractors.RawExtractor.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>apply_tags</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>convert_columns_to_category</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_pattern_matched_scalars_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_pattern_matched_signals_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_query_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_scalars_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_signals_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_sql_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_statistic_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>set_tag_maps</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.RawExtractor.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#RawExtractor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.RawExtractor.prepare" title="Link to this definition"></a></dt>
+<dd><p>Prepare and return a list or a single dask.Delayed task</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="extractors.RawExtractor.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!RawExtractor'</span></em><a class="headerlink" href="#extractors.RawExtractor.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="extractors.RawScalarExtractor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">extractors.</span></span><span class="sig-name descname"><span class="pre">RawScalarExtractor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalarName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalarId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#RawScalarExtractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.RawScalarExtractor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#extractors.BaseExtractor" title="extractors.BaseExtractor"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExtractor</span></code></a></p>
+<p>Extract the data for a signal from the <cite>scalar</cite> table of the input files specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_files: List[str]</strong></dt><dd><p>the list of paths to the input files, as literal path or as a regular expression</p>
+</dd>
+<dt><strong>signal: str</strong></dt><dd><p>the name of the signal which is to be extracted</p>
+</dd>
+<dt><strong>alias: str</strong></dt><dd><p>the name given to the column with the extracted signal data</p>
+</dd>
+<dt><strong>runId: str</strong></dt><dd><p>whether to extract the <cite>runId</cite> column as well</p>
+</dd>
+<dt><strong>scalarName: str</strong></dt><dd><p>whether to extract the <cite>scalarName</cite> column as well</p>
+</dd>
+<dt><strong>scalarId: str</strong></dt><dd><p>whether to extract the <cite>scalarId</cite> column as well</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#extractors.RawScalarExtractor.prepare" title="extractors.RawScalarExtractor.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>apply_tags</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>convert_columns_to_category</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_pattern_matched_scalars_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_pattern_matched_signals_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_query_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_scalars_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_signals_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_sql_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_statistic_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>set_tag_maps</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.RawScalarExtractor.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#RawScalarExtractor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.RawScalarExtractor.prepare" title="Link to this definition"></a></dt>
+<dd><p>Prepare and return a list or a single dask.Delayed task</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="extractors.RawScalarExtractor.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!RawScalarExtractor'</span></em><a class="headerlink" href="#extractors.RawScalarExtractor.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="extractors.RawStatisticExtractor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">extractors.</span></span><span class="sig-name descname"><span class="pre">RawStatisticExtractor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">statId</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#RawStatisticExtractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.RawStatisticExtractor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#extractors.BaseExtractor" title="extractors.BaseExtractor"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExtractor</span></code></a></p>
+<p>Extract the data for a signal from the <cite>statistic</cite> table of the input files specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_files: List[str]</strong></dt><dd><p>the list of paths to the input files, as literal path or as a regular expression</p>
+</dd>
+<dt><strong>signal: str</strong></dt><dd><p>the name of the signal which is to be extracted</p>
+</dd>
+<dt><strong>alias: str</strong></dt><dd><p>the name given to the column with the extracted signal data</p>
+</dd>
+<dt><strong>runId: str</strong></dt><dd><p>whether to extract the <cite>runId</cite> column as well</p>
+</dd>
+<dt><strong>statName: str</strong></dt><dd><p>whether to extract the <cite>statName</cite> column as well</p>
+</dd>
+<dt><strong>statId: str</strong></dt><dd><p>whether to extract the <cite>statId</cite> column as well</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#extractors.RawStatisticExtractor.prepare" title="extractors.RawStatisticExtractor.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>apply_tags</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>convert_columns_to_category</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_pattern_matched_scalars_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_pattern_matched_signals_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_query_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_scalars_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_signals_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_sql_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_statistic_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>set_tag_maps</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.RawStatisticExtractor.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#RawStatisticExtractor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.RawStatisticExtractor.prepare" title="Link to this definition"></a></dt>
+<dd><p>Prepare and return a list or a single dask.Delayed task</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="extractors.RawStatisticExtractor.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!RawStatisticExtractor'</span></em><a class="headerlink" href="#extractors.RawStatisticExtractor.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="extractors.SqlExtractor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">extractors.</span></span><span class="sig-name descname"><span class="pre">SqlExtractor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#SqlExtractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.SqlExtractor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#extractors.BaseExtractor" title="extractors.BaseExtractor"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExtractor</span></code></a></p>
+<p>Extract the data from files using a SQL statement</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_files: List[str]</strong></dt><dd><p>the list of paths to the input files, as literal path or as a regular expression</p>
+</dd>
+<dt><strong>query: str</strong></dt><dd><p>the name of the signal which is to be extracted</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#extractors.SqlExtractor.prepare" title="extractors.SqlExtractor.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>apply_tags</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>convert_columns_to_category</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_pattern_matched_scalars_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_pattern_matched_signals_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_query_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_scalars_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_signals_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>read_sql_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>read_statistic_from_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>set_tag_maps</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.SqlExtractor.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#SqlExtractor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.SqlExtractor.prepare" title="Link to this definition"></a></dt>
+<dd><p>Prepare and return a list or a single dask.Delayed task</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="extractors.SqlExtractor.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!SqlExtractor'</span></em><a class="headerlink" href="#extractors.SqlExtractor.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="extractors.SqlLiteReader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">extractors.</span></span><span class="sig-name descname"><span class="pre">SqlLiteReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#SqlLiteReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.SqlLiteReader" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A utility class to run a query over a SQLite3 database or to extract the parameters and attributes for a run from a database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>db_file</strong><span class="classifier">str</span></dt><dd><p>The path to the SQLite3 database file</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#extractors.SqlLiteReader.extract_tags" title="extractors.SqlLiteReader.extract_tags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extract_tags</span></code></a>(attributes_regex_map, ...)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>attribute_extractor</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>connect</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>disconnect</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>execute_sql_query</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>parameter_extractor</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.SqlLiteReader.attribute_extractor">
+<span class="sig-name descname"><span class="pre">attribute_extractor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#SqlLiteReader.attribute_extractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.SqlLiteReader.attribute_extractor" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.SqlLiteReader.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#SqlLiteReader.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.SqlLiteReader.connect" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.SqlLiteReader.disconnect">
+<span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#SqlLiteReader.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.SqlLiteReader.disconnect" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.SqlLiteReader.execute_sql_query">
+<span class="sig-name descname"><span class="pre">execute_sql_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#SqlLiteReader.execute_sql_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.SqlLiteReader.execute_sql_query" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.SqlLiteReader.extract_tags">
+<span class="sig-name descname"><span class="pre">extract_tags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attributes_regex_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterationvars_regex_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters_regex_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#SqlLiteReader.extract_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.SqlLiteReader.extract_tags" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>attributes_regex_map</strong><span class="classifier">dict</span></dt><dd><p>The dictionary containing the definitions for the tags to extract from the <cite>runAttr</cite> table</p>
+</dd>
+<dt><strong>iterationvars_regex_map</strong><span class="classifier">dict</span></dt><dd><p>The dictionary containing the definitions for the tags to extract from the <cite>iterationvars</cite> attribute</p>
+</dd>
+<dt><strong>parameters_regex_map</strong><span class="classifier">dict</span></dt><dd><p>The dictionary containing the definitions for the tags to extract from the <cite>runParam</cite> table</p>
+</dd>
+<dt><strong>Extract all tags defined in the given mappings from the `runAttr` and `runParam` tables and parse the value of the `iterationvars` attribute.</strong></dt><dd></dd>
+<dt><strong>See the module `tag_regular_expressions` for the expected structure of the mappings.</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.SqlLiteReader.parameter_extractor">
+<span class="sig-name descname"><span class="pre">parameter_extractor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#SqlLiteReader.parameter_extractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.SqlLiteReader.parameter_extractor" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="extractors.register_constructors">
+<span class="sig-prename descclassname"><span class="pre">extractors.</span></span><span class="sig-name descname"><span class="pre">register_constructors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#register_constructors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.register_constructors" title="Link to this definition"></a></dt>
+<dd><p>Register YAML constructors for all extractors</p>
+</dd></dl>
+
 </section>
 
 

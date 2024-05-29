@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>transforms &mdash; Insight on Network Simulations  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Insight on Network Simulations
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../evaluation_plotting.html">Evaluation &amp; Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_transforms.html">Using Transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../best_practices.html">Best practices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cluster_managment.html">Running IoNS on a cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../documentation.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference.html">API reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Insight on Network Simulations</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">transforms</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for transforms</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">yaml</span> <span class="kn">import</span> <span class="n">YAMLObject</span>
+
+<span class="c1"># some of the imports here are just here to make a base set of libraries</span>
+<span class="c1"># available in the runtime environment of code fragments that are read and</span>
+<span class="c1"># evaluated from a recipe</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sb</span>
+
+<span class="kn">import</span> <span class="nn">dask</span>
+
+<span class="kn">from</span> <span class="nn">yaml_helper</span> <span class="kn">import</span> <span class="n">decode_node</span><span class="p">,</span> <span class="n">proto_constructor</span>
+
+<span class="kn">from</span> <span class="nn">common.logging_facilities</span> <span class="kn">import</span> <span class="n">logi</span><span class="p">,</span> <span class="n">loge</span><span class="p">,</span> <span class="n">logd</span><span class="p">,</span> <span class="n">logw</span>
+
+<span class="kn">from</span> <span class="nn">extractors</span> <span class="kn">import</span> <span class="n">DataAttributes</span>
+
+<span class="c1"># for debugging purposes</span>
+<span class="kn">from</span> <span class="nn">common.debug</span> <span class="kn">import</span> <span class="n">start_ipython_dbg_cmdline</span>
+
+
+<div class="viewcode-block" id="Transform">
+<a class="viewcode-back" href="../transforms.html#transforms.Transform">[docs]</a>
+<span class="k">class</span> <span class="nc">Transform</span><span class="p">(</span><span class="n">YAMLObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The base class for all transforms</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!Transform&#39;</span>
+
+<div class="viewcode-block" id="Transform.set_data_repo">
+<a class="viewcode-back" href="../transforms.html#transforms.Transform.set_data_repo">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_data_repo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_repo</span><span class="p">:</span><span class="nb">dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data_repo : dict</span>
+<span class="sd">            The dictionary containing all loaded datasets necessary for this transform</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_repo</span> <span class="o">=</span> <span class="n">data_repo</span></div>
+
+
+<div class="viewcode-block" id="Transform.get_data">
+<a class="viewcode-back" href="../transforms.html#transforms.Transform.get_data">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve a dataset with the given name from the data repository associated with this transform</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dataset_name : str</span>
+<span class="sd">            The name of the dataset to retrieve from the data repository</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_repo</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s1">&quot; not found in data repo&#39;</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_repo</span><span class="p">[</span><span class="n">dataset_name</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;data for &quot;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s1">&quot; is None&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="Transform.process">
+<a class="viewcode-back" href="../transforms.html#transforms.Transform.process">[docs]</a>
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="c1"># process data here</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="Transform.prepare">
+<a class="viewcode-back" href="../transforms.html#transforms.Transform.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># The code below is just to illustrate the general procedure when</span>
+        <span class="c1"># implementing a transform, it is not used</span>
+
+        <span class="c1"># get the list of DataFrames in the dataset</span>
+        <span class="n">data_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_name</span><span class="p">)</span>
+        <span class="n">job_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">data_list</span><span class="p">:</span>
+            <span class="c1"># construct a promise on the data produced by applying the function</span>
+            <span class="c1"># to the input data</span>
+            <span class="n">function</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">)(</span><span class="n">data</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+            <span class="n">job_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+        <span class="c1"># set the output dataset to the list of promises so that other tasks can</span>
+        <span class="c1"># depend on and use them</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_repo</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dataset_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">job_list</span>
+
+        <span class="k">return</span> <span class="n">job_list</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ExtraCodeFunctionMixin">
+<a class="viewcode-back" href="../transforms.html#transforms.ExtraCodeFunctionMixin">[docs]</a>
+<span class="k">class</span> <span class="nc">ExtraCodeFunctionMixin</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A mixin class for providing the functionality to compile and evaluate a</span>
+<span class="sd">    function and an additional, optional code fragment within a separate global environment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ExtraCodeFunctionMixin.eval_function">
+<a class="viewcode-back" href="../transforms.html#transforms.ExtraCodeFunctionMixin.eval_function">[docs]</a>
+    <span class="k">def</span> <span class="nf">eval_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">extra_code</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compile and evaluate the given function and an additional, optional</span>
+<span class="sd">        code fragment within a separate global environment and return the</span>
+<span class="sd">        executable function object.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        function : Union[Callable, str]</span>
+<span class="sd">            The name of the function or a function object.</span>
+
+<span class="sd">        extra_code : Optional[str]</span>
+<span class="sd">            This can contain additional code for the transform function, such as</span>
+<span class="sd">            the definition of a function over multiple lines or split into multiple</span>
+<span class="sd">            functions for readibility.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># create a copy of the global environment for evaluating the extra</span>
+        <span class="c1"># code fragment so as to not pollute the global namespace itself</span>
+        <span class="n">global_env</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">extra_code</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="c1"># compile the code fragment</span>
+            <span class="n">compiled_extra_code</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="n">extra_code</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;&lt;string&gt;&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;exec&#39;</span><span class="p">)</span>
+            <span class="c1"># actually evaluate the code within the given namespace to allow</span>
+            <span class="c1"># access to all the defined symbols, such as helper functions that are not defined inline</span>
+            <span class="nb">eval</span><span class="p">(</span><span class="n">compiled_extra_code</span><span class="p">,</span> <span class="n">global_env</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">Callable</span><span class="p">):</span>
+            <span class="n">evaluated_function</span> <span class="o">=</span> <span class="n">function</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">evaluated_function</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">global_env</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">evaluated_function</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ConcatTransform">
+<a class="viewcode-back" href="../transforms.html#transforms.ConcatTransform">[docs]</a>
+<span class="k">class</span> <span class="nc">ConcatTransform</span><span class="p">(</span><span class="n">Transform</span><span class="p">,</span> <span class="n">YAMLObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A transform for concatenating all DataFrames from the given datasets.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset_names: Optional[List[str]]</span>
+<span class="sd">        the list of datasets to concatenate</span>
+
+<span class="sd">    output_dataset_name: str</span>
+<span class="sd">        the name given to the output dataset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!ConcatTransform&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_names</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
+                 <span class="p">,</span> <span class="n">output_dataset_name</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_names</span> <span class="o">=</span> <span class="n">dataset_names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dataset_name</span> <span class="o">=</span> <span class="n">output_dataset_name</span>
+
+<div class="viewcode-block" id="ConcatTransform.concat">
+<a class="viewcode-back" href="../transforms.html#transforms.ConcatTransform.concat">[docs]</a>
+    <span class="k">def</span> <span class="nf">concat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dfs</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">dfs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">r</span></div>
+
+
+<div class="viewcode-block" id="ConcatTransform.prepare">
+<a class="viewcode-back" href="../transforms.html#transforms.ConcatTransform.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset_names</span><span class="p">:</span>
+            <span class="n">data_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># concatenate all DataFrames</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">concat</span><span class="p">)(</span><span class="nb">map</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">data_list</span><span class="p">))</span>
+
+        <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">()</span>
+
+        <span class="c1"># add all source files as attributes</span>
+        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">data_list</span><span class="p">)):</span>
+            <span class="n">attributes</span><span class="o">.</span><span class="n">add_source_files</span><span class="p">(</span><span class="n">attribute</span><span class="o">.</span><span class="n">get_source_files</span><span class="p">())</span>
+
+        <span class="c1"># allow other tasks to depend on the output of the delayed jobs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_repo</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dataset_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[(</span><span class="n">job</span><span class="p">,</span> <span class="n">attributes</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="p">[(</span><span class="n">job</span><span class="p">,</span> <span class="n">attributes</span><span class="p">)]</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="MergeTransform">
+<a class="viewcode-back" href="../transforms.html#transforms.MergeTransform">[docs]</a>
+<span class="k">class</span> <span class="nc">MergeTransform</span><span class="p">(</span><span class="n">Transform</span><span class="p">,</span> <span class="n">YAMLObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A transform for merging the columns from two DataFrames, from two distinct</span>
+<span class="sd">    datasets, similarly to a SQL INNER JOIN.</span>
+
+<span class="sd">    Basically a wrapper around `pandas.merge &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.merge.html&gt;`_</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset_name_left: str</span>
+<span class="sd">        the left dataset to operate on</span>
+
+<span class="sd">    dataset_name_right: str</span>
+<span class="sd">        the right dataset to operate on</span>
+
+<span class="sd">    output_dataset_name: str</span>
+<span class="sd">        the name given to the output dataset</span>
+
+<span class="sd">    right_key_columns: str</span>
+<span class="sd">        the name of the column from the right dataset taht is used as key for joining</span>
+
+<span class="sd">    left_key_columns: str</span>
+<span class="sd">        the name of the column from the left dataset taht is used as key for joining</span>
+
+<span class="sd">    match_by_filename: bool</span>
+<span class="sd">        whether to match merge input by the filename the data has been extracted from</span>
+
+<span class="sd">    matching_attribute: str</span>
+<span class="sd">        the attribute to match the datasets on</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!MergeTransform&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_name_left</span><span class="p">:</span><span class="nb">str</span>
+                 <span class="p">,</span> <span class="n">dataset_name_right</span><span class="p">:</span><span class="nb">str</span>
+                 <span class="p">,</span> <span class="n">output_dataset_name</span><span class="p">:</span><span class="nb">str</span>
+                 <span class="p">,</span> <span class="n">left_key_columns</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+                 <span class="p">,</span> <span class="n">right_key_columns</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+                 <span class="p">,</span> <span class="n">match_by_filename</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+                 <span class="p">,</span> <span class="n">matching_attribute</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;source_files&#39;</span>
+                 <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_name_left</span> <span class="o">=</span> <span class="n">dataset_name_left</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_name_right</span> <span class="o">=</span> <span class="n">dataset_name_right</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dataset_name</span> <span class="o">=</span> <span class="n">output_dataset_name</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">left_key_columns</span> <span class="o">=</span> <span class="n">left_key_columns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">right_key_columns</span> <span class="o">=</span> <span class="n">right_key_columns</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">match_by_filename</span> <span class="o">=</span> <span class="n">match_by_filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matching_attribute</span> <span class="o">=</span> <span class="n">matching_attribute</span>
+
+<div class="viewcode-block" id="MergeTransform.merge">
+<a class="viewcode-back" href="../transforms.html#transforms.MergeTransform.merge">[docs]</a>
+    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_l</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">data_r</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span>
+              <span class="p">,</span> <span class="n">left_key_columns</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+              <span class="p">,</span> <span class="n">right_key_columns</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">is_empty</span><span class="p">(</span><span class="n">data_l</span><span class="p">):</span>
+            <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;left input to merge is empty: </span><span class="si">{</span><span class="n">data_l</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">is_empty</span><span class="p">(</span><span class="n">data_l</span><span class="p">):</span>
+            <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;right input to merge is empty: </span><span class="si">{</span><span class="n">data_r</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">df_merged</span> <span class="o">=</span> <span class="n">data_l</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">data_r</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="n">left_key_columns</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="n">right_key_columns</span><span class="p">,</span> <span class="n">suffixes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;_r&#39;</span><span class="p">])</span>
+        <span class="c1"># start_ipython_dbg_cmdline(locals())</span>
+        <span class="k">return</span> <span class="n">df_merged</span></div>
+
+
+<div class="viewcode-block" id="MergeTransform.prepare_matched_by_attribute">
+<a class="viewcode-back" href="../transforms.html#transforms.MergeTransform.prepare_matched_by_attribute">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare_matched_by_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data_list_l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_name_left</span><span class="p">)</span>
+        <span class="n">data_list_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_name_right</span><span class="p">)</span>
+
+        <span class="n">job_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">d</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">add_by_attribute</span><span class="p">(</span><span class="n">data_list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">data</span><span class="p">,</span> <span class="n">attributes</span> <span class="ow">in</span> <span class="n">data_list</span><span class="p">:</span>
+                <span class="n">attribute</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">attributes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">matching_attribute</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">:</span>
+                    <span class="n">attribute</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">attribute</span><span class="p">))</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">attribute</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">data</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
+
+        <span class="n">add_by_attribute</span><span class="p">(</span><span class="n">data_list_l</span><span class="p">)</span>
+        <span class="n">add_by_attribute</span><span class="p">(</span><span class="n">data_list_r</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">data_l</span><span class="p">,</span> <span class="n">attributes_l</span><span class="p">),</span> <span class="p">(</span><span class="n">data_r</span><span class="p">,</span> <span class="n">attributes_r</span><span class="p">)</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">attribute</span><span class="p">]</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">)(</span><span class="n">data_l</span><span class="p">,</span> <span class="n">data_r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_key_columns</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_key_columns</span><span class="p">)</span>
+
+            <span class="c1"># add the source files of both datasets to the set of dataset source files</span>
+            <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">()</span>
+
+            <span class="c1"># add source files for both sources</span>
+            <span class="n">attributes</span><span class="o">.</span><span class="n">add_source_files</span><span class="p">(</span><span class="n">attributes_l</span><span class="o">.</span><span class="n">get_source_files</span><span class="p">())</span>
+            <span class="n">attributes</span><span class="o">.</span><span class="n">add_source_files</span><span class="p">(</span><span class="n">attributes_r</span><span class="o">.</span><span class="n">get_source_files</span><span class="p">())</span>
+
+            <span class="k">for</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">attributes_l</span><span class="o">.</span><span class="n">get_aliases</span><span class="p">():</span>
+                <span class="n">attributes</span><span class="o">.</span><span class="n">add_alias</span><span class="p">(</span><span class="n">alias</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">attributes_r</span><span class="o">.</span><span class="n">get_aliases</span><span class="p">():</span>
+                <span class="n">attributes</span><span class="o">.</span><span class="n">add_alias</span><span class="p">(</span><span class="n">alias</span><span class="p">)</span>
+
+            <span class="n">job_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">job</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
+
+            <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">attributes</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="c1"># start_ipython_dbg_cmdline(locals())</span>
+
+        <span class="c1"># allow other tasks to depend on the output of the delayed jobs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_repo</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dataset_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">job_list</span>
+
+        <span class="k">return</span> <span class="n">job_list</span></div>
+
+
+<div class="viewcode-block" id="MergeTransform.prepare_simple_sequential">
+<a class="viewcode-back" href="../transforms.html#transforms.MergeTransform.prepare_simple_sequential">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare_simple_sequential</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data_list_l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_name_left</span><span class="p">)</span>
+        <span class="n">data_list_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_name_right</span><span class="p">)</span>
+
+        <span class="n">job_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="n">data_l</span><span class="p">,</span> <span class="n">attributes_l</span><span class="p">),</span> <span class="p">(</span><span class="n">data_r</span><span class="p">,</span> <span class="n">attributes_r</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data_list_l</span><span class="p">,</span> <span class="n">data_list_r</span><span class="p">):</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">)(</span><span class="n">data_l</span><span class="p">,</span> <span class="n">data_r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">left_key_columns</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_key_columns</span><span class="p">)</span>
+            <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">()</span>
+            <span class="n">attributes</span><span class="o">.</span><span class="n">add_source_files</span><span class="p">(</span><span class="n">attributes_l</span><span class="o">.</span><span class="n">get_source_files</span><span class="p">())</span>
+            <span class="n">attributes</span><span class="o">.</span><span class="n">add_source_files</span><span class="p">(</span><span class="n">attributes_r</span><span class="o">.</span><span class="n">get_source_files</span><span class="p">())</span>
+            <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">attributes</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">job_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">job</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
+            <span class="c1"># start_ipython_dbg_cmdline(locals())</span>
+
+        <span class="c1"># allow other tasks to depend on the output of the delayed jobs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_repo</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dataset_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">job_list</span>
+
+        <span class="k">return</span> <span class="n">job_list</span></div>
+
+
+<div class="viewcode-block" id="MergeTransform.prepare">
+<a class="viewcode-back" href="../transforms.html#transforms.MergeTransform.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_by_filename</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepare_matched_by_attribute</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepare_simple_sequential</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="FunctionTransform">
+<a class="viewcode-back" href="../transforms.html#transforms.FunctionTransform">[docs]</a>
+<span class="k">class</span> <span class="nc">FunctionTransform</span><span class="p">(</span><span class="n">Transform</span><span class="p">,</span> <span class="n">ExtraCodeFunctionMixin</span><span class="p">,</span> <span class="n">YAMLObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A transform for applying a arbitrary function to a whole DataFrame.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset_name: str</span>
+<span class="sd">        The dataset to operate on.</span>
+
+<span class="sd">    output_dataset_name: str</span>
+<span class="sd">        The name given to the output dataset.</span>
+
+<span class="sd">    function: Union[Callable[[pandas.DataFrame], pandas.DataFrame], str]</span>
+<span class="sd">        The unary function to apply to each DataFrame of the dataset.</span>
+<span class="sd">        It takes the full DataFrame as its only argument and returns a DataFrame.</span>
+
+<span class="sd">    extra_code: Optional[str]</span>
+<span class="sd">        This can contain additional code for the transform function, such as</span>
+<span class="sd">        the definition of a function over multiple lines or split into multiple</span>
+<span class="sd">        functions for readibility.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!FunctionTransform&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">output_dataset_name</span><span class="p">:</span><span class="nb">str</span>
+                 <span class="p">,</span> <span class="n">function</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+                 <span class="p">,</span> <span class="n">extra_code</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+                 <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_name</span> <span class="o">=</span> <span class="n">dataset_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dataset_name</span> <span class="o">=</span> <span class="n">output_dataset_name</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">function</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;No processing function has been defined for FunctionTransform!&#39;</span>
+            <span class="n">loge</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">function</span> <span class="o">=</span> <span class="n">function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extra_code</span> <span class="o">=</span> <span class="n">extra_code</span>
+
+<div class="viewcode-block" id="FunctionTransform.process">
+<a class="viewcode-back" href="../transforms.html#transforms.FunctionTransform.process">[docs]</a>
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">attributes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+        <span class="c1"># Get the function to call and possibly compile and evaluate the code defined in</span>
+        <span class="c1"># extra_code in a separate global namespace.</span>
+        <span class="c1"># The compilation of the extra code has to happen in the thread/process</span>
+        <span class="c1"># of the processing worker since code objects can&#39;t be serialized.</span>
+        <span class="n">function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_code</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;FunctionTransform result:</span><span class="se">\n</span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="FunctionTransform.prepare">
+<a class="viewcode-back" href="../transforms.html#transforms.FunctionTransform.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_name</span><span class="p">)</span>
+
+        <span class="n">job_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">data</span><span class="p">,</span> <span class="n">attributes</span> <span class="ow">in</span> <span class="n">data_list</span><span class="p">:</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">)(</span><span class="n">data</span><span class="p">,</span> <span class="n">attributes</span><span class="p">)</span>
+            <span class="n">job_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">job</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
+
+        <span class="c1"># allow other tasks to depend on the output of the delayed jobs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_repo</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dataset_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">job_list</span>
+
+        <span class="k">return</span> <span class="n">job_list</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ColumnFunctionTransform">
+<a class="viewcode-back" href="../transforms.html#transforms.ColumnFunctionTransform">[docs]</a>
+<span class="k">class</span> <span class="nc">ColumnFunctionTransform</span><span class="p">(</span><span class="n">Transform</span><span class="p">,</span> <span class="n">ExtraCodeFunctionMixin</span><span class="p">,</span> <span class="n">YAMLObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A transform for applying a function to every value in a column of a DataFrame</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset_name: str</span>
+<span class="sd">        the dataset to operate on</span>
+
+<span class="sd">    output_dataset_name: str</span>
+<span class="sd">        the name given to the output dataset</span>
+
+<span class="sd">    input_column: str</span>
+<span class="sd">        the name of the column the function should be applied to</span>
+
+<span class="sd">    output_column: str</span>
+<span class="sd">        the name given to the output column containing the results of applying</span>
+<span class="sd">        the function</span>
+
+<span class="sd">    function: Union[Callable[[pandas.Series], pandas.Series], str]</span>
+<span class="sd">        The unary function to apply to the values in the chosen column.</span>
+
+<span class="sd">    extra_code: Optional[str]</span>
+<span class="sd">        This can contain additional code for the transform function, such as</span>
+<span class="sd">        the definition of a function over multiple lines or split into multiple</span>
+<span class="sd">        functions for readibility.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!ColumnFunctionTransform&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">output_dataset_name</span><span class="p">:</span><span class="nb">str</span>
+                 <span class="p">,</span> <span class="n">input_column</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">output_column</span><span class="p">:</span><span class="nb">str</span>
+                 <span class="p">,</span> <span class="n">function</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">],</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+                 <span class="p">,</span> <span class="n">extra_code</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+                 <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_name</span> <span class="o">=</span> <span class="n">dataset_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dataset_name</span> <span class="o">=</span> <span class="n">output_dataset_name</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_column</span> <span class="o">=</span> <span class="n">input_column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_column</span> <span class="o">=</span> <span class="n">output_column</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">function</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;No processing function has been defined for ColumnFunctionTransform!&#39;</span>
+            <span class="n">loge</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">function</span> <span class="o">=</span> <span class="n">function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extra_code</span> <span class="o">=</span> <span class="n">extra_code</span>
+
+<div class="viewcode-block" id="ColumnFunctionTransform.process">
+<a class="viewcode-back" href="../transforms.html#transforms.ColumnFunctionTransform.process">[docs]</a>
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">attributes</span><span class="p">):</span>
+        <span class="c1"># Get the function to call and possibly compile and evaluate the code defined in</span>
+        <span class="c1"># extra_code in a separate global namespace.</span>
+        <span class="c1"># The compilation of the extra code has to happen in the thread/process</span>
+        <span class="c1"># of the processing worker since code objects can&#39;t be serialized.</span>
+        <span class="n">function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
+        <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ColumnFunctionTransform result:</span><span class="se">\n</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="ColumnFunctionTransform.prepare">
+<a class="viewcode-back" href="../transforms.html#transforms.ColumnFunctionTransform.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_name</span><span class="p">)</span>
+
+        <span class="n">job_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">data</span><span class="p">,</span> <span class="n">attributes</span> <span class="ow">in</span> <span class="n">data_list</span><span class="p">:</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">)(</span><span class="n">data</span><span class="p">,</span> <span class="n">attributes</span><span class="p">)</span>
+            <span class="n">job_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">job</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
+
+        <span class="c1"># allow other tasks to depend on the output of the delayed jobs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_repo</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dataset_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">job_list</span>
+
+        <span class="k">return</span> <span class="n">job_list</span></div>
+</div>
+
+
+<div class="viewcode-block" id="GroupedAggregationTransform">
+<a class="viewcode-back" href="../transforms.html#transforms.GroupedAggregationTransform">[docs]</a>
+<span class="k">class</span> <span class="nc">GroupedAggregationTransform</span><span class="p">(</span><span class="n">Transform</span><span class="p">,</span> <span class="n">ExtraCodeFunctionMixin</span><span class="p">,</span> <span class="n">YAMLObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A transform for dividing a dataset into distinct partitions with</span>
+<span class="sd">    `pandas.DataFrame.groupby</span>
+<span class="sd">    &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html#pandas.DataFrame.groupby&gt;`__,</span>
+<span class="sd">    each sharing the same value in the specified list of grouping/partitioning</span>
+<span class="sd">    column names, and then applying a function to the values in a given column</span>
+<span class="sd">    of a that partition, producing a aggregate scalar value.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset_name: str</span>
+<span class="sd">        the dataset to operate on</span>
+
+<span class="sd">    output_dataset_name: str</span>
+<span class="sd">        the name given to the output dataset</span>
+
+<span class="sd">    input_column: str</span>
+<span class="sd">        the name of the column the function should be applied to</span>
+
+<span class="sd">    output_column: str</span>
+<span class="sd">        the name given to the output column containing the results of applying</span>
+<span class="sd">        the function</span>
+
+<span class="sd">    grouping_columns: List</span>
+<span class="sd">        the set of columns used for partitioning the dataset</span>
+
+<span class="sd">    raw: bool</span>
+<span class="sd">        whether to append the raw output of `transform_function` to the result list</span>
+
+<span class="sd">    pre_concatenate: bool</span>
+<span class="sd">        concatenate all input DataFrames before processing</span>
+
+<span class="sd">    aggregation_function: Union[Callable[[pandas.Series], object], str]</span>
+<span class="sd">        The unary function to apply to a each partition. Should expect an</span>
+<span class="sd">        `pandas.Series` as argument and return a scalar value.</span>
+
+<span class="sd">    extra_code: Optional[str]</span>
+<span class="sd">        This can contain additional code for the transform function, such as</span>
+<span class="sd">        the definition of a function over multiple lines or split into multiple</span>
+<span class="sd">        functions for readibility.</span>
+
+<span class="sd">    timestamp_selector: Callable</span>
+<span class="sd">        the function to select the row in the partition data as template for the output in case of aggregation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!GroupedAggregationTransform&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">output_dataset_name</span><span class="p">:</span><span class="nb">str</span>
+                 <span class="p">,</span> <span class="n">input_column</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">output_column</span><span class="p">:</span><span class="nb">str</span>
+                 <span class="p">,</span> <span class="n">grouping_columns</span><span class="p">:</span><span class="n">List</span>
+                 <span class="p">,</span> <span class="n">raw</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                 <span class="p">,</span> <span class="n">pre_concatenate</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                 <span class="p">,</span> <span class="n">aggregation_function</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">],</span> <span class="nb">object</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+                 <span class="p">,</span> <span class="n">extra_code</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+                 <span class="p">,</span> <span class="n">timestamp_selector</span><span class="p">:</span><span class="n">Callable</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">head</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_name</span> <span class="o">=</span> <span class="n">dataset_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dataset_name</span> <span class="o">=</span> <span class="n">output_dataset_name</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_column</span> <span class="o">=</span> <span class="n">input_column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_column</span> <span class="o">=</span> <span class="n">output_column</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">grouping_columns</span> <span class="o">=</span> <span class="n">grouping_columns</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">aggregation_function</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;No aggregation_function has been defined for GroupedAggregationTransform!&#39;</span>
+            <span class="n">loge</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">aggregation_function</span> <span class="o">=</span> <span class="n">aggregation_function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extra_code</span> <span class="o">=</span> <span class="n">extra_code</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">timestamp_selector</span> <span class="o">=</span> <span class="n">timestamp_selector</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="n">raw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pre_concatenate</span> <span class="o">=</span> <span class="n">pre_concatenate</span>
+
+<div class="viewcode-block" id="GroupedAggregationTransform.aggregate_frame">
+<a class="viewcode-back" href="../transforms.html#transforms.GroupedAggregationTransform.aggregate_frame">[docs]</a>
+    <span class="k">def</span> <span class="nf">aggregate_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">):</span>
+            <span class="n">logw</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;GroupedAggregationTransform return is empty!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+        <span class="c1"># Get the function to call and possibly compile and evaluate the code defined in</span>
+        <span class="c1"># extra_code in a separate global namespace.</span>
+        <span class="c1"># The compilation of the extra code has to happen in the thread/process</span>
+        <span class="c1"># of the processing worker since code objects can&#39;t be serialized.</span>
+        <span class="n">aggregation_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aggregation_function</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_code</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grouping_columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">grouping_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grouping_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">grouping_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grouping_columns</span>
+
+        <span class="n">result_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">group_key</span><span class="p">,</span> <span class="n">group_data</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">grouping_columns</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">aggregation_function</span><span class="p">(</span><span class="n">group_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_column</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="p">:</span>
+                <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">group_key</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="n">group_data</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_column</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+                <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">result_list</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">result_list</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logw</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;GroupedAggregationTransform result_list was empty!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result_list</span>
+
+        <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;GroupedAggregationTransform result:</span><span class="se">\n</span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="GroupedAggregationTransform.prepare">
+<a class="viewcode-back" href="../transforms.html#transforms.GroupedAggregationTransform.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_name</span><span class="p">)</span>
+
+        <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_concatenate</span><span class="p">:</span>
+            <span class="n">concat_result</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">)(</span><span class="nb">map</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">data</span><span class="p">),</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aggregate_frame</span><span class="p">)(</span><span class="n">concat_result</span><span class="p">)</span>
+            <span class="c1"># TODO: better DataAttributes</span>
+            <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">job</span><span class="p">,</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_column</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_column</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">attributes</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">job</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aggregate_frame</span><span class="p">)(</span><span class="n">d</span><span class="p">)</span>
+                <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">job</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_repo</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dataset_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">jobs</span>
+
+        <span class="k">return</span> <span class="n">jobs</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GroupedFunctionTransform">
+<a class="viewcode-back" href="../transforms.html#transforms.GroupedFunctionTransform">[docs]</a>
+<span class="k">class</span> <span class="nc">GroupedFunctionTransform</span><span class="p">(</span><span class="n">Transform</span><span class="p">,</span> <span class="n">ExtraCodeFunctionMixin</span><span class="p">,</span> <span class="n">YAMLObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A transform for dividing a dataset into distinct partitions with</span>
+<span class="sd">    `pandas.DataFrame.groupby</span>
+<span class="sd">    &lt;https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html#pandas.DataFrame.groupby&gt;`__,</span>
+<span class="sd">    each sharing the same value in the specified list of grouping/partitioning</span>
+<span class="sd">    column names, and then applying a function to that partition.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset_name: str</span>
+<span class="sd">        the dataset to operate on</span>
+
+<span class="sd">    output_dataset_name: str</span>
+<span class="sd">        the name given to the output dataset</span>
+
+<span class="sd">    input_column: str</span>
+<span class="sd">        the name of the column the function should be applied to</span>
+
+<span class="sd">    output_column: str</span>
+<span class="sd">        the name given to the output column containing the results of applying</span>
+<span class="sd">        the function</span>
+
+<span class="sd">    grouping_columns: List</span>
+<span class="sd">        the set of columns used for partitioning the dataset</span>
+
+<span class="sd">    raw: bool</span>
+<span class="sd">        whether to append the raw output of `transform_function` to the result list</span>
+
+<span class="sd">    aggregate: bool</span>
+<span class="sd">        whether the transform function returns a scalar or an object (like a `pandas.DataFrame`)</span>
+
+<span class="sd">    pre_concatenate: bool</span>
+<span class="sd">        concatenate all input DataFrames before processing</span>
+
+<span class="sd">    transform_function: Union[Callable[[pandas.DataFrame], pandas.DataFrame], Callable[[pandas.DataFrame], object], str]</span>
+<span class="sd">        The unary function to apply to a each partition. Should expect an</span>
+<span class="sd">        `pandas.DataFrame` as argument and return a `pandas.DataFrame` (or an arbitrary object if `raw` is true).</span>
+
+<span class="sd">    extra_code: Optional[str]</span>
+<span class="sd">        This can contain additional code for the transform function, such as</span>
+<span class="sd">        the definition of a function over multiple lines or split into multiple</span>
+<span class="sd">        functions for readibility.</span>
+
+<span class="sd">    timestamp_selector: Callable</span>
+<span class="sd">        the function to select the row in the partition data as template for the output in case of aggregation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!GroupedFunctionTransform&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">output_dataset_name</span><span class="p">:</span><span class="nb">str</span>
+                 <span class="p">,</span> <span class="n">input_column</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">output_column</span><span class="p">:</span><span class="nb">str</span>
+                 <span class="p">,</span> <span class="n">grouping_columns</span><span class="p">:</span><span class="n">List</span>
+                 <span class="p">,</span> <span class="n">raw</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                 <span class="p">,</span> <span class="n">aggregate</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                 <span class="p">,</span> <span class="n">pre_concatenate</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                 <span class="p">,</span> <span class="n">transform_function</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="nb">object</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+                 <span class="p">,</span> <span class="n">extra_code</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
+                 <span class="p">,</span> <span class="n">timestamp_selector</span><span class="p">:</span><span class="n">Callable</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">head</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_name</span> <span class="o">=</span> <span class="n">dataset_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dataset_name</span> <span class="o">=</span> <span class="n">output_dataset_name</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_column</span> <span class="o">=</span> <span class="n">input_column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_column</span> <span class="o">=</span> <span class="n">output_column</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">grouping_columns</span> <span class="o">=</span> <span class="n">grouping_columns</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">transform_function</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;No transform_function has been defined for GroupedFunctionTransform!&#39;</span>
+            <span class="n">loge</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform_function</span> <span class="o">=</span> <span class="n">transform_function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extra_code</span> <span class="o">=</span> <span class="n">extra_code</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">timestamp_selector</span> <span class="o">=</span> <span class="n">timestamp_selector</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="n">raw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pre_concatenate</span> <span class="o">=</span> <span class="n">pre_concatenate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aggregate</span> <span class="o">=</span> <span class="n">aggregate</span>
+
+<div class="viewcode-block" id="GroupedFunctionTransform.aggregate_frame">
+<a class="viewcode-back" href="../transforms.html#transforms.GroupedFunctionTransform.aggregate_frame">[docs]</a>
+    <span class="k">def</span> <span class="nf">aggregate_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">logw</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;GroupedFunctionTransform return is empty!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+        <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">data</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="c1"># logd(f&#39;{data.hour.unique()=}&#39;)</span>
+
+        <span class="c1"># Get the function to call and possibly compile and evaluate the code defined in</span>
+        <span class="c1"># extra_code in a separate global namespace.</span>
+        <span class="c1"># The compilation of the extra code has to happen in the thread/process</span>
+        <span class="c1"># of the processing worker since code objects can&#39;t be serialized.</span>
+        <span class="n">transform_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transform_function</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_code</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grouping_columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">grouping_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grouping_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">grouping_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grouping_columns</span>
+
+        <span class="n">result_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">group_key</span><span class="p">,</span> <span class="n">group_data</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="n">grouping_columns</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">transform_function</span><span class="p">(</span><span class="n">group_data</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="p">:</span>
+                <span class="c1"># just append the keys for the subset and the transformed DataFrame</span>
+                <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">group_key</span><span class="p">,</span> <span class="n">result</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">aggregate</span><span class="p">:</span>
+                    <span class="c1"># take the first row of the data and use it as a template</span>
+                    <span class="c1"># row for the output DataFrame</span>
+                    <span class="n">row</span> <span class="o">=</span> <span class="n">group_data</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">row</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_column</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="c1"># add the results a new column</span>
+                    <span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+                    <span class="c1"># print(f&#39;&lt;&lt;&lt;&lt;&gt;&gt;&gt;&gt;&gt;    {row=}&#39;)</span>
+                    <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># add the results a new column</span>
+                    <span class="n">group_data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+                    <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group_data</span><span class="p">)</span>
+                    <span class="c1"># print(f&#39;&lt;&lt;&lt;&lt;&gt;&gt;&gt;&gt;&gt;    {group_data=}&#39;)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="p">:</span>
+            <span class="c1"># concatenate all the partitions</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">result_list</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">result_list</span>
+
+        <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;GroupedFunctionTransform: </span><span class="si">{</span><span class="n">result</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="GroupedFunctionTransform.prepare">
+<a class="viewcode-back" href="../transforms.html#transforms.GroupedFunctionTransform.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_name</span><span class="p">)</span>
+
+        <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_concatenate</span><span class="p">:</span>
+            <span class="c1"># concatenate all input DataFrames before processing</span>
+            <span class="n">concat_result</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">)(</span><span class="nb">map</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">data</span><span class="p">),</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aggregate_frame</span><span class="p">)(</span><span class="n">concat_result</span><span class="p">)</span>
+            <span class="c1"># TODO: better DataAttributes</span>
+            <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">job</span><span class="p">,</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_column</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_column</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">attributes</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">job</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aggregate_frame</span><span class="p">)(</span><span class="n">d</span><span class="p">)</span>
+                <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">job</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
+
+        <span class="c1"># allow other tasks to depend on the output of the delayed job</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_repo</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dataset_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">jobs</span>
+
+        <span class="k">return</span> <span class="n">jobs</span></div>
+</div>
+
+
+<div class="viewcode-block" id="register_constructors">
+<a class="viewcode-back" href="../transforms.html#transforms.register_constructors">[docs]</a>
+<span class="k">def</span> <span class="nf">register_constructors</span><span class="p">():</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Register YAML constructors for all transforms</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;!ConcatTransform&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">ConcatTransform</span><span class="p">))</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;!FunctionTransform&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">FunctionTransform</span><span class="p">))</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;!ColumnFunctionTransform&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">ColumnFunctionTransform</span><span class="p">))</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;!GroupedAggregationTransform&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">GroupedAggregationTransform</span><span class="p">))</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;!GroupedFunctionTransform&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">GroupedFunctionTransform</span><span class="p">))</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;!MergeTransform&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">MergeTransform</span><span class="p">))</span></div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Christian Hagau.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

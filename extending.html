@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -15,9 +15,9 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -81,9 +81,9 @@
            <div itemprop="articleBody">
              
   <section id="extending">
-<h1>Extending<a class="headerlink" href="#extending" title="Permalink to this heading"></a></h1>
+<h1>Extending<a class="headerlink" href="#extending" title="Link to this heading"></a></h1>
 <section id="adding-a-new-metric-variable">
-<h2>Adding a new metric/variable<a class="headerlink" href="#adding-a-new-metric-variable" title="Permalink to this heading"></a></h2>
+<h2>Adding a new metric/variable<a class="headerlink" href="#adding-a-new-metric-variable" title="Link to this heading"></a></h2>
 <p>Note: The following applies to both input as well as output variables. I.e., if you add new simulation parameters, these need to be added here as well as new evaluation metrics.</p>
 <p>Add a new data class to <code class="docutils literal notranslate"><span class="pre">variables/variables.py</span></code>:</p>
 <ul class="simple">
@@ -98,15 +98,15 @@
 </ul>
 </section>
 <section id="adapt-evaluation-operations-py">
-<h2>Adapt evaluation/operations.py<a class="headerlink" href="#adapt-evaluation-operations-py" title="Permalink to this heading"></a></h2>
+<h2>Adapt evaluation/operations.py<a class="headerlink" href="#adapt-evaluation-operations-py" title="Link to this heading"></a></h2>
 <p>Add new variable to regex_map in function add_parameters(self, data) of class ExtractRunParametersTagsOperation(DbOperation)</p>
 </section>
 <section id="adapt-evaluation-evaluation-runner-py">
-<h2>Adapt evaluation/evaluation_runner.py<a class="headerlink" href="#adapt-evaluation-evaluation-runner-py" title="Permalink to this heading"></a></h2>
+<h2>Adapt evaluation/evaluation_runner.py<a class="headerlink" href="#adapt-evaluation-evaluation-runner-py" title="Link to this heading"></a></h2>
 <p>Add new variable to tag_set in function generate_output_file_name of class EvaluationRunner</p>
 </section>
 <section id="adapt-plotting-utility-py">
-<h2>Adapt plotting/utility.py<a class="headerlink" href="#adapt-plotting-utility-py" title="Permalink to this heading"></a></h2>
+<h2>Adapt plotting/utility.py<a class="headerlink" href="#adapt-plotting-utility-py" title="Link to this heading"></a></h2>
 <p>Add new variable to mapping in function map_label_column_to_str</p>
 </section>
 </section>

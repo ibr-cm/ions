@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -15,9 +15,9 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -60,7 +60,60 @@
 <li class="toctree-l2"><a class="reference internal" href="exporters.html">exporters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="extractors.html">extractors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plots.html">plots</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">transforms</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">transforms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#transforms.ColumnFunctionTransform"><code class="docutils literal notranslate"><span class="pre">ColumnFunctionTransform</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.ColumnFunctionTransform.prepare"><code class="docutils literal notranslate"><span class="pre">ColumnFunctionTransform.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.ColumnFunctionTransform.process"><code class="docutils literal notranslate"><span class="pre">ColumnFunctionTransform.process()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.ColumnFunctionTransform.yaml_tag"><code class="docutils literal notranslate"><span class="pre">ColumnFunctionTransform.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#transforms.ConcatTransform"><code class="docutils literal notranslate"><span class="pre">ConcatTransform</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.ConcatTransform.concat"><code class="docutils literal notranslate"><span class="pre">ConcatTransform.concat()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.ConcatTransform.prepare"><code class="docutils literal notranslate"><span class="pre">ConcatTransform.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.ConcatTransform.yaml_tag"><code class="docutils literal notranslate"><span class="pre">ConcatTransform.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#transforms.ExtraCodeFunctionMixin"><code class="docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.ExtraCodeFunctionMixin.eval_function"><code class="docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin.eval_function()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#transforms.FunctionTransform"><code class="docutils literal notranslate"><span class="pre">FunctionTransform</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.FunctionTransform.prepare"><code class="docutils literal notranslate"><span class="pre">FunctionTransform.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.FunctionTransform.process"><code class="docutils literal notranslate"><span class="pre">FunctionTransform.process()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.FunctionTransform.yaml_tag"><code class="docutils literal notranslate"><span class="pre">FunctionTransform.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#transforms.GroupedAggregationTransform"><code class="docutils literal notranslate"><span class="pre">GroupedAggregationTransform</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.GroupedAggregationTransform.aggregate_frame"><code class="docutils literal notranslate"><span class="pre">GroupedAggregationTransform.aggregate_frame()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.GroupedAggregationTransform.prepare"><code class="docutils literal notranslate"><span class="pre">GroupedAggregationTransform.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.GroupedAggregationTransform.yaml_tag"><code class="docutils literal notranslate"><span class="pre">GroupedAggregationTransform.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#transforms.GroupedFunctionTransform"><code class="docutils literal notranslate"><span class="pre">GroupedFunctionTransform</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.GroupedFunctionTransform.aggregate_frame"><code class="docutils literal notranslate"><span class="pre">GroupedFunctionTransform.aggregate_frame()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.GroupedFunctionTransform.prepare"><code class="docutils literal notranslate"><span class="pre">GroupedFunctionTransform.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.GroupedFunctionTransform.yaml_tag"><code class="docutils literal notranslate"><span class="pre">GroupedFunctionTransform.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#transforms.MergeTransform"><code class="docutils literal notranslate"><span class="pre">MergeTransform</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.MergeTransform.merge"><code class="docutils literal notranslate"><span class="pre">MergeTransform.merge()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.MergeTransform.prepare"><code class="docutils literal notranslate"><span class="pre">MergeTransform.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.MergeTransform.prepare_matched_by_attribute"><code class="docutils literal notranslate"><span class="pre">MergeTransform.prepare_matched_by_attribute()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.MergeTransform.prepare_simple_sequential"><code class="docutils literal notranslate"><span class="pre">MergeTransform.prepare_simple_sequential()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.MergeTransform.yaml_tag"><code class="docutils literal notranslate"><span class="pre">MergeTransform.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#transforms.Transform"><code class="docutils literal notranslate"><span class="pre">Transform</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.Transform.get_data"><code class="docutils literal notranslate"><span class="pre">Transform.get_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.Transform.prepare"><code class="docutils literal notranslate"><span class="pre">Transform.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.Transform.process"><code class="docutils literal notranslate"><span class="pre">Transform.process()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.Transform.set_data_repo"><code class="docutils literal notranslate"><span class="pre">Transform.set_data_repo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transforms.Transform.yaml_tag"><code class="docutils literal notranslate"><span class="pre">Transform.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#transforms.register_constructors"><code class="docutils literal notranslate"><span class="pre">register_constructors()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -90,8 +143,685 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="transforms">
-<h1>transforms<a class="headerlink" href="#transforms" title="Permalink to this heading"></a></h1>
+  <section id="module-transforms">
+<span id="transforms"></span><h1>transforms<a class="headerlink" href="#module-transforms" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="transforms.ColumnFunctionTransform">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">transforms.</span></span><span class="sig-name descname"><span class="pre">ColumnFunctionTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Series</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Series</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#ColumnFunctionTransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.ColumnFunctionTransform" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#transforms.Transform" title="transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transform</span></code></a>, <a class="reference internal" href="#transforms.ExtraCodeFunctionMixin" title="transforms.ExtraCodeFunctionMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
+<p>A transform for applying a function to every value in a column of a DataFrame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dataset_name: str</strong></dt><dd><p>the dataset to operate on</p>
+</dd>
+<dt><strong>output_dataset_name: str</strong></dt><dd><p>the name given to the output dataset</p>
+</dd>
+<dt><strong>input_column: str</strong></dt><dd><p>the name of the column the function should be applied to</p>
+</dd>
+<dt><strong>output_column: str</strong></dt><dd><p>the name given to the output column containing the results of applying
+the function</p>
+</dd>
+<dt><strong>function: Union[Callable[[pandas.Series], pandas.Series], str]</strong></dt><dd><p>The unary function to apply to the values in the chosen column.</p>
+</dd>
+<dt><strong>extra_code: Optional[str]</strong></dt><dd><p>This can contain additional code for the transform function, such as
+the definition of a function over multiple lines or split into multiple
+functions for readibility.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_function</span></code>(function, extra_code)</p></td>
+<td><p>Compile and evaluate the given function and an additional, optional code fragment within a separate global environment and return the executable function object.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data</span></code>(dataset_name)</p></td>
+<td><p>Retrieve a dataset with the given name from the data repository associated with this transform</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_data_repo</span></code>(data_repo)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>prepare</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>process</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.ColumnFunctionTransform.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#ColumnFunctionTransform.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.ColumnFunctionTransform.prepare" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.ColumnFunctionTransform.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#ColumnFunctionTransform.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.ColumnFunctionTransform.process" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="transforms.ColumnFunctionTransform.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!ColumnFunctionTransform'</span></em><a class="headerlink" href="#transforms.ColumnFunctionTransform.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="transforms.ConcatTransform">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">transforms.</span></span><span class="sig-name descname"><span class="pre">ConcatTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#ConcatTransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.ConcatTransform" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#transforms.Transform" title="transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transform</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
+<p>A transform for concatenating all DataFrames from the given datasets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dataset_names: Optional[List[str]]</strong></dt><dd><p>the list of datasets to concatenate</p>
+</dd>
+<dt><strong>output_dataset_name: str</strong></dt><dd><p>the name given to the output dataset</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data</span></code>(dataset_name)</p></td>
+<td><p>Retrieve a dataset with the given name from the data repository associated with this transform</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_data_repo</span></code>(data_repo)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>concat</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>prepare</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>process</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.ConcatTransform.concat">
+<span class="sig-name descname"><span class="pre">concat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dfs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#ConcatTransform.concat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.ConcatTransform.concat" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.ConcatTransform.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#ConcatTransform.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.ConcatTransform.prepare" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="transforms.ConcatTransform.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!ConcatTransform'</span></em><a class="headerlink" href="#transforms.ConcatTransform.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="transforms.ExtraCodeFunctionMixin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">transforms.</span></span><span class="sig-name descname"><span class="pre">ExtraCodeFunctionMixin</span></span><a class="reference internal" href="_modules/transforms.html#ExtraCodeFunctionMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.ExtraCodeFunctionMixin" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A mixin class for providing the functionality to compile and evaluate a
+function and an additional, optional code fragment within a separate global environment.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#transforms.ExtraCodeFunctionMixin.eval_function" title="transforms.ExtraCodeFunctionMixin.eval_function"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_function</span></code></a>(function, extra_code)</p></td>
+<td><p>Compile and evaluate the given function and an additional, optional code fragment within a separate global environment and return the executable function object.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.ExtraCodeFunctionMixin.eval_function">
+<span class="sig-name descname"><span class="pre">eval_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span></span></span><a class="reference internal" href="_modules/transforms.html#ExtraCodeFunctionMixin.eval_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.ExtraCodeFunctionMixin.eval_function" title="Link to this definition"></a></dt>
+<dd><p>Compile and evaluate the given function and an additional, optional
+code fragment within a separate global environment and return the
+executable function object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>function</strong><span class="classifier">Union[Callable, str]</span></dt><dd><p>The name of the function or a function object.</p>
+</dd>
+<dt><strong>extra_code</strong><span class="classifier">Optional[str]</span></dt><dd><p>This can contain additional code for the transform function, such as
+the definition of a function over multiple lines or split into multiple
+functions for readibility.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="transforms.FunctionTransform">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">transforms.</span></span><span class="sig-name descname"><span class="pre">FunctionTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#FunctionTransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.FunctionTransform" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#transforms.Transform" title="transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transform</span></code></a>, <a class="reference internal" href="#transforms.ExtraCodeFunctionMixin" title="transforms.ExtraCodeFunctionMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
+<p>A transform for applying a arbitrary function to a whole DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dataset_name: str</strong></dt><dd><p>The dataset to operate on.</p>
+</dd>
+<dt><strong>output_dataset_name: str</strong></dt><dd><p>The name given to the output dataset.</p>
+</dd>
+<dt><strong>function: Union[Callable[[pandas.DataFrame], pandas.DataFrame], str]</strong></dt><dd><p>The unary function to apply to each DataFrame of the dataset.
+It takes the full DataFrame as its only argument and returns a DataFrame.</p>
+</dd>
+<dt><strong>extra_code: Optional[str]</strong></dt><dd><p>This can contain additional code for the transform function, such as
+the definition of a function over multiple lines or split into multiple
+functions for readibility.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_function</span></code>(function, extra_code)</p></td>
+<td><p>Compile and evaluate the given function and an additional, optional code fragment within a separate global environment and return the executable function object.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data</span></code>(dataset_name)</p></td>
+<td><p>Retrieve a dataset with the given name from the data repository associated with this transform</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_data_repo</span></code>(data_repo)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>prepare</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>process</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.FunctionTransform.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#FunctionTransform.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.FunctionTransform.prepare" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.FunctionTransform.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/transforms.html#FunctionTransform.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.FunctionTransform.process" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="transforms.FunctionTransform.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!FunctionTransform'</span></em><a class="headerlink" href="#transforms.FunctionTransform.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="transforms.GroupedAggregationTransform">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">transforms.</span></span><span class="sig-name descname"><span class="pre">GroupedAggregationTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataset_name:</span> <span class="pre">str,</span> <span class="pre">output_dataset_name:</span> <span class="pre">str,</span> <span class="pre">input_column:</span> <span class="pre">str,</span> <span class="pre">output_column:</span> <span class="pre">str,</span> <span class="pre">grouping_columns:</span> <span class="pre">~typing.List,</span> <span class="pre">raw:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">pre_concatenate:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">aggregation_function:</span> <span class="pre">~typing.Callable[[~pandas.core.series.Series],</span> <span class="pre">object]</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">extra_code:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">timestamp_selector:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame.head&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#GroupedAggregationTransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.GroupedAggregationTransform" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#transforms.Transform" title="transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transform</span></code></a>, <a class="reference internal" href="#transforms.ExtraCodeFunctionMixin" title="transforms.ExtraCodeFunctionMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
+<p>A transform for dividing a dataset into distinct partitions with
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html#pandas.DataFrame.groupby">pandas.DataFrame.groupby</a>,
+each sharing the same value in the specified list of grouping/partitioning
+column names, and then applying a function to the values in a given column
+of a that partition, producing a aggregate scalar value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dataset_name: str</strong></dt><dd><p>the dataset to operate on</p>
+</dd>
+<dt><strong>output_dataset_name: str</strong></dt><dd><p>the name given to the output dataset</p>
+</dd>
+<dt><strong>input_column: str</strong></dt><dd><p>the name of the column the function should be applied to</p>
+</dd>
+<dt><strong>output_column: str</strong></dt><dd><p>the name given to the output column containing the results of applying
+the function</p>
+</dd>
+<dt><strong>grouping_columns: List</strong></dt><dd><p>the set of columns used for partitioning the dataset</p>
+</dd>
+<dt><strong>raw: bool</strong></dt><dd><p>whether to append the raw output of <cite>transform_function</cite> to the result list</p>
+</dd>
+<dt><strong>pre_concatenate: bool</strong></dt><dd><p>concatenate all input DataFrames before processing</p>
+</dd>
+<dt><strong>aggregation_function: Union[Callable[[pandas.Series], object], str]</strong></dt><dd><p>The unary function to apply to a each partition. Should expect an
+<cite>pandas.Series</cite> as argument and return a scalar value.</p>
+</dd>
+<dt><strong>extra_code: Optional[str]</strong></dt><dd><p>This can contain additional code for the transform function, such as
+the definition of a function over multiple lines or split into multiple
+functions for readibility.</p>
+</dd>
+<dt><strong>timestamp_selector: Callable</strong></dt><dd><p>the function to select the row in the partition data as template for the output in case of aggregation</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_function</span></code>(function, extra_code)</p></td>
+<td><p>Compile and evaluate the given function and an additional, optional code fragment within a separate global environment and return the executable function object.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data</span></code>(dataset_name)</p></td>
+<td><p>Retrieve a dataset with the given name from the data repository associated with this transform</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_data_repo</span></code>(data_repo)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>aggregate_frame</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>prepare</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>process</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.GroupedAggregationTransform.aggregate_frame">
+<span class="sig-name descname"><span class="pre">aggregate_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#GroupedAggregationTransform.aggregate_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.GroupedAggregationTransform.aggregate_frame" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.GroupedAggregationTransform.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#GroupedAggregationTransform.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.GroupedAggregationTransform.prepare" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="transforms.GroupedAggregationTransform.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!GroupedAggregationTransform'</span></em><a class="headerlink" href="#transforms.GroupedAggregationTransform.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="transforms.GroupedFunctionTransform">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">transforms.</span></span><span class="sig-name descname"><span class="pre">GroupedFunctionTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataset_name:</span> <span class="pre">str,</span> <span class="pre">output_dataset_name:</span> <span class="pre">str,</span> <span class="pre">input_column:</span> <span class="pre">str,</span> <span class="pre">output_column:</span> <span class="pre">str,</span> <span class="pre">grouping_columns:</span> <span class="pre">~typing.List,</span> <span class="pre">raw:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">aggregate:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">pre_concatenate:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">transform_function:</span> <span class="pre">~typing.Callable[[~pandas.core.frame.DataFrame],</span> <span class="pre">~pandas.core.frame.DataFrame]</span> <span class="pre">|</span> <span class="pre">~typing.Callable[[~pandas.core.frame.DataFrame],</span> <span class="pre">object]</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">extra_code:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">timestamp_selector:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame.head&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#GroupedFunctionTransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.GroupedFunctionTransform" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#transforms.Transform" title="transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transform</span></code></a>, <a class="reference internal" href="#transforms.ExtraCodeFunctionMixin" title="transforms.ExtraCodeFunctionMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
+<p>A transform for dividing a dataset into distinct partitions with
+<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html#pandas.DataFrame.groupby">pandas.DataFrame.groupby</a>,
+each sharing the same value in the specified list of grouping/partitioning
+column names, and then applying a function to that partition.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dataset_name: str</strong></dt><dd><p>the dataset to operate on</p>
+</dd>
+<dt><strong>output_dataset_name: str</strong></dt><dd><p>the name given to the output dataset</p>
+</dd>
+<dt><strong>input_column: str</strong></dt><dd><p>the name of the column the function should be applied to</p>
+</dd>
+<dt><strong>output_column: str</strong></dt><dd><p>the name given to the output column containing the results of applying
+the function</p>
+</dd>
+<dt><strong>grouping_columns: List</strong></dt><dd><p>the set of columns used for partitioning the dataset</p>
+</dd>
+<dt><strong>raw: bool</strong></dt><dd><p>whether to append the raw output of <cite>transform_function</cite> to the result list</p>
+</dd>
+<dt><strong>aggregate: bool</strong></dt><dd><p>whether the transform function returns a scalar or an object (like a <cite>pandas.DataFrame</cite>)</p>
+</dd>
+<dt><strong>pre_concatenate: bool</strong></dt><dd><p>concatenate all input DataFrames before processing</p>
+</dd>
+<dt><strong>transform_function: Union[Callable[[pandas.DataFrame], pandas.DataFrame], Callable[[pandas.DataFrame], object], str]</strong></dt><dd><p>The unary function to apply to a each partition. Should expect an
+<cite>pandas.DataFrame</cite> as argument and return a <cite>pandas.DataFrame</cite> (or an arbitrary object if <cite>raw</cite> is true).</p>
+</dd>
+<dt><strong>extra_code: Optional[str]</strong></dt><dd><p>This can contain additional code for the transform function, such as
+the definition of a function over multiple lines or split into multiple
+functions for readibility.</p>
+</dd>
+<dt><strong>timestamp_selector: Callable</strong></dt><dd><p>the function to select the row in the partition data as template for the output in case of aggregation</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_function</span></code>(function, extra_code)</p></td>
+<td><p>Compile and evaluate the given function and an additional, optional code fragment within a separate global environment and return the executable function object.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data</span></code>(dataset_name)</p></td>
+<td><p>Retrieve a dataset with the given name from the data repository associated with this transform</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_data_repo</span></code>(data_repo)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>aggregate_frame</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>prepare</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>process</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.GroupedFunctionTransform.aggregate_frame">
+<span class="sig-name descname"><span class="pre">aggregate_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#GroupedFunctionTransform.aggregate_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.GroupedFunctionTransform.aggregate_frame" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.GroupedFunctionTransform.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#GroupedFunctionTransform.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.GroupedFunctionTransform.prepare" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="transforms.GroupedFunctionTransform.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!GroupedFunctionTransform'</span></em><a class="headerlink" href="#transforms.GroupedFunctionTransform.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="transforms.MergeTransform">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">transforms.</span></span><span class="sig-name descname"><span class="pre">MergeTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_name_left</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_name_right</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_key_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_key_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_by_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matching_attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'source_files'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#MergeTransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.MergeTransform" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#transforms.Transform" title="transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transform</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
+<p>A transform for merging the columns from two DataFrames, from two distinct
+datasets, similarly to a SQL INNER JOIN.</p>
+<p>Basically a wrapper around <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.merge.html">pandas.merge</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dataset_name_left: str</strong></dt><dd><p>the left dataset to operate on</p>
+</dd>
+<dt><strong>dataset_name_right: str</strong></dt><dd><p>the right dataset to operate on</p>
+</dd>
+<dt><strong>output_dataset_name: str</strong></dt><dd><p>the name given to the output dataset</p>
+</dd>
+<dt><strong>right_key_columns: str</strong></dt><dd><p>the name of the column from the right dataset taht is used as key for joining</p>
+</dd>
+<dt><strong>left_key_columns: str</strong></dt><dd><p>the name of the column from the left dataset taht is used as key for joining</p>
+</dd>
+<dt><strong>match_by_filename: bool</strong></dt><dd><p>whether to match merge input by the filename the data has been extracted from</p>
+</dd>
+<dt><strong>matching_attribute: str</strong></dt><dd><p>the attribute to match the datasets on</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data</span></code>(dataset_name)</p></td>
+<td><p>Retrieve a dataset with the given name from the data repository associated with this transform</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_data_repo</span></code>(data_repo)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>merge</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>prepare</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>prepare_matched_by_attribute</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>prepare_simple_sequential</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>process</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.MergeTransform.merge">
+<span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_l</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">left_key_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_key_columns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#MergeTransform.merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.MergeTransform.merge" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.MergeTransform.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#MergeTransform.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.MergeTransform.prepare" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.MergeTransform.prepare_matched_by_attribute">
+<span class="sig-name descname"><span class="pre">prepare_matched_by_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#MergeTransform.prepare_matched_by_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.MergeTransform.prepare_matched_by_attribute" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.MergeTransform.prepare_simple_sequential">
+<span class="sig-name descname"><span class="pre">prepare_simple_sequential</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#MergeTransform.prepare_simple_sequential"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.MergeTransform.prepare_simple_sequential" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="transforms.MergeTransform.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!MergeTransform'</span></em><a class="headerlink" href="#transforms.MergeTransform.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="transforms.Transform">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">transforms.</span></span><span class="sig-name descname"><span class="pre">Transform</span></span><a class="reference internal" href="_modules/transforms.html#Transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.Transform" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
+<p>The base class for all transforms</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#transforms.Transform.get_data" title="transforms.Transform.get_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data</span></code></a>(dataset_name)</p></td>
+<td><p>Retrieve a dataset with the given name from the data repository associated with this transform</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#transforms.Transform.set_data_repo" title="transforms.Transform.set_data_repo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_data_repo</span></code></a>(data_repo)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>prepare</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>process</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.Transform.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#Transform.get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.Transform.get_data" title="Link to this definition"></a></dt>
+<dd><p>Retrieve a dataset with the given name from the data repository associated with this transform</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dataset_name</strong><span class="classifier">str</span></dt><dd><p>The name of the dataset to retrieve from the data repository</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.Transform.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#Transform.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.Transform.prepare" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.Transform.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#Transform.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.Transform.process" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="transforms.Transform.set_data_repo">
+<span class="sig-name descname"><span class="pre">set_data_repo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_repo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#Transform.set_data_repo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.Transform.set_data_repo" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_repo</strong><span class="classifier">dict</span></dt><dd><p>The dictionary containing all loaded datasets necessary for this transform</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="transforms.Transform.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!Transform'</span></em><a class="headerlink" href="#transforms.Transform.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="transforms.register_constructors">
+<span class="sig-prename descclassname"><span class="pre">transforms.</span></span><span class="sig-name descname"><span class="pre">register_constructors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#register_constructors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.register_constructors" title="Link to this definition"></a></dt>
+<dd><p>Register YAML constructors for all transforms</p>
+</dd></dl>
+
 </section>
 
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -15,9 +15,9 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -58,7 +58,20 @@
 <li class="toctree-l1 current"><a class="reference internal" href="api_reference.html">API reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="common.html">Common</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utility.html">Utility</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">exporters</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">exporters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#exporters.FileResultProcessor"><code class="docutils literal notranslate"><span class="pre">FileResultProcessor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#exporters.FileResultProcessor.get_data"><code class="docutils literal notranslate"><span class="pre">FileResultProcessor.get_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exporters.FileResultProcessor.prepare"><code class="docutils literal notranslate"><span class="pre">FileResultProcessor.prepare()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exporters.FileResultProcessor.prepare_concatenated"><code class="docutils literal notranslate"><span class="pre">FileResultProcessor.prepare_concatenated()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exporters.FileResultProcessor.prepare_separated"><code class="docutils literal notranslate"><span class="pre">FileResultProcessor.prepare_separated()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exporters.FileResultProcessor.save_to_disk"><code class="docutils literal notranslate"><span class="pre">FileResultProcessor.save_to_disk()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exporters.FileResultProcessor.set_data_repo"><code class="docutils literal notranslate"><span class="pre">FileResultProcessor.set_data_repo()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exporters.FileResultProcessor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">FileResultProcessor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#exporters.register_constructors"><code class="docutils literal notranslate"><span class="pre">register_constructors()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="extractors.html">extractors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plots.html">plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="transforms.html">transforms</a></li>
@@ -91,8 +104,119 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="exporters">
-<h1>exporters<a class="headerlink" href="#exporters" title="Permalink to this heading"></a></h1>
+  <section id="module-exporters">
+<span id="exporters"></span><h1>exporters<a class="headerlink" href="#module-exporters" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="exporters.FileResultProcessor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">exporters.</span></span><span class="sig-name descname"><span class="pre">FileResultProcessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'feather'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concatenate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/exporters.html#FileResultProcessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#exporters.FileResultProcessor" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
+<p>Export the given dataset as
+[feather/arrow](<a class="reference external" href="https://arrow.apache.org/docs/python/feather.html">https://arrow.apache.org/docs/python/feather.html</a>) or JSON</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>output_filename: str</strong></dt><dd><p>the name of the output file</p>
+</dd>
+<dt><strong>output_directory: str</strong></dt><dd><p>the path of the output directory</p>
+</dd>
+<dt><strong>dataset_name: str</strong></dt><dd><p>the name of the dataset to export</p>
+</dd>
+<dt><strong>format: str</strong></dt><dd><p>the output file format, either <cite>feather</cite> or <cite>json</cite></p>
+</dd>
+<dt><strong>concatenate: bool</strong></dt><dd><p>Whether to concatenate the input data before exporting it. If false,
+the name of the output files will be derived from the input file names
+and the aliases in the data.</p>
+</dd>
+<dt><strong>raw: bool</strong></dt><dd><p>whether to save the raw input or convert the columns of the input
+<cite>pandas.DataFrame</cite> to categories before saving</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>yaml_flow_style</strong></dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
+<td><p>Convert a representation node to a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<td><p>Convert a Python object to a representation node.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>get_data</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>prepare</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>prepare_concatenated</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>prepare_separated</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>save_to_disk</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>set_data_repo</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="exporters.FileResultProcessor.get_data">
+<span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/exporters.html#FileResultProcessor.get_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#exporters.FileResultProcessor.get_data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="exporters.FileResultProcessor.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/exporters.html#FileResultProcessor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#exporters.FileResultProcessor.prepare" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="exporters.FileResultProcessor.prepare_concatenated">
+<span class="sig-name descname"><span class="pre">prepare_concatenated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/exporters.html#FileResultProcessor.prepare_concatenated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#exporters.FileResultProcessor.prepare_concatenated" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="exporters.FileResultProcessor.prepare_separated">
+<span class="sig-name descname"><span class="pre">prepare_separated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/exporters.html#FileResultProcessor.prepare_separated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#exporters.FileResultProcessor.prepare_separated" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="exporters.FileResultProcessor.save_to_disk">
+<span class="sig-name descname"><span class="pre">save_to_disk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'feather'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compression</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lz4'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdf_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/exporters.html#FileResultProcessor.save_to_disk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#exporters.FileResultProcessor.save_to_disk" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="exporters.FileResultProcessor.set_data_repo">
+<span class="sig-name descname"><span class="pre">set_data_repo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_repo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/exporters.html#FileResultProcessor.set_data_repo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#exporters.FileResultProcessor.set_data_repo" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="exporters.FileResultProcessor.yaml_tag">
+<span class="sig-name descname"><span class="pre">yaml_tag</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'!FileResultProcessor'</span></em><a class="headerlink" href="#exporters.FileResultProcessor.yaml_tag" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="exporters.register_constructors">
+<span class="sig-prename descclassname"><span class="pre">exporters.</span></span><span class="sig-name descname"><span class="pre">register_constructors</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/exporters.html#register_constructors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#exporters.register_constructors" title="Link to this definition"></a></dt>
+<dd><p>Register YAML constructors for all exporters</p>
+</dd></dl>
+
 </section>
 
 

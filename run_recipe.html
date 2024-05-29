@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -15,9 +15,9 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -80,8 +80,113 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="run-recipe-module">
-<h1>run_recipe module<a class="headerlink" href="#run-recipe-module" title="Permalink to this heading"></a></h1>
+  <section id="module-run_recipe">
+<span id="run-recipe-module"></span><h1>run_recipe module<a class="headerlink" href="#module-run_recipe" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="run_recipe.WorkerPlugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">run_recipe.</span></span><span class="sig-name descname"><span class="pre">WorkerPlugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_recipe.html#WorkerPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#run_recipe.WorkerPlugin" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">WorkerPlugin</span></code></p>
+<p>A dask worker plugin for setting defaults in the worker process</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>options</strong><span class="classifier">dict</span></dt><dd><p>The dictionary containing the configuration for the worker, usually the same as for the launcher</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#run_recipe.WorkerPlugin.setup" title="run_recipe.WorkerPlugin.setup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup</span></code></a>(worker)</p></td>
+<td><p>Run when the plugin is attached to a worker.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">teardown</span></code>(worker)</p></td>
+<td><p>Run when the worker to which the plugin is attached is closed, or when the plugin is removed.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">transition</span></code>(key, start, finish, **kwargs)</p></td>
+<td><p>Throughout the lifecycle of a task (see <span class="xref std std-doc">Worker State</span>), Workers are instructed by the scheduler to compute certain tasks, resulting in transitions in the state of each task.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="run_recipe.WorkerPlugin.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">worker</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Worker</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_recipe.html#WorkerPlugin.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#run_recipe.WorkerPlugin.setup" title="Link to this definition"></a></dt>
+<dd><p>Run when the plugin is attached to a worker. This happens when the plugin is registered
+and attached to existing workers, or when a worker is created after the plugin has been
+registered.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="run_recipe.compute_graph">
+<span class="sig-prename descclassname"><span class="pre">run_recipe.</span></span><span class="sig-name descname"><span class="pre">compute_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jobs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_recipe.html#compute_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#run_recipe.compute_graph" title="Link to this definition"></a></dt>
+<dd><p>Compute the task graph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>jobs</strong><span class="classifier">List[dask.Delayed]</span></dt><dd><p>The list of jobs/tasks to compute</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="run_recipe.eval_recipe_tag_definitions">
+<span class="sig-prename descclassname"><span class="pre">run_recipe.</span></span><span class="sig-name descname"><span class="pre">eval_recipe_tag_definitions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes_regex_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterationvars_regex_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters_regex_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_recipe.html#eval_recipe_tag_definitions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#run_recipe.eval_recipe_tag_definitions" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="run_recipe.extract_dict_from_string">
+<span class="sig-prename descclassname"><span class="pre">run_recipe.</span></span><span class="sig-name descname"><span class="pre">extract_dict_from_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_recipe.html#extract_dict_from_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#run_recipe.extract_dict_from_string" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="run_recipe.main">
+<span class="sig-prename descclassname"><span class="pre">run_recipe.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_recipe.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#run_recipe.main" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="run_recipe.parse_arguments">
+<span class="sig-prename descclassname"><span class="pre">run_recipe.</span></span><span class="sig-name descname"><span class="pre">parse_arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arguments</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_recipe.html#parse_arguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#run_recipe.parse_arguments" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="run_recipe.prepare_evaluation_phase">
+<span class="sig-prename descclassname"><span class="pre">run_recipe.</span></span><span class="sig-name descname"><span class="pre">prepare_evaluation_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="recipe.html#recipe.Recipe" title="recipe.Recipe"><span class="pre">Recipe</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_repo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_recipe.html#prepare_evaluation_phase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#run_recipe.prepare_evaluation_phase" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="run_recipe.prepare_plotting_phase">
+<span class="sig-prename descclassname"><span class="pre">run_recipe.</span></span><span class="sig-name descname"><span class="pre">prepare_plotting_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="recipe.html#recipe.Recipe" title="recipe.Recipe"><span class="pre">Recipe</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_repo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_recipe.html#prepare_plotting_phase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#run_recipe.prepare_plotting_phase" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="run_recipe.process_recipe">
+<span class="sig-prename descclassname"><span class="pre">run_recipe.</span></span><span class="sig-name descname"><span class="pre">process_recipe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_recipe.html#process_recipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#run_recipe.process_recipe" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="run_recipe.setup_dask">
+<span class="sig-prename descclassname"><span class="pre">run_recipe.</span></span><span class="sig-name descname"><span class="pre">setup_dask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_recipe.html#setup_dask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#run_recipe.setup_dask" title="Link to this definition"></a></dt>
+<dd><p>Setup and configure the dask cluster and its workers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>options</strong><span class="classifier">dict</span></dt><dd><p>The dictionary containing the configuration for the launcher</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="run_recipe.setup_pandas">
+<span class="sig-prename descclassname"><span class="pre">run_recipe.</span></span><span class="sig-name descname"><span class="pre">setup_pandas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_recipe.html#setup_pandas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#run_recipe.setup_pandas" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 
 

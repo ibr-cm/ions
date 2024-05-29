@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -15,9 +15,9 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -91,7 +91,7 @@
            <div itemprop="articleBody">
              
   <section id="api-reference">
-<h1>API reference<a class="headerlink" href="#api-reference" title="Permalink to this heading"></a></h1>
+<h1>API reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Modules/Packages:</span></p>
 <ul>
@@ -111,10 +111,195 @@
 <li class="toctree-l2"><a class="reference internal" href="utility.html#utility.stopwatch.stopWatch"><code class="docutils literal notranslate"><span class="pre">stopWatch()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="exporters.html">exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="extractors.html">extractors</a></li>
-<li class="toctree-l1"><a class="reference internal" href="plots.html">plots</a></li>
-<li class="toctree-l1"><a class="reference internal" href="transforms.html">transforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exporters.html">exporters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="exporters.html#exporters.FileResultProcessor"><code class="docutils literal notranslate"><span class="pre">FileResultProcessor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="exporters.html#exporters.FileResultProcessor.get_data"><code class="docutils literal notranslate"><span class="pre">FileResultProcessor.get_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporters.html#exporters.FileResultProcessor.prepare"><code class="docutils literal notranslate"><span class="pre">FileResultProcessor.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporters.html#exporters.FileResultProcessor.prepare_concatenated"><code class="docutils literal notranslate"><span class="pre">FileResultProcessor.prepare_concatenated()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporters.html#exporters.FileResultProcessor.prepare_separated"><code class="docutils literal notranslate"><span class="pre">FileResultProcessor.prepare_separated()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporters.html#exporters.FileResultProcessor.save_to_disk"><code class="docutils literal notranslate"><span class="pre">FileResultProcessor.save_to_disk()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporters.html#exporters.FileResultProcessor.set_data_repo"><code class="docutils literal notranslate"><span class="pre">FileResultProcessor.set_data_repo()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporters.html#exporters.FileResultProcessor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">FileResultProcessor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="exporters.html#exporters.register_constructors"><code class="docutils literal notranslate"><span class="pre">register_constructors()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extractors.html">extractors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#extractors.BaseExtractor"><code class="docutils literal notranslate"><span class="pre">BaseExtractor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.apply_tags"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.apply_tags()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.convert_columns_to_category"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.convert_columns_to_category()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.read_pattern_matched_scalars_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_pattern_matched_scalars_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.read_pattern_matched_signals_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_pattern_matched_signals_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.read_query_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_query_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.read_scalars_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_scalars_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.read_signals_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_signals_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.read_sql_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_sql_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.read_statistic_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_statistic_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#extractors.DataAttributes"><code class="docutils literal notranslate"><span class="pre">DataAttributes</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.DataAttributes.add_alias"><code class="docutils literal notranslate"><span class="pre">DataAttributes.add_alias()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.DataAttributes.add_source_file"><code class="docutils literal notranslate"><span class="pre">DataAttributes.add_source_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.DataAttributes.add_source_files"><code class="docutils literal notranslate"><span class="pre">DataAttributes.add_source_files()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.DataAttributes.get_aliases"><code class="docutils literal notranslate"><span class="pre">DataAttributes.get_aliases()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.DataAttributes.get_source_files"><code class="docutils literal notranslate"><span class="pre">DataAttributes.get_source_files()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.DataAttributes.remove_source_file"><code class="docutils literal notranslate"><span class="pre">DataAttributes.remove_source_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#extractors.Extractor"><code class="docutils literal notranslate"><span class="pre">Extractor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.Extractor.prepare"><code class="docutils literal notranslate"><span class="pre">Extractor.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.Extractor.set_tag_maps"><code class="docutils literal notranslate"><span class="pre">Extractor.set_tag_maps()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.Extractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">Extractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#extractors.MatchingExtractor"><code class="docutils literal notranslate"><span class="pre">MatchingExtractor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.MatchingExtractor.extract_all_signals"><code class="docutils literal notranslate"><span class="pre">MatchingExtractor.extract_all_signals()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.MatchingExtractor.get_matching_signals"><code class="docutils literal notranslate"><span class="pre">MatchingExtractor.get_matching_signals()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.MatchingExtractor.prepare"><code class="docutils literal notranslate"><span class="pre">MatchingExtractor.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.MatchingExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">MatchingExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#extractors.PatternMatchingBulkExtractor"><code class="docutils literal notranslate"><span class="pre">PatternMatchingBulkExtractor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.PatternMatchingBulkExtractor.extract_all_signals"><code class="docutils literal notranslate"><span class="pre">PatternMatchingBulkExtractor.extract_all_signals()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.PatternMatchingBulkExtractor.prepare"><code class="docutils literal notranslate"><span class="pre">PatternMatchingBulkExtractor.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.PatternMatchingBulkExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">PatternMatchingBulkExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#extractors.PatternMatchingBulkScalarExtractor"><code class="docutils literal notranslate"><span class="pre">PatternMatchingBulkScalarExtractor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.PatternMatchingBulkScalarExtractor.extract_all_scalars"><code class="docutils literal notranslate"><span class="pre">PatternMatchingBulkScalarExtractor.extract_all_scalars()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.PatternMatchingBulkScalarExtractor.prepare"><code class="docutils literal notranslate"><span class="pre">PatternMatchingBulkScalarExtractor.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.PatternMatchingBulkScalarExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">PatternMatchingBulkScalarExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#extractors.PositionExtractor"><code class="docutils literal notranslate"><span class="pre">PositionExtractor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.PositionExtractor.prepare"><code class="docutils literal notranslate"><span class="pre">PositionExtractor.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.PositionExtractor.read_position_and_signal_from_file"><code class="docutils literal notranslate"><span class="pre">PositionExtractor.read_position_and_signal_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.PositionExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">PositionExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#extractors.RawExtractor"><code class="docutils literal notranslate"><span class="pre">RawExtractor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.RawExtractor.prepare"><code class="docutils literal notranslate"><span class="pre">RawExtractor.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.RawExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">RawExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#extractors.RawScalarExtractor"><code class="docutils literal notranslate"><span class="pre">RawScalarExtractor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.RawScalarExtractor.prepare"><code class="docutils literal notranslate"><span class="pre">RawScalarExtractor.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.RawScalarExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">RawScalarExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#extractors.RawStatisticExtractor"><code class="docutils literal notranslate"><span class="pre">RawStatisticExtractor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.RawStatisticExtractor.prepare"><code class="docutils literal notranslate"><span class="pre">RawStatisticExtractor.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.RawStatisticExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">RawStatisticExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#extractors.SqlExtractor"><code class="docutils literal notranslate"><span class="pre">SqlExtractor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.SqlExtractor.prepare"><code class="docutils literal notranslate"><span class="pre">SqlExtractor.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.SqlExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">SqlExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#extractors.SqlLiteReader"><code class="docutils literal notranslate"><span class="pre">SqlLiteReader</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.SqlLiteReader.attribute_extractor"><code class="docutils literal notranslate"><span class="pre">SqlLiteReader.attribute_extractor()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.SqlLiteReader.connect"><code class="docutils literal notranslate"><span class="pre">SqlLiteReader.connect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.SqlLiteReader.disconnect"><code class="docutils literal notranslate"><span class="pre">SqlLiteReader.disconnect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.SqlLiteReader.execute_sql_query"><code class="docutils literal notranslate"><span class="pre">SqlLiteReader.execute_sql_query()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.SqlLiteReader.extract_tags"><code class="docutils literal notranslate"><span class="pre">SqlLiteReader.extract_tags()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.SqlLiteReader.parameter_extractor"><code class="docutils literal notranslate"><span class="pre">SqlLiteReader.parameter_extractor()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#extractors.register_constructors"><code class="docutils literal notranslate"><span class="pre">register_constructors()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plots.html">plots</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plots.html#plots.PlottingReaderFeather"><code class="docutils literal notranslate"><span class="pre">PlottingReaderFeather</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingReaderFeather.read_data"><code class="docutils literal notranslate"><span class="pre">PlottingReaderFeather.read_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingReaderFeather.yaml_tag"><code class="docutils literal notranslate"><span class="pre">PlottingReaderFeather.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plots.html#plots.PlottingTask"><code class="docutils literal notranslate"><span class="pre">PlottingTask</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.eval_grid_transform"><code class="docutils literal notranslate"><span class="pre">PlottingTask.eval_grid_transform()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.get_data"><code class="docutils literal notranslate"><span class="pre">PlottingTask.get_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.parse_matplotlib_rc"><code class="docutils literal notranslate"><span class="pre">PlottingTask.parse_matplotlib_rc()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.parse_matplotlib_rc_to_kwargs"><code class="docutils literal notranslate"><span class="pre">PlottingTask.parse_matplotlib_rc_to_kwargs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.plot_catplot"><code class="docutils literal notranslate"><span class="pre">PlottingTask.plot_catplot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.plot_data"><code class="docutils literal notranslate"><span class="pre">PlottingTask.plot_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.plot_distribution"><code class="docutils literal notranslate"><span class="pre">PlottingTask.plot_distribution()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.plot_heatmap_grid"><code class="docutils literal notranslate"><span class="pre">PlottingTask.plot_heatmap_grid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.plot_heatmap_nogrid"><code class="docutils literal notranslate"><span class="pre">PlottingTask.plot_heatmap_nogrid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.plot_heatplot"><code class="docutils literal notranslate"><span class="pre">PlottingTask.plot_heatplot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.plot_multiplot"><code class="docutils literal notranslate"><span class="pre">PlottingTask.plot_multiplot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.plot_relplot"><code class="docutils literal notranslate"><span class="pre">PlottingTask.plot_relplot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.prepare"><code class="docutils literal notranslate"><span class="pre">PlottingTask.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.savefigure"><code class="docutils literal notranslate"><span class="pre">PlottingTask.savefigure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.set_backend"><code class="docutils literal notranslate"><span class="pre">PlottingTask.set_backend()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.set_data_repo"><code class="docutils literal notranslate"><span class="pre">PlottingTask.set_data_repo()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.set_grid_defaults"><code class="docutils literal notranslate"><span class="pre">PlottingTask.set_grid_defaults()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.set_label_defaults"><code class="docutils literal notranslate"><span class="pre">PlottingTask.set_label_defaults()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.set_legend_defaults"><code class="docutils literal notranslate"><span class="pre">PlottingTask.set_legend_defaults()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.set_misc_defaults"><code class="docutils literal notranslate"><span class="pre">PlottingTask.set_misc_defaults()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.set_plot_specific_options"><code class="docutils literal notranslate"><span class="pre">PlottingTask.set_plot_specific_options()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.set_theme"><code class="docutils literal notranslate"><span class="pre">PlottingTask.set_theme()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html#plots.PlottingTask.yaml_tag"><code class="docutils literal notranslate"><span class="pre">PlottingTask.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plots.html#plots.register_constructors"><code class="docutils literal notranslate"><span class="pre">register_constructors()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="transforms.html">transforms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="transforms.html#transforms.ColumnFunctionTransform"><code class="docutils literal notranslate"><span class="pre">ColumnFunctionTransform</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.ColumnFunctionTransform.prepare"><code class="docutils literal notranslate"><span class="pre">ColumnFunctionTransform.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.ColumnFunctionTransform.process"><code class="docutils literal notranslate"><span class="pre">ColumnFunctionTransform.process()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.ColumnFunctionTransform.yaml_tag"><code class="docutils literal notranslate"><span class="pre">ColumnFunctionTransform.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="transforms.html#transforms.ConcatTransform"><code class="docutils literal notranslate"><span class="pre">ConcatTransform</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.ConcatTransform.concat"><code class="docutils literal notranslate"><span class="pre">ConcatTransform.concat()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.ConcatTransform.prepare"><code class="docutils literal notranslate"><span class="pre">ConcatTransform.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.ConcatTransform.yaml_tag"><code class="docutils literal notranslate"><span class="pre">ConcatTransform.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="transforms.html#transforms.ExtraCodeFunctionMixin"><code class="docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.ExtraCodeFunctionMixin.eval_function"><code class="docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin.eval_function()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="transforms.html#transforms.FunctionTransform"><code class="docutils literal notranslate"><span class="pre">FunctionTransform</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.FunctionTransform.prepare"><code class="docutils literal notranslate"><span class="pre">FunctionTransform.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.FunctionTransform.process"><code class="docutils literal notranslate"><span class="pre">FunctionTransform.process()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.FunctionTransform.yaml_tag"><code class="docutils literal notranslate"><span class="pre">FunctionTransform.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="transforms.html#transforms.GroupedAggregationTransform"><code class="docutils literal notranslate"><span class="pre">GroupedAggregationTransform</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.GroupedAggregationTransform.aggregate_frame"><code class="docutils literal notranslate"><span class="pre">GroupedAggregationTransform.aggregate_frame()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.GroupedAggregationTransform.prepare"><code class="docutils literal notranslate"><span class="pre">GroupedAggregationTransform.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.GroupedAggregationTransform.yaml_tag"><code class="docutils literal notranslate"><span class="pre">GroupedAggregationTransform.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="transforms.html#transforms.GroupedFunctionTransform"><code class="docutils literal notranslate"><span class="pre">GroupedFunctionTransform</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.GroupedFunctionTransform.aggregate_frame"><code class="docutils literal notranslate"><span class="pre">GroupedFunctionTransform.aggregate_frame()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.GroupedFunctionTransform.prepare"><code class="docutils literal notranslate"><span class="pre">GroupedFunctionTransform.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.GroupedFunctionTransform.yaml_tag"><code class="docutils literal notranslate"><span class="pre">GroupedFunctionTransform.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="transforms.html#transforms.MergeTransform"><code class="docutils literal notranslate"><span class="pre">MergeTransform</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.MergeTransform.merge"><code class="docutils literal notranslate"><span class="pre">MergeTransform.merge()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.MergeTransform.prepare"><code class="docutils literal notranslate"><span class="pre">MergeTransform.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.MergeTransform.prepare_matched_by_attribute"><code class="docutils literal notranslate"><span class="pre">MergeTransform.prepare_matched_by_attribute()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.MergeTransform.prepare_simple_sequential"><code class="docutils literal notranslate"><span class="pre">MergeTransform.prepare_simple_sequential()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.MergeTransform.yaml_tag"><code class="docutils literal notranslate"><span class="pre">MergeTransform.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="transforms.html#transforms.Transform"><code class="docutils literal notranslate"><span class="pre">Transform</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.Transform.get_data"><code class="docutils literal notranslate"><span class="pre">Transform.get_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.Transform.prepare"><code class="docutils literal notranslate"><span class="pre">Transform.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.Transform.process"><code class="docutils literal notranslate"><span class="pre">Transform.process()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.Transform.set_data_repo"><code class="docutils literal notranslate"><span class="pre">Transform.set_data_repo()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transforms.html#transforms.Transform.yaml_tag"><code class="docutils literal notranslate"><span class="pre">Transform.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="transforms.html#transforms.register_constructors"><code class="docutils literal notranslate"><span class="pre">register_constructors()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>

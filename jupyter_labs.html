@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -15,9 +15,9 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -81,12 +81,12 @@
            <div itemprop="articleBody">
              
   <section id="jupyterlabs">
-<h1>JupyterLabs<a class="headerlink" href="#jupyterlabs" title="Permalink to this heading"></a></h1>
+<h1>JupyterLabs<a class="headerlink" href="#jupyterlabs" title="Link to this heading"></a></h1>
 <p>Using JupyterLabs for exploring simulation result data is very much recommended.</p>
 <section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
 <section id="generate-certificates-for-tls">
-<h3>Generate certificates for TLS<a class="headerlink" href="#generate-certificates-for-tls" title="Permalink to this heading"></a></h3>
+<h3>Generate certificates for TLS<a class="headerlink" href="#generate-certificates-for-tls" title="Link to this heading"></a></h3>
 <p>Generate a self-signed certificate <code class="docutils literal notranslate"><span class="pre">jupyter.pem</span></code> and secret key <code class="docutils literal notranslate"><span class="pre">jupyter.key</span></code> in folder <code class="docutils literal notranslate"><span class="pre">~/.certs</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">generate_cert</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">d</span> <span class="o">~/.</span><span class="n">certs</span> <span class="o">-</span><span class="n">n</span> <span class="n">jupyter</span>
 </pre></div>
@@ -97,7 +97,7 @@ regarding the certificate’s parameters, but none of those are critical, the
 values just have to be syntactically correct.<br />It’s still a good idea to use <code class="docutils literal notranslate"><span class="pre">localhost</span></code> as the CN (<code class="docutils literal notranslate"><span class="pre">Common</span> <span class="pre">Name</span></code>).</p>
 </section>
 <section id="launch-jupyterlabs">
-<h3>Launch JupyterLabs<a class="headerlink" href="#launch-jupyterlabs" title="Permalink to this heading"></a></h3>
+<h3>Launch JupyterLabs<a class="headerlink" href="#launch-jupyterlabs" title="Link to this heading"></a></h3>
 <p>Launch JupyterLabs with (the port number might need to varied):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pipenv</span> <span class="n">run</span> <span class="n">jupyter</span> <span class="n">lab</span> <span class="o">--</span><span class="n">certfile</span><span class="o">=~/.</span><span class="n">certs</span><span class="o">/</span><span class="n">jupyter</span><span class="o">.</span><span class="n">pem</span> <span class="o">--</span><span class="n">keyfile</span><span class="o">=~/.</span><span class="n">certs</span><span class="o">/</span><span class="n">jupyter</span><span class="o">.</span><span class="n">key</span> <span class="o">--</span><span class="n">port</span> <span class="mi">7777</span> <span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="n">browser</span>
 </pre></div>
@@ -107,23 +107,23 @@ Note the URL outputted at the end. It contains the access token required for
 authenticating to the server.</p>
 </section>
 <section id="forward-from-a-remote-server-to-locahost-via-ssh">
-<h3>Forward from a remote server to locahost via SSH<a class="headerlink" href="#forward-from-a-remote-server-to-locahost-via-ssh" title="Permalink to this heading"></a></h3>
+<h3>Forward from a remote server to locahost via SSH<a class="headerlink" href="#forward-from-a-remote-server-to-locahost-via-ssh" title="Link to this heading"></a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="o">-</span><span class="n">J</span> <span class="n">hagau</span><span class="nd">@x1</span><span class="o">.</span><span class="n">ibr</span><span class="o">.</span><span class="n">cs</span><span class="o">.</span><span class="n">tu</span><span class="o">-</span><span class="n">bs</span><span class="o">.</span><span class="n">de</span> <span class="o">-</span><span class="n">L</span> <span class="mi">7777</span><span class="p">:</span><span class="n">localhost</span><span class="p">:</span><span class="mi">7777</span> <span class="n">hagau</span><span class="nd">@i3</span><span class="o">.</span><span class="n">ibr</span><span class="o">.</span><span class="n">cs</span><span class="o">.</span><span class="n">tu</span><span class="o">-</span><span class="n">bs</span><span class="o">.</span><span class="n">de</span>
 </pre></div>
 </div>
 <p>This forward all TCP packets addressed to <code class="docutils literal notranslate"><span class="pre">localhost</span></code> port <code class="docutils literal notranslate"><span class="pre">7777</span></code> to host <code class="docutils literal notranslate"><span class="pre">localhost</span></code> port <code class="docutils literal notranslate"><span class="pre">7777</span></code> on host <code class="docutils literal notranslate"><span class="pre">i3.ibr.cs.tu-bs.de</span></code></p>
 </section>
 <section id="open-jupyterlabs-in-browser">
-<h3>Open JupyterLabs in browser<a class="headerlink" href="#open-jupyterlabs-in-browser" title="Permalink to this heading"></a></h3>
+<h3>Open JupyterLabs in browser<a class="headerlink" href="#open-jupyterlabs-in-browser" title="Link to this heading"></a></h3>
 <p>Open the URL outputted with the token in a browser and open
 <code class="docutils literal notranslate"><span class="pre">explorer/explorer.ipynb</span></code>.
 Create a copy of the template.</p>
 </section>
 </section>
 <section id="jupyterlabs-documentation">
-<h2>JupyterLabs documentation<a class="headerlink" href="#jupyterlabs-documentation" title="Permalink to this heading"></a></h2>
+<h2>JupyterLabs documentation<a class="headerlink" href="#jupyterlabs-documentation" title="Link to this heading"></a></h2>
 <section id="basic-usage">
-<h3>Basic usage<a class="headerlink" href="#basic-usage" title="Permalink to this heading"></a></h3>
+<h3>Basic usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h3>
 <p>These are the recommended introductions to JupyterLabs:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://jupyterlab.readthedocs.io/en/latest/user/interface.html">UI</a></p></li>

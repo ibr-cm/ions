@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -15,9 +15,9 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -94,9 +94,9 @@
            <div itemprop="articleBody">
              
   <section id="evaluation-plotting">
-<h1>Evaluation &amp; Plotting<a class="headerlink" href="#evaluation-plotting" title="Permalink to this heading"></a></h1>
+<h1>Evaluation &amp; Plotting<a class="headerlink" href="#evaluation-plotting" title="Link to this heading"></a></h1>
 <section id="key-technologies">
-<h2>Key Technologies<a class="headerlink" href="#key-technologies" title="Permalink to this heading"></a></h2>
+<h2>Key Technologies<a class="headerlink" href="#key-technologies" title="Link to this heading"></a></h2>
 <p>The framework is built on top of <a class="reference external" href="https://pandas.pydata.org/">pandas</a>,
 <a class="reference external" href="https://seaborn.pydata.org/index.html">seaborn</a> and
 <a class="reference external" href="https://docs.dask.org/en/stable/">dask</a></p>
@@ -123,12 +123,12 @@ Reading the documentation for
 is advisable.</p>
 </section>
 <section id="getting-insight">
-<h2>Getting Insight<a class="headerlink" href="#getting-insight" title="Permalink to this heading"></a></h2>
+<h2>Getting Insight<a class="headerlink" href="#getting-insight" title="Link to this heading"></a></h2>
 <p>The evaluation and plotting is done by running <code class="docutils literal notranslate"><span class="pre">run_recipe.py</span></code> with the name of
 the ‘recipe’ YAML file, which contains the steps for processing the results of a batch of simulation
 runs. For a minimal introduction to YAML and some specifics of PyYAML see the <a class="reference external" href="https://pyyaml.org/wiki/PyYAMLDocumentation">PyYAML documentation</a></p>
 <section id="recipes">
-<h3>Recipes<a class="headerlink" href="#recipes" title="Permalink to this heading"></a></h3>
+<h3>Recipes<a class="headerlink" href="#recipes" title="Link to this heading"></a></h3>
 <p>The recipe describes the individual tasks as a list of key-value pairs; internally the data and
 operations are constructed (by <a class="reference external" href="https://docs.dask.org/en/latest/">dask</a>) into an
 dependency/task graph.</p>
@@ -218,7 +218,7 @@ API documentation, e.g. the documentation one needs for just plotting is in
 <code class="docutils literal notranslate"><span class="pre">plots.PlottingTask</span></code>, specifically in the documentation of the parameters of the
 constructor for that class.</p>
 <section id="tags">
-<h4>Tags<a class="headerlink" href="#tags" title="Permalink to this heading"></a></h4>
+<h4>Tags<a class="headerlink" href="#tags" title="Link to this heading"></a></h4>
 <p>The <code class="docutils literal notranslate"><span class="pre">evaluation</span></code> phase also supports assigning tags to the extracted data. A tag
 is a property shared among a subset of the input data, e.g. the repetition
 number of a run, the run number or the rate at which vehicles are being equipped
@@ -283,7 +283,7 @@ the column associated with the category.</p>
 </section>
 </section>
 <section id="examples">
-<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this heading"></a></h3>
+<h3>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h3>
 <p>Example recipes can be found in the <code class="docutils literal notranslate"><span class="pre">examples</span></code> directory in the root of this
 repository:</p>
 <ul class="simple">
