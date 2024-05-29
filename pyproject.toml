@@ -24,7 +24,7 @@ dependencies = [
     "pyarrow",
     "dask[complete]==2023.8.1",
     "dask-jobqueue",
-    "distributed>=2022.10.2",
+    "distributed==2023.8.1",
     "graphviz>=0.20.1",
 ]
 requires-python = ">=3.10,<3.13"
