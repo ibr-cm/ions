@@ -24,7 +24,6 @@ dependencies = [
     "pyarrow",
     "dask[complete]==2023.8.1",
     "dask-jobqueue",
-    "dask-labextension",
     "distributed>=2022.10.2",
     "graphviz>=0.20.1",
 ]
