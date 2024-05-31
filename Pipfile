@@ -25,6 +25,7 @@ dask-jobqueue = "==0.8.5"
 distributed = "==2023.8.1"
 graphviz = ">=0.20.1"
 ipython = "*"
+ipdb = "*"
 
 [dev-packages]
 pylint = "==3.2.2"
