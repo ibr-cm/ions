@@ -115,6 +115,9 @@ class PlottingTask(YAMLObject):
     y: str
         the name of the column with the data to plot on the y-axis
 
+    plot_kwargs:
+        keyword args that are passed to the plot function. Availabler args depend on the plot_type
+
     selector: Optional[Union[Callable, str]]
         a query string for selecting a subset of the input DataFrame for
         plotting, see
@@ -213,6 +216,7 @@ class PlottingTask(YAMLObject):
                  , plot_types:Optional[List[str]] = None
                  , ys:Optional[List[str]] = None
                  , selector:Optional[Union[Callable, str]] = None
+                 , plot_kwargs:Optional[dict] = None
                  , column:str = None
                  , row:str = None
                  , hue:str = None
@@ -279,6 +283,15 @@ class PlottingTask(YAMLObject):
             self.y = None
             self.ys = None
 
+
+        if plot_kwargs:
+            # parse plot kwargs
+            if type(plot_kwargs) == dict:
+                self.plot_kwargs = plot_kwargs
+            else:
+                loge(f"plot_kwargs set but is not a dict: {plot_kwargs=}")
+        else:
+            self.plot_kwargs = dict()
 
         self.selector = selector
 
@@ -546,6 +559,7 @@ class PlottingTask(YAMLObject):
                                         , x=self.x, y=self.y
                                         , hue=self.hue
                                         , row=self.row, column=self.column
+                                        , kwargs=self.plot_kwargs
                                        )
 
         def catplot(plot_type):
@@ -554,6 +568,7 @@ class PlottingTask(YAMLObject):
                                         , x=self.x, y=self.y
                                         , hue=self.hue
                                         , row=self.row, column=self.column
+                                        , kwargs=self.plot_kwargs
                                        )
 
         def relplot(plot_type):
@@ -562,6 +577,7 @@ class PlottingTask(YAMLObject):
                                         , x=self.x, y=self.y
                                         , hue=self.hue, style=self.style, size=self.size
                                         , row=self.row, column=self.column
+                                        , kwargs=self.plot_kwargs
                                        )
 
         def heatplot(plot_type):
@@ -570,6 +586,7 @@ class PlottingTask(YAMLObject):
                                         , x=self.x, y=self.y
                                         , hue=self.hue, style=self.style
                                         , row=self.row, column=self.column
+                                        , kwargs=self.plot_kwargs
                                        )
 
         fig = None
@@ -812,18 +829,19 @@ class PlottingTask(YAMLObject):
         return kwargs
 
     def plot_distribution(self, df, x='value', y=None, hue='moduleName', row='dcc', column='traciStart', plot_type='ecdf', **kwargs):
-        kwargs = self.set_plot_specific_options(plot_type, kwargs)
+        kwargs = self.set_plot_specific_options(plot_type, **kwargs)
 
         logd(f'PlottingTask::plot_distribution: {df.columns=}')
         logd(f'PlottingTask::plot_distribution: {x=}')
         logd(f'PlottingTask::plot_distribution: {y=}')
         logd(f'PlottingTask::plot_distribution: {plot_type=}')
+        logd(f'PlottingTask::plot_distribution: {kwargs=}')
         grid = sb.displot(data=df, x=x
                           , row=row, col=column
                           , hue=hue
                           , kind=plot_type
                           # , legend_out=False
-                          # , **kwargs
+                          , **kwargs
                          )
 
         grid = self.set_grid_defaults(grid)
@@ -831,7 +849,7 @@ class PlottingTask(YAMLObject):
         return grid
 
     def plot_catplot(self, df, x='v2x_rate', y='cbr', hue='moduleName', row='dcc', column='traciStart', plot_type='box', **kwargs):
-        kwargs = self.set_plot_specific_options(plot_type, kwargs)
+        kwargs = self.set_plot_specific_options(plot_type, **kwargs)
 
         logd(f'PlottingTask::plot_catplot: {df.columns=}')
         grid = sb.catplot(data=df, x=x, y=y, row=row, col=column
@@ -847,7 +865,7 @@ class PlottingTask(YAMLObject):
 
 
     def plot_relplot(self, df, x='v2x_rate', y='cbr', hue='moduleName', style='prefix', size=None,  row='dcc', column='traciStart', plot_type='line', **kwargs):
-        kwargs = self.set_plot_specific_options(plot_type, kwargs)
+        kwargs = self.set_plot_specific_options(plot_type, **kwargs)
 
         logd(f'PlottingTask::plot_relplot: {df.columns=}')
         grid = sb.relplot(data=df, x=x, y=y, row=row, col=column
