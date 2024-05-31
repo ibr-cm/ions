@@ -205,6 +205,9 @@
 <span class="sd">    y: str</span>
 <span class="sd">        the name of the column with the data to plot on the y-axis</span>
 
+<span class="sd">    plot_kwargs:</span>
+<span class="sd">        keyword args that are passed to the plot function. Availabler args depend on the plot_type</span>
+
 <span class="sd">    selector: Optional[Union[Callable, str]]</span>
 <span class="sd">        a query string for selecting a subset of the input DataFrame for</span>
 <span class="sd">        plotting, see</span>
@@ -303,6 +306,7 @@
                  <span class="p">,</span> <span class="n">plot_types</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
                  <span class="p">,</span> <span class="n">ys</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
                  <span class="p">,</span> <span class="n">selector</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+                 <span class="p">,</span> <span class="n">plot_kwargs</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
                  <span class="p">,</span> <span class="n">column</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
                  <span class="p">,</span> <span class="n">row</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
                  <span class="p">,</span> <span class="n">hue</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
@@ -369,6 +373,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ys</span> <span class="o">=</span> <span class="kc">None</span>
 
+
+        <span class="k">if</span> <span class="n">plot_kwargs</span><span class="p">:</span>
+            <span class="c1"># parse plot kwargs</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">plot_kwargs</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">plot_kwargs</span> <span class="o">=</span> <span class="n">plot_kwargs</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">loge</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;plot_kwargs set but is not a dict: </span><span class="si">{</span><span class="n">plot_kwargs</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">selector</span> <span class="o">=</span> <span class="n">selector</span>
 
@@ -668,6 +681,7 @@
                                         <span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span>
                                         <span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hue</span>
                                         <span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span>
+                                        <span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_kwargs</span>
                                        <span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">catplot</span><span class="p">(</span><span class="n">plot_type</span><span class="p">):</span>
@@ -676,6 +690,7 @@
                                         <span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span>
                                         <span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hue</span>
                                         <span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span>
+                                        <span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_kwargs</span>
                                        <span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">relplot</span><span class="p">(</span><span class="n">plot_type</span><span class="p">):</span>
@@ -684,6 +699,7 @@
                                         <span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span>
                                         <span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hue</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span>
                                         <span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span>
+                                        <span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_kwargs</span>
                                        <span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">heatplot</span><span class="p">(</span><span class="n">plot_type</span><span class="p">):</span>
@@ -692,6 +708,7 @@
                                         <span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span>
                                         <span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hue</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span>
                                         <span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span>
+                                        <span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_kwargs</span>
                                        <span class="p">)</span>
 
         <span class="n">fig</span> <span class="o">=</span> <span class="kc">None</span>
@@ -952,18 +969,19 @@
 <div class="viewcode-block" id="PlottingTask.plot_distribution">
 <a class="viewcode-back" href="../plots.html#plots.PlottingTask.plot_distribution">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;moduleName&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;dcc&#39;</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="s1">&#39;traciStart&#39;</span><span class="p">,</span> <span class="n">plot_type</span><span class="o">=</span><span class="s1">&#39;ecdf&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_specific_options</span><span class="p">(</span><span class="n">plot_type</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_specific_options</span><span class="p">(</span><span class="n">plot_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PlottingTask::plot_distribution: </span><span class="si">{</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PlottingTask::plot_distribution: </span><span class="si">{</span><span class="n">x</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PlottingTask::plot_distribution: </span><span class="si">{</span><span class="n">y</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PlottingTask::plot_distribution: </span><span class="si">{</span><span class="n">plot_type</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PlottingTask::plot_distribution: </span><span class="si">{</span><span class="n">kwargs</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">grid</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="n">displot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span>
                           <span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="n">column</span>
                           <span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="n">hue</span>
                           <span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">plot_type</span>
                           <span class="c1"># , legend_out=False</span>
-                          <span class="c1"># , **kwargs</span>
+                          <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
                          <span class="p">)</span>
 
         <span class="n">grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_grid_defaults</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
@@ -974,7 +992,7 @@
 <div class="viewcode-block" id="PlottingTask.plot_catplot">
 <a class="viewcode-back" href="../plots.html#plots.PlottingTask.plot_catplot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_catplot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;v2x_rate&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;cbr&#39;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;moduleName&#39;</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="s1">&#39;dcc&#39;</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="s1">&#39;traciStart&#39;</span><span class="p">,</span> <span class="n">plot_type</span><span class="o">=</span><span class="s1">&#39;box&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_specific_options</span><span class="p">(</span><span class="n">plot_type</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_specific_options</span><span class="p">(</span><span class="n">plot_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PlottingTask::plot_catplot: </span><span class="si">{</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">grid</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="n">catplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="n">column</span>
@@ -993,7 +1011,7 @@
 <div class="viewcode-block" id="PlottingTask.plot_relplot">
 <a class="viewcode-back" href="../plots.html#plots.PlottingTask.plot_relplot">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_relplot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;v2x_rate&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;cbr&#39;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;moduleName&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;prefix&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="n">row</span><span class="o">=</span><span class="s1">&#39;dcc&#39;</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="s1">&#39;traciStart&#39;</span><span class="p">,</span> <span class="n">plot_type</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_specific_options</span><span class="p">(</span><span class="n">plot_type</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_plot_specific_options</span><span class="p">(</span><span class="n">plot_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PlottingTask::plot_relplot: </span><span class="si">{</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">grid</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="n">relplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="n">column</span>
