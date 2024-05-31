@@ -9,6 +9,9 @@ This is a collection of best practices to consider when using this framework:
 - test the extraction and plotting with a subset of your data first. No need to
   waste time & energy if there's a typo somewhere or the parameters of a task are
   not appropriately set.
+- increase the verbosity with `-vv...` to see what extractors, transformers and
+  exporters do, e.g. which columns are extracted, are in- and output of transformers
+   and get categorized.
 - if you are working with a subset of your data, be sure to test the assumptions
   made in your code on the whole dataset, e.g. handling of NaN values. Testing
   for those edge cases is a good way to verify your simulation code too.
