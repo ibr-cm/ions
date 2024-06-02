@@ -49,6 +49,8 @@ from sql_queries import generate_signal_query
 
 import tag_regular_expressions as tag_regex
 
+_debug = False
+
 
 def eval_recipe_tag_definitions(recipe, attributes_regex_map, iterationvars_regex_map, parameters_regex_map):
     def eval_and_add_tags(tag_set_name, regex_map):
@@ -301,7 +303,14 @@ def parse_arguments(arguments):
     parser.add_argument('--dump-recipe', action='store_true', default=False, help='dump the loaded recipe; useful for finding errors in the recipe')
     parser.add_argument('--dump-recipe-only', action='store_true', default=False, help='dump the loaded recipe and exit; useful for finding errors in the recipe')
 
+    parser.add_argument('--debug', action='store_true', default=False, help='if an exception is encountered, drop into an ipdb debugger session')
+
+
     args = parser.parse_args(arguments)
+
+    if args.debug:
+        global _debug
+        _debug = True
 
     if args.single_threaded:
         args.worker = 1
@@ -536,3 +545,10 @@ if __name__=='__main__':
         loge(f'{e=}')
         loge(''.join(traceback.format_exception(e)))
 
+        if sys.stdin.isatty() and _debug:
+            loge('dropping into an interactive debugging environment')
+            # drop into the debugger in the context of the exception thrown
+            import ipdb
+            ipdb.post_mortem(e.__traceback__)
+        else:
+            loge('not dropping into an interactive debugging environment since the executing interpreter is not interactive')
