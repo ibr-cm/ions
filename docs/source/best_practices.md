@@ -28,13 +28,6 @@ This is a collection of best practices to consider when using this framework:
 - running `run_recipe.py` with the parameter `--plot-task-graphs` generates
   plots with the task graph in the directory for temporary files (set with
   `--tmpdir`.
-- when developing code for a transform or debugging errors, it can be really
-  useful to start an interactive console by adding:
-  ```
-  start_ipython_dbg_cmdline(user_ns=locals())
-  ```
-  into the code in the recipe and running single-threaded by adding `--worker
-  1 --single-threaded` to the command line
 - when using `pandas.DataFrame.groupby` to partition up the data, e.g. using
   the `GroupedFunctionTransform`, try limiting the number of keys used for
   partitioning and the size of the input `DataFrame`s to minimise processing
