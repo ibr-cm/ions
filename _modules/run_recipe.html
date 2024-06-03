@@ -85,9 +85,11 @@
 
 <span class="kn">import</span> <span class="nn">pprint</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">threading</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
 
@@ -109,6 +111,8 @@
     <span class="kn">from</span> <span class="nn">yaml</span> <span class="kn">import</span> <span class="n">Loader</span><span class="p">,</span> <span class="n">Dumper</span>
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">import</span> <span class="nn">numexpr</span>
 
 <span class="kn">import</span> <span class="nn">dask</span>
 <span class="kn">import</span> <span class="nn">dask.distributed</span>
@@ -285,6 +289,7 @@
             <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">transform_name</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span><span class="p">[</span><span class="s1">&#39;plot&#39;</span><span class="p">][</span><span class="s1">&#39;transforms&#39;</span><span class="p">]:</span>
                 <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;skipping transform </span><span class="si">{</span><span class="n">transform_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">continue</span>
+            <span class="n">transform</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="n">transform_name</span><span class="p">)</span>
             <span class="n">transform</span><span class="o">.</span><span class="n">set_data_repo</span><span class="p">(</span><span class="n">data_repo</span><span class="p">)</span>
             <span class="n">transform</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
             <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;added transform </span><span class="si">{</span><span class="n">transform_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -513,8 +518,20 @@
 <span class="k">def</span> <span class="nf">setup_pandas</span><span class="p">():</span>
     <span class="c1"># verbose printing of DataFrames</span>
     <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_colwidth&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+    <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_colwidth&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
+    <span class="c1"># print the numexpr thread pool config to the log</span>
+    <span class="n">numexp_max_threads</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;NUMEXPR_MAX_THREADS&#39;</span><span class="p">)</span>
+    <span class="n">numexp_num_threads</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;NUMEXPR_NUM_THREADS&#39;</span><span class="p">)</span>
+
+    <span class="n">numexpr_threads_log_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;thread_id=</span><span class="si">{</span><span class="n">threading</span><span class="o">.</span><span class="n">get_native_id</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="k">if</span> <span class="n">numexp_max_threads</span><span class="p">:</span>
+        <span class="n">numexpr_threads_log_msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;  NUMEXPR_MAX_THREADS=</span><span class="si">{</span><span class="n">numexp_max_threads</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="k">if</span> <span class="n">numexp_num_threads</span><span class="p">:</span>
+        <span class="n">numexpr_threads_log_msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;  NUMEXPR_NUM_THREADS=</span><span class="si">{</span><span class="n">numexp_num_threads</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="n">numexpr_threads_log_msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;  </span><span class="si">{</span><span class="n">numexpr</span><span class="o">.</span><span class="n">ncores</span><span class="si">=}</span><span class="s1">  </span><span class="si">{</span><span class="n">numexpr</span><span class="o">.</span><span class="n">nthreads</span><span class="si">=}</span><span class="s1">  </span><span class="si">{</span><span class="n">numexpr</span><span class="o">.</span><span class="n">MAX_THREADS</span><span class="si">=}</span><span class="s1">&#39;</span>
+    <span class="n">logd</span><span class="p">(</span><span class="n">numexpr_threads_log_msg</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WorkerPlugin">
