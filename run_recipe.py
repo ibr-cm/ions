@@ -2,9 +2,11 @@
 
 import pprint
 import sys
+import os
 import shutil
 import argparse
 import traceback
+import threading
 
 from typing import Callable
 
@@ -26,6 +28,8 @@ except ImportError:
     from yaml import Loader, Dumper
 
 import pandas as pd
+
+import numexpr
 
 import dask
 import dask.distributed
@@ -413,6 +417,18 @@ def setup_pandas():
     pd.set_option('display.max_columns', None)
     pd.set_option('display.max_colwidth', None)
 
+    # print the numexpr thread pool config to the log
+    numexp_max_threads = os.getenv('NUMEXPR_MAX_THREADS')
+    numexp_num_threads = os.getenv('NUMEXPR_NUM_THREADS')
+
+    numexpr_threads_log_msg = f'thread_id={threading.get_native_id()}'
+    if numexp_max_threads:
+        numexpr_threads_log_msg += f'  NUMEXPR_MAX_THREADS={numexp_max_threads}'
+    if numexp_num_threads:
+        numexpr_threads_log_msg += f'  NUMEXPR_NUM_THREADS={numexp_num_threads}'
+
+    numexpr_threads_log_msg += f'  {numexpr.ncores=}  {numexpr.nthreads=}  {numexpr.MAX_THREADS=}'
+    logd(numexpr_threads_log_msg)
 
 class WorkerPlugin(dask.distributed.WorkerPlugin):
     r"""
