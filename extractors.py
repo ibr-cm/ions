@@ -188,7 +188,7 @@ class Extractor(YAMLObject):
 
 class BaseExtractor(Extractor):
 
-    yaml_tag = u'!OmnetExtractor'
+    yaml_tag = u'!BaseExtractor'
 
     def __init__(self, /,
                  input_files:list
