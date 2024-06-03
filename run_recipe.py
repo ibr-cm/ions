@@ -194,6 +194,7 @@ def prepare_plotting_phase(recipe:Recipe, options, data_repo):
             if options.run_tree and not transform_name in options.run_tree['plot']['transforms']:
                 logi(f'skipping transform {transform_name}')
                 continue
+            transform.set_name(transform_name)
             transform.set_data_repo(data_repo)
             transform.prepare()
             logi(f'added transform {transform_name}')

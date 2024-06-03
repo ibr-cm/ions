@@ -36,6 +36,9 @@ class Transform(YAMLObject):
     """
     yaml_tag = u'!Transform'
 
+    def set_name(self, name:str):
+        self.name = name
+
     def set_data_repo(self, data_repo:dict):
         r"""
         Parameters
@@ -151,8 +154,10 @@ class ConcatTransform(Transform, YAMLObject):
         self.output_dataset_name = output_dataset_name
 
     def concat(self, dfs:List[pd.DataFrame]):
-        r = pd.concat(dfs)
-        return r
+        result = pd.concat(dfs)
+
+        logd(f'ConcatTransform  "{self.name}" result:\n{result}')
+        return result
 
     def prepare(self):
         data_list = []
@@ -244,7 +249,8 @@ class MergeTransform(Transform, YAMLObject):
             return None
 
         df_merged = data_l.merge(data_r, left_on=left_key_columns, right_on=right_key_columns, suffixes=['', '_r'])
-        # start_ipython_dbg_cmdline(locals())
+
+        logd(f'MergeTransform  "{self.name}" result:\n{df_merged}')
         return df_merged
 
     def prepare_matched_by_attribute(self):
@@ -369,7 +375,7 @@ class FunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
 
         result = function(data)
 
-        logd(f'FunctionTransform result:\n{result}')
+        logd(f'FunctionTransform "{self.name}" result:\n{result}')
         return result
 
     def prepare(self):
@@ -444,7 +450,8 @@ class ColumnFunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
         function = self.eval_function(self.function, None)
 
         data[self.output_column] = data[self.input_column].apply(function)
-        logd(f'ColumnFunctionTransform result:\n{data}')
+
+        logd(f'ColumnFunctionTransform  "{self.name}" result:\n{data}')
         return data
 
     def prepare(self):
@@ -574,7 +581,7 @@ class GroupedAggregationTransform(Transform, ExtraCodeFunctionMixin, YAMLObject)
             logw(f'GroupedAggregationTransform result_list was empty!')
             return result_list
 
-        logd(f'GroupedAggregationTransform result:\n{result}')
+        logd(f'GroupedAggregationTransform "{self.name}" result:\n{result}')
         return result
 
     def prepare(self):
@@ -725,7 +732,7 @@ class GroupedFunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
         else:
             result = result_list
 
-        logd(f'GroupedFunctionTransform: {result=}')
+        logd(f'GroupedFunctionTransform "{self.name}" result:\n{result}')
         return result
 
     def prepare(self):
