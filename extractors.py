@@ -192,48 +192,83 @@ class BaseExtractor(Extractor):
 
     def __init__(self, /,
                  input_files:list
-                 , categorical_columns:List[str] = []
-                 , categorical_columns_excluded:List[str] = []
+                 , categorical_columns:set[str] = set()
+                 , numerical_columns:Union[dict[str, str], set[str]] = set()
                  , *args, **kwargs
                  ):
         self.input_files:list = input_files
 
-        self.categorical_columns:List[str] = categorical_columns
-        self.categorical_columns_excluded:Set[str] = set(categorical_columns_excluded)
+        # categorical_columns and numerical_columns (if appropriate) are explicitly converted
+        # to a set to alleviate the need for an explicit tag in the YAML recipe, since pyyaml
+        # always interprets values in curly braces as dictionaries
+        self.categorical_columns:set[str] = set(categorical_columns)
+        if not isinstance(numerical_columns, dict):
+            self.numerical_columns:set[str] = set(numerical_columns)
+        else:
+            self.numerical_columns:dict[str, str] = numerical_columns
 
 
     @staticmethod
-    def convert_columns_to_category(data, additional_columns:list = [], excluded_columns:set = {}, numerical_columns:set = {}):
-        excluded_columns = set(excluded_columns).union(DEFAULT_CATEGORICALS_COLUMN_EXCLUSION_SET)
+    def convert_columns_dtype(data:pd.DataFrame, categorical_columns:set = set(), numerical_columns:Union[dict, set] = set()):
+        r"""
+        Convert the data in the specified columns of the given DataFrame to either a
+        `categorical data type <https://pandas.pydata.org/docs/user_guide/categorical.html>`_ or a
+        `numerical data type <https://pandas.pydata.org/pandas-docs/stable/user_guide/basics.html#basics-dtypes>`_
 
-        col_list = []
-        threshold = len(data) / 4
-        for col in data.columns:
-            if col in excluded_columns:
-                continue
-            # if the number of categories is larger than half the number of data
-            # samples, don't convert the column
-            s = len(set(data[col]))
-            if s < threshold:
-                col_list.append(col)
+        Parameters
+        ----------
+        data: pd.DataFrame
+            The input DataFrame whose columns are to be converted.
 
-        logd(f"{excluded_columns}=")
-        logd(f"{col_list}=")
-        # convert selected columns to Categorical
-        for col in col_list:
-            data[col] = data[col].astype('category')
-            data[col] = data[col].cat.as_ordered()
+        categorical_columns: set
+            The set of names of the columns to convert to a categorical data type.
 
-        for col in numerical_columns:
-            data[col] = data[col].astype('float')
+        numerical_columns: Union[dict[str, str], set[str]]
+            The set of names of the columns to convert to a categorical data type.
+            The data type to convert to can also be given explicitly as a dictionary
+            with the column names as keys and the data type as values.
+        """
+
+        # get the set of columns actually present in the DataFrame
+        actual_categorical_columns = categorical_columns.intersection(data.columns)
+        missing_categorical_columns = categorical_columns.difference(actual_categorical_columns)
+        if len(missing_categorical_columns) > 0:
+            logw(f"columns for conversion to categorical data types not found in DataFrame: {missing_categorical_columns}")
+
+        # if the numerical data types are explicitly given as a dictionary, use them
+        if isinstance(numerical_columns, dict):
+            numerical_columns_set = set(numerical_columns.keys())
+            numerical_columns_dict = numerical_columns
+        else:
+            # if the numerical data types are not explicitly given, convert to float
+            numerical_columns_set = numerical_columns
+            numerical_columns_dict = {}
+            for column in numerical_columns_set:
+                numerical_columns_dict[column] = 'float'
+
+        actual_numerical_columns = numerical_columns_set.intersection(data.columns)
+        missing_numerical_columns = numerical_columns_set.difference(actual_numerical_columns)
+        if len(missing_numerical_columns) > 0:
+            logw(f"columns for conversion to numerical data types not found in DataFrame: {missing_numerical_columns}")
+
+        logd(f"columns to convert to categorical data types: {actual_categorical_columns}")
+        for column in actual_categorical_columns:
+            data[column] = data[column].astype('category')
+            data[column] = data[column].cat.as_ordered()
+
+        logd(f"columns to convert to numerical data types: {actual_numerical_columns}")
+        for column in actual_numerical_columns:
+            data[column] = data[column].astype(numerical_columns_dict[column])
 
         return data
+
 
     @staticmethod
     def read_sql_from_file(db_file
                             , query
                             , includeFilename=False
-                            , categorical_columns=[], excluded_categorical_columns=set()
+                            , categorical_columns:set=set()
+                            , numerical_columns:set=set()
                             ):
             sql_reader = SqlLiteReader(db_file)
 
@@ -246,12 +281,11 @@ class BaseExtractor(Extractor):
             if 'rowId' in data.columns:
                 data = data.drop(labels=['rowId'], axis=1)
 
-            # select columns with a small enough set of possible values to
-            # convert into `Categorical`
-            data = BaseExtractor.convert_columns_to_category(data \
-                                                            , additional_columns=categorical_columns \
-                                                            , excluded_columns=excluded_categorical_columns
-                                                            )
+            # convert the data type of the explicitly named columns
+            data = BaseExtractor.convert_columns_dtype(data \
+                                                      , categorical_columns = categorical_columns \
+                                                      , numerical_columns = numerical_columns
+                                                      )
             if (data.empty):
                 logw(f'Extractor: extraction yields no data for {db_file}')
                 return pd.DataFrame()
@@ -300,7 +334,7 @@ class SqlExtractor(BaseExtractor):
                                          (db_file, self.query
                                           , includeFilename=self.includeFilename
                                           , categorical_columns = self.categorical_columns
-                                          , excluded_categorical_columns = self.categorical_columns_excluded
+                                          , numerical_columns = self.numerical_columns
                                           )
             attributes = DataAttributes(source_file=db_file)
             result_list.append((res, attributes))
@@ -318,8 +352,8 @@ class OmnetExtractor(BaseExtractor):
 
     def __init__(self, /,
                  input_files:list
-                 , categorical_columns:List[str] = []
-                 , categorical_columns_excluded:List[str] = []
+                 , categorical_columns:set[str] = set()
+                 , numerical_columns:Union[dict[str, str], set[str]] = set()
                  , base_tags:Optional[List] = None
                  , additional_tags:list = []
                  , minimal_tags:bool = True
@@ -331,7 +365,7 @@ class OmnetExtractor(BaseExtractor):
 
         super().__init__(input_files=input_files
                          , categorical_columns = categorical_columns
-                         , categorical_columns_excluded = categorical_columns_excluded
+                         , numerical_columns = numerical_columns
                          , *args, **kwargs)
 
         if base_tags != None:
@@ -449,7 +483,8 @@ class OmnetExtractor(BaseExtractor):
 
     @staticmethod
     def read_query_from_file(db_file, query, alias
-                               , categorical_columns=[], excluded_categorical_columns=set()
+                               , categorical_columns:set=set()
+                               , numerical_columns:set=set()
                                , base_tags = None, additional_tags = []
                                , minimal_tags=True
                                , simtimeRaw=True
@@ -468,14 +503,11 @@ class OmnetExtractor(BaseExtractor):
                 loge(f'>>>> ERROR: no tags could be extracted from {db_file}:\n {e}')
                 return pd.DataFrame()
 
-            # don't categorize the column with the actual data
-            excluded_categorical_columns = excluded_categorical_columns.union(set([alias]))
-
             data = BaseExtractor.read_sql_from_file(db_file
                                                     , query \
                                                     , includeFilename
                                                     , categorical_columns = categorical_columns \
-                                                    , excluded_categorical_columns = excluded_categorical_columns)
+                                                    , numerical_columns = numerical_columns)
 
             data = OmnetExtractor.apply_tags(data, tags, base_tags=base_tags, additional_tags=additional_tags, minimal=minimal_tags)
 
@@ -539,7 +571,7 @@ class RawStatisticExtractor(OmnetExtractor):
                                           , statId = self.statId
                                           , runId = self.runId
                                           , categorical_columns = self.categorical_columns
-                                          , excluded_categorical_columns = self.categorical_columns_excluded
+                                          , numerical_columns = self.numerical_columns
                                           , base_tags = self.base_tags
                                           , additional_tags = self.additional_tags
                                           , minimal_tags = self.minimal_tags
@@ -611,7 +643,7 @@ class RawScalarExtractor(OmnetExtractor):
                                           , scalarId = self.scalarId
                                           , runId = self.runId
                                           , categorical_columns = self.categorical_columns
-                                          , excluded_categorical_columns = self.categorical_columns_excluded
+                                          , numerical_columns = self.numerical_columns
                                           , base_tags = self.base_tags
                                           , additional_tags = self.additional_tags
                                           , minimal_tags = self.minimal_tags
@@ -665,7 +697,7 @@ class RawExtractor(OmnetExtractor):
                                           , eventNumber = self.eventNumber
                                           , simtimeRaw = self.simtimeRaw
                                           , categorical_columns = self.categorical_columns
-                                          , excluded_categorical_columns = self.categorical_columns_excluded
+                                          , numerical_columns = self.numerical_columns
                                           , base_tags = self.base_tags
                                           , additional_tags = self.additional_tags
                                           , minimal_tags = self.minimal_tags
@@ -749,7 +781,8 @@ class PositionExtractor(OmnetExtractor):
                                            , moduleName:bool=True
                                            , simtimeRaw:bool=True
                                            , eventNumber:bool=False
-                               , categorical_columns=[], excluded_categorical_columns=set()
+                               , categorical_columns=set()
+                               , numerical_columns=set()
                                , base_tags = None, additional_tags = []
                                , minimal_tags=True
                                , attributes_regex_map=tag_regex.attributes_regex_map
@@ -784,15 +817,11 @@ class PositionExtractor(OmnetExtractor):
 
             data = OmnetExtractor.apply_tags(data, tags, base_tags=base_tags, additional_tags=additional_tags, minimal=minimal_tags)
 
-            # don't categorize the column with the actual data
-            excluded_categorical_columns = excluded_categorical_columns.union(set([alias, x_alias, y_alias]))
-
-            # select columns with a small enough set of possible values to
-            # convert into `Categorical`
-            data = OmnetExtractor.convert_columns_to_category(data \
-                                                            , additional_columns=categorical_columns \
-                                                            , excluded_columns=excluded_categorical_columns
-                                                            )
+            # convert the data type of the explicitly named columns
+            data = OmnetExtractor.convert_columns_dtype(data \
+                                                       , categorical_columns = categorical_columns \
+                                                       , numerical_columns = numerical_columns
+                                                       )
 
             return data
 
@@ -816,7 +845,7 @@ class PositionExtractor(OmnetExtractor):
                                 , simtimeRaw=self.simtimeRaw
                                 , eventNumber=self.eventNumber
                                 , categorical_columns=self.categorical_columns \
-                                , excluded_categorical_columns=self.categorical_columns_excluded \
+                                , numerical_columns=self.numerical_columns \
                                 , base_tags=self.base_tags, additional_tags=self.additional_tags
                                 , minimal_tags=self.minimal_tags
                                )
@@ -890,7 +919,8 @@ class MatchingExtractor(OmnetExtractor):
 
     @staticmethod
     def extract_all_signals(db_file, signals
-                            , categorical_columns=[], excluded_categorical_columns=set()
+                            , categorical_columns=set()
+                            , numerical_columns=set()
                             , base_tags=None, additional_tags=[]
                             , minimal_tags=True
                             , attributes_regex_map=tag_regex.attributes_regex_map
@@ -904,7 +934,7 @@ class MatchingExtractor(OmnetExtractor):
         for signal, alias in signals:
             res = OmnetExtractor.read_signals_from_file(db_file, signal, alias \
                                                       , categorical_columns=categorical_columns \
-                                                      , excluded_categorical_columns=excluded_categorical_columns
+                                                      , numerical_columns=numerical_columns
                                                       , base_tags=base_tags, additional_tags=additional_tags
                                                       , minimal_tags=minimal_tags
                                                       , attributes_regex_map=attributes_regex_map
@@ -927,10 +957,11 @@ class MatchingExtractor(OmnetExtractor):
 
         if len(result_list) > 0:
             result = pd.concat(result_list, ignore_index=True)
-            result = OmnetExtractor.convert_columns_to_category(result
-                                                                , additional_columns=categorical_columns \
-                                                                , excluded_columns=excluded_categorical_columns
-                                                             )
+            # convert the data type of the explicitly named columns
+            result = OmnetExtractor.convert_columns_dtype(result
+                                                         , categorical_columns=categorical_columns \
+                                                         , numerical_columns=numerical_columns
+                                                         )
             return result
         else:
             return pd.DataFrame()
@@ -946,7 +977,8 @@ class MatchingExtractor(OmnetExtractor):
             matching_signals_result = dask.delayed(MatchingExtractor.get_matching_signals)(db_file, self.pattern, self.alias_pattern)
             # get the data for the matched signals
             res = dask.delayed(MatchingExtractor.extract_all_signals)(db_file, matching_signals_result
-                                                                       , self.categorical_columns,self. categorical_columns_excluded
+                                                                       , self.categorical_columns
+                                                                       , self.numerical_columns
                                                                        , base_tags=self.base_tags, additional_tags=self.additional_tags
                                                                        , minimal_tags=self.minimal_tags
                                                                        , attributes_regex_map=self.attributes_regex_map
@@ -1006,7 +1038,8 @@ class PatternMatchingBulkExtractor(OmnetExtractor):
     @staticmethod
     def extract_all_signals(db_file, pattern, alias
                             , alias_match_pattern:str, alias_pattern:str
-                            , categorical_columns=[], excluded_categorical_columns=set()
+                            , categorical_columns=set()
+                            , numerical_columns=set()
                             , base_tags=None, additional_tags=[]
                             , minimal_tags=True
                             , attributes_regex_map=tag_regex.attributes_regex_map
@@ -1019,7 +1052,7 @@ class PatternMatchingBulkExtractor(OmnetExtractor):
                             ):
         data = OmnetExtractor.read_pattern_matched_signals_from_file(db_file, pattern, alias \
                                                       , categorical_columns=categorical_columns \
-                                                      , excluded_categorical_columns=excluded_categorical_columns
+                                                      , numerical_columns=numerical_columns
                                                       , base_tags=base_tags, additional_tags=additional_tags
                                                       , minimal_tags=minimal_tags
                                                       , attributes_regex_map=attributes_regex_map
@@ -1052,10 +1085,11 @@ class PatternMatchingBulkExtractor(OmnetExtractor):
         data = data.drop(['vectorName'], axis=1)
 
         if not data is None and not data.empty:
-            result = OmnetExtractor.convert_columns_to_category(data
-                                                                , additional_columns=categorical_columns \
-                                                                , excluded_columns=excluded_categorical_columns
-                                                             )
+            # convert the data type of the explicitly named columns
+            result = OmnetExtractor.convert_columns_dtype(data
+                                                         , categorical_columns=categorical_columns \
+                                                         , numerical_columns=numerical_columns
+                                                         )
             return result
         else:
             return pd.DataFrame()
@@ -1071,7 +1105,8 @@ class PatternMatchingBulkExtractor(OmnetExtractor):
             # get the data for all signals that match the given SQL pattern
             res = dask.delayed(PatternMatchingBulkExtractor.extract_all_signals)(db_file, self.pattern, self.alias
                                                                        , self.alias_match_pattern, self.alias_pattern
-                                                                       , self.categorical_columns,self. categorical_columns_excluded
+                                                                       , self.categorical_columns
+                                                                       , self.numerical_columns
                                                                        , base_tags=self.base_tags, additional_tags=self.additional_tags
                                                                        , minimal_tags=self.minimal_tags
                                                                        , attributes_regex_map=self.attributes_regex_map
@@ -1149,7 +1184,8 @@ class PatternMatchingBulkScalarExtractor(OmnetExtractor):
     @staticmethod
     def extract_all_scalars(db_file, pattern, alias
                             , alias_match_pattern:str, alias_pattern:str
-                            , categorical_columns=[], excluded_categorical_columns=set()
+                            , categorical_columns=set()
+                            , numerical_columns=set()
                             , base_tags=None, additional_tags=[]
                             , minimal_tags=True
                             , attributes_regex_map=tag_regex.attributes_regex_map
@@ -1162,7 +1198,7 @@ class PatternMatchingBulkScalarExtractor(OmnetExtractor):
                             ):
         data = OmnetExtractor.read_pattern_matched_scalars_from_file(db_file, pattern, alias \
                                                       , categorical_columns=categorical_columns \
-                                                      , excluded_categorical_columns=excluded_categorical_columns
+                                                      , numerical_columns=numerical_columns
                                                       , base_tags=base_tags, additional_tags=additional_tags
                                                       , minimal_tags=minimal_tags
                                                       , attributes_regex_map=attributes_regex_map
@@ -1199,10 +1235,11 @@ class PatternMatchingBulkScalarExtractor(OmnetExtractor):
         data = data.drop(['scalarName'], axis=1)
 
         if not data is None and not data.empty:
-            result = OmnetExtractor.convert_columns_to_category(data
-                                                                , additional_columns=categorical_columns \
-                                                                , excluded_columns=excluded_categorical_columns
-                                                             )
+            # convert the data type of the explicitly named columns
+            result = OmnetExtractor.convert_columns_dtype(data
+                                                         , categorical_columns=categorical_columns \
+                                                         , numerical_columns=numerical_columns
+                                                         )
             return result
         else:
             return pd.DataFrame()
@@ -1218,7 +1255,8 @@ class PatternMatchingBulkScalarExtractor(OmnetExtractor):
             # get the data for all signals that match the given SQL pattern
             res = dask.delayed(PatternMatchingBulkScalarExtractor.extract_all_scalars)(db_file, self.pattern, self.alias
                                                                        , self.alias_match_pattern, self.alias_pattern
-                                                                       , self.categorical_columns,self. categorical_columns_excluded
+                                                                       , self.categorical_columns
+                                                                       , self.numerical_columns
                                                                        , base_tags=self.base_tags, additional_tags=self.additional_tags
                                                                        , minimal_tags=self.minimal_tags
                                                                        , attributes_regex_map=self.attributes_regex_map
