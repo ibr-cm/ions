@@ -399,7 +399,7 @@ class BaseExtractor(Extractor):
 
 
     @staticmethod
-    def read_sql_from_file(db_file, query, statics
+    def read_sql_from_file(db_file, query
                                , categorical_columns=[], excluded_categorical_columns=set()
                                ):
             sql_reader = SqlLiteReader(db_file)
@@ -460,7 +460,7 @@ class SqlExtractor(BaseExtractor):
         result_list = []
         for db_file in data_set.get_file_list():
             res = dask.delayed(BaseExtractor.read_sql_from_file)\
-                                         (db_file, self.query, self.statics
+                                         (db_file, self.query
                                           , categorical_columns = self.categorical_columns
                                           , excluded_categorical_columns = self.categorical_columns_excluded
                                           )
