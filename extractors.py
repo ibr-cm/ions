@@ -471,10 +471,11 @@ class OmnetExtractor(BaseExtractor):
             # don't categorize the column with the actual data
             excluded_categorical_columns = excluded_categorical_columns.union(set([alias]))
 
-            data = BaseExtractor.read_sql_from_file(query \
+            data = BaseExtractor.read_sql_from_file(db_file
+                                                    , query \
                                                     , includeFilename
-                                                    , additional_columns=categorical_columns \
-                                                    , excluded_columns=excluded_categorical_columns)
+                                                    , categorical_columns = categorical_columns \
+                                                    , excluded_categorical_columns = excluded_categorical_columns)
 
             data = OmnetExtractor.apply_tags(data, tags, base_tags=base_tags, additional_tags=additional_tags, minimal=minimal_tags)
 
