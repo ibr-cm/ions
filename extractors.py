@@ -329,6 +329,11 @@ class OmnetExtractor(BaseExtractor):
                  , *args, **kwargs
                  ):
 
+        super().__init__(input_files=input_files
+                         , categorical_columns = categorical_columns
+                         , categorical_columns_excluded = categorical_columns_excluded
+                         , *args, **kwargs)
+
         if base_tags != None:
             self.base_tags:list = base_tags
         else:
