@@ -613,6 +613,8 @@ class PlottingTask(YAMLObject):
                 fig = catplot('count')
             case 'point':
                 fig = catplot('point')
+            case 'violin':
+                fig = catplot('violin')
             case 'heat':
                 fig = heatplot('heat')
             case _:
