@@ -251,7 +251,7 @@ class BaseExtractor(Extractor):
 
 
     @staticmethod
-    def convert_columns_to_category(data, additional_columns:list = [], excluded_columns:set = {}):
+    def convert_columns_to_category(data, additional_columns:list = [], excluded_columns:set = {}, numerical_columns:set = {}):
         excluded_columns = set(excluded_columns).union(DEFAULT_CATEGORICALS_COLUMN_EXCLUSION_SET)
 
         col_list = []
@@ -265,10 +265,15 @@ class BaseExtractor(Extractor):
             if s < threshold:
                 col_list.append(col)
 
+        logd(f"{excluded_columns}=")
+        logd(f"{col_list}=")
         # convert selected columns to Categorical
         for col in col_list:
             data[col] = data[col].astype('category')
             data[col] = data[col].cat.as_ordered()
+
+        for col in numerical_columns:
+            data[col] = data[col].astype('float')
 
         return data
 

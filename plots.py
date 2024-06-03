@@ -81,7 +81,7 @@ class PlottingReaderFeather(YAMLObject):
         data_list = list(map(dask.delayed(functools.partial(read_from_file, sample=self.sample, sample_seed=self.sample_seed, filter_query=self.filter_query))
                              , data_set.get_file_list()))
         concat_result = dask.delayed(pd.concat)(data_list)
-        convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(concat_result, excluded_columns=self.numerical_columns)
+        convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(concat_result, numerical_columns=self.numerical_columns)
         logd(f'PlottingReaderFeather::read_data: {data_list=}')
         logd(f'PlottingReaderFeather::read_data: {convert_columns_result=}')
         # d = dask.compute(convert_columns_result)
