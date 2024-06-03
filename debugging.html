@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Common &mdash; Insight on Network Simulations  documentation</title>
+  <title>&lt;no title&gt; &mdash; Insight on Network Simulations  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -20,9 +20,7 @@
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Constants" href="common.constants.html" />
-    <link rel="prev" title="API reference" href="api_reference.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,7 +43,7 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="evaluation_plotting.html">Evaluation &amp; Plotting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_transforms.html">Using Transforms</a></li>
@@ -55,20 +53,7 @@
 <li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="api_reference.html">API reference</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Common</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="common.constants.html">Constants</a></li>
-<li class="toctree-l3"><a class="reference internal" href="common.debug.html">Debug</a></li>
-<li class="toctree-l3"><a class="reference internal" href="common.globals.html">Globals</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="utility.html">Utility</a></li>
-<li class="toctree-l2"><a class="reference internal" href="exporters.html">exporters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="extractors.html">extractors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plots.html">plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="transforms.html">transforms</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API reference</a></li>
 </ul>
 
         </div>
@@ -85,10 +70,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="api_reference.html">API reference</a></li>
-      <li class="breadcrumb-item active">Common</li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/common.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/debugging.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -96,30 +80,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="common">
-<h1>Common<a class="headerlink" href="#common" title="Link to this heading"></a></h1>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Modules/Packages:</span></p>
+  <p>Some useful tips for debugging a recipe or the framework itself:</p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="common.constants.html">Constants</a></li>
-<li class="toctree-l1"><a class="reference internal" href="common.debug.html">Debug</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="common.debug.html#common.debug.debug_print"><code class="docutils literal notranslate"><span class="pre">debug_print()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="common.debug.html#common.debug.start_debug"><code class="docutils literal notranslate"><span class="pre">start_debug()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="common.debug.html#common.debug.start_ipython_dbg_cmdline"><code class="docutils literal notranslate"><span class="pre">start_ipython_dbg_cmdline()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="common.globals.html">Globals</a></li>
-</ul>
+<li><p>when developing code for a transform or debugging errors, it can be really
+useful to start an interactive console by adding:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">start_ipython_dbg_cmdline</span><span class="p">(</span><span class="n">user_ns</span><span class="o">=</span><span class="nb">locals</span><span class="p">())</span>
+</pre></div>
 </div>
-</section>
+<p>into the code in the recipe and running single-threaded by adding <code class="docutils literal notranslate"><span class="pre">--worker</span> <span class="pre">1</span> <span class="pre">--single-threaded</span></code> to the command line. This also allows modifying data and
+plots on the fly and continue the normal program flow afterwards.</p>
+</li>
+<li><p>alternatively, one can insert a <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">common.debug</span> <span class="pre">import</span> <span class="pre">start_debug;</span> <span class="pre">start_debug()</span></code>. This will drop into a ipdb debugger session, which allows
+traversing the stack of the interpreter. The program flow can be continued
+with a <code class="docutils literal notranslate"><span class="pre">continue</span></code> command. Unfortunately, code contained in a <code class="docutils literal notranslate"><span class="pre">extra_code</span></code>
+parameter is not visible in source form.</p></li>
+<li><p>alternatively, one can just raise an exception and it will be caught by the
+top level exception handler in run_recipe.py and then drop into an ipdb
+debugger session if the <code class="docutils literal notranslate"><span class="pre">--debug</span></code> flag has been set.
+It is also necessary to set <code class="docutils literal notranslate"><span class="pre">--single-threaded</span></code>, otherwise the data and other
+worker/thread-local variables are not accessible.</p></li>
+</ul>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="api_reference.html" class="btn btn-neutral float-left" title="API reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="common.constants.html" class="btn btn-neutral float-right" title="Constants" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

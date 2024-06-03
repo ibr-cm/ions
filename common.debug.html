@@ -60,6 +60,7 @@
 <li class="toctree-l3"><a class="reference internal" href="common.constants.html">Constants</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Debug</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#common.debug.debug_print"><code class="docutils literal notranslate"><span class="pre">debug_print()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#common.debug.start_debug"><code class="docutils literal notranslate"><span class="pre">start_debug()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#common.debug.start_ipython_dbg_cmdline"><code class="docutils literal notranslate"><span class="pre">start_ipython_dbg_cmdline()</span></code></a></li>
 </ul>
 </li>
@@ -107,6 +108,22 @@
 <dt class="sig sig-object py" id="common.debug.debug_print">
 <span class="sig-prename descclassname"><span class="pre">common.debug.</span></span><span class="sig-name descname"><span class="pre">debug_print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/debug.html#debug_print"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#common.debug.debug_print" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="common.debug.start_debug">
+<span class="sig-prename descclassname"><span class="pre">common.debug.</span></span><span class="sig-name descname"><span class="pre">start_debug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/common/debug.html#start_debug"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#common.debug.start_debug" title="Link to this definition"></a></dt>
+<dd><p>Start an interactive ipdb debugging session in the given frame context.
+If no frame is provided, use the caller’s frame.
+For information on frame objects see <a class="reference external" href="https://docs.python.org/3/library/inspect.html">inspect</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>frame: Optional[frame]</strong></dt><dd><p>The frame context of interest.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="common.debug.start_ipython_dbg_cmdline">

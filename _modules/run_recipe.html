@@ -131,6 +131,8 @@
 
 <span class="kn">import</span> <span class="nn">tag_regular_expressions</span> <span class="k">as</span> <span class="nn">tag_regex</span>
 
+<span class="n">_debug</span> <span class="o">=</span> <span class="kc">False</span>
+
 
 <div class="viewcode-block" id="eval_recipe_tag_definitions">
 <a class="viewcode-back" href="../run_recipe.html#run_recipe.eval_recipe_tag_definitions">[docs]</a>
@@ -400,7 +402,14 @@
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dump-recipe&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;dump the loaded recipe; useful for finding errors in the recipe&#39;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dump-recipe-only&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;dump the loaded recipe and exit; useful for finding errors in the recipe&#39;</span><span class="p">)</span>
 
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--debug&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;if an exception is encountered, drop into an ipdb debugger session&#39;</span><span class="p">)</span>
+
+
     <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">arguments</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+        <span class="k">global</span> <span class="n">_debug</span>
+        <span class="n">_debug</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">single_threaded</span><span class="p">:</span>
         <span class="n">args</span><span class="o">.</span><span class="n">worker</span> <span class="o">=</span> <span class="mi">1</span>
@@ -654,6 +663,13 @@
         <span class="n">loge</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">e</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">loge</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exception</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
+        <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">isatty</span><span class="p">()</span> <span class="ow">and</span> <span class="n">_debug</span><span class="p">:</span>
+            <span class="n">loge</span><span class="p">(</span><span class="s1">&#39;dropping into an interactive debugging environment&#39;</span><span class="p">)</span>
+            <span class="c1"># drop into the debugger in the context of the exception thrown</span>
+            <span class="kn">import</span> <span class="nn">ipdb</span>
+            <span class="n">ipdb</span><span class="o">.</span><span class="n">post_mortem</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">__traceback__</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">loge</span><span class="p">(</span><span class="s1">&#39;not dropping into an interactive debugging environment since the executing interpreter is not interactive&#39;</span><span class="p">)</span>
 </pre></div>
 
            </div>
