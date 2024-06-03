@@ -22,6 +22,7 @@ IoNS is a tool for generating plots from large amounts of data for evaluation pu
     tools.md
     documentation.md
 
+    debugging.md
     troubleshooting.md
 
     .. jupyter_labs.md

@@ -1,3 +1,5 @@
+Debugging
+=========
 
 Some useful tips for debugging a recipe or the framework itself:
 - when developing code for a transform or debugging errors, it can be really
