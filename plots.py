@@ -252,7 +252,7 @@ class PlottingTask(YAMLObject):
                  , yticks:List[float] = None
                  , yticks_minor:List[float] = None
                  , colormap:Optional[str] = None
-                 , grid_transform:Optional[Union[Callable[[pd.FacetGrid], pd.FacetGrid], str] = None
+                 , grid_transform:Optional[Union[Callable[[sb.FacetGrid], sb.FacetGrid], str]] = None
                  ):
         self.dataset_name = dataset_name
 
