@@ -141,8 +141,7 @@ class FileResultProcessor(YAMLObject):
             job = dask.delayed(self.save_to_disk)(map(operator.itemgetter(0), data_list), self.output_filename, self.format)
         else:
             concat_result = dask.delayed(pd.concat)(map(operator.itemgetter(0), data_list), ignore_index=True)
-            convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(concat_result)
-            job = dask.delayed(self.save_to_disk)(convert_columns_result, self.output_filename, self.format)
+            job = dask.delayed(self.save_to_disk)(concatenate, self.output_filename, self.format)
 
         job_list.append(job)
 
@@ -171,12 +170,7 @@ class FileResultProcessor(YAMLObject):
 
             logd(f'{output_filename=}')
 
-            if self.raw:
-                job = dask.delayed(self.save_to_disk)(data, output_filename, self.format)
-            else:
-                convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(data)
-                job = dask.delayed(self.save_to_disk)(convert_columns_result, output_filename, self.format)
-
+            job = dask.delayed(self.save_to_disk)(data, output_filename, self.format)
             job_list.append(job)
 
         return job_list
