@@ -561,7 +561,7 @@
 <div class="viewcode-block" id="BaseExtractor.read_sql_from_file">
 <a class="viewcode-back" href="../extractors.html#extractors.BaseExtractor.read_sql_from_file">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">read_sql_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">statics</span>
+    <span class="k">def</span> <span class="nf">read_sql_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">query</span>
                                <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="p">[],</span> <span class="n">excluded_categorical_columns</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
                                <span class="p">):</span>
             <span class="n">sql_reader</span> <span class="o">=</span> <span class="n">SqlLiteReader</span><span class="p">(</span><span class="n">db_file</span><span class="p">)</span>
@@ -628,7 +628,7 @@
         <span class="n">result_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">db_file</span> <span class="ow">in</span> <span class="n">data_set</span><span class="o">.</span><span class="n">get_file_list</span><span class="p">():</span>
             <span class="n">res</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">BaseExtractor</span><span class="o">.</span><span class="n">read_sql_from_file</span><span class="p">)</span>\
-                                         <span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">statics</span>
+                                         <span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span>
                                           <span class="p">,</span> <span class="n">categorical_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns</span>
                                           <span class="p">,</span> <span class="n">excluded_categorical_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns_excluded</span>
                                           <span class="p">)</span>
