@@ -205,6 +205,11 @@ class PlottingTask(YAMLObject):
 
     colormap: Optional[str]
         the colormap to use for heatmaps
+
+    grid_transform: Optional[Union[Callable[[pd.FacetGrid], pd.FacetGrid], str]
+        The function to call as the last step before saving the plot.
+        This takes the produced FacetGrid as input and returns the modified FacetGrid.
+        The purpose is to allow for arbitrary modification not yet provided by the framework.
     """
     yaml_tag = u'!PlottingTask'
 
@@ -247,7 +252,7 @@ class PlottingTask(YAMLObject):
                  , yticks:List[float] = None
                  , yticks_minor:List[float] = None
                  , colormap:Optional[str] = None
-                 , grid_transform:Optional[Callable] = None
+                 , grid_transform:Optional[Union[Callable[[pd.FacetGrid], pd.FacetGrid], str] = None
                  ):
         self.dataset_name = dataset_name
 
