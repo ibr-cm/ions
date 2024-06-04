@@ -141,7 +141,7 @@ class FileResultProcessor(YAMLObject):
             job = dask.delayed(self.save_to_disk)(map(operator.itemgetter(0), data_list), self.output_filename, self.format)
         else:
             concat_result = dask.delayed(pd.concat)(map(operator.itemgetter(0), data_list), ignore_index=True)
-            job = dask.delayed(self.save_to_disk)(concatenate, self.output_filename, self.format)
+            job = dask.delayed(self.save_to_disk)(concat_result, self.output_filename, self.format)
 
         job_list.append(job)
 
