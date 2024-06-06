@@ -252,9 +252,50 @@ class BaseExtractor(Extractor):
             logw(f"columns for conversion to numerical data types not found in DataFrame: {missing_numerical_columns}")
 
         logd(f"columns to convert to categorical data types: {actual_categorical_columns}")
+
+        def key_extractor(obj):
+            def is_float(string):
+                return string.replace('.', '').isnumeric()
+
+            def convert_numerical(num_str):
+                if num_str.isnumeric():
+                    # convert to int if it's numerical
+                    return int(num_str)
+                elif is_float(num_str):
+                    # convert to float if it's numerical when a period is removed
+                    return float(num_str)
+                elif num_str.isalpha():
+                    # not a numerical
+                    return num_str
+
+            if isinstance(obj, str):
+                # characters that are used as separators in e.g. variable names
+                separator_map = { '-':'', '_':'', ':':'', ' ':'' }
+                if obj.isalpha():
+                    return obj
+                elif obj.isnumeric():
+                    return int(obj)
+                elif is_float(obj):
+                    return float(obj)
+                elif obj.translate(str.maketrans(separator_map)).isalnum():
+                    # obj is alpha-numerical with possible extra ascii characters used as separators
+                    # split the string into characters and numerical literals
+                    regex = re.compile(r'[^\W\d_]+|\d+')
+                    split_str = regex.findall(obj)
+                    for i in range(0, len(split_str)):
+                        split_str[i] = convert_numerical(split_str[i])
+                    return tuple(split_str)
+                else:
+                    return obj
+            else:
+                # return object as is for int, float or other
+                return obj
+
         for column in actual_categorical_columns:
             data[column] = data[column].astype('category')
-            data[column] = data[column].cat.as_ordered()
+            sorted_categories = sorted(data[column].cat.categories, key=key_extractor)
+            data[column] = data[column].astype(pd.CategoricalDtype(categories=sorted_categories, ordered=True))
+            logd(f'{column=} {data[column].dtype=}')
 
         logd(f"columns to convert to numerical data types: {actual_numerical_columns}")
         for column in actual_numerical_columns:
