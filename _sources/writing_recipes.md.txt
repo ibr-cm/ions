@@ -3,6 +3,8 @@ Writing Recipes
 
 A few things are very important:
 
+- The library used for parsing YAML, pyyaml, only supports YAML-1.1, thus all recipes are restricted to that version.
+
 - Be very observant about indentation.
   YAML uses indentation for scoping attributes to objects/collections, i.e. structural scope, just like Python.
   This can lead to a `yaml.parser.ParserError`, a `TypeError` about missing
@@ -26,6 +28,10 @@ The key points to remember are:
   exclude journal files (`.vec-journal`) which would produce a lot of
   unnecessary errors
 
+- YAML scalars can be expressed in a plain (example_string), single-quoted ('example_string') or double-quoted ("example_string") style.
+  The double-quoted style allows for escape sequences. The plain and single-quoted style is recommended.
+  See the YAML specification for [scalars](https://yaml.org/spec/1.1/#id858081) for details and examples.
+
 - A path given in a recipe is evaluated relative to the current working directory of execution.
   It is thus advisable to use absolute paths whenever possible.
   Otherwise, if one uses e.g. `pdm run` with the `-p` flag to set an
@@ -40,3 +46,5 @@ The key points to remember are:
   differently, the parameters of a task are block mappings that are then used
   as keys into a Python dictionary.
 
+- Use anchors and aliases (see [here](https://pyyaml.org/wiki/PyYAMLDocumentation#aliases)
+  and [here](https://yaml.org/spec/1.1/#anchor/syntax)) to avoid repeating data structures.

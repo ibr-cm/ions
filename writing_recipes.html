@@ -85,6 +85,7 @@
 <h1>Writing Recipes<a class="headerlink" href="#writing-recipes" title="Link to this heading"></a></h1>
 <p>A few things are very important:</p>
 <ul class="simple">
+<li><p>The library used for parsing YAML, pyyaml, only supports YAML-1.1, thus all recipes are restricted to that version.</p></li>
 <li><p>Be very observant about indentation.
 YAML uses indentation for scoping attributes to objects/collections, i.e. structural scope, just like Python.
 This can lead to a <code class="docutils literal notranslate"><span class="pre">yaml.parser.ParserError</span></code>, a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> about missing
@@ -104,6 +105,9 @@ as well as indentation error that have not been caught by the parser.</p></li>
 add the end of an expression for matching input files such as <code class="docutils literal notranslate"><span class="pre">.vec</span></code> to
 exclude journal files (<code class="docutils literal notranslate"><span class="pre">.vec-journal</span></code>) which would produce a lot of
 unnecessary errors</p></li>
+<li><p>YAML scalars can be expressed in a plain (example_string), single-quoted (’example_string’) or double-quoted (”example_string”) style.
+The double-quoted style allows for escape sequences. The plain and single-quoted style is recommended.
+See the YAML specification for <a class="reference external" href="https://yaml.org/spec/1.1/#id858081">scalars</a> for details and examples.</p></li>
 <li><p>A path given in a recipe is evaluated relative to the current working directory of execution.
 It is thus advisable to use absolute paths whenever possible.
 Otherwise, if one uses e.g. <code class="docutils literal notranslate"><span class="pre">pdm</span> <span class="pre">run</span></code> with the <code class="docutils literal notranslate"><span class="pre">-p</span></code> flag to set an
@@ -116,6 +120,8 @@ a order on mappings, see <a class="reference external" href="https://yaml.org/sp
 order</a>). Put
 differently, the parameters of a task are block mappings that are then used
 as keys into a Python dictionary.</p></li>
+<li><p>Use anchors and aliases (see <a class="reference external" href="https://pyyaml.org/wiki/PyYAMLDocumentation#aliases">here</a>
+and <a class="reference external" href="https://yaml.org/spec/1.1/#anchor/syntax">here</a>) to avoid repeating data structures.</p></li>
 </ul>
 </section>
 
