@@ -98,8 +98,10 @@ class DataSet:
         :return: Static parts of the path that do not contain any regex.
         """
         # Pattern to match literal text within the regex
-        # This pattern looks for sequences of characters that are not special regex symbols
-        base_path_pattern = re.compile(r'([a-zA-Z0-9_\-/\.]+)')
+        # This pattern looks for sequences of characters that are not special regex symbols.
+        # It will also match on literals that need to be escaped in a regex, such as parentheses
+        # in the path, but those can then be treated as part of the regex.
+        base_path_pattern = re.compile(r'[a-zA-Z0-9_\-/]+')
 
         # Find all static parts in the given regex pattern
         base_path = base_path_pattern.findall(path_regex)
