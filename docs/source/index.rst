@@ -17,6 +17,7 @@ IoNS is a tool for generating plots from large amounts of data for evaluation pu
     using_transforms.md
 
     quickstart.md
+    writing_recipes.md
     best_practices.md
     cluster_managment.md
     tools.md
