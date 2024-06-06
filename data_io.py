@@ -65,8 +65,18 @@ class DataSet:
 
     @staticmethod
     def evaluate_regex_path(data_path:str) -> List[str]:
-        """
-        Take the given path to a directory plus a regular expresion
+        r"""
+        Take the given regular expression to generate a list of paths that match it.
+
+        Parameters
+        ----------
+        data_path : str
+            The regular expression that is used to select files.
+
+        Returns
+        -------
+        List[str]
+            A list of paths matching the regular expression.
         """
         data_files = []
 
@@ -89,12 +99,19 @@ class DataSet:
         return data_files
 
     @staticmethod
-    def find_base_path_in_regex(path_regex):
-        """
-        Takes a regex for a files and determines the static part of the given path regex.
+    def find_base_path_in_regex(path_regex:str) -> str:
+        r"""
+        Takes a regular expression for a file path and determines the static part of the given path regex.
 
-        :param path_regex: The regex pattern for the file path.
-        :return: Static parts of the path that do not contain any regex.
+        Parameters
+        ----------
+        path_regex : str
+            The regex pattern for the file path.
+
+        Returns
+        -------
+        str
+            Static parts of the path that do not contain any regex.
         """
         # Pattern to match literal text within the regex
         # This pattern looks for sequences of characters that are not special regex symbols.
