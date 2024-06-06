@@ -267,8 +267,6 @@ class BaseExtractor(Extractor):
     def read_sql_from_file(db_file
                             , query
                             , includeFilename=False
-                            , categorical_columns:set=set()
-                            , numerical_columns:set=set()
                             ):
             sql_reader = SqlLiteReader(db_file)
 
@@ -281,11 +279,6 @@ class BaseExtractor(Extractor):
             if 'rowId' in data.columns:
                 data = data.drop(labels=['rowId'], axis=1)
 
-            # convert the data type of the explicitly named columns
-            data = BaseExtractor.convert_columns_dtype(data \
-                                                      , categorical_columns = categorical_columns \
-                                                      , numerical_columns = numerical_columns
-                                                      )
             if (data.empty):
                 logw(f'Extractor: extraction yields no data for {db_file}')
                 return pd.DataFrame()
@@ -330,7 +323,7 @@ class SqlExtractor(BaseExtractor):
         # on the data and the leafs of the computation graph
         result_list = []
         for db_file in data_set.get_file_list():
-            res = dask.delayed(BaseExtractor.read_sql_from_file)\
+            res = dask.delayed(SqlExtractor.read_query_from_file)\
                                          (db_file, self.query
                                           , includeFilename=self.includeFilename
                                           , categorical_columns = self.categorical_columns
@@ -341,6 +334,21 @@ class SqlExtractor(BaseExtractor):
 
         return result_list
 
+    @staticmethod
+    def read_query_from_file(db_file
+                            , query
+                            , includeFilename=False
+                            , categorical_columns:set=set()
+                            , numerical_columns:set=set()
+                            ):
+            data = BaseExtractor.read_sql_from_file(db_file, query, includeFilename)
+
+            # convert the data type of the explicitly named columns
+            data = BaseExtractor.convert_columns_dtype(data \
+                                                      , categorical_columns = categorical_columns \
+                                                      , numerical_columns = numerical_columns
+                                                      )
+            return data
 
 class OmnetExtractor(BaseExtractor):
     r"""
@@ -506,10 +514,15 @@ class OmnetExtractor(BaseExtractor):
             data = BaseExtractor.read_sql_from_file(db_file
                                                     , query \
                                                     , includeFilename
-                                                    , categorical_columns = categorical_columns \
-                                                    , numerical_columns = numerical_columns)
+                                                    )
 
             data = OmnetExtractor.apply_tags(data, tags, base_tags=base_tags, additional_tags=additional_tags, minimal=minimal_tags)
+
+            # convert the data type of the explicitly named columns
+            data = BaseExtractor.convert_columns_dtype(data \
+                                                      , categorical_columns = categorical_columns \
+                                                      , numerical_columns = numerical_columns
+                                                      )
 
             return data
 
