@@ -70,8 +70,7 @@ class DataSet:
         """
         data_files = []
 
-        base_path = DataSet.find_base_path_in_regex(data_path)
-        common_root = pathlib.Path(base_path).parent
+        common_root = DataSet.find_base_path_in_regex(data_path)
         logd(f"determined common root path for input_files: {common_root=}")
 
         relative_regex = pathlib.Path(data_path).relative_to(common_root)
@@ -105,4 +104,5 @@ class DataSet:
 
         # Find all static parts in the given regex pattern
         base_path = base_path_pattern.findall(path_regex)
-        return base_path[0]
+        common_root = pathlib.Path(base_path[0]).parent
+        return common_root
