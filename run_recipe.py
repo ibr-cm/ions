@@ -277,38 +277,42 @@ def extract_dict_from_string(string):
 
 def parse_arguments(arguments):
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('recipe', help='input recipe')
+    parser.add_argument('recipe', help='Input recipe')
 
-    parser.add_argument('--override-extractor', type=str, help='override extractor parameters')
-    parser.add_argument('--override-exporter', type=str, help='override exporter parameters')
+    parser.add_argument('--override-extractor', type=str, help='Override extractor parameters')
+    parser.add_argument('--override-exporter', type=str, help='Override exporter parameters')
 
-    parser.add_argument('--override-reader', type=str, help='override reader parameters')
-    parser.add_argument('--override-plot', type=str, help='override plot parameters')
+    parser.add_argument('--override-reader', type=str, help='Override reader parameters')
+    parser.add_argument('--override-plot', type=str, help='Override plot parameters')
 
-    parser.add_argument('--eval-only', action='store_true', default=False, help='run eval phase only')
-    parser.add_argument('--plot-only', action='store_true', default=False, help='run plot phase only')
-    parser.add_argument('--run', type=str, default='all', help='run selected tasks/steps only') #TODO:description
+    parser.add_argument('--eval-only', action='store_true', default=False, help='Run evaluation phase only')
+    parser.add_argument('--plot-only', action='store_true', default=False, help='Run plot phase only')
+    parser.add_argument('--run', type=str, default='all', help='Run selected tasks only, in the format [evaluation_phase_tasks]:[plot_phase_tasks]'
+                                                                ' where each (optional) phase consists of a comma-separated list of qualified task names,'
+                                                                ' i.e. the name of the sub-phase and the task name'
+                                                                ' e.g. `extractors.e1,transforms.t1,exporter.e1:reader.r1,transforms.t1,tasks.plot1`'
+                                                                )
 
-    parser.add_argument('--worker', type=int, default=4, help='the number of worker processes')
-    parser.add_argument('--mem', type=int, default=1, help='the memory, in GB, to reserve for each worker process')
+    parser.add_argument('--worker', type=int, default=4, help='The number of worker processes')
+    parser.add_argument('--mem', type=int, default=1, help='The memory, in GB, to reserve for each worker process')
 
-    parser.add_argument('--cluster', type=str, help='cluster address')
-    parser.add_argument('--single-threaded', action='store_true', default=False, help='run in single-threaded mode; this overrides the value of the `--worker` flag')
+    parser.add_argument('--cluster', type=str, help='The address of an already running cluster')
+    parser.add_argument('--single-threaded', action='store_true', default=False, help='Run in single-threaded mode; this overrides the value of the `--worker` flag')
 
-    parser.add_argument('--slurm', action='store_true', default=False, help='use SLURM cluster')
-    parser.add_argument('--partition', type=str, help='partition for SLURM')
-    parser.add_argument('--nodelist', type=str, help='nodelist for SLURM')
+    parser.add_argument('--slurm', action='store_true', default=False, help='Use a SLURM cluster')
+    parser.add_argument('--partition', type=str, help='The partition for the SLURM cluster')
+    parser.add_argument('--nodelist', type=str, help='The nodelist for the SLURM cluster')
 
-    parser.add_argument('--tmpdir', type=str, default='/opt/tmpssd/tmp', help='directory for temporary files')
+    parser.add_argument('--tmpdir', type=str, default='/opt/tmpssd/tmp', help='The directory for temporary files')
 
-    parser.add_argument('--plot-task-graphs', action='store_true', default=False, help='plot the evaluation and plotting phase task graph')
+    parser.add_argument('--plot-task-graphs', action='store_true', default=False, help='Plot the evaluation and plotting phase task graph')
 
-    parser.add_argument('--verbose', '-v', action='count', default=0, help='increase logging verbosity')
+    parser.add_argument('--verbose', '-v', action='count', default=0, help='Increase logging verbosity')
 
-    parser.add_argument('--dump-recipe', action='store_true', default=False, help='dump the loaded recipe; useful for finding errors in the recipe')
-    parser.add_argument('--dump-recipe-only', action='store_true', default=False, help='dump the loaded recipe and exit; useful for finding errors in the recipe')
+    parser.add_argument('--dump-recipe', action='store_true', default=False, help='Dump the loaded recipe; useful for finding errors in the recipe')
+    parser.add_argument('--dump-recipe-only', action='store_true', default=False, help='Dump the loaded recipe and exit; useful for finding errors in the recipe')
 
-    parser.add_argument('--debug', action='store_true', default=False, help='if an exception is encountered, drop into an ipdb debugger session')
+    parser.add_argument('--debug', action='store_true', default=False, help='Enable debug mode. If an exception is encountered, drop into an ipdb debugger session')
 
 
     args = parser.parse_args(arguments)
