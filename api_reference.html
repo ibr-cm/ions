@@ -130,15 +130,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="extractors.html">extractors</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="extractors.html#extractors.BaseExtractor"><code class="docutils literal notranslate"><span class="pre">BaseExtractor</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.apply_tags"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.apply_tags()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.convert_columns_to_category"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.convert_columns_to_category()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.read_pattern_matched_scalars_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_pattern_matched_scalars_from_file()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.read_pattern_matched_signals_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_pattern_matched_signals_from_file()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.read_query_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_query_from_file()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.read_scalars_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_scalars_from_file()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.read_signals_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_signals_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.convert_columns_dtype"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.convert_columns_dtype()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.read_sql_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_sql_from_file()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.read_statistic_from_file"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.read_statistic_from_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.BaseExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">BaseExtractor.yaml_tag</span></code></a></li>
 </ul>
 </li>
@@ -162,6 +155,17 @@
 <li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.MatchingExtractor.get_matching_signals"><code class="docutils literal notranslate"><span class="pre">MatchingExtractor.get_matching_signals()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.MatchingExtractor.prepare"><code class="docutils literal notranslate"><span class="pre">MatchingExtractor.prepare()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.MatchingExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">MatchingExtractor.yaml_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="extractors.html#extractors.OmnetExtractor"><code class="docutils literal notranslate"><span class="pre">OmnetExtractor</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.OmnetExtractor.apply_tags"><code class="docutils literal notranslate"><span class="pre">OmnetExtractor.apply_tags()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.OmnetExtractor.read_pattern_matched_scalars_from_file"><code class="docutils literal notranslate"><span class="pre">OmnetExtractor.read_pattern_matched_scalars_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.OmnetExtractor.read_pattern_matched_signals_from_file"><code class="docutils literal notranslate"><span class="pre">OmnetExtractor.read_pattern_matched_signals_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.OmnetExtractor.read_query_from_file"><code class="docutils literal notranslate"><span class="pre">OmnetExtractor.read_query_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.OmnetExtractor.read_scalars_from_file"><code class="docutils literal notranslate"><span class="pre">OmnetExtractor.read_scalars_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.OmnetExtractor.read_signals_from_file"><code class="docutils literal notranslate"><span class="pre">OmnetExtractor.read_signals_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.OmnetExtractor.read_statistic_from_file"><code class="docutils literal notranslate"><span class="pre">OmnetExtractor.read_statistic_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.OmnetExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">OmnetExtractor.yaml_tag</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="extractors.html#extractors.PatternMatchingBulkExtractor"><code class="docutils literal notranslate"><span class="pre">PatternMatchingBulkExtractor</span></code></a><ul>
@@ -199,6 +203,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="extractors.html#extractors.SqlExtractor"><code class="docutils literal notranslate"><span class="pre">SqlExtractor</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.SqlExtractor.prepare"><code class="docutils literal notranslate"><span class="pre">SqlExtractor.prepare()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.SqlExtractor.read_query_from_file"><code class="docutils literal notranslate"><span class="pre">SqlExtractor.read_query_from_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="extractors.html#extractors.SqlExtractor.yaml_tag"><code class="docutils literal notranslate"><span class="pre">SqlExtractor.yaml_tag</span></code></a></li>
 </ul>
 </li>

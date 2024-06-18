@@ -84,6 +84,7 @@
   <h1>Source code for data_io</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">pathlib</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
@@ -164,17 +165,67 @@
 <a class="viewcode-back" href="../data_io.html#data_io.DataSet.evaluate_regex_path">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">evaluate_regex_path</span><span class="p">(</span><span class="n">data_path</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Take the given path to a directory plus a regular expresion</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Take the given regular expression to generate a list of paths that match it.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data_path : str</span>
+<span class="sd">            The regular expression that is used to select files.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[str]</span>
+<span class="sd">            A list of paths matching the regular expression.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data_files</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
-        <span class="n">directory</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">parent</span>
-        <span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">directory</span><span class="o">.</span><span class="n">iterdir</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">regex</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">fn</span><span class="o">:=</span><span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">)):</span>
-                <span class="n">data_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+
+        <span class="n">common_root</span> <span class="o">=</span> <span class="n">DataSet</span><span class="o">.</span><span class="n">find_base_path_in_regex</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
+        <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;determined common root path for input_files: </span><span class="si">{</span><span class="n">common_root</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">relative_regex</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">common_root</span><span class="p">)</span>
+        <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;searching for files with regex </span><span class="si">{</span><span class="n">relative_regex</span><span class="si">=}</span><span class="s2"> in root path&quot;</span><span class="p">)</span>
+
+        <span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">relative_regex</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">common_root</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                <span class="c1"># Check if the file matches any of the regex patterns</span>
+                <span class="n">file_full_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+                <span class="n">relative_path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">file_full_path</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">common_root</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">regex</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">relative_path</span><span class="p">)):</span>
+                    <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;adding </span><span class="si">{</span><span class="n">file_full_path</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">data_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">file_full_path</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">data_files</span></div>
+
+
+<div class="viewcode-block" id="DataSet.find_base_path_in_regex">
+<a class="viewcode-back" href="../data_io.html#data_io.DataSet.find_base_path_in_regex">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">find_base_path_in_regex</span><span class="p">(</span><span class="n">path_regex</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Takes a regular expression for a file path and determines the static part of the given path regex.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path_regex : str</span>
+<span class="sd">            The regex pattern for the file path.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            Static parts of the path that do not contain any regex.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Pattern to match literal text within the regex</span>
+        <span class="c1"># This pattern looks for sequences of characters that are not special regex symbols.</span>
+        <span class="c1"># It will also match on literals that need to be escaped in a regex, such as parentheses</span>
+        <span class="c1"># in the path, but those can then be treated as part of the regex.</span>
+        <span class="n">base_path_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[a-zA-Z0-9_\-/]+&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Find all static parts in the given regex pattern</span>
+        <span class="n">base_path</span> <span class="o">=</span> <span class="n">base_path_pattern</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">path_regex</span><span class="p">)</span>
+        <span class="n">common_root</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">base_path</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">parent</span>
+        <span class="k">return</span> <span class="n">common_root</span></div>
 </div>
 
 </pre></div>

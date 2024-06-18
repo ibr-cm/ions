@@ -321,250 +321,136 @@
 </div>
 
 
-
 <div class="viewcode-block" id="BaseExtractor">
 <a class="viewcode-back" href="../extractors.html#extractors.BaseExtractor">[docs]</a>
 <span class="k">class</span> <span class="nc">BaseExtractor</span><span class="p">(</span><span class="n">Extractor</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class for extracting and preprocessing data from a SQLite database.</span>
-<span class="sd">    This is the base class.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!BaseExtractor&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span>
                  <span class="n">input_files</span><span class="p">:</span><span class="nb">list</span>
-                 <span class="p">,</span> <span class="n">categorical_columns</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-                 <span class="p">,</span> <span class="n">categorical_columns_excluded</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-                 <span class="p">,</span> <span class="n">base_tags</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-                 <span class="p">,</span> <span class="n">additional_tags</span><span class="p">:</span><span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
-                 <span class="p">,</span> <span class="n">minimal_tags</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-                 <span class="p">,</span> <span class="n">simtimeRaw</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-                 <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-                 <span class="p">,</span> <span class="n">eventNumber</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+                 <span class="p">,</span> <span class="n">categorical_columns</span><span class="p">:</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+                 <span class="p">,</span> <span class="n">numerical_columns</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
                  <span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
                  <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_files</span><span class="p">:</span><span class="nb">list</span> <span class="o">=</span> <span class="n">input_files</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">categorical_columns</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns_excluded</span><span class="p">:</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">categorical_columns_excluded</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">base_tags</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">base_tags</span><span class="p">:</span><span class="nb">list</span> <span class="o">=</span> <span class="n">base_tags</span>
+        <span class="c1"># categorical_columns and numerical_columns (if appropriate) are explicitly converted</span>
+        <span class="c1"># to a set to alleviate the need for an explicit tag in the YAML recipe, since pyyaml</span>
+        <span class="c1"># always interprets values in curly braces as dictionaries</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns</span><span class="p">:</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">categorical_columns</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">numerical_columns</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">numerical_columns</span><span class="p">:</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">numerical_columns</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">minimal_tags</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">base_tags</span> <span class="o">=</span> <span class="n">BASE_TAGS_EXTRACTION_MINIMAL</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">base_tags</span> <span class="o">=</span> <span class="n">BASE_TAGS_EXTRACTION_FULL</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">additional_tags</span><span class="p">:</span><span class="nb">list</span> <span class="o">=</span> <span class="n">additional_tags</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">minimal_tags</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="n">minimal_tags</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">simtimeRaw</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="n">simtimeRaw</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="n">moduleName</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eventNumber</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="n">eventNumber</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">numerical_columns</span><span class="p">:</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">numerical_columns</span>
 
 
-<div class="viewcode-block" id="BaseExtractor.apply_tags">
-<a class="viewcode-back" href="../extractors.html#extractors.BaseExtractor.apply_tags">[docs]</a>
+<div class="viewcode-block" id="BaseExtractor.convert_columns_dtype">
+<a class="viewcode-back" href="../extractors.html#extractors.BaseExtractor.convert_columns_dtype">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">apply_tags</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">base_tags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">additional_tags</span><span class="o">=</span><span class="p">[],</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">base_tags</span><span class="p">:</span>
-            <span class="n">allowed_tags</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">base_tags</span> <span class="o">+</span> <span class="n">additional_tags</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">minimal</span><span class="p">:</span>
-                <span class="n">allowed_tags</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">BASE_TAGS_EXTRACTION_MINIMAL</span> <span class="o">+</span> <span class="n">additional_tags</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">allowed_tags</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">BASE_TAGS_EXTRACTION</span> <span class="o">+</span> <span class="n">additional_tags</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">convert_columns_dtype</span><span class="p">(</span><span class="n">data</span><span class="p">:</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">categorical_columns</span><span class="p">:</span><span class="nb">set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(),</span> <span class="n">numerical_columns</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">set</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the data in the specified columns of the given DataFrame to either a</span>
+<span class="sd">        `categorical data type &lt;https://pandas.pydata.org/docs/user_guide/categorical.html&gt;`_ or a</span>
+<span class="sd">        `numerical data type &lt;https://pandas.pydata.org/pandas-docs/stable/user_guide/basics.html#basics-dtypes&gt;`_</span>
 
-        <span class="n">applied_tags</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="c1"># augment data with the extracted parameter tags</span>
-        <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
-            <span class="n">mapping</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">get_mapping</span><span class="p">()</span>
-            <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="n">mapping</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">allowed_tags</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="o">**</span><span class="n">mapping</span><span class="p">)</span>
-                <span class="n">applied_tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
-        <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;: </span><span class="si">{</span><span class="n">applied_tags</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data: pd.DataFrame</span>
+<span class="sd">            The input DataFrame whose columns are to be converted.</span>
+
+<span class="sd">        categorical_columns: set</span>
+<span class="sd">            The set of names of the columns to convert to a categorical data type.</span>
+
+<span class="sd">        numerical_columns: Union[dict[str, str], set[str]]</span>
+<span class="sd">            The set of names of the columns to convert to a categorical data type.</span>
+<span class="sd">            The data type to convert to can also be given explicitly as a dictionary</span>
+<span class="sd">            with the column names as keys and the data type as values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># get the set of columns actually present in the DataFrame</span>
+        <span class="n">actual_categorical_columns</span> <span class="o">=</span> <span class="n">categorical_columns</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">missing_categorical_columns</span> <span class="o">=</span> <span class="n">categorical_columns</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">actual_categorical_columns</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_categorical_columns</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logw</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;columns for conversion to categorical data types not found in DataFrame: </span><span class="si">{</span><span class="n">missing_categorical_columns</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># if the numerical data types are explicitly given as a dictionary, use them</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">numerical_columns</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">numerical_columns_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">numerical_columns</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">numerical_columns_dict</span> <span class="o">=</span> <span class="n">numerical_columns</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># if the numerical data types are not explicitly given, convert to float</span>
+            <span class="n">numerical_columns_set</span> <span class="o">=</span> <span class="n">numerical_columns</span>
+            <span class="n">numerical_columns_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">numerical_columns_set</span><span class="p">:</span>
+                <span class="n">numerical_columns_dict</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;float&#39;</span>
+
+        <span class="n">actual_numerical_columns</span> <span class="o">=</span> <span class="n">numerical_columns_set</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">missing_numerical_columns</span> <span class="o">=</span> <span class="n">numerical_columns_set</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">actual_numerical_columns</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing_numerical_columns</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logw</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;columns for conversion to numerical data types not found in DataFrame: </span><span class="si">{</span><span class="n">missing_numerical_columns</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;columns to convert to categorical data types: </span><span class="si">{</span><span class="n">actual_categorical_columns</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">key_extractor</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">is_float</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">()</span>
+
+            <span class="k">def</span> <span class="nf">convert_numerical</span><span class="p">(</span><span class="n">num_str</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">num_str</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">():</span>
+                    <span class="c1"># convert to int if it&#39;s numerical</span>
+                    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_str</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">is_float</span><span class="p">(</span><span class="n">num_str</span><span class="p">):</span>
+                    <span class="c1"># convert to float if it&#39;s numerical when a period is removed</span>
+                    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">num_str</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">num_str</span><span class="o">.</span><span class="n">isalpha</span><span class="p">():</span>
+                    <span class="c1"># not a numerical</span>
+                    <span class="k">return</span> <span class="n">num_str</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="c1"># characters that are used as separators in e.g. variable names</span>
+                <span class="n">separator_map</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">:</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">:</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">:</span><span class="s1">&#39;&#39;</span> <span class="p">}</span>
+                <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">isalpha</span><span class="p">():</span>
+                    <span class="k">return</span> <span class="n">obj</span>
+                <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">():</span>
+                    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">is_float</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">maketrans</span><span class="p">(</span><span class="n">separator_map</span><span class="p">))</span><span class="o">.</span><span class="n">isalnum</span><span class="p">():</span>
+                    <span class="c1"># obj is alpha-numerical with possible extra ascii characters used as separators</span>
+                    <span class="c1"># split the string into characters and numerical literals</span>
+                    <span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[^\W\d_]+|\d+&#39;</span><span class="p">)</span>
+                    <span class="n">split_str</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_str</span><span class="p">)):</span>
+                        <span class="n">split_str</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_numerical</span><span class="p">(</span><span class="n">split_str</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">split_str</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">obj</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># return object as is for int, float or other</span>
+                <span class="k">return</span> <span class="n">obj</span>
+
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">actual_categorical_columns</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>
+            <span class="n">sorted_categories</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key_extractor</span><span class="p">)</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">CategoricalDtype</span><span class="p">(</span><span class="n">categories</span><span class="o">=</span><span class="n">sorted_categories</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+            <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">column</span><span class="si">=}</span><span class="s1"> </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;columns to convert to numerical data types: </span><span class="si">{</span><span class="n">actual_numerical_columns</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">actual_numerical_columns</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numerical_columns_dict</span><span class="p">[</span><span class="n">column</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="n">data</span></div>
-
-
-
-<div class="viewcode-block" id="BaseExtractor.convert_columns_to_category">
-<a class="viewcode-back" href="../extractors.html#extractors.BaseExtractor.convert_columns_to_category">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">convert_columns_to_category</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">additional_columns</span><span class="p">:</span><span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span> <span class="n">excluded_columns</span><span class="p">:</span><span class="nb">set</span> <span class="o">=</span> <span class="p">{},</span> <span class="n">numerical_columns</span><span class="p">:</span><span class="nb">set</span> <span class="o">=</span> <span class="p">{}):</span>
-        <span class="n">excluded_columns</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">excluded_columns</span><span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">DEFAULT_CATEGORICALS_COLUMN_EXCLUSION_SET</span><span class="p">)</span>
-
-        <span class="n">col_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">threshold</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span>
-        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">excluded_columns</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="c1"># if the number of categories is larger than half the number of data</span>
-            <span class="c1"># samples, don&#39;t convert the column</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">col</span><span class="p">]))</span>
-            <span class="k">if</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">:</span>
-                <span class="n">col_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
-
-        <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">excluded_columns</span><span class="si">}</span><span class="s2">=&quot;</span><span class="p">)</span>
-        <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">col_list</span><span class="si">}</span><span class="s2">=&quot;</span><span class="p">)</span>
-        <span class="c1"># convert selected columns to Categorical</span>
-        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">col_list</span><span class="p">:</span>
-            <span class="n">data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>
-            <span class="n">data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">as_ordered</span><span class="p">()</span>
-
-        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">numerical_columns</span><span class="p">:</span>
-            <span class="n">data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">data</span></div>
-
-
-
-<div class="viewcode-block" id="BaseExtractor.read_statistic_from_file">
-<a class="viewcode-back" href="../extractors.html#extractors.BaseExtractor.read_statistic_from_file">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">read_statistic_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">scalar</span><span class="p">,</span> <span class="n">alias</span>
-                               <span class="p">,</span> <span class="n">runId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
-                               <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
-                               <span class="p">,</span> <span class="n">statName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
-                               <span class="p">,</span> <span class="n">statId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
-                               <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="n">sql_queries</span><span class="o">.</span><span class="n">generate_statistic_query</span><span class="p">(</span><span class="n">scalar</span>
-                                                  <span class="p">,</span> <span class="n">runId</span><span class="o">=</span><span class="n">runId</span>
-                                                  <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="n">moduleName</span>
-                                                  <span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">read_query_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">alias</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="BaseExtractor.read_scalars_from_file">
-<a class="viewcode-back" href="../extractors.html#extractors.BaseExtractor.read_scalars_from_file">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">read_scalars_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">scalar</span><span class="p">,</span> <span class="n">alias</span>
-                               <span class="p">,</span> <span class="n">runId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
-                               <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
-                               <span class="p">,</span> <span class="n">scalarName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
-                               <span class="p">,</span> <span class="n">scalarId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
-                               <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="n">sql_queries</span><span class="o">.</span><span class="n">generate_scalar_query</span><span class="p">(</span><span class="n">scalar</span><span class="p">,</span> <span class="n">value_label</span><span class="o">=</span><span class="n">alias</span>
-                                                  <span class="p">,</span> <span class="n">runId</span><span class="o">=</span><span class="n">runId</span>
-                                                  <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="n">moduleName</span>
-                                                  <span class="p">,</span> <span class="n">scalarName</span><span class="o">=</span><span class="n">scalarName</span><span class="p">,</span> <span class="n">scalarId</span><span class="o">=</span><span class="n">scalarId</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">read_query_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">alias</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="BaseExtractor.read_signals_from_file">
-<a class="viewcode-back" href="../extractors.html#extractors.BaseExtractor.read_signals_from_file">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">read_signals_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">alias</span>
-                               <span class="p">,</span> <span class="n">simtimeRaw</span><span class="o">=</span><span class="kc">True</span>
-                               <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="kc">True</span>
-                               <span class="p">,</span> <span class="n">eventNumber</span><span class="o">=</span><span class="kc">True</span>
-                               <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="n">sql_queries</span><span class="o">.</span><span class="n">generate_signal_query</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">value_label</span><span class="o">=</span><span class="n">alias</span>
-                                                  <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="n">moduleName</span>
-                                                  <span class="p">,</span> <span class="n">simtimeRaw</span><span class="o">=</span><span class="n">simtimeRaw</span>
-                                                  <span class="p">,</span> <span class="n">eventNumber</span><span class="o">=</span><span class="n">eventNumber</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">read_query_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">alias</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="BaseExtractor.read_pattern_matched_signals_from_file">
-<a class="viewcode-back" href="../extractors.html#extractors.BaseExtractor.read_pattern_matched_signals_from_file">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">read_pattern_matched_signals_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">alias</span>
-                               <span class="p">,</span> <span class="n">vectorName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
-                               <span class="p">,</span> <span class="n">simtimeRaw</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
-                               <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
-                               <span class="p">,</span> <span class="n">eventNumber</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
-                               <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="n">sql_queries</span><span class="o">.</span><span class="n">generate_signal_like_query</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">value_label</span><span class="o">=</span><span class="n">alias</span>
-                                                  <span class="p">,</span> <span class="n">vectorName</span><span class="o">=</span><span class="n">vectorName</span>
-                                                  <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="n">moduleName</span>
-                                                  <span class="p">,</span> <span class="n">simtimeRaw</span><span class="o">=</span><span class="n">simtimeRaw</span>
-                                                  <span class="p">,</span> <span class="n">eventNumber</span><span class="o">=</span><span class="n">eventNumber</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">read_query_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">alias</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="BaseExtractor.read_pattern_matched_scalars_from_file">
-<a class="viewcode-back" href="../extractors.html#extractors.BaseExtractor.read_pattern_matched_scalars_from_file">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">read_pattern_matched_scalars_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">alias</span>
-                               <span class="p">,</span> <span class="n">scalarName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
-                               <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
-                               <span class="p">,</span> <span class="n">scalarId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
-                               <span class="p">,</span> <span class="n">runId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
-                               <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="n">sql_queries</span><span class="o">.</span><span class="n">generate_scalar_like_query</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">value_label</span><span class="o">=</span><span class="n">alias</span>
-                                                  <span class="p">,</span> <span class="n">scalarName</span><span class="o">=</span><span class="n">scalarName</span>
-                                                  <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="n">moduleName</span>
-                                                  <span class="p">,</span> <span class="n">scalarId</span><span class="o">=</span><span class="n">scalarId</span>
-                                                  <span class="p">,</span> <span class="n">runId</span><span class="o">=</span><span class="n">runId</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">read_query_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">alias</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="BaseExtractor.read_query_from_file">
-<a class="viewcode-back" href="../extractors.html#extractors.BaseExtractor.read_query_from_file">[docs]</a>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">read_query_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">alias</span>
-                               <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="p">[],</span> <span class="n">excluded_categorical_columns</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
-                               <span class="p">,</span> <span class="n">base_tags</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">additional_tags</span> <span class="o">=</span> <span class="p">[]</span>
-                               <span class="p">,</span> <span class="n">minimal_tags</span><span class="o">=</span><span class="kc">True</span>
-                               <span class="p">,</span> <span class="n">simtimeRaw</span><span class="o">=</span><span class="kc">True</span>
-                               <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="kc">True</span>
-                               <span class="p">,</span> <span class="n">eventNumber</span><span class="o">=</span><span class="kc">True</span>
-                               <span class="p">,</span> <span class="n">attributes_regex_map</span><span class="o">=</span><span class="n">tag_regex</span><span class="o">.</span><span class="n">attributes_regex_map</span>
-                               <span class="p">,</span> <span class="n">iterationvars_regex_map</span><span class="o">=</span><span class="n">tag_regex</span><span class="o">.</span><span class="n">iterationvars_regex_map</span>
-                               <span class="p">,</span> <span class="n">parameters_regex_map</span><span class="o">=</span><span class="n">tag_regex</span><span class="o">.</span><span class="n">parameters_regex_map</span>
-                               <span class="p">):</span>
-            <span class="n">sql_reader</span> <span class="o">=</span> <span class="n">SqlLiteReader</span><span class="p">(</span><span class="n">db_file</span><span class="p">)</span>
-
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">tags</span> <span class="o">=</span> <span class="n">sql_reader</span><span class="o">.</span><span class="n">extract_tags</span><span class="p">(</span><span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">iterationvars_regex_map</span><span class="p">,</span> <span class="n">parameters_regex_map</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">loge</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&gt;&gt;&gt;&gt; ERROR: no tags could be extracted from </span><span class="si">{</span><span class="n">db_file</span><span class="si">}</span><span class="s1">:</span><span class="se">\n</span><span class="s1"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">sql_reader</span><span class="o">.</span><span class="n">execute_sql_query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">loge</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&gt;&gt;&gt;&gt; ERROR: no data could be extracted from </span><span class="si">{</span><span class="n">db_file</span><span class="si">}</span><span class="s1">:</span><span class="se">\n</span><span class="s1"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-
-            <span class="k">if</span> <span class="s1">&#39;rowId&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;rowId&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-            <span class="n">data</span> <span class="o">=</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">apply_tags</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">base_tags</span><span class="o">=</span><span class="n">base_tags</span><span class="p">,</span> <span class="n">additional_tags</span><span class="o">=</span><span class="n">additional_tags</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="n">minimal_tags</span><span class="p">)</span>
-
-            <span class="c1"># don&#39;t categorize the column with the actual data</span>
-            <span class="n">excluded_categorical_columns</span> <span class="o">=</span> <span class="n">excluded_categorical_columns</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">alias</span><span class="p">]))</span>
-
-            <span class="c1"># select columns with a small enough set of possible values to</span>
-            <span class="c1"># convert into `Categorical`</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">convert_columns_to_category</span><span class="p">(</span><span class="n">data</span> \
-                                                            <span class="p">,</span> <span class="n">additional_columns</span><span class="o">=</span><span class="n">categorical_columns</span> \
-                                                            <span class="p">,</span> <span class="n">excluded_columns</span><span class="o">=</span><span class="n">excluded_categorical_columns</span>
-                                                            <span class="p">)</span>
-
-            <span class="k">return</span> <span class="n">data</span></div>
 
 
 
 <div class="viewcode-block" id="BaseExtractor.read_sql_from_file">
 <a class="viewcode-back" href="../extractors.html#extractors.BaseExtractor.read_sql_from_file">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">read_sql_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">query</span>
-                               <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="p">[],</span> <span class="n">excluded_categorical_columns</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
-                               <span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_sql_from_file</span><span class="p">(</span><span class="n">db_file</span>
+                            <span class="p">,</span> <span class="n">query</span>
+                            <span class="p">,</span> <span class="n">includeFilename</span><span class="o">=</span><span class="kc">False</span>
+                            <span class="p">):</span>
             <span class="n">sql_reader</span> <span class="o">=</span> <span class="n">SqlLiteReader</span><span class="p">(</span><span class="n">db_file</span><span class="p">)</span>
 
             <span class="k">try</span><span class="p">:</span>
@@ -576,18 +462,13 @@
             <span class="k">if</span> <span class="s1">&#39;rowId&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;rowId&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-            <span class="c1"># don&#39;t categorize the column with the actual data</span>
-            <span class="c1"># excluded_categorical_columns = excluded_categorical_columns.union(set([alias]))</span>
-
-            <span class="c1"># select columns with a small enough set of possible values to</span>
-            <span class="c1"># convert into `Categorical`</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">convert_columns_to_category</span><span class="p">(</span><span class="n">data</span> \
-                                                            <span class="p">,</span> <span class="n">additional_columns</span><span class="o">=</span><span class="n">categorical_columns</span> \
-                                                            <span class="p">,</span> <span class="n">excluded_columns</span><span class="o">=</span><span class="n">excluded_categorical_columns</span>
-                                                            <span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">):</span>
                 <span class="n">logw</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Extractor: extraction yields no data for </span><span class="si">{</span><span class="n">db_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+            <span class="c1"># add path to dataframe</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">includeFilename</span><span class="p">):</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;filename&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">db_file</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">data</span></div>
 </div>
@@ -614,10 +495,13 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span>
                  <span class="n">input_files</span><span class="p">:</span><span class="nb">list</span>
                  <span class="p">,</span> <span class="n">query</span><span class="p">:</span><span class="nb">str</span>
+                 <span class="p">,</span> <span class="n">includeFilename</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
                  <span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">input_files</span><span class="o">=</span><span class="n">input_files</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="n">query</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">includeFilename</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="n">includeFilename</span>
+
 
 <div class="viewcode-block" id="SqlExtractor.prepare">
 <a class="viewcode-back" href="../extractors.html#extractors.SqlExtractor.prepare">[docs]</a>
@@ -628,23 +512,242 @@
         <span class="c1"># on the data and the leafs of the computation graph</span>
         <span class="n">result_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">db_file</span> <span class="ow">in</span> <span class="n">data_set</span><span class="o">.</span><span class="n">get_file_list</span><span class="p">():</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">BaseExtractor</span><span class="o">.</span><span class="n">read_sql_from_file</span><span class="p">)</span>\
+            <span class="n">res</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">SqlExtractor</span><span class="o">.</span><span class="n">read_query_from_file</span><span class="p">)</span>\
                                          <span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span>
+                                          <span class="p">,</span> <span class="n">includeFilename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">includeFilename</span>
                                           <span class="p">,</span> <span class="n">categorical_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns</span>
-                                          <span class="p">,</span> <span class="n">excluded_categorical_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns_excluded</span>
+                                          <span class="p">,</span> <span class="n">numerical_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerical_columns</span>
                                           <span class="p">)</span>
             <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="n">db_file</span><span class="p">)</span>
             <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">res</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">result_list</span></div>
+
+
+<div class="viewcode-block" id="SqlExtractor.read_query_from_file">
+<a class="viewcode-back" href="../extractors.html#extractors.SqlExtractor.read_query_from_file">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read_query_from_file</span><span class="p">(</span><span class="n">db_file</span>
+                            <span class="p">,</span> <span class="n">query</span>
+                            <span class="p">,</span> <span class="n">includeFilename</span><span class="o">=</span><span class="kc">False</span>
+                            <span class="p">,</span> <span class="n">categorical_columns</span><span class="p">:</span><span class="nb">set</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
+                            <span class="p">,</span> <span class="n">numerical_columns</span><span class="p">:</span><span class="nb">set</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
+                            <span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">read_sql_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">includeFilename</span><span class="p">)</span>
+
+            <span class="c1"># convert the data type of the explicitly named columns</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">convert_columns_dtype</span><span class="p">(</span><span class="n">data</span> \
+                                                      <span class="p">,</span> <span class="n">categorical_columns</span> <span class="o">=</span> <span class="n">categorical_columns</span> \
+                                                      <span class="p">,</span> <span class="n">numerical_columns</span> <span class="o">=</span> <span class="n">numerical_columns</span>
+                                                      <span class="p">)</span>
+            <span class="k">return</span> <span class="n">data</span></div>
 </div>
 
+
+<div class="viewcode-block" id="OmnetExtractor">
+<a class="viewcode-back" href="../extractors.html#extractors.OmnetExtractor">[docs]</a>
+<span class="k">class</span> <span class="nc">OmnetExtractor</span><span class="p">(</span><span class="n">BaseExtractor</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class for extracting and preprocessing data from a SQLite database.</span>
+<span class="sd">    This is the base class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!OmnetExtractor&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span>
+                 <span class="n">input_files</span><span class="p">:</span><span class="nb">list</span>
+                 <span class="p">,</span> <span class="n">categorical_columns</span><span class="p">:</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+                 <span class="p">,</span> <span class="n">numerical_columns</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+                 <span class="p">,</span> <span class="n">base_tags</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                 <span class="p">,</span> <span class="n">additional_tags</span><span class="p">:</span><span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
+                 <span class="p">,</span> <span class="n">minimal_tags</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+                 <span class="p">,</span> <span class="n">simtimeRaw</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+                 <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+                 <span class="p">,</span> <span class="n">eventNumber</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+                 <span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                 <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">input_files</span><span class="o">=</span><span class="n">input_files</span>
+                         <span class="p">,</span> <span class="n">categorical_columns</span> <span class="o">=</span> <span class="n">categorical_columns</span>
+                         <span class="p">,</span> <span class="n">numerical_columns</span> <span class="o">=</span> <span class="n">numerical_columns</span>
+                         <span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">base_tags</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">base_tags</span><span class="p">:</span><span class="nb">list</span> <span class="o">=</span> <span class="n">base_tags</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">minimal_tags</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">base_tags</span> <span class="o">=</span> <span class="n">BASE_TAGS_EXTRACTION_MINIMAL</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">base_tags</span> <span class="o">=</span> <span class="n">BASE_TAGS_EXTRACTION_FULL</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">additional_tags</span><span class="p">:</span><span class="nb">list</span> <span class="o">=</span> <span class="n">additional_tags</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minimal_tags</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="n">minimal_tags</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">simtimeRaw</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="n">simtimeRaw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="n">moduleName</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eventNumber</span><span class="p">:</span><span class="nb">bool</span> <span class="o">=</span> <span class="n">eventNumber</span>
+
+
+<div class="viewcode-block" id="OmnetExtractor.apply_tags">
+<a class="viewcode-back" href="../extractors.html#extractors.OmnetExtractor.apply_tags">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">apply_tags</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">base_tags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">additional_tags</span><span class="o">=</span><span class="p">[],</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">base_tags</span><span class="p">:</span>
+            <span class="n">allowed_tags</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">base_tags</span> <span class="o">+</span> <span class="n">additional_tags</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">minimal</span><span class="p">:</span>
+                <span class="n">allowed_tags</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">BASE_TAGS_EXTRACTION_MINIMAL</span> <span class="o">+</span> <span class="n">additional_tags</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">allowed_tags</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">BASE_TAGS_EXTRACTION</span> <span class="o">+</span> <span class="n">additional_tags</span><span class="p">)</span>
+
+        <span class="n">applied_tags</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># augment data with the extracted parameter tags</span>
+        <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+            <span class="n">mapping</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">get_mapping</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="n">mapping</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">allowed_tags</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="o">**</span><span class="n">mapping</span><span class="p">)</span>
+                <span class="n">applied_tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+        <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;: </span><span class="si">{</span><span class="n">applied_tags</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="OmnetExtractor.read_statistic_from_file">
+<a class="viewcode-back" href="../extractors.html#extractors.OmnetExtractor.read_statistic_from_file">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read_statistic_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">scalar</span><span class="p">,</span> <span class="n">alias</span>
+                               <span class="p">,</span> <span class="n">runId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                               <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                               <span class="p">,</span> <span class="n">statName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                               <span class="p">,</span> <span class="n">statId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                               <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">sql_queries</span><span class="o">.</span><span class="n">generate_statistic_query</span><span class="p">(</span><span class="n">scalar</span>
+                                                  <span class="p">,</span> <span class="n">runId</span><span class="o">=</span><span class="n">runId</span>
+                                                  <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="n">moduleName</span>
+                                                  <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">OmnetExtractor</span><span class="o">.</span><span class="n">read_query_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">alias</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="OmnetExtractor.read_scalars_from_file">
+<a class="viewcode-back" href="../extractors.html#extractors.OmnetExtractor.read_scalars_from_file">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read_scalars_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">scalar</span><span class="p">,</span> <span class="n">alias</span>
+                               <span class="p">,</span> <span class="n">runId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                               <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                               <span class="p">,</span> <span class="n">scalarName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                               <span class="p">,</span> <span class="n">scalarId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                               <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">sql_queries</span><span class="o">.</span><span class="n">generate_scalar_query</span><span class="p">(</span><span class="n">scalar</span><span class="p">,</span> <span class="n">value_label</span><span class="o">=</span><span class="n">alias</span>
+                                                  <span class="p">,</span> <span class="n">runId</span><span class="o">=</span><span class="n">runId</span>
+                                                  <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="n">moduleName</span>
+                                                  <span class="p">,</span> <span class="n">scalarName</span><span class="o">=</span><span class="n">scalarName</span><span class="p">,</span> <span class="n">scalarId</span><span class="o">=</span><span class="n">scalarId</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">OmnetExtractor</span><span class="o">.</span><span class="n">read_query_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">alias</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="OmnetExtractor.read_signals_from_file">
+<a class="viewcode-back" href="../extractors.html#extractors.OmnetExtractor.read_signals_from_file">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read_signals_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">alias</span>
+                               <span class="p">,</span> <span class="n">simtimeRaw</span><span class="o">=</span><span class="kc">True</span>
+                               <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="kc">True</span>
+                               <span class="p">,</span> <span class="n">eventNumber</span><span class="o">=</span><span class="kc">True</span>
+                               <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">sql_queries</span><span class="o">.</span><span class="n">generate_signal_query</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">value_label</span><span class="o">=</span><span class="n">alias</span>
+                                                  <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="n">moduleName</span>
+                                                  <span class="p">,</span> <span class="n">simtimeRaw</span><span class="o">=</span><span class="n">simtimeRaw</span>
+                                                  <span class="p">,</span> <span class="n">eventNumber</span><span class="o">=</span><span class="n">eventNumber</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">OmnetExtractor</span><span class="o">.</span><span class="n">read_query_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">alias</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="OmnetExtractor.read_pattern_matched_signals_from_file">
+<a class="viewcode-back" href="../extractors.html#extractors.OmnetExtractor.read_pattern_matched_signals_from_file">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read_pattern_matched_signals_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">alias</span>
+                               <span class="p">,</span> <span class="n">vectorName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                               <span class="p">,</span> <span class="n">simtimeRaw</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                               <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                               <span class="p">,</span> <span class="n">eventNumber</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                               <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">sql_queries</span><span class="o">.</span><span class="n">generate_signal_like_query</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">value_label</span><span class="o">=</span><span class="n">alias</span>
+                                                  <span class="p">,</span> <span class="n">vectorName</span><span class="o">=</span><span class="n">vectorName</span>
+                                                  <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="n">moduleName</span>
+                                                  <span class="p">,</span> <span class="n">simtimeRaw</span><span class="o">=</span><span class="n">simtimeRaw</span>
+                                                  <span class="p">,</span> <span class="n">eventNumber</span><span class="o">=</span><span class="n">eventNumber</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">OmnetExtractor</span><span class="o">.</span><span class="n">read_query_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">alias</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="OmnetExtractor.read_pattern_matched_scalars_from_file">
+<a class="viewcode-back" href="../extractors.html#extractors.OmnetExtractor.read_pattern_matched_scalars_from_file">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read_pattern_matched_scalars_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">alias</span>
+                               <span class="p">,</span> <span class="n">scalarName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                               <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
+                               <span class="p">,</span> <span class="n">scalarId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                               <span class="p">,</span> <span class="n">runId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                               <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">sql_queries</span><span class="o">.</span><span class="n">generate_scalar_like_query</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">value_label</span><span class="o">=</span><span class="n">alias</span>
+                                                  <span class="p">,</span> <span class="n">scalarName</span><span class="o">=</span><span class="n">scalarName</span>
+                                                  <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="n">moduleName</span>
+                                                  <span class="p">,</span> <span class="n">scalarId</span><span class="o">=</span><span class="n">scalarId</span>
+                                                  <span class="p">,</span> <span class="n">runId</span><span class="o">=</span><span class="n">runId</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">OmnetExtractor</span><span class="o">.</span><span class="n">read_query_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">alias</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="OmnetExtractor.read_query_from_file">
+<a class="viewcode-back" href="../extractors.html#extractors.OmnetExtractor.read_query_from_file">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read_query_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">alias</span>
+                               <span class="p">,</span> <span class="n">categorical_columns</span><span class="p">:</span><span class="nb">set</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
+                               <span class="p">,</span> <span class="n">numerical_columns</span><span class="p">:</span><span class="nb">set</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
+                               <span class="p">,</span> <span class="n">base_tags</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">additional_tags</span> <span class="o">=</span> <span class="p">[]</span>
+                               <span class="p">,</span> <span class="n">minimal_tags</span><span class="o">=</span><span class="kc">True</span>
+                               <span class="p">,</span> <span class="n">simtimeRaw</span><span class="o">=</span><span class="kc">True</span>
+                               <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="kc">True</span>
+                               <span class="p">,</span> <span class="n">eventNumber</span><span class="o">=</span><span class="kc">True</span>
+                               <span class="p">,</span> <span class="n">includeFilename</span><span class="o">=</span><span class="kc">False</span>
+                               <span class="p">,</span> <span class="n">attributes_regex_map</span><span class="o">=</span><span class="n">tag_regex</span><span class="o">.</span><span class="n">attributes_regex_map</span>
+                               <span class="p">,</span> <span class="n">iterationvars_regex_map</span><span class="o">=</span><span class="n">tag_regex</span><span class="o">.</span><span class="n">iterationvars_regex_map</span>
+                               <span class="p">,</span> <span class="n">parameters_regex_map</span><span class="o">=</span><span class="n">tag_regex</span><span class="o">.</span><span class="n">parameters_regex_map</span>
+                               <span class="p">):</span>
+            <span class="n">sql_reader</span> <span class="o">=</span> <span class="n">SqlLiteReader</span><span class="p">(</span><span class="n">db_file</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">tags</span> <span class="o">=</span> <span class="n">sql_reader</span><span class="o">.</span><span class="n">extract_tags</span><span class="p">(</span><span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">iterationvars_regex_map</span><span class="p">,</span> <span class="n">parameters_regex_map</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">loge</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&gt;&gt;&gt;&gt; ERROR: no tags could be extracted from </span><span class="si">{</span><span class="n">db_file</span><span class="si">}</span><span class="s1">:</span><span class="se">\n</span><span class="s1"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">read_sql_from_file</span><span class="p">(</span><span class="n">db_file</span>
+                                                    <span class="p">,</span> <span class="n">query</span> \
+                                                    <span class="p">,</span> <span class="n">includeFilename</span>
+                                                    <span class="p">)</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="n">OmnetExtractor</span><span class="o">.</span><span class="n">apply_tags</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">base_tags</span><span class="o">=</span><span class="n">base_tags</span><span class="p">,</span> <span class="n">additional_tags</span><span class="o">=</span><span class="n">additional_tags</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="n">minimal_tags</span><span class="p">)</span>
+
+            <span class="c1"># convert the data type of the explicitly named columns</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">convert_columns_dtype</span><span class="p">(</span><span class="n">data</span> \
+                                                      <span class="p">,</span> <span class="n">categorical_columns</span> <span class="o">=</span> <span class="n">categorical_columns</span> \
+                                                      <span class="p">,</span> <span class="n">numerical_columns</span> <span class="o">=</span> <span class="n">numerical_columns</span>
+                                                      <span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">data</span></div>
+</div>
 
 
 
 <div class="viewcode-block" id="RawStatisticExtractor">
 <a class="viewcode-back" href="../extractors.html#extractors.RawStatisticExtractor">[docs]</a>
-<span class="k">class</span> <span class="nc">RawStatisticExtractor</span><span class="p">(</span><span class="n">BaseExtractor</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">RawStatisticExtractor</span><span class="p">(</span><span class="n">OmnetExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract the data for a signal from the `statistic` table of the input files specified.</span>
 
@@ -696,14 +799,14 @@
         <span class="c1"># on the data and the leafs of the computation graph</span>
         <span class="n">result_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">db_file</span> <span class="ow">in</span> <span class="n">data_set</span><span class="o">.</span><span class="n">get_file_list</span><span class="p">():</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">BaseExtractor</span><span class="o">.</span><span class="n">read_statistic_from_file</span><span class="p">)</span>\
+            <span class="n">res</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">OmnetExtractor</span><span class="o">.</span><span class="n">read_statistic_from_file</span><span class="p">)</span>\
                                          <span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">signal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alias</span>
                                           <span class="p">,</span> <span class="n">moduleName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">moduleName</span>
                                           <span class="p">,</span> <span class="n">statName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">statName</span>
                                           <span class="p">,</span> <span class="n">statId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">statId</span>
                                           <span class="p">,</span> <span class="n">runId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">runId</span>
                                           <span class="p">,</span> <span class="n">categorical_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns</span>
-                                          <span class="p">,</span> <span class="n">excluded_categorical_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns_excluded</span>
+                                          <span class="p">,</span> <span class="n">numerical_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerical_columns</span>
                                           <span class="p">,</span> <span class="n">base_tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_tags</span>
                                           <span class="p">,</span> <span class="n">additional_tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">additional_tags</span>
                                           <span class="p">,</span> <span class="n">minimal_tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minimal_tags</span>
@@ -721,7 +824,7 @@
 
 <div class="viewcode-block" id="RawScalarExtractor">
 <a class="viewcode-back" href="../extractors.html#extractors.RawScalarExtractor">[docs]</a>
-<span class="k">class</span> <span class="nc">RawScalarExtractor</span><span class="p">(</span><span class="n">BaseExtractor</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">RawScalarExtractor</span><span class="p">(</span><span class="n">OmnetExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract the data for a signal from the `scalar` table of the input files specified.</span>
 
@@ -774,14 +877,14 @@
         <span class="c1"># on the data and the leafs of the computation graph</span>
         <span class="n">result_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">db_file</span> <span class="ow">in</span> <span class="n">data_set</span><span class="o">.</span><span class="n">get_file_list</span><span class="p">():</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">BaseExtractor</span><span class="o">.</span><span class="n">read_scalars_from_file</span><span class="p">)</span>\
+            <span class="n">res</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">OmnetExtractor</span><span class="o">.</span><span class="n">read_scalars_from_file</span><span class="p">)</span>\
                                          <span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">signal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alias</span>
                                           <span class="p">,</span> <span class="n">moduleName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">moduleName</span>
                                           <span class="p">,</span> <span class="n">scalarName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scalarName</span>
                                           <span class="p">,</span> <span class="n">scalarId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scalarId</span>
                                           <span class="p">,</span> <span class="n">runId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">runId</span>
                                           <span class="p">,</span> <span class="n">categorical_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns</span>
-                                          <span class="p">,</span> <span class="n">excluded_categorical_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns_excluded</span>
+                                          <span class="p">,</span> <span class="n">numerical_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerical_columns</span>
                                           <span class="p">,</span> <span class="n">base_tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_tags</span>
                                           <span class="p">,</span> <span class="n">additional_tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">additional_tags</span>
                                           <span class="p">,</span> <span class="n">minimal_tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minimal_tags</span>
@@ -799,7 +902,7 @@
 
 <div class="viewcode-block" id="RawExtractor">
 <a class="viewcode-back" href="../extractors.html#extractors.RawExtractor">[docs]</a>
-<span class="k">class</span> <span class="nc">RawExtractor</span><span class="p">(</span><span class="n">BaseExtractor</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">RawExtractor</span><span class="p">(</span><span class="n">OmnetExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract the data for a signal from the input files specified.</span>
 
@@ -835,13 +938,13 @@
         <span class="c1"># on the data and the leafs of the computation graph</span>
         <span class="n">result_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">db_file</span> <span class="ow">in</span> <span class="n">data_set</span><span class="o">.</span><span class="n">get_file_list</span><span class="p">():</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">BaseExtractor</span><span class="o">.</span><span class="n">read_signals_from_file</span><span class="p">)</span>\
+            <span class="n">res</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">OmnetExtractor</span><span class="o">.</span><span class="n">read_signals_from_file</span><span class="p">)</span>\
                                          <span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">signal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alias</span>
                                           <span class="p">,</span> <span class="n">moduleName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">moduleName</span>
                                           <span class="p">,</span> <span class="n">eventNumber</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eventNumber</span>
                                           <span class="p">,</span> <span class="n">simtimeRaw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simtimeRaw</span>
                                           <span class="p">,</span> <span class="n">categorical_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns</span>
-                                          <span class="p">,</span> <span class="n">excluded_categorical_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns_excluded</span>
+                                          <span class="p">,</span> <span class="n">numerical_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerical_columns</span>
                                           <span class="p">,</span> <span class="n">base_tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_tags</span>
                                           <span class="p">,</span> <span class="n">additional_tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">additional_tags</span>
                                           <span class="p">,</span> <span class="n">minimal_tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minimal_tags</span>
@@ -859,7 +962,7 @@
 
 <div class="viewcode-block" id="PositionExtractor">
 <a class="viewcode-back" href="../extractors.html#extractors.PositionExtractor">[docs]</a>
-<span class="k">class</span> <span class="nc">PositionExtractor</span><span class="p">(</span><span class="n">BaseExtractor</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">PositionExtractor</span><span class="p">(</span><span class="n">OmnetExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract the data for a signal, with the associated positions, from the input files specified.</span>
 
@@ -931,7 +1034,8 @@
                                            <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
                                            <span class="p">,</span> <span class="n">simtimeRaw</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
                                            <span class="p">,</span> <span class="n">eventNumber</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
-                               <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="p">[],</span> <span class="n">excluded_categorical_columns</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
+                               <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
+                               <span class="p">,</span> <span class="n">numerical_columns</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
                                <span class="p">,</span> <span class="n">base_tags</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">additional_tags</span> <span class="o">=</span> <span class="p">[]</span>
                                <span class="p">,</span> <span class="n">minimal_tags</span><span class="o">=</span><span class="kc">True</span>
                                <span class="p">,</span> <span class="n">attributes_regex_map</span><span class="o">=</span><span class="n">tag_regex</span><span class="o">.</span><span class="n">attributes_regex_map</span>
@@ -964,17 +1068,13 @@
             <span class="k">if</span> <span class="s1">&#39;rowId&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;rowId&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-            <span class="n">data</span> <span class="o">=</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">apply_tags</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">base_tags</span><span class="o">=</span><span class="n">base_tags</span><span class="p">,</span> <span class="n">additional_tags</span><span class="o">=</span><span class="n">additional_tags</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="n">minimal_tags</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">OmnetExtractor</span><span class="o">.</span><span class="n">apply_tags</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">base_tags</span><span class="o">=</span><span class="n">base_tags</span><span class="p">,</span> <span class="n">additional_tags</span><span class="o">=</span><span class="n">additional_tags</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="n">minimal_tags</span><span class="p">)</span>
 
-            <span class="c1"># don&#39;t categorize the column with the actual data</span>
-            <span class="n">excluded_categorical_columns</span> <span class="o">=</span> <span class="n">excluded_categorical_columns</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">alias</span><span class="p">,</span> <span class="n">x_alias</span><span class="p">,</span> <span class="n">y_alias</span><span class="p">]))</span>
-
-            <span class="c1"># select columns with a small enough set of possible values to</span>
-            <span class="c1"># convert into `Categorical`</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">convert_columns_to_category</span><span class="p">(</span><span class="n">data</span> \
-                                                            <span class="p">,</span> <span class="n">additional_columns</span><span class="o">=</span><span class="n">categorical_columns</span> \
-                                                            <span class="p">,</span> <span class="n">excluded_columns</span><span class="o">=</span><span class="n">excluded_categorical_columns</span>
-                                                            <span class="p">)</span>
+            <span class="c1"># convert the data type of the explicitly named columns</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">OmnetExtractor</span><span class="o">.</span><span class="n">convert_columns_dtype</span><span class="p">(</span><span class="n">data</span> \
+                                                       <span class="p">,</span> <span class="n">categorical_columns</span> <span class="o">=</span> <span class="n">categorical_columns</span> \
+                                                       <span class="p">,</span> <span class="n">numerical_columns</span> <span class="o">=</span> <span class="n">numerical_columns</span>
+                                                       <span class="p">)</span>
 
             <span class="k">return</span> <span class="n">data</span></div>
 
@@ -1001,7 +1101,7 @@
                                 <span class="p">,</span> <span class="n">simtimeRaw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">simtimeRaw</span>
                                 <span class="p">,</span> <span class="n">eventNumber</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eventNumber</span>
                                 <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns</span> \
-                                <span class="p">,</span> <span class="n">excluded_categorical_columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns_excluded</span> \
+                                <span class="p">,</span> <span class="n">numerical_columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">numerical_columns</span> \
                                 <span class="p">,</span> <span class="n">base_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">base_tags</span><span class="p">,</span> <span class="n">additional_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">additional_tags</span>
                                 <span class="p">,</span> <span class="n">minimal_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">minimal_tags</span>
                                <span class="p">)</span>
@@ -1015,7 +1115,7 @@
 
 <div class="viewcode-block" id="MatchingExtractor">
 <a class="viewcode-back" href="../extractors.html#extractors.MatchingExtractor">[docs]</a>
-<span class="k">class</span> <span class="nc">MatchingExtractor</span><span class="p">(</span><span class="n">BaseExtractor</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MatchingExtractor</span><span class="p">(</span><span class="n">OmnetExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract the data for multiple signals matching a regular expression, with</span>
 <span class="sd">    the associated positions, from the input files specified.</span>
@@ -1084,7 +1184,8 @@
 <a class="viewcode-back" href="../extractors.html#extractors.MatchingExtractor.extract_all_signals">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">extract_all_signals</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">signals</span>
-                            <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="p">[],</span> <span class="n">excluded_categorical_columns</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
+                            <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
+                            <span class="p">,</span> <span class="n">numerical_columns</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
                             <span class="p">,</span> <span class="n">base_tags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">additional_tags</span><span class="o">=</span><span class="p">[]</span>
                             <span class="p">,</span> <span class="n">minimal_tags</span><span class="o">=</span><span class="kc">True</span>
                             <span class="p">,</span> <span class="n">attributes_regex_map</span><span class="o">=</span><span class="n">tag_regex</span><span class="o">.</span><span class="n">attributes_regex_map</span>
@@ -1096,9 +1197,9 @@
                             <span class="p">):</span>
         <span class="n">result_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">signal</span><span class="p">,</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">signals</span><span class="p">:</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">read_signals_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">alias</span> \
+            <span class="n">res</span> <span class="o">=</span> <span class="n">OmnetExtractor</span><span class="o">.</span><span class="n">read_signals_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">alias</span> \
                                                       <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="n">categorical_columns</span> \
-                                                      <span class="p">,</span> <span class="n">excluded_categorical_columns</span><span class="o">=</span><span class="n">excluded_categorical_columns</span>
+                                                      <span class="p">,</span> <span class="n">numerical_columns</span><span class="o">=</span><span class="n">numerical_columns</span>
                                                       <span class="p">,</span> <span class="n">base_tags</span><span class="o">=</span><span class="n">base_tags</span><span class="p">,</span> <span class="n">additional_tags</span><span class="o">=</span><span class="n">additional_tags</span>
                                                       <span class="p">,</span> <span class="n">minimal_tags</span><span class="o">=</span><span class="n">minimal_tags</span>
                                                       <span class="p">,</span> <span class="n">attributes_regex_map</span><span class="o">=</span><span class="n">attributes_regex_map</span>
@@ -1121,10 +1222,11 @@
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">result_list</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">convert_columns_to_category</span><span class="p">(</span><span class="n">result</span>
-                                                                <span class="p">,</span> <span class="n">additional_columns</span><span class="o">=</span><span class="n">categorical_columns</span> \
-                                                                <span class="p">,</span> <span class="n">excluded_columns</span><span class="o">=</span><span class="n">excluded_categorical_columns</span>
-                                                             <span class="p">)</span>
+            <span class="c1"># convert the data type of the explicitly named columns</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">OmnetExtractor</span><span class="o">.</span><span class="n">convert_columns_dtype</span><span class="p">(</span><span class="n">result</span>
+                                                         <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="n">categorical_columns</span> \
+                                                         <span class="p">,</span> <span class="n">numerical_columns</span><span class="o">=</span><span class="n">numerical_columns</span>
+                                                         <span class="p">)</span>
             <span class="k">return</span> <span class="n">result</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span></div>
@@ -1143,7 +1245,8 @@
             <span class="n">matching_signals_result</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">MatchingExtractor</span><span class="o">.</span><span class="n">get_matching_signals</span><span class="p">)(</span><span class="n">db_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alias_pattern</span><span class="p">)</span>
             <span class="c1"># get the data for the matched signals</span>
             <span class="n">res</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">MatchingExtractor</span><span class="o">.</span><span class="n">extract_all_signals</span><span class="p">)(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">matching_signals_result</span>
-                                                                       <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span> <span class="n">categorical_columns_excluded</span>
+                                                                       <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns</span>
+                                                                       <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerical_columns</span>
                                                                        <span class="p">,</span> <span class="n">base_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">base_tags</span><span class="p">,</span> <span class="n">additional_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">additional_tags</span>
                                                                        <span class="p">,</span> <span class="n">minimal_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">minimal_tags</span>
                                                                        <span class="p">,</span> <span class="n">attributes_regex_map</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes_regex_map</span>
@@ -1163,7 +1266,7 @@
 
 <div class="viewcode-block" id="PatternMatchingBulkExtractor">
 <a class="viewcode-back" href="../extractors.html#extractors.PatternMatchingBulkExtractor">[docs]</a>
-<span class="k">class</span> <span class="nc">PatternMatchingBulkExtractor</span><span class="p">(</span><span class="n">BaseExtractor</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">PatternMatchingBulkExtractor</span><span class="p">(</span><span class="n">OmnetExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract the data for multiple signals matching a SQL LIKE pattern</span>
 <span class="sd">    expression from the input files specified.</span>
@@ -1209,7 +1312,8 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">extract_all_signals</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">alias</span>
                             <span class="p">,</span> <span class="n">alias_match_pattern</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">alias_pattern</span><span class="p">:</span><span class="nb">str</span>
-                            <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="p">[],</span> <span class="n">excluded_categorical_columns</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
+                            <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
+                            <span class="p">,</span> <span class="n">numerical_columns</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
                             <span class="p">,</span> <span class="n">base_tags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">additional_tags</span><span class="o">=</span><span class="p">[]</span>
                             <span class="p">,</span> <span class="n">minimal_tags</span><span class="o">=</span><span class="kc">True</span>
                             <span class="p">,</span> <span class="n">attributes_regex_map</span><span class="o">=</span><span class="n">tag_regex</span><span class="o">.</span><span class="n">attributes_regex_map</span>
@@ -1220,9 +1324,9 @@
                             <span class="p">,</span> <span class="n">simtimeRaw</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
                             <span class="p">,</span> <span class="n">eventNumber</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
                             <span class="p">):</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">read_pattern_matched_signals_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">alias</span> \
+        <span class="n">data</span> <span class="o">=</span> <span class="n">OmnetExtractor</span><span class="o">.</span><span class="n">read_pattern_matched_signals_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">alias</span> \
                                                       <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="n">categorical_columns</span> \
-                                                      <span class="p">,</span> <span class="n">excluded_categorical_columns</span><span class="o">=</span><span class="n">excluded_categorical_columns</span>
+                                                      <span class="p">,</span> <span class="n">numerical_columns</span><span class="o">=</span><span class="n">numerical_columns</span>
                                                       <span class="p">,</span> <span class="n">base_tags</span><span class="o">=</span><span class="n">base_tags</span><span class="p">,</span> <span class="n">additional_tags</span><span class="o">=</span><span class="n">additional_tags</span>
                                                       <span class="p">,</span> <span class="n">minimal_tags</span><span class="o">=</span><span class="n">minimal_tags</span>
                                                       <span class="p">,</span> <span class="n">attributes_regex_map</span><span class="o">=</span><span class="n">attributes_regex_map</span>
@@ -1255,10 +1359,11 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;vectorName&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">convert_columns_to_category</span><span class="p">(</span><span class="n">data</span>
-                                                                <span class="p">,</span> <span class="n">additional_columns</span><span class="o">=</span><span class="n">categorical_columns</span> \
-                                                                <span class="p">,</span> <span class="n">excluded_columns</span><span class="o">=</span><span class="n">excluded_categorical_columns</span>
-                                                             <span class="p">)</span>
+            <span class="c1"># convert the data type of the explicitly named columns</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">OmnetExtractor</span><span class="o">.</span><span class="n">convert_columns_dtype</span><span class="p">(</span><span class="n">data</span>
+                                                         <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="n">categorical_columns</span> \
+                                                         <span class="p">,</span> <span class="n">numerical_columns</span><span class="o">=</span><span class="n">numerical_columns</span>
+                                                         <span class="p">)</span>
             <span class="k">return</span> <span class="n">result</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span></div>
@@ -1277,7 +1382,8 @@
             <span class="c1"># get the data for all signals that match the given SQL pattern</span>
             <span class="n">res</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">PatternMatchingBulkExtractor</span><span class="o">.</span><span class="n">extract_all_signals</span><span class="p">)(</span><span class="n">db_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alias</span>
                                                                        <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alias_match_pattern</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alias_pattern</span>
-                                                                       <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span> <span class="n">categorical_columns_excluded</span>
+                                                                       <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns</span>
+                                                                       <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerical_columns</span>
                                                                        <span class="p">,</span> <span class="n">base_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">base_tags</span><span class="p">,</span> <span class="n">additional_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">additional_tags</span>
                                                                        <span class="p">,</span> <span class="n">minimal_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">minimal_tags</span>
                                                                        <span class="p">,</span> <span class="n">attributes_regex_map</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes_regex_map</span>
@@ -1298,7 +1404,7 @@
 
 <div class="viewcode-block" id="PatternMatchingBulkScalarExtractor">
 <a class="viewcode-back" href="../extractors.html#extractors.PatternMatchingBulkScalarExtractor">[docs]</a>
-<span class="k">class</span> <span class="nc">PatternMatchingBulkScalarExtractor</span><span class="p">(</span><span class="n">BaseExtractor</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">PatternMatchingBulkScalarExtractor</span><span class="p">(</span><span class="n">OmnetExtractor</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extract the data for multiple scalars matching a SQL LIKE pattern</span>
 <span class="sd">    expression from the input files specified.</span>
@@ -1361,7 +1467,8 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">extract_all_scalars</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">alias</span>
                             <span class="p">,</span> <span class="n">alias_match_pattern</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">alias_pattern</span><span class="p">:</span><span class="nb">str</span>
-                            <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="p">[],</span> <span class="n">excluded_categorical_columns</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
+                            <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
+                            <span class="p">,</span> <span class="n">numerical_columns</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
                             <span class="p">,</span> <span class="n">base_tags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">additional_tags</span><span class="o">=</span><span class="p">[]</span>
                             <span class="p">,</span> <span class="n">minimal_tags</span><span class="o">=</span><span class="kc">True</span>
                             <span class="p">,</span> <span class="n">attributes_regex_map</span><span class="o">=</span><span class="n">tag_regex</span><span class="o">.</span><span class="n">attributes_regex_map</span>
@@ -1372,9 +1479,9 @@
                             <span class="p">,</span> <span class="n">moduleName</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span>
                             <span class="p">,</span> <span class="n">runId</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
                             <span class="p">):</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">read_pattern_matched_scalars_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">alias</span> \
+        <span class="n">data</span> <span class="o">=</span> <span class="n">OmnetExtractor</span><span class="o">.</span><span class="n">read_pattern_matched_scalars_from_file</span><span class="p">(</span><span class="n">db_file</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">alias</span> \
                                                       <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="n">categorical_columns</span> \
-                                                      <span class="p">,</span> <span class="n">excluded_categorical_columns</span><span class="o">=</span><span class="n">excluded_categorical_columns</span>
+                                                      <span class="p">,</span> <span class="n">numerical_columns</span><span class="o">=</span><span class="n">numerical_columns</span>
                                                       <span class="p">,</span> <span class="n">base_tags</span><span class="o">=</span><span class="n">base_tags</span><span class="p">,</span> <span class="n">additional_tags</span><span class="o">=</span><span class="n">additional_tags</span>
                                                       <span class="p">,</span> <span class="n">minimal_tags</span><span class="o">=</span><span class="n">minimal_tags</span>
                                                       <span class="p">,</span> <span class="n">attributes_regex_map</span><span class="o">=</span><span class="n">attributes_regex_map</span>
@@ -1411,10 +1518,11 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;scalarName&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">BaseExtractor</span><span class="o">.</span><span class="n">convert_columns_to_category</span><span class="p">(</span><span class="n">data</span>
-                                                                <span class="p">,</span> <span class="n">additional_columns</span><span class="o">=</span><span class="n">categorical_columns</span> \
-                                                                <span class="p">,</span> <span class="n">excluded_columns</span><span class="o">=</span><span class="n">excluded_categorical_columns</span>
-                                                             <span class="p">)</span>
+            <span class="c1"># convert the data type of the explicitly named columns</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">OmnetExtractor</span><span class="o">.</span><span class="n">convert_columns_dtype</span><span class="p">(</span><span class="n">data</span>
+                                                         <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="n">categorical_columns</span> \
+                                                         <span class="p">,</span> <span class="n">numerical_columns</span><span class="o">=</span><span class="n">numerical_columns</span>
+                                                         <span class="p">)</span>
             <span class="k">return</span> <span class="n">result</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span></div>
@@ -1433,7 +1541,8 @@
             <span class="c1"># get the data for all signals that match the given SQL pattern</span>
             <span class="n">res</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">PatternMatchingBulkScalarExtractor</span><span class="o">.</span><span class="n">extract_all_scalars</span><span class="p">)(</span><span class="n">db_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alias</span>
                                                                        <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alias_match_pattern</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alias_pattern</span>
-                                                                       <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span> <span class="n">categorical_columns_excluded</span>
+                                                                       <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns</span>
+                                                                       <span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerical_columns</span>
                                                                        <span class="p">,</span> <span class="n">base_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">base_tags</span><span class="p">,</span> <span class="n">additional_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">additional_tags</span>
                                                                        <span class="p">,</span> <span class="n">minimal_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">minimal_tags</span>
                                                                        <span class="p">,</span> <span class="n">attributes_regex_map</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes_regex_map</span>

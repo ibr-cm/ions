@@ -92,7 +92,10 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#data_io.DataSet.evaluate_regex_path" title="data_io.DataSet.evaluate_regex_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_regex_path</span></code></a>(data_path)</p></td>
-<td><p>Take the given path to a directory plus a regular expresion</p></td>
+<td><p>Take the given regular expression to generate a list of paths that match it.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#data_io.DataSet.find_base_path_in_regex" title="data_io.DataSet.find_base_path_in_regex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_base_path_in_regex</span></code></a>(path_regex)</p></td>
+<td><p>Takes a regular expression for a file path and determines the static part of the given path regex.</p></td>
 </tr>
 </tbody>
 </table>
@@ -112,13 +115,47 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="data_io.DataSet.evaluate_regex_path">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evaluate_regex_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/data_io.html#DataSet.evaluate_regex_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_io.DataSet.evaluate_regex_path" title="Link to this definition"></a></dt>
-<dd><p>Take the given path to a directory plus a regular expresion</p>
+<dd><p>Take the given regular expression to generate a list of paths that match it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_path</strong><span class="classifier">str</span></dt><dd><p>The regular expression that is used to select files.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>List[str]</dt><dd><p>A list of paths matching the regular expression.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data_io.DataSet.expand_data_path">
 <span class="sig-name descname"><span class="pre">expand_data_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/data_io.html#DataSet.expand_data_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_io.DataSet.expand_data_path" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_io.DataSet.find_base_path_in_regex">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">find_base_path_in_regex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_regex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/data_io.html#DataSet.find_base_path_in_regex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_io.DataSet.find_base_path_in_regex" title="Link to this definition"></a></dt>
+<dd><p>Takes a regular expression for a file path and determines the static part of the given path regex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>path_regex</strong><span class="classifier">str</span></dt><dd><p>The regex pattern for the file path.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>Static parts of the path that do not contain any regex.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data_io.DataSet.get_data_path">
