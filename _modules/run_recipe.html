@@ -215,6 +215,7 @@
                 <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;skipping transform </span><span class="si">{</span><span class="n">transform_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">continue</span>
             <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;preparing transform </span><span class="si">{</span><span class="n">transform_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">transform</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="n">transform_name</span><span class="p">)</span>
             <span class="n">transform</span><span class="o">.</span><span class="n">set_data_repo</span><span class="p">(</span><span class="n">data_repo</span><span class="p">)</span>
             <span class="n">transform</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
 
