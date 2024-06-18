@@ -126,6 +126,7 @@ def prepare_evaluation_phase(recipe:Recipe, options, data_repo):
                 logi(f'skipping transform {transform_name}')
                 continue
             logi(f'preparing transform {transform_name}')
+            transform.set_name(transform_name)
             transform.set_data_repo(data_repo)
             transform.prepare()
 
