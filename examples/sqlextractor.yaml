@@ -13,7 +13,9 @@ evaluation: !Evaluation
         - "/net/i5/opt/tmpssd/willecke/invent_pd/global_disturb_60b/invent-l2l3/.*.db"
         # - "/net/i5/opt/tmpssd/willecke/invent_pd/global_disturb_160b/invent-invent-wout_mc/.*.db"
       query: "SELECT run_id, payload_size, packet_drop_rate_ch1, packet_drop_rate_ch2, packet_loss_ratio FROM flows JOIN config;"
-      categorical_columns_excluded: ['packet_loss_ratio', 'packet_drop_rate_ch1']
+      numerical_columns: &ncolumns { 'run_id' : int, 'payload_size' : int
+                                   , 'packet_loss_ratio' : float, 'packet_drop_rate_ch1' : float, 'packet_drop_rate_ch2' : float
+                                   }
 
   transforms:
   - meanTransform: !GroupedAggregationTransform
@@ -72,7 +74,7 @@ evaluation: !Evaluation
 plot: !Plot
   reader: # !!python/list
   - prr: !PlottingReaderFeather
-      numerical_columns: ['packet_repection_ratio_mean', 'packet_drop_rate_ch1']
+      numerical_columns: *ncolumns
       input_files: !!python/list
          - "/net/i5/opt/tmpssd/willecke/invent_pd/extracted/prr/.*.feather"
 

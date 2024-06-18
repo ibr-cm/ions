@@ -1,3 +1,5 @@
+from typing import Union
+
 import pathlib
 import time
 import operator
@@ -21,7 +23,7 @@ from yaml_helper import decode_node, proto_constructor
 
 from common.logging_facilities import logi, loge, logd, logw
 
-from extractors import RawExtractor
+from extractors import BaseExtractor
 
 from utility.filesystem import check_file_access_permissions, check_directory_access_permissions
 
@@ -63,6 +65,8 @@ class FileResultProcessor(YAMLObject):
                  , format:str = 'feather'
                  , concatenate:bool = False
                  , raw:bool = False
+                 , categorical_columns:set[str] = set()
+                 , numerical_columns:Union[dict[str, str], set[str]] = set()
                  , *args, **kwargs):
         if (not output_filename) and concatenate:
             raise ValueError('When concatenating a dataset into a single file, the `output_filename` must be specified')
@@ -80,6 +84,15 @@ class FileResultProcessor(YAMLObject):
         self.format = format
         self.concatenate = concatenate
         self.raw = raw
+
+        # categorical_columns and numerical_columns (if appropriate) are explicitly converted
+        # to a set to alleviate the need for an explicit tag in the YAML recipe, since pyyaml
+        # always interprets values in curly braces as dictionaries
+        self.categorical_columns:set[str] = set(categorical_columns)
+        if not isinstance(numerical_columns, dict):
+            self.numerical_columns:set[str] = set(numerical_columns)
+        else:
+            self.numerical_columns:dict[str, str] = numerical_columns
 
     def save_to_disk(self, df, filename, file_format='feather', compression='lz4', hdf_key='data'):
         start = time.time()
@@ -141,8 +154,11 @@ class FileResultProcessor(YAMLObject):
             job = dask.delayed(self.save_to_disk)(map(operator.itemgetter(0), data_list), self.output_filename, self.format)
         else:
             concat_result = dask.delayed(pd.concat)(map(operator.itemgetter(0), data_list), ignore_index=True)
-            convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(concat_result)
-            job = dask.delayed(self.save_to_disk)(convert_columns_result, self.output_filename, self.format)
+            if len(self.categorical_columns) != 0 or len(self.numerical_columns) != 0:
+                convert_columns_result = dask.delayed(BaseExtractor.convert_columns_dtype)(concat_result, self.categorical_columns, self.numerical_columns)
+                job = dask.delayed(self.save_to_disk)(convert_columns_result, self.output_filename, self.format)
+            else:
+                job = dask.delayed(self.save_to_disk)(concat_result, self.output_filename, self.format)
 
         job_list.append(job)
 
@@ -171,12 +187,11 @@ class FileResultProcessor(YAMLObject):
 
             logd(f'{output_filename=}')
 
-            if self.raw:
-                job = dask.delayed(self.save_to_disk)(data, output_filename, self.format)
-            else:
-                convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(data)
+            if len(self.categorical_columns) != 0 or len(self.numerical_columns) != 0:
+                convert_columns_result = dask.delayed(BaseExtractor.convert_columns_dtype)(data, self.categorical_columns, self.numerical_columns)
                 job = dask.delayed(self.save_to_disk)(convert_columns_result, output_filename, self.format)
-
+            else:
+                job = dask.delayed(self.save_to_disk)(data, output_filename, self.format)
             job_list.append(job)
 
         return job_list

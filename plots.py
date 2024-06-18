@@ -37,7 +37,7 @@ from dask.delayed import Delayed
 
 from yaml_helper import decode_node, proto_constructor
 from data_io import DataSet, read_from_file
-from extractors import RawExtractor, DataAttributes
+from extractors import BaseExtractor, DataAttributes
 
 from utility.filesystem import check_file_access_permissions
 
@@ -68,12 +68,24 @@ class PlottingReaderFeather(YAMLObject):
     """
     yaml_tag = u'!PlottingReaderFeather'
 
-    def __init__(self, input_files:str, numerical_columns:List[str] = [], sample:float = None, sample_seed:int = 23, filter_query:str = None):
+    def __init__(self, input_files:str
+                 , categorical_columns:set[str] = set()
+                 , numerical_columns:Union[dict[str, str], set[str]] = set()
+                 , sample:float = None, sample_seed:int = 23
+                 , filter_query:str = None):
         self.input_files = input_files
-        self.numerical_columns = numerical_columns
         self.sample = sample
         self.sample_seed = sample_seed
         self.filter_query = filter_query
+
+        # categorical_columns and numerical_columns (if appropriate) are explicitly converted
+        # to a set to alleviate the need for an explicit tag in the YAML recipe, since pyyaml
+        # always interprets values in curly braces as dictionaries
+        self.categorical_columns:set[str] = set(categorical_columns)
+        if not isinstance(numerical_columns, dict):
+            self.numerical_columns:set[str] = set(numerical_columns)
+        else:
+            self.numerical_columns:dict[str, str] = numerical_columns
 
     def read_data(self):
         data_set = DataSet(self.input_files)
@@ -81,7 +93,10 @@ class PlottingReaderFeather(YAMLObject):
         data_list = list(map(dask.delayed(functools.partial(read_from_file, sample=self.sample, sample_seed=self.sample_seed, filter_query=self.filter_query))
                              , data_set.get_file_list()))
         concat_result = dask.delayed(pd.concat)(data_list)
-        convert_columns_result = dask.delayed(RawExtractor.convert_columns_to_category)(concat_result, numerical_columns=self.numerical_columns)
+        convert_columns_result = dask.delayed(BaseExtractor.convert_columns_dtype)(concat_result
+                                                                                  , categorical_columns=self.categorical_columns
+                                                                                  , numerical_columns=self.numerical_columns
+                                                                                  )
         logd(f'PlottingReaderFeather::read_data: {data_list=}')
         logd(f'PlottingReaderFeather::read_data: {convert_columns_result=}')
         # d = dask.compute(convert_columns_result)

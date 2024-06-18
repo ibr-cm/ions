@@ -1,5 +1,6 @@
 import pathlib
 import re
+import os
 
 from typing import List, Optional, Union
 
@@ -64,14 +65,61 @@ class DataSet:
 
     @staticmethod
     def evaluate_regex_path(data_path:str) -> List[str]:
-        """
-        Take the given path to a directory plus a regular expresion
+        r"""
+        Take the given regular expression to generate a list of paths that match it.
+
+        Parameters
+        ----------
+        data_path : str
+            The regular expression that is used to select files.
+
+        Returns
+        -------
+        List[str]
+            A list of paths matching the regular expression.
         """
         data_files = []
-        path = pathlib.Path(data_path)
-        directory = path.parent
-        regex = re.compile(str(path))
-        for filename in directory.iterdir():
-            if regex.match(fn:=str(filename)):
-                data_files.append(fn)
+
+        common_root = DataSet.find_base_path_in_regex(data_path)
+        logd(f"determined common root path for input_files: {common_root=}")
+
+        relative_regex = pathlib.Path(data_path).relative_to(common_root)
+        logd(f"searching for files with regex {relative_regex=} in root path")
+
+        regex = re.compile(str(relative_regex))
+        for root, dirs, files in os.walk(common_root):
+            for file in files:
+                # Check if the file matches any of the regex patterns
+                file_full_path = os.path.join(root, file)
+                relative_path = pathlib.Path(file_full_path).relative_to(common_root)
+                if regex.search(str(relative_path)):
+                    logd(f"adding {file_full_path=}")
+                    data_files.append(file_full_path)
+
         return data_files
+
+    @staticmethod
+    def find_base_path_in_regex(path_regex:str) -> str:
+        r"""
+        Takes a regular expression for a file path and determines the static part of the given path regex.
+
+        Parameters
+        ----------
+        path_regex : str
+            The regex pattern for the file path.
+
+        Returns
+        -------
+        str
+            Static parts of the path that do not contain any regex.
+        """
+        # Pattern to match literal text within the regex
+        # This pattern looks for sequences of characters that are not special regex symbols.
+        # It will also match on literals that need to be escaped in a regex, such as parentheses
+        # in the path, but those can then be treated as part of the regex.
+        base_path_pattern = re.compile(r'[a-zA-Z0-9_\-/]+')
+
+        # Find all static parts in the given regex pattern
+        base_path = base_path_pattern.findall(path_regex)
+        common_root = pathlib.Path(base_path[0]).parent
+        return common_root

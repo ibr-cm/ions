@@ -57,8 +57,13 @@ evaluation: !Evaluation
         # this is placed into the `variable` column
         alias_pattern: "coordination_aoi_{index}_{gentime}"
 
-        categorical_columns: ['variable']
-        categorical_columns_excluded: ['coordination_aoi']
+        # these columns that are converted to categorical data types
+        # note the definition of the anchor name with the '&'
+        categorical_columns: &ccolumns ['variable', 'vectorName', 'moduleName'
+                             , 'v2x_rate', 'configname', 'experiment', 'repetition', 'runnumber'
+                             , 'prefix', 'ql', 'mcmI', 'mcmL' ]
+        # these columns that are converted to numerical data types, with explicit data type
+        numerical_columns: &ncolumns { 'coordination_aoi' : float, 'eventNumber' : int, 'simtimeRaw' : int }
         simtimeRaw: !!bool "true"
         moduleName: !!bool "true"
         eventNumber: !!bool "true"
@@ -91,7 +96,11 @@ plot: !Plot
     - raw_aoi: !PlottingReaderFeather
         sample: 0.5
         # concat: !!bool false
-        numerical_columns: ['coordination_aoi']
+        # these columns that are converted to categorical data types
+        # note the reference to the previously defined alias with the '*'
+        categorical_columns: *ccolumns
+        # these columns that are converted to numerical data types
+        numerical_columns: *ncolumns
         input_files: !!python/list
           - "/opt/tmp/t-its-paper/review_simulation_extracted/review/extracted/aoi/.*SCO.*mcmL=888_2_2023.*.feather$"
           # - "/opt/tmp/t-its-paper/review_simulation_extracted/review/extracted/aoi/.*mcmI=0.1_mcmL=888_2_20230905.*.feather$"
