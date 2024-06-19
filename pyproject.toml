@@ -60,4 +60,5 @@ dev = [
     "isort",
     "mypy>=0.982",
     "autoflake>=1.7.7",
+    "ruff>=0.4.9",
 ]
