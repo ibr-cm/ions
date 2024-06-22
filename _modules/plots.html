@@ -173,9 +173,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">numerical_columns</span><span class="p">:</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">numerical_columns</span>
 
-<div class="viewcode-block" id="PlottingReaderFeather.read_data">
-<a class="viewcode-back" href="../plots.html#plots.PlottingReaderFeather.read_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PlottingReaderFeather.prepare">
+<a class="viewcode-back" href="../plots.html#plots.PlottingReaderFeather.prepare">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">data_set</span> <span class="o">=</span> <span class="n">DataSet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_files</span><span class="p">)</span>
 
         <span class="n">data_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">read_from_file</span><span class="p">,</span> <span class="n">sample</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span> <span class="n">sample_seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_seed</span><span class="p">,</span> <span class="n">filter_query</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_query</span><span class="p">))</span>
@@ -185,8 +185,10 @@
                                                                                   <span class="p">,</span> <span class="n">categorical_columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns</span>
                                                                                   <span class="p">,</span> <span class="n">numerical_columns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">numerical_columns</span>
                                                                                   <span class="p">)</span>
-        <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PlottingReaderFeather::read_data: </span><span class="si">{</span><span class="n">data_list</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PlottingReaderFeather::read_data: </span><span class="si">{</span><span class="n">convert_columns_result</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PlottingReaderFeather::prepare: </span><span class="si">{</span><span class="n">data_list</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PlottingReaderFeather::prepare: </span><span class="si">{</span><span class="n">convert_columns_result</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+
         <span class="c1"># d = dask.compute(convert_columns_result)</span>
         <span class="c1"># logd(f&#39;{d=}&#39;)</span>
         <span class="k">return</span> <span class="p">[(</span><span class="n">convert_columns_result</span><span class="p">,</span> <span class="n">DataAttributes</span><span class="p">())]</span></div>
