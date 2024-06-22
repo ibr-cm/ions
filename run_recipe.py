@@ -181,7 +181,7 @@ def prepare_plotting_phase(recipe:Recipe, options, data_repo):
             if dataset_name in options.reader_overrides:
                 reader.input_files = options.reader_overrides[dataset_name]
                 logi(f'plot: prepare_plotting_phase overriding input files for "{dataset_name}": "{reader.input_files=}"')
-            data = reader.read_data()
+            data = reader.prepare()
             data_repo[dataset_name] = data
             logi(f'added reader {dataset_name}')
 

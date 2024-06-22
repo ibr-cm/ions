@@ -87,7 +87,7 @@ class PlottingReaderFeather(YAMLObject):
         else:
             self.numerical_columns:dict[str, str] = numerical_columns
 
-    def read_data(self):
+    def prepare(self):
         data_set = DataSet(self.input_files)
 
         data_list = list(map(dask.delayed(functools.partial(read_from_file, sample=self.sample, sample_seed=self.sample_seed, filter_query=self.filter_query))
@@ -97,8 +97,10 @@ class PlottingReaderFeather(YAMLObject):
                                                                                   , categorical_columns=self.categorical_columns
                                                                                   , numerical_columns=self.numerical_columns
                                                                                   )
-        logd(f'PlottingReaderFeather::read_data: {data_list=}')
-        logd(f'PlottingReaderFeather::read_data: {convert_columns_result=}')
+
+        logd(f'PlottingReaderFeather::prepare: {data_list=}')
+        logd(f'PlottingReaderFeather::prepare: {convert_columns_result=}')
+
         # d = dask.compute(convert_columns_result)
         # logd(f'{d=}')
         return [(convert_columns_result, DataAttributes())]
