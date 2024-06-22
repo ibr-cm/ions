@@ -192,8 +192,8 @@ class BaseExtractor(Extractor):
 
     def __init__(self, /,
                  input_files:list
-                 , categorical_columns:set[str] = set()
-                 , numerical_columns:Union[dict[str, str], set[str]] = set()
+                 , categorical_columns:Optional[list[str]] = None
+                 , numerical_columns:Optional[Union[dict[str, str], list[str]]] = None
                  , *args, **kwargs
                  ):
         self.input_files:list = input_files
@@ -201,15 +201,23 @@ class BaseExtractor(Extractor):
         # categorical_columns and numerical_columns (if appropriate) are explicitly converted
         # to a set to alleviate the need for an explicit tag in the YAML recipe, since pyyaml
         # always interprets values in curly braces as dictionaries
-        self.categorical_columns:set[str] = set(categorical_columns)
-        if not isinstance(numerical_columns, dict):
-            self.numerical_columns:set[str] = set(numerical_columns)
+        if not categorical_columns:
+            self.categorical_columns:set[str] = set()
         else:
-            self.numerical_columns:dict[str, str] = numerical_columns
+            self.categorical_columns:set[str] = set(categorical_columns)
+        if not numerical_columns:
+            self.numerical_columns:set[str] = set()
+        else:
+            if not isinstance(numerical_columns, dict):
+                self.numerical_columns:set[str] = set(numerical_columns)
+            else:
+                self.numerical_columns:dict[str, str] = dict(numerical_columns)
 
 
     @staticmethod
-    def convert_columns_dtype(data:pd.DataFrame, categorical_columns:set = set(), numerical_columns:Union[dict, set] = set()):
+    def convert_columns_dtype(data:pd.DataFrame
+                            , categorical_columns:Optional[set[str]] = None
+                            , numerical_columns:Optional[Union[dict[str, str], set[str]]] = None):
         r"""
         Convert the data in the specified columns of the given DataFrame to either a
         `categorical data type <https://pandas.pydata.org/docs/user_guide/categorical.html>`_ or a
@@ -228,6 +236,10 @@ class BaseExtractor(Extractor):
             The data type to convert to can also be given explicitly as a dictionary
             with the column names as keys and the data type as values.
         """
+        if not categorical_columns:
+            categorical_columns = frozenset()
+        if not numerical_columns:
+            numerical_columns = frozenset()
 
         # get the set of columns actually present in the DataFrame
         actual_categorical_columns = categorical_columns.intersection(data.columns)
@@ -379,8 +391,8 @@ class SqlExtractor(BaseExtractor):
     def read_query_from_file(db_file
                             , query
                             , includeFilename=False
-                            , categorical_columns:set=set()
-                            , numerical_columns:set=set()
+                            , categorical_columns:Optional[set[str]] = None
+                            , numerical_columns:Optional[Union[dict[str, str], set[str]]] = None
                             ):
             data = BaseExtractor.read_sql_from_file(db_file, query, includeFilename)
 
@@ -401,10 +413,10 @@ class OmnetExtractor(BaseExtractor):
 
     def __init__(self, /,
                  input_files:list
-                 , categorical_columns:set[str] = set()
-                 , numerical_columns:Union[dict[str, str], set[str]] = set()
+                 , categorical_columns:Optional[set[str]] = None
+                 , numerical_columns:Optional[Union[dict[str, str], set[str]]] = None
                  , base_tags:Optional[List] = None
-                 , additional_tags:list = []
+                 , additional_tags:Optional[list[str]] = None
                  , minimal_tags:bool = True
                  , simtimeRaw:bool = True
                  , moduleName:bool = True
@@ -425,7 +437,11 @@ class OmnetExtractor(BaseExtractor):
             else:
                 self.base_tags = BASE_TAGS_EXTRACTION_FULL
 
-        self.additional_tags:list = additional_tags
+        if additional_tags:
+            self.additional_tags:list = list(additional_tags)
+        else:
+            self.additional_tags:list = list()
+
         self.minimal_tags:bool = minimal_tags
 
         self.simtimeRaw:bool = simtimeRaw
@@ -532,9 +548,9 @@ class OmnetExtractor(BaseExtractor):
 
     @staticmethod
     def read_query_from_file(db_file, query, alias
-                               , categorical_columns:set=set()
-                               , numerical_columns:set=set()
-                               , base_tags = None, additional_tags = []
+                               , categorical_columns:Optional[set[str]]=None
+                               , numerical_columns:Optional[Union[dict[str,str], set[str]]]=None
+                               , base_tags = None, additional_tags = None
                                , minimal_tags=True
                                , simtimeRaw=True
                                , moduleName=True
@@ -835,9 +851,9 @@ class PositionExtractor(OmnetExtractor):
                                            , moduleName:bool=True
                                            , simtimeRaw:bool=True
                                            , eventNumber:bool=False
-                               , categorical_columns=set()
-                               , numerical_columns=set()
-                               , base_tags = None, additional_tags = []
+                               , categorical_columns:Optional[set[str]]=None
+                               , numerical_columns:Optional[Union[dict[str,str], set[str]]]=None
+                               , base_tags = None, additional_tags = None
                                , minimal_tags=True
                                , attributes_regex_map=tag_regex.attributes_regex_map
                                , iterationvars_regex_map=tag_regex.iterationvars_regex_map
@@ -973,9 +989,9 @@ class MatchingExtractor(OmnetExtractor):
 
     @staticmethod
     def extract_all_signals(db_file, signals
-                            , categorical_columns=set()
-                            , numerical_columns=set()
-                            , base_tags=None, additional_tags=[]
+                            , categorical_columns:Optional[set[str]]=None
+                            , numerical_columns:Optional[Union[dict[str,str], set[str]]]=None
+                            , base_tags=None, additional_tags=None
                             , minimal_tags=True
                             , attributes_regex_map=tag_regex.attributes_regex_map
                             , iterationvars_regex_map=tag_regex.iterationvars_regex_map
@@ -1092,9 +1108,9 @@ class PatternMatchingBulkExtractor(OmnetExtractor):
     @staticmethod
     def extract_all_signals(db_file, pattern, alias
                             , alias_match_pattern:str, alias_pattern:str
-                            , categorical_columns=set()
-                            , numerical_columns=set()
-                            , base_tags=None, additional_tags=[]
+                            , categorical_columns:Optional[set[str]]=None
+                            , numerical_columns:Optional[Union[dict[str,str], set[str]]]=None
+                            , base_tags=None, additional_tags=None
                             , minimal_tags=True
                             , attributes_regex_map=tag_regex.attributes_regex_map
                             , iterationvars_regex_map=tag_regex.iterationvars_regex_map
@@ -1238,9 +1254,9 @@ class PatternMatchingBulkScalarExtractor(OmnetExtractor):
     @staticmethod
     def extract_all_scalars(db_file, pattern, alias
                             , alias_match_pattern:str, alias_pattern:str
-                            , categorical_columns=set()
-                            , numerical_columns=set()
-                            , base_tags=None, additional_tags=[]
+                            , categorical_columns:Optional[set[str]]=None
+                            , numerical_columns:Optional[Union[dict[str,str], set[str]]]=None
+                            , base_tags=None, additional_tags=None
                             , minimal_tags=True
                             , attributes_regex_map=tag_regex.attributes_regex_map
                             , iterationvars_regex_map=tag_regex.iterationvars_regex_map
