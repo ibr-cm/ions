@@ -191,12 +191,12 @@ class BaseExtractor(Extractor):
     yaml_tag = u'!BaseExtractor'
 
     def __init__(self, /,
-                 input_files:list
+                 input_files:list[str]
                  , categorical_columns:Optional[list[str]] = None
                  , numerical_columns:Optional[Union[dict[str, str], list[str]]] = None
                  , *args, **kwargs
                  ):
-        self.input_files:list = input_files
+        self.input_files:list = list(input_files)
 
         # categorical_columns and numerical_columns (if appropriate) are explicitly converted
         # to a set to alleviate the need for an explicit tag in the YAML recipe, since pyyaml
