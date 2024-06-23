@@ -155,9 +155,9 @@ class FileResultProcessor(YAMLObject):
 
     def prepare_concatenated(self, data_list, job_list):
         if self.raw:
-            job = dask.delayed(self.save_to_disk)(map(operator.itemgetter(0), data_list), self.output_filename, self.format)
+            job = dask.delayed(self.save_to_disk)(tuple(map(operator.itemgetter(0), data_list)), self.output_filename, self.format)
         else:
-            concat_result = dask.delayed(pd.concat)(map(operator.itemgetter(0), data_list), ignore_index=True)
+            concat_result = dask.delayed(pd.concat)(tuple(map(operator.itemgetter(0), data_list)), ignore_index=True)
             if len(self.categorical_columns) != 0 or len(self.numerical_columns) != 0:
                 convert_columns_result = dask.delayed(BaseExtractor.convert_columns_dtype)(concat_result, self.categorical_columns, self.numerical_columns)
                 job = dask.delayed(self.save_to_disk)(convert_columns_result, self.output_filename, self.format)
