@@ -6,104 +6,94 @@ name: !!str "example_recipe"
 
 evaluation: !Evaluation
   extractors:
-  - prr: !SqlExtractor
-      # the path to the input files, regular expressions can be used
+  - packet_loss: !SqlExtractor
       input_files: !!python/list
-        - "/net/i5/opt/tmpssd/willecke/invent_pd/global_disturb_160b/invent-l2l3/.*.db"
-        - "/net/i5/opt/tmpssd/willecke/invent_pd/global_disturb_60b/invent-l2l3/.*.db"
-        # - "/net/i5/opt/tmpssd/willecke/invent_pd/global_disturb_160b/invent-invent-wout_mc/.*.db"
+        # - "/opt/tmpssd/willecke/ns3/(vw|invent)_[a-z]*/[a-z]*_disturb_[0-9]*b/(vw|invent)-[a-z,0-9]*/.*.db$"
+        - "/opt/tmpssd/willecke/ns3/invent_pd/local_disturb_150b/invent-l3l4/invent-l3l4_run_25_3.db"
+
       query: "SELECT run_id, payload_size, packet_drop_rate_ch1, packet_drop_rate_ch2, packet_loss_ratio FROM flows JOIN config;"
-      numerical_columns: &ncolumns { 'run_id' : int, 'payload_size' : int
-                                   , 'packet_loss_ratio' : float, 'packet_drop_rate_ch1' : float, 'packet_drop_rate_ch2' : float
+
+      numerical_columns: &ncolumns { 'run_id' : int
+                                    , 'payload_size' : int
+                                    , 'packet_loss_ratio' : float
+                                    , 'packet_drop_rate_ch1' : float
+                                    , 'packet_drop_rate_ch2' : float
                                    }
+      includeFilename: True
 
   transforms:
   - meanTransform: !GroupedAggregationTransform
-      # the key for the data loaded by the extractor above
-      dataset_name: "prr"
-      # the key for the generated data
-      output_dataset_name: "prr"
-      # the column with the input data
+      dataset_name: "packet_loss"
+      output_dataset_name: "packet_loss_mean"
       input_column: "packet_loss_ratio"
       output_column: "packet_loss_ratio_mean"
-      # the categorical variable used for splitting the input data into groups
-      # over which the mean will be calculated
-      grouping_columns: [ "run_id", "payload_size", "packet_drop_rate_ch1", "packet_drop_rate_ch2" ]
-      # aggregation_function: "dask.dataframe.groupby.DataFrameGroupBy.mean"
+      grouping_columns: ["filename", "run_id", "payload_size", "packet_drop_rate_ch1", "packet_drop_rate_ch2" ]
       aggregation_function: "pd.Series.mean"
 
-  - invertTransform: !GroupedAggregationTransform
-      # the key for the data loaded by the extractor above
-      dataset_name: "prr"
-      # the key for the generated data
-      output_dataset_name: "prr"
-      # the column with the input data
+  - invertTransform: !ColumnFunctionTransform
+      dataset_name: "packet_loss_mean"
+      output_dataset_name: "prr_mean"
       input_column: "packet_loss_ratio_mean"
-      output_column: "packet_repection_ratio_mean"
-      # the categorical variable used for splitting the input data into groups
-      # over which the mean will be calculated
-      grouping_columns: [ "run_id", "payload_size", "packet_drop_rate_ch1", "packet_drop_rate_ch2" ]
-      # aggregation_function: "dask.dataframe.groupby.DataFrameGroupBy.mean"
-      aggregation_function: "lambda x: float(1.0-x)"
+      output_column: "packet_reception_ratio_mean"
+      function: "lambda x: float(1.0-x)"
 
-
-  - invertTransform: !GroupedAggregationTransform
-      # the key for the data loaded by the extractor above
-      dataset_name: "prr"
-      # the key for the generated data
-      output_dataset_name: "prr"
-      # the column with the input data
+  - invertTransform: !ColumnFunctionTransform
+      dataset_name: "prr_mean"
+      output_dataset_name: "prr_pdr_mean"
       input_column: "packet_drop_rate_ch1"
-      output_column: "packet_recetion_rate_ch1"
-      # the categorical variable used for splitting the input data into groups
-      # over which the mean will be calculated
-      grouping_columns: [ "run_id", "payload_size", "packet_drop_rate_ch2", "packet_repection_ratio_mean" ]
-      # aggregation_function: "dask.dataframe.groupby.DataFrameGroupBy.mean"
-      aggregation_function: "lambda x: float(1.0-x)"
+      output_column: "packet_delivery_ratio"
+      function: "lambda x: float(1.0-x)"
 
+  - partitionTransform: !FunctionTransform
+      dataset_name: "prr_pdr_mean"
+      output_dataset_name: "prr_pdr_mean_cat"
+      extra_code: |
+        def addCat(df):
+            config = df["filename"].str.extract(r".*/(?P<scenario>[a-z]*)_(?P<mc>[a-z]*)/(?P<loss>[a-z]*).*/.*-(?P<layer>[a-z,0-9,_]*)/.*")
+            df = pd.concat([df,config], axis=1)
+            df = df.astype({"layer": str, "payload_size": str})
+            df["cat"] = df["layer"] + " MC " + df["payload_size"] + " B"
+            df.drop(["filename"], axis=1)
+
+            # start_ipython_dbg_cmdline(user_ns=locals())
+
+            return df
+      function: "addCat"
 
   exporter:
-  - prr: !FileResultProcessor
-      dataset_name: "prr" # the key for the data loaded by the extractor above
-      # whether to concatenate all input results into one file
-      concatenate: !!bool "false"
-      output_directory: "/net/i5/opt/tmpssd/willecke/invent_pd/extracted/"
-    #   output_filename: "/net/i5/opt/tmpssd/willecke/invent_pd/extracted/prr/prr.feather"
+  - prr_mean: !FileResultProcessor
+      dataset_name: "prr_pdr_mean_cat" # the key for the data loaded by the extractor above
+      output_directory: "/opt/tmpssd/willecke/ns3/extracted/mean/"
 
 
 plot: !Plot
   reader: # !!python/list
   - prr: !PlottingReaderFeather
       numerical_columns: *ncolumns
+      categorical_columns: {"run_id", "scenario", "mc", "loss", "layer", "cat"}
       input_files: !!python/list
-         - "/net/i5/opt/tmpssd/willecke/invent_pd/extracted/prr/.*.feather"
+        - "/opt/tmpssd/willecke/ns3/extracted/mean/ns3/(vw|invent)_[a-z]*/[a-z]*_disturb_[0-9]*b/(vw|invent)-[a-z,0-9]*/.*.feather"
 
   tasks: # !!python/list
   - prr_line: !PlottingTask
-      # the key used for selecting from the data loaded and/or transformed in
-      # the reader and transform phases
       dataset_name: "prr"
 
-      # plot_type: "box"
       plot_type: "lineplot"
 
-      x: "packet_recetion_rate_ch1"
-      y: "packet_repection_ratio_mean"
-      hue: "payload_size"
-      style: "MC"
+      x: "packet_delivery_ratio"
+      y: "packet_reception_ratio_mean"
+      hue: "cat"
+      style: "scenario"
 
+      row: "loss"
+      column: "mc"
       alpha: 0.9
 
       ylabel: "Packet Reception Ratio"
-      xlabel: "Global Packet Delivery Ratio"
-
-      # default row/column title template
+      xlabel: "Packet Delivery Ratio"
+      
       title_template: !!null
-      # title_template: ""
-
       legend_location: "center right"
-      # legend_labels: [ "", "" ]
-
       bbox_inches: "tight"
 
       axes_style: "ticks"
@@ -112,5 +102,65 @@ plot: !Plot
 
       matplotlib_backend: "agg"
       output_file: "/ibr/home/willecke/ions/prr_line.png"
+
+  - prr_test: !PlottingTask
+      dataset_name: "prr"
+
+      plot_type: "lineplot"
+
+      x: "packet_delivery_ratio"
+      y: "packet_reception_ratio_mean"
+      hue: "mc"
+      style: "loss"
+
+      column: "scenario"
+      row: "payload_size"
+      alpha: 0.9
+
+      ylabel: "Packet Reception Ratio"
+      xlabel: "Packet Delivery Ratio"
+      
+      title_template: !!null
+      legend_location: "center right"
+
+      bbox_inches: "tight"
+
+      axes_style: "ticks"
+      context: "paper"
+      matplotlib_rc: !include "examples/matplotlib_example.rc"
+
+      matplotlib_backend: "agg"
+      output_file: "/ibr/home/willecke/ions/prr_test.png"
+
+
+  - prr_box: !PlottingTask
+      dataset_name: "prr"
+
+      selector: "packet_delivery_ratio > 0.2 and packet_delivery_ratio < 0.25"
+
+      plot_type: "box"
+
+      x: "packet_delivery_ratio"
+      y: "packet_reception_ratio_mean"
+      hue: "cat"
+
+      column: "scenario"
+      row: "loss"
+      alpha: 0.9
+
+      ylabel: "Packet Reception Ratio"
+      xlabel: "Packet Delivery Ratio"
+      
+      title_template: !!null
+      legend_location: "center right"
+
+      bbox_inches: "tight"
+
+      axes_style: "ticks"
+      context: "paper"
+      matplotlib_rc: !include "examples/matplotlib_example.rc"
+
+      matplotlib_backend: "agg"
+      output_file: "/ibr/home/willecke/ions/prr_box.png"
 
 ...
