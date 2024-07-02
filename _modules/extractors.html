@@ -223,6 +223,8 @@
 <span class="sd">        The file name the dataset was extracted from</span>
 <span class="sd">    source_files : List[str]</span>
 <span class="sd">        The list of file names the dataset was extracted from</span>
+<span class="sd">    common_root : str</span>
+<span class="sd">        The root directory that was not containing regex for search files</span>
 <span class="sd">    alias : List[str]</span>
 <span class="sd">        The alias given to the data in the dataset</span>
 <span class="sd">    aliases : List[str]</span>
@@ -238,6 +240,8 @@
             <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;source_files&#39;</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">source_files</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;common_root&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">common_root</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
             <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;alias&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">aliases</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
             <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;aliases&#39;</span><span class="p">:</span>
@@ -250,6 +254,12 @@
 <a class="viewcode-back" href="../extractors.html#extractors.DataAttributes.get_source_files">[docs]</a>
     <span class="k">def</span> <span class="nf">get_source_files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_files</span></div>
+
+
+<div class="viewcode-block" id="DataAttributes.common_root">
+<a class="viewcode-back" href="../extractors.html#extractors.DataAttributes.common_root">[docs]</a>
+    <span class="k">def</span> <span class="nf">common_root</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_root</span></div>
 
 
 <div class="viewcode-block" id="DataAttributes.add_source_file">
@@ -530,7 +540,7 @@
                                           <span class="p">,</span> <span class="n">categorical_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categorical_columns</span>
                                           <span class="p">,</span> <span class="n">numerical_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerical_columns</span>
                                           <span class="p">)</span>
-            <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="n">db_file</span><span class="p">)</span>
+            <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="n">db_file</span><span class="p">,</span> <span class="n">common_root</span><span class="o">=</span><span class="n">data_set</span><span class="o">.</span><span class="n">get_common_root</span><span class="p">())</span>
             <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">res</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">result_list</span></div>
@@ -830,7 +840,7 @@
                                           <span class="p">,</span> <span class="n">iterationvars_regex_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterationvars_regex_map</span>
                                           <span class="p">,</span> <span class="n">parameters_regex_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters_regex_map</span>
                                           <span class="p">)</span>
-            <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="n">db_file</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">)</span>
+            <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="n">db_file</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">,</span> <span class="n">common_root</span><span class="o">=</span><span class="n">data_set</span><span class="o">.</span><span class="n">get_common_root</span><span class="p">())</span>
             <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">res</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">result_list</span></div>
@@ -908,7 +918,7 @@
                                           <span class="p">,</span> <span class="n">iterationvars_regex_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterationvars_regex_map</span>
                                           <span class="p">,</span> <span class="n">parameters_regex_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters_regex_map</span>
                                           <span class="p">)</span>
-            <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="n">db_file</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">)</span>
+            <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="n">db_file</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">,</span> <span class="n">common_root</span><span class="o">=</span><span class="n">data_set</span><span class="o">.</span><span class="n">get_common_root</span><span class="p">())</span>
             <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">res</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">result_list</span></div>
@@ -968,7 +978,7 @@
                                           <span class="p">,</span> <span class="n">iterationvars_regex_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterationvars_regex_map</span>
                                           <span class="p">,</span> <span class="n">parameters_regex_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters_regex_map</span>
                                           <span class="p">)</span>
-            <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="n">db_file</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">)</span>
+            <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="n">db_file</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">,</span> <span class="n">common_root</span><span class="o">=</span><span class="n">data_set</span><span class="o">.</span><span class="n">get_common_root</span><span class="p">())</span>
             <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">res</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">result_list</span></div>
@@ -1121,7 +1131,7 @@
                                 <span class="p">,</span> <span class="n">base_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">base_tags</span><span class="p">,</span> <span class="n">additional_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">additional_tags</span>
                                 <span class="p">,</span> <span class="n">minimal_tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">minimal_tags</span>
                                <span class="p">)</span>
-            <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="n">db_file</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">)</span>
+            <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="n">db_file</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">,</span> <span class="n">common_root</span><span class="o">=</span><span class="n">data_set</span><span class="o">.</span><span class="n">get_common_root</span><span class="p">())</span>
             <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">res</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">result_list</span></div>
@@ -1272,7 +1282,7 @@
                                                                        <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">moduleName</span>
                                                                        <span class="p">,</span> <span class="n">eventNumber</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eventNumber</span>
                                                                        <span class="p">)</span>
-            <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="n">db_file</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">)</span>
+            <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="n">db_file</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">,</span> <span class="n">common_root</span><span class="o">=</span><span class="n">data_set</span><span class="o">.</span><span class="n">get_common_root</span><span class="p">())</span>
             <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">res</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">result_list</span></div>
@@ -1410,7 +1420,7 @@
                                                                        <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">moduleName</span>
                                                                        <span class="p">,</span> <span class="n">eventNumber</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eventNumber</span>
                                                                        <span class="p">)</span>
-            <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="n">db_file</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">)</span>
+            <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="n">db_file</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">,</span> <span class="n">common_root</span><span class="o">=</span><span class="n">data_set</span><span class="o">.</span><span class="n">get_common_root</span><span class="p">())</span>
             <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">res</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">result_list</span></div>
@@ -1569,7 +1579,7 @@
                                                                        <span class="p">,</span> <span class="n">moduleName</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">moduleName</span>
                                                                        <span class="p">,</span> <span class="n">runId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">runId</span>
                                                                        <span class="p">)</span>
-            <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="n">db_file</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">)</span>
+            <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">(</span><span class="n">source_file</span><span class="o">=</span><span class="n">db_file</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alias</span><span class="p">,</span> <span class="n">common_root</span><span class="o">=</span><span class="n">data_set</span><span class="o">.</span><span class="n">get_common_root</span><span class="p">())</span>
             <span class="n">result_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">res</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">result_list</span></div>

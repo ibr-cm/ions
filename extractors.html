@@ -72,6 +72,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#extractors.DataAttributes.add_alias"><code class="docutils literal notranslate"><span class="pre">DataAttributes.add_alias()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#extractors.DataAttributes.add_source_file"><code class="docutils literal notranslate"><span class="pre">DataAttributes.add_source_file()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#extractors.DataAttributes.add_source_files"><code class="docutils literal notranslate"><span class="pre">DataAttributes.add_source_files()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extractors.DataAttributes.common_root"><code class="docutils literal notranslate"><span class="pre">DataAttributes.common_root()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#extractors.DataAttributes.get_aliases"><code class="docutils literal notranslate"><span class="pre">DataAttributes.get_aliases()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#extractors.DataAttributes.get_source_files"><code class="docutils literal notranslate"><span class="pre">DataAttributes.get_source_files()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#extractors.DataAttributes.remove_source_file"><code class="docutils literal notranslate"><span class="pre">DataAttributes.remove_source_file()</span></code></a></li>
@@ -274,6 +275,8 @@ them into object attributes.</p>
 </dd>
 <dt><strong>source_files</strong><span class="classifier">List[str]</span></dt><dd><p>The list of file names the dataset was extracted from</p>
 </dd>
+<dt><strong>common_root</strong><span class="classifier">str</span></dt><dd><p>The root directory that was not containing regex for search files</p>
+</dd>
 <dt><strong>alias</strong><span class="classifier">List[str]</span></dt><dd><p>The alias given to the data in the dataset</p>
 </dd>
 <dt><strong>aliases</strong><span class="classifier">List[str]</span></dt><dd><p>The aliases given to the data in the dataset</p>
@@ -309,16 +312,19 @@ them into object attributes.</p>
 <tr class="row-odd"><td><p><strong>add_source_files</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><strong>get_aliases</strong></p></td>
+<tr class="row-even"><td><p><strong>common_root</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>get_source_files</strong></p></td>
+<tr class="row-odd"><td><p><strong>get_aliases</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><strong>remove_source_file</strong></p></td>
+<tr class="row-even"><td><p><strong>get_source_files</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
+<tr class="row-odd"><td><p><strong>remove_source_file</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -336,6 +342,11 @@ them into object attributes.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="extractors.DataAttributes.add_source_files">
 <span class="sig-name descname"><span class="pre">add_source_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#DataAttributes.add_source_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.DataAttributes.add_source_files" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="extractors.DataAttributes.common_root">
+<span class="sig-name descname"><span class="pre">common_root</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/extractors.html#DataAttributes.common_root"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.DataAttributes.common_root" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
