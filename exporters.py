@@ -106,6 +106,8 @@ class FileResultProcessor(YAMLObject):
             logw('>>>> save_to_disk: input DataFrame is empty')
             return
 
+        check_file_access_permissions(filename)
+
         if file_format == 'feather':
             try:
                 df.reset_index().to_feather(filename, compression=compression)
@@ -179,8 +181,9 @@ class FileResultProcessor(YAMLObject):
             else:
                 aliases = '_'.join(list(attributes.get_aliases()))
 
+            relative_file = list(attributes.source_files)[0].split(str(attributes.common_root))[1]
             output_filename = self.output_directory + '/' \
-                              + source_file \
+                              + relative_file \
                               + '_' \
                               + aliases \
                               + '.' + self.format

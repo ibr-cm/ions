@@ -593,7 +593,8 @@ class GroupedAggregationTransform(Transform, ExtraCodeFunctionMixin, YAMLObject)
             concat_result = dask.delayed(pd.concat)(map(operator.itemgetter(0), data), ignore_index=True)
             job = dask.delayed(self.aggregate_frame)(concat_result)
             # TODO: better DataAttributes
-            jobs.append((job, DataAttributes(source_file=self.input_column, alias=self.output_column)))
+            attributes = data[0][1]
+            jobs.append((job, DataAttributes(source_file=self.input_column, alias=self.output_column, common_root=attributes.common_root)))
         else:
             for d, attributes in data:
                 job = dask.delayed(self.aggregate_frame)(d)

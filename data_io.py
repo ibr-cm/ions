@@ -42,7 +42,7 @@ class DataSet:
     def __init__(self, data_path:Union[List[str], str]):
         self.data_path = data_path
 
-        self.data_files = self.expand_data_path()
+        self.common_root, self.data_files = self.expand_data_path()
         if len(self.data_files) == 0:
             raise Exception(f'No input files for path(s): {data_path}\n')
 
@@ -52,19 +52,22 @@ class DataSet:
     def get_file_list(self) -> List[str]:
         return self.data_files
 
+    def get_common_root(self) -> str:
+        return self.common_root
+
     def expand_data_path(self):
         file_list = []
         if type(self.data_path) == list:
             for entry in self.data_path:
-                files = self.evaluate_regex_path(entry)
+                common_root, files = self.evaluate_regex_path(entry)
                 file_list.extend(files)
         else:
-            file_list = self.evaluate_regex_path(self.data_path)
+            common_root, file_list = self.evaluate_regex_path(self.data_path)
 
-        return file_list
+        return common_root, file_list
 
     @staticmethod
-    def evaluate_regex_path(data_path:str) -> List[str]:
+    def evaluate_regex_path(data_path:str):
         r"""
         Take the given regular expression to generate a list of paths that match it.
 
@@ -96,7 +99,7 @@ class DataSet:
                     logd(f"adding {file_full_path=}")
                     data_files.append(file_full_path)
 
-        return data_files
+        return str(common_root), data_files
 
     @staticmethod
     def find_base_path_in_regex(path_regex:str) -> str:

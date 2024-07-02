@@ -116,6 +116,8 @@ class DataAttributes(YAMLObject):
         The file name the dataset was extracted from
     source_files : List[str]
         The list of file names the dataset was extracted from
+    common_root : str
+        The root directory that was not containing regex for search files
     alias : List[str]
         The alias given to the data in the dataset
     aliases : List[str]
@@ -131,6 +133,8 @@ class DataAttributes(YAMLObject):
             elif key == 'source_files':
                 for file in kwargs[key]:
                     self.source_files.add(kwargs[key])
+            elif key == 'common_root':
+                self.common_root = kwargs[key]
             elif key == 'alias':
                 self.aliases.add(kwargs[key])
             elif key == 'aliases':
@@ -141,6 +145,9 @@ class DataAttributes(YAMLObject):
 
     def get_source_files(self) -> Set[str]:
         return self.source_files
+
+    def common_root(self) -> Set[str]:
+        return self.common_root
 
     def add_source_file(self, source_file:str):
         self.source_files.add(source_file)
@@ -382,7 +389,7 @@ class SqlExtractor(BaseExtractor):
                                           , categorical_columns = self.categorical_columns
                                           , numerical_columns = self.numerical_columns
                                           )
-            attributes = DataAttributes(source_file=db_file)
+            attributes = DataAttributes(source_file=db_file, common_root=data_set.get_common_root())
             result_list.append((res, attributes))
 
         return result_list
@@ -649,7 +656,7 @@ class RawStatisticExtractor(OmnetExtractor):
                                           , iterationvars_regex_map = self.iterationvars_regex_map
                                           , parameters_regex_map = self.parameters_regex_map
                                           )
-            attributes = DataAttributes(source_file=db_file, alias=self.alias)
+            attributes = DataAttributes(source_file=db_file, alias=self.alias, common_root=data_set.get_common_root())
             result_list.append((res, attributes))
 
         return result_list
@@ -721,7 +728,7 @@ class RawScalarExtractor(OmnetExtractor):
                                           , iterationvars_regex_map = self.iterationvars_regex_map
                                           , parameters_regex_map = self.parameters_regex_map
                                           )
-            attributes = DataAttributes(source_file=db_file, alias=self.alias)
+            attributes = DataAttributes(source_file=db_file, alias=self.alias, common_root=data_set.get_common_root())
             result_list.append((res, attributes))
 
         return result_list
@@ -775,7 +782,7 @@ class RawExtractor(OmnetExtractor):
                                           , iterationvars_regex_map = self.iterationvars_regex_map
                                           , parameters_regex_map = self.parameters_regex_map
                                           )
-            attributes = DataAttributes(source_file=db_file, alias=self.alias)
+            attributes = DataAttributes(source_file=db_file, alias=self.alias, common_root=data_set.get_common_root())
             result_list.append((res, attributes))
 
         return result_list
@@ -919,7 +926,7 @@ class PositionExtractor(OmnetExtractor):
                                 , base_tags=self.base_tags, additional_tags=self.additional_tags
                                 , minimal_tags=self.minimal_tags
                                )
-            attributes = DataAttributes(source_file=db_file, alias=self.alias)
+            attributes = DataAttributes(source_file=db_file, alias=self.alias, common_root=data_set.get_common_root())
             result_list.append((res, attributes))
 
         return result_list
@@ -1058,7 +1065,7 @@ class MatchingExtractor(OmnetExtractor):
                                                                        , moduleName=self.moduleName
                                                                        , eventNumber=self.eventNumber
                                                                        )
-            attributes = DataAttributes(source_file=db_file, alias=self.alias)
+            attributes = DataAttributes(source_file=db_file, alias=self.alias, common_root=data_set.get_common_root())
             result_list.append((res, attributes))
 
         return result_list
@@ -1187,7 +1194,7 @@ class PatternMatchingBulkExtractor(OmnetExtractor):
                                                                        , moduleName=self.moduleName
                                                                        , eventNumber=self.eventNumber
                                                                        )
-            attributes = DataAttributes(source_file=db_file, alias=self.alias)
+            attributes = DataAttributes(source_file=db_file, alias=self.alias, common_root=data_set.get_common_root())
             result_list.append((res, attributes))
 
         return result_list
@@ -1337,7 +1344,7 @@ class PatternMatchingBulkScalarExtractor(OmnetExtractor):
                                                                        , moduleName=self.moduleName
                                                                        , runId=self.runId
                                                                        )
-            attributes = DataAttributes(source_file=db_file, alias=self.alias)
+            attributes = DataAttributes(source_file=db_file, alias=self.alias, common_root=data_set.get_common_root())
             result_list.append((res, attributes))
 
         return result_list
