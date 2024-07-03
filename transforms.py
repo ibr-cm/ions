@@ -22,7 +22,8 @@ import dask
 
 from yaml_helper import decode_node, proto_constructor
 
-from common.logging_facilities import logi, loge, logd, logw
+import logging
+from common.logging_facilities import logi, loge, logd, logw, get_logging_level
 
 from extractors import DataAttributes
 
@@ -156,7 +157,8 @@ class ConcatTransform(Transform, YAMLObject):
     def concat(self, dfs:List[pd.DataFrame]):
         result = pd.concat(dfs)
 
-        logd(f'ConcatTransform  "{self.name}" result:\n{result}')
+        if (get_logging_level() == logging.DEBUG):
+            logd(f'ConcatTransform  "{self.name}" result:\n{result}')
         return result
 
     def prepare(self):
@@ -250,7 +252,8 @@ class MergeTransform(Transform, YAMLObject):
 
         df_merged = data_l.merge(data_r, left_on=left_key_columns, right_on=right_key_columns, suffixes=['', '_r'])
 
-        logd(f'MergeTransform  "{self.name}" result:\n{df_merged}')
+        if (get_logging_level() == logging.DEBUG):
+            logd(f'MergeTransform  "{self.name}" result:\n{df_merged}')
         return df_merged
 
     def prepare_matched_by_attribute(self):
@@ -375,7 +378,8 @@ class FunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
 
         result = function(data)
 
-        logd(f'FunctionTransform "{self.name}" result:\n{result}')
+        if (get_logging_level() == logging.DEBUG):
+            logd(f'FunctionTransform "{self.name}" result:\n{result}')
         return result
 
     def prepare(self):
@@ -447,11 +451,16 @@ class ColumnFunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
         # extra_code in a separate global namespace.
         # The compilation of the extra code has to happen in the thread/process
         # of the processing worker since code objects can't be serialized.
+        if data.empty:
+            logw(f'ColumnFunctionTransform return is empty!')
+            return pd.DataFrame()
+
         function = self.eval_function(self.function, None)
 
         data[self.output_column] = data[self.input_column].apply(function)
 
-        logd(f'ColumnFunctionTransform  "{self.name}" result:\n{data}')
+        if (get_logging_level() == logging.DEBUG):
+            logd(f'ColumnFunctionTransform  "{self.name}" result:\n{data}')
         return data
 
     def prepare(self):
@@ -581,7 +590,8 @@ class GroupedAggregationTransform(Transform, ExtraCodeFunctionMixin, YAMLObject)
             logw(f'GroupedAggregationTransform result_list was empty!')
             return result_list
 
-        logd(f'GroupedAggregationTransform "{self.name}" result:\n{result}')
+        if (get_logging_level() == logging.DEBUG):
+            logd(f'GroupedAggregationTransform "{self.name}" result:\n{result}')
         return result
 
     def prepare(self):
@@ -690,7 +700,8 @@ class GroupedFunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
             logw(f'GroupedFunctionTransform return is empty!')
             return pd.DataFrame()
 
-        logd(f'{data=}')
+        if (get_logging_level() == logging.DEBUG):
+            logd(f'{data=}')
         # logd(f'{data.hour.unique()=}')
 
         # Get the function to call and possibly compile and evaluate the code defined in
@@ -732,8 +743,8 @@ class GroupedFunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
             result = pd.concat(result_list, ignore_index=True)
         else:
             result = result_list
-
-        logd(f'GroupedFunctionTransform "{self.name}" result:\n{result}')
+        if (get_logging_level() == logging.DEBUG):
+            logd(f'GroupedFunctionTransform "{self.name}" result:\n{result}')
         return result
 
     def prepare(self):

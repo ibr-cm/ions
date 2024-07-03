@@ -21,7 +21,8 @@ import dask
 
 from yaml_helper import decode_node, proto_constructor
 
-from common.logging_facilities import logi, loge, logd, logw
+import logging
+from common.logging_facilities import logi, loge, logd, logw, get_logging_level
 
 from extractors import BaseExtractor
 
@@ -135,7 +136,8 @@ class FileResultProcessor(YAMLObject):
         stop = time.time()
         logi(f'>>>> save_to_disk: it took {stop - start}s to save {filename}')
         if not self.raw:
-            logd(f'>>>> save_to_disk: {df.memory_usage(deep=True)=}')
+            if (get_logging_level() == logging.DEBUG):
+                logd(f'>>>> save_to_disk: {df.memory_usage(deep=True)=}')
 
     def set_data_repo(self, data_repo):
         self.data_repo = data_repo

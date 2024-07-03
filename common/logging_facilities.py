@@ -28,3 +28,6 @@ def setup_logging_defaults(level=logging.WARNING, silence_font_manager:bool=True
 def set_logging_level(level=logging.WARNING):
     logging.getLogger().setLevel(level)
     logi(f'logging level set to {logging.getLevelName(level)}')
+
+def get_logging_level():
+    logging.getLogger().level
