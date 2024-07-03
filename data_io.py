@@ -57,10 +57,13 @@ class DataSet:
 
     def expand_data_path(self):
         file_list = []
+        base_paths = []
         if type(self.data_path) == list:
             for entry in self.data_path:
-                common_root, files = self.evaluate_regex_path(entry)
+                base_path, files = self.evaluate_regex_path(entry)
                 file_list.extend(files)
+                base_paths.append(base_path)
+            common_root = os.path.commonprefix(base_paths)
         else:
             common_root, file_list = self.evaluate_regex_path(self.data_path)
 
