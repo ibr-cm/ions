@@ -146,21 +146,24 @@ contourpy==1.2.1 \
 cycler==0.12.1 \
     --hash=sha256:85cef7cff222d8644161529808465972e51340599459b8ac3ccbac5a854e0d30 \
     --hash=sha256:88bb128f02ba341da8ef447245a9e138fae777f6a23943da4540077d3601eb1c
-dask==2023.8.1 \
-    --hash=sha256:53627bb324975624835a0f2b64b3b7e24afb4947ca5b371e0092c7e98adad0e2 \
-    --hash=sha256:5c4b402908938dc87506e0fc07fb0dfa329e59587adf34531cd300fe853b3bf8
+dask-expr==1.1.7 \
+    --hash=sha256:6f45468499b50839e9d9a43f599f7f70a50f50048bce93557c2dea24bfcad3bb \
+    --hash=sha256:90a0afae1fcdc2071914daf8f32673d59ee027c12ae041941043bdede63c993c
 dask-jobqueue==0.8.5 \
     --hash=sha256:96a51083b93e5e66354bdb337840663202e45b20930071edeb41af07bbd5af26 \
     --hash=sha256:f6923f9d7ff894b96efbf706118b2cd37fd37751d567e91c22dfd3e2eaa93202
+dask[complete]==2024.7.0 \
+    --hash=sha256:0060bae9a58b5b3ce7e0d97040e903b4d3db09ba49222101cfc40f9834a8a6bc \
+    --hash=sha256:0f30f218a1fe1c8e9a6ba8add1207088ba9ff049098d4ea4ce045fd5ff7ca914
 decorator==5.1.1 \
     --hash=sha256:637996211036b6385ef91435e4fae22989472f9d571faba8927ba8253acbc330 \
     --hash=sha256:b8c3f85900b9dc423225913c5aace94729fe1fa9763b38939a95226f02d37186
 dill==0.3.8 \
     --hash=sha256:3ebe3c479ad625c4553aca177444d89b486b1d84982eeacded644afc0cf797ca \
     --hash=sha256:c36ca9ffb54365bdd2f8eb3eff7d2a21237f8452b57ace88b1ac615b7e815bd7
-distributed==2023.8.1 \
-    --hash=sha256:4ceccb19b825c402b85b11c268d6ec3a5b92f77a67cc2a7018d11e4d85a74b0c \
-    --hash=sha256:9eb00dfe08a75c9a450010869de0cbcada016c32bfee43e9b3a281787bdc9d61
+distributed==2024.7.0 \
+    --hash=sha256:7c9e84c121bb8cac28d7391857ca6555acbe5edfb707d3fb2f54d2c04a0bf751 \
+    --hash=sha256:c8a1a71e14e73b340abee443ece5c8119465f97bdb8a00ff6933b945840a0052
 docutils==0.20.1 \
     --hash=sha256:96f387a2c5562db4476f09f13bbab2192e764cac08ebbf3a34a95d9b1e4a59d6 \
     --hash=sha256:f08a4e276c3a1583a86dce3e34aba3fe04d02bba2dd51ed16106244e8a923e3b
@@ -238,7 +241,7 @@ idna==3.7 \
 imagesize==1.4.1 \
     --hash=sha256:0d8d18d08f840c19d0ee7ca1fd82490fdc3729b7ac93f49870406ddde8ef8d8b \
     --hash=sha256:69150444affb9cb0d5cc5a92b3676f0b2fb7cd9ae39e947a5e11a36b4497cd4a
-importlib-metadata==7.1.0 \
+importlib-metadata==7.1.0; python_version < "3.12" \
     --hash=sha256:30962b96c0c223483ed6cc7280e7f0199feb01a0e40cfae4d4450fc6fab1f570 \
     --hash=sha256:b78938b926ee8d5f020fc4772d487045805a55ddbad2ecf21c6d60938dc7fcd2
 ipdb==0.13.13 \
@@ -671,6 +674,9 @@ pyarrow==16.1.0 \
     --hash=sha256:e1369af39587b794873b8a307cc6623a3b1194e69399af0efd05bb202195a5a7 \
     --hash=sha256:f68f409e7b283c085f2da014f9ef81e885d90dcd733bd648cfba3ef265961848 \
     --hash=sha256:febde33305f1498f6df85e8020bca496d0e9ebf2093bab9e0f65e2b4ae2b3444
+pyarrow-hotfix==0.6 \
+    --hash=sha256:79d3e030f7ff890d408a100ac16d6f00b14d44a502d7897cd9fc3e3a534e9945 \
+    --hash=sha256:dcc9ae2d220dff0083be6a9aa8e0cdee5182ad358d4931fce825c545e5c89178
 pycodestyle==2.11.1 \
     --hash=sha256:41ba0e7afc9752dfb53ced5489e89f8186be00e599e712660695b7a75ff2663f \
     --hash=sha256:44fe31000b2d866f2e41841b18528a505fbd7fef9017b04eff4e2648a0fadc67
@@ -689,7 +695,7 @@ pyparsing==3.1.2 \
 python-dateutil==2.9.0.post0 \
     --hash=sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3 \
     --hash=sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427
-pytoolconfig==1.3.1 \
+pytoolconfig[global]==1.3.1 \
     --hash=sha256:51e6bd1a6f108238ae6aab6a65e5eed5e75d456be1c2bf29b04e5c1e7d7adbae \
     --hash=sha256:5d8cea8ae1996938ec3eaf44567bbc5ef1bc900742190c439a44a704d6e1b62b
 pytz==2024.1 \
@@ -982,7 +988,7 @@ xyzservices==2024.4.0 \
 zict==3.0.0 \
     --hash=sha256:5796e36bd0e0cc8cf0fbc1ace6a68912611c1dbd74750a3f3026b9b9d6a327ae \
     --hash=sha256:e321e263b6a97aafc0790c3cfb3c04656b7066e6738c37fffcca95d803c9fba5
-zipp==3.19.2 \
+zipp==3.19.2; python_version < "3.12" \
     --hash=sha256:bf1dcf6450f873a13e952a29504887c89e6de7506209e5b1bcc3460135d4de19 \
     --hash=sha256:f091755f667055f2d02b32c53771a7a6c8b47e1fdbc4b72a8b9072b3eef8015c
 --index-url https://pypi.org/simple
