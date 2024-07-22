@@ -23,7 +23,7 @@ dependencies = [
     "numexpr",
     "pyarrow",
     "dask[complete]==2024.7.0",
-    "dask-jobqueue",
+    "dask-jobqueue==0.8.5",
     "distributed==2024.7.0",
     "graphviz>=0.20.1",
     "ipython>=8.25.0",
