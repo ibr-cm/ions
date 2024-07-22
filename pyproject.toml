@@ -6,12 +6,12 @@ authors = [
     {name = "Christian Hagau", email = "hagau@ibr.cs.tu-bs.de"},
 ]
 dependencies = [
-    "matplotlib>=3.8.2",
-    "numpy",
+    "matplotlib==3.9.1",
+    "numpy==2.0.1",
     "jsonpickle",
     "ujson",
-    "pandas",
-    "scipy>=1.8.1",
+    "pandas==2.2.2",
+    "scipy==1.14.0",
     "SQLAlchemy",
     "seaborn",
     "sphinx",
@@ -49,7 +49,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 [tool.pdm.dev-dependencies]
 dev = [
-    "pylint>=2.15.5",
+    "pylint>=3.2.6",
     "autopep8",
     "wrapt",
     "typed-ast",
