@@ -621,13 +621,16 @@
         <span class="k">return</span> <span class="n">data</span></div>
 
 
+
 <div class="viewcode-block" id="PlottingTask.prepare">
 <a class="viewcode-back" href="../plots.html#plots.PlottingTask.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_name</span><span class="p">)</span>
-        <span class="c1"># concatenate everything first</span>
-        <span class="n">cdata</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">)(</span><span class="nb">map</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">data</span><span class="p">))</span>
-        <span class="n">job</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_data</span><span class="p">)(</span><span class="n">cdata</span><span class="p">)</span>
+
+        <span class="c1"># concatenate all DataFrames first</span>
+        <span class="n">concatenated_data</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">)(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">data</span><span class="p">)))</span>
+
+        <span class="n">job</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">delayed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_data</span><span class="p">)(</span><span class="n">concatenated_data</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">job</span></div>
 
