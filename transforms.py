@@ -167,7 +167,7 @@ class ConcatTransform(Transform, YAMLObject):
             data_list.extend(self.get_data(name))
 
         # concatenate all DataFrames
-        job = dask.delayed(self.concat)(map(operator.itemgetter(0), data_list))
+        job = dask.delayed(self.concat)(tuple(map(operator.itemgetter(0), data_list)))
 
         attributes = DataAttributes()
 
@@ -600,7 +600,7 @@ class GroupedAggregationTransform(Transform, ExtraCodeFunctionMixin, YAMLObject)
         jobs = []
 
         if self.pre_concatenate:
-            concat_result = dask.delayed(pd.concat)(map(operator.itemgetter(0), data), ignore_index=True)
+            concat_result = dask.delayed(pd.concat)(tuple(map(operator.itemgetter(0), data)), ignore_index=True)
             job = dask.delayed(self.aggregate_frame)(concat_result)
             # TODO: better DataAttributes
             attributes = data[0][1]
@@ -754,7 +754,7 @@ class GroupedFunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
 
         if self.pre_concatenate:
             # concatenate all input DataFrames before processing
-            concat_result = dask.delayed(pd.concat)(map(operator.itemgetter(0), data), ignore_index=True)
+            concat_result = dask.delayed(pd.concat)(tuple(map(operator.itemgetter(0), data)), ignore_index=True)
             job = dask.delayed(self.aggregate_frame)(concat_result)
             # TODO: better DataAttributes
             jobs.append((job, DataAttributes(source_file=self.input_column, alias=self.output_column)))

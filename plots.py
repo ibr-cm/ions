@@ -511,11 +511,14 @@ class PlottingTask(YAMLObject):
 
         return data
 
+
     def prepare(self):
         data = self.get_data(self.dataset_name)
-        # concatenate everything first
-        cdata = dask.delayed(pd.concat)(map(operator.itemgetter(0), data))
-        job = dask.delayed(self.plot_data)(cdata)
+
+        # concatenate all DataFrames first
+        concatenated_data = dask.delayed(pd.concat)(tuple(map(operator.itemgetter(0), data)))
+
+        job = dask.delayed(self.plot_data)(concatenated_data)
 
         return job
 
