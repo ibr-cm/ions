@@ -651,7 +651,7 @@ class PlottingTask(YAMLObject):
         if hasattr(fig, 'tight_layout'):
             fig.tight_layout(pad=0.1)
 
-        if self.legend is None and not fig.legend is None:
+        if self.legend is None and fig.legend is not None:
             if  isinstance(fig.legend, Callable):
                 fig.legend().remove()
             else:
@@ -766,13 +766,13 @@ class PlottingTask(YAMLObject):
                 axis.set_xticklabels(self.xticklabels)
 
         # strings of length of zero evaluate to false, so test explicitly for None
-        if not self.title_template == None:
+        if self.title_template is not None:
             grid.set_titles(template=self.title_template)
 
         # logi(type(ax))
         # ax.fig.get_axes()[0].legend(loc='lower left', bbox_to_anchor=(0, 1, 1, 1))
 
-        if grid.legend and (isinstance(grid.legend, mpl.legend.Legend) or not grid.legend() is None):
+        if grid.legend and (isinstance(grid.legend, mpl.legend.Legend) or grid.legend() is not None):
             if self.legend_title:
                 if self.legend_bbox:
                     sb.move_legend(grid, loc=self.legend_location, title=self.legend_title, bbox_to_anchor=self.legend_bbox)
@@ -930,7 +930,7 @@ class PlottingTask(YAMLObject):
         logi(f'PlottingTask::plot_data: {df=}')
         logd(f'PlottingTask::plot_relplot: {df.columns=}')
 
-        if not column is None:
+        if column is not None:
             return self.plot_heatmap_grid(df, x, y, z, column)
         else:
             return self.plot_heatmap_nogrid(df, x, y, z)
