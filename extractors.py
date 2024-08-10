@@ -1161,7 +1161,7 @@ class PatternMatchingBulkExtractor(OmnetExtractor):
 
         data = data.drop(['vectorName'], axis=1)
 
-        if not data is None and not data.empty:
+        if data is not None and not data.empty:
             # convert the data type of the explicitly named columns
             result = OmnetExtractor.convert_columns_dtype(data
                                                          , categorical_columns=categorical_columns \
@@ -1288,7 +1288,7 @@ class PatternMatchingBulkScalarExtractor(OmnetExtractor):
                                                      )
 
         print(f'{data=}')
-        if data is None or (not data is None and data.empty):
+        if data is None or (data is not None and data.empty):
             return pd.DataFrame()
 
         def process_vectorName(d):
@@ -1311,7 +1311,7 @@ class PatternMatchingBulkScalarExtractor(OmnetExtractor):
 
         data = data.drop(['scalarName'], axis=1)
 
-        if not data is None and not data.empty:
+        if data is not None and not data.empty:
             # convert the data type of the explicitly named columns
             result = OmnetExtractor.convert_columns_dtype(data
                                                          , categorical_columns=categorical_columns \
