@@ -237,7 +237,7 @@ class MergeTransform(Transform, YAMLObject):
               , left_key_columns:Optional[List[str]] = None
               , right_key_columns:Optional[List[str]] = None):
         def is_empty(df):
-            if not df is None:
+            if df is not None:
                 if df.empty:
                     return True
                 return False
@@ -367,7 +367,7 @@ class FunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
         self.extra_code = extra_code
 
     def process(self, data, attributes) -> pd.DataFrame:
-        if data is None or (not data is None and data.empty):
+        if data is None or (data is not None and data.empty):
             return pd.DataFrame()
 
         # Get the function to call and possibly compile and evaluate the code defined in
