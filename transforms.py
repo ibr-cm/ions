@@ -119,7 +119,7 @@ class ExtraCodeFunctionMixin:
         # code fragment so as to not pollute the global namespace itself
         global_env = globals().copy()
 
-        if type(extra_code) == str:
+        if isinstance(extra_code, str):
             # compile the code fragment
             compiled_extra_code = compile(extra_code, filename='<string>', mode='exec')
             # actually evaluate the code within the given namespace to allow
@@ -267,7 +267,7 @@ class MergeTransform(Transform, YAMLObject):
         def add_by_attribute(data_list):
             for data, attributes in data_list:
                 attribute = getattr(attributes, self.matching_attribute)
-                if type(attribute) == set:
+                if isinstance(attribute, set):
                     attribute = '_'.join(list(attribute))
                 d[attribute].append((data, attributes))
 
