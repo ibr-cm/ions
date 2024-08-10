@@ -501,7 +501,7 @@ class PlottingTask(YAMLObject):
         self.data_repo = data_repo
 
     def get_data(self, dataset_name:str):
-        if not dataset_name in self.data_repo:
+        if dataset_name not in self.data_repo:
             raise Exception(f'"{dataset_name}" not found in data repo')
 
         data = self.data_repo[dataset_name]
