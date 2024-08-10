@@ -299,6 +299,7 @@ def parse_arguments(arguments):
 
     parser.add_argument('--cluster', type=str, help='The address of an already running cluster')
     parser.add_argument('--single-threaded', action='store_true', default=False, help='Run in single-threaded mode; this overrides the value of the `--worker` flag')
+    parser.add_argument('--dashboard-port', type=int, default=8787, help='The port for the dashboard of the cluster. For the default localhost cluster')
 
     parser.add_argument('--slurm', action='store_true', default=False, help='Use a SLURM cluster')
     parser.add_argument('--partition', type=str, help='The partition for the SLURM cluster')
@@ -506,8 +507,9 @@ def setup_dask(options):
             client.register_worker_plugin(plugin)
             return client
     else:
-        logi(f'using local cluster with dashboard at localhost:8787')
-        client = Client(dashboard_address='localhost:8787', n_workers=options.worker)
+        dashboard_address = f'localhost:{options.dashboard_port}'
+        logi(f'using local cluster with dashboard at {dashboard_address}')
+        client = Client(dashboard_address=dashboard_address, n_workers=options.worker)
         client.register_worker_plugin(plugin)
         return client
 
