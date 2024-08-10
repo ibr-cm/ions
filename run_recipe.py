@@ -98,7 +98,7 @@ def prepare_evaluation_phase(recipe:Recipe, options, data_repo):
         extractor_name = list(extractor_tuple.keys())[0]
         extractor = list(extractor_tuple.values())[0]
 
-        if options.run_tree and not extractor_name in options.run_tree['evaluation']['extractors']:
+        if options.run_tree and extractor_name not in options.run_tree['evaluation']['extractors']:
             logi(f'skipping extractor {extractor_name}')
             continue
 
@@ -122,7 +122,7 @@ def prepare_evaluation_phase(recipe:Recipe, options, data_repo):
             transform_name = list(transform_tuple.keys())[0]
             transform = list(transform_tuple.values())[0]
 
-            if options.run_tree and not transform_name in options.run_tree['evaluation']['transforms']:
+            if options.run_tree and transform_name not in options.run_tree['evaluation']['transforms']:
                 logi(f'skipping transform {transform_name}')
                 continue
             logi(f'preparing transform {transform_name}')
@@ -141,7 +141,7 @@ def prepare_evaluation_phase(recipe:Recipe, options, data_repo):
             exporter_name = list(exporter_tuple.keys())[0]
             exporter = list(exporter_tuple.values())[0]
 
-            if options.run_tree and not exporter_name in options.run_tree['evaluation']['exporter']:
+            if options.run_tree and exporter_name not in options.run_tree['evaluation']['exporter']:
                 logi(f'skipping exporter {exporter_name}')
                 continue
 
@@ -174,7 +174,7 @@ def prepare_plotting_phase(recipe:Recipe, options, data_repo):
             dataset_name = list(dataset_tuple.keys())[0]
             reader = list(dataset_tuple.values())[0]
 
-            if options.run_tree and not dataset_name in options.run_tree['plot']['reader']:
+            if options.run_tree and dataset_name not in options.run_tree['plot']['reader']:
                 logi(f'skipping reader {dataset_name}')
                 continue
             logi(f'plot: loading dataset: "{dataset_name=}"')
@@ -196,7 +196,7 @@ def prepare_plotting_phase(recipe:Recipe, options, data_repo):
             transform_name = list(transform_tuple.keys())[0]
             transform = list(transform_tuple.values())[0]
 
-            if options.run_tree and not transform_name in options.run_tree['plot']['transforms']:
+            if options.run_tree and transform_name not in options.run_tree['plot']['transforms']:
                 logi(f'skipping transform {transform_name}')
                 continue
             transform.set_name(transform_name)
@@ -209,7 +209,7 @@ def prepare_plotting_phase(recipe:Recipe, options, data_repo):
         task_name = list(task_tuple.keys())[0]
         task = list(task_tuple.values())[0]
 
-        if options.run_tree and not task_name in options.run_tree['plot']['tasks']:
+        if options.run_tree and task_name not in options.run_tree['plot']['tasks']:
             logi(f'skipping task {task_name}')
             continue
 
