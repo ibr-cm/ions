@@ -308,7 +308,7 @@ class PlottingTask(YAMLObject):
 
         if plot_kwargs:
             # parse plot kwargs
-            if type(plot_kwargs) == dict:
+            if isinstance(plot_kwargs, dict):
                 self.plot_kwargs = plot_kwargs
             else:
                 loge(f"plot_kwargs set but is not a dict: {plot_kwargs=}")
@@ -379,7 +379,7 @@ class PlottingTask(YAMLObject):
 
         self.title_template = title_template
 
-        if type(xticklabels) == str:
+        if isinstance(xticklabels, str):
             self.xticklabels = eval(xticklabels)
         else:
             self.xticklabels = xticklabels
@@ -396,12 +396,12 @@ class PlottingTask(YAMLObject):
         self.legend = legend
         self.legend_location = legend_location
 
-        if type(legend_bbox) == str:
+        if isinstance(legend_bbox, str):
             self.legend_bbox = eval(self.legend_bbox)
         else:
             self.legend_bbox = legend_bbox
 
-        if type(legend_labels) == str:
+        if isinstance(legend_labels, str):
             self.legend_labels = eval(legend_labels)
         else:
             self.legend_labels = legend_labels
@@ -452,7 +452,7 @@ class PlottingTask(YAMLObject):
                  , colormap:Optional[str] = None
                      ):
 
-        if type(alpha) == str:
+        if isinstance(alpha, str):
             self.alpha = eval(alpha)
         else:
             self.alpha = alpha
@@ -462,7 +462,7 @@ class PlottingTask(YAMLObject):
 
         if matplotlib_rc:
             # parse the custom matplotlib_rc into an dictionary or None
-            if type(matplotlib_rc) == dict:
+            if isinstance(matplotlib_rc, dict):
                 # inline definition
                 self.matplotlib_rc_dict = matplotlib_rc
             else:
@@ -474,19 +474,19 @@ class PlottingTask(YAMLObject):
             self.matplotlib_rc = None
             self.matplotlib_rc_dict = None
 
-        if type(xrange) == str:
+        if isinstance(xrange, str):
             self.xrange = eval(xrange)
         else:
             self.xrange = xrange
 
-        if type(yrange) == str:
+        if isinstance(yrange, str):
             self.yrange = eval(yrange)
         else:
             self.yrange = yrange
 
         self.invert_yaxis = invert_yaxis
 
-        if type(plot_size) == str:
+        if isinstance(plot_size, str):
             self.plot_size = eval(plot_size)
         else:
             self.plot_size = plot_size
@@ -557,7 +557,7 @@ class PlottingTask(YAMLObject):
         self.set_backend(self.matplotlib_backend)
         self.set_theme(self.context, self.axes_style)
 
-        if type(self.grid_transform) == str:
+        if isinstance(self.grid_transform, str):
             # The compilation of the extra code has to happen in the thread/process
             # of the processing worker since code objects can't be serialized.
             grid_transform = self.eval_grid_transform()
