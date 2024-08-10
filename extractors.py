@@ -841,7 +841,7 @@ class PositionExtractor(OmnetExtractor):
         self.signal:str = signal
         self.alias:str = alias
 
-        if restriction and type(restriction) == str:
+        if restriction and isinstance(restriction, str):
             self.restriction = eval(restriction)
         else:
             self.restriction = restriction
