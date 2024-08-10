@@ -436,7 +436,7 @@ class OmnetExtractor(BaseExtractor):
                          , numerical_columns = numerical_columns
                          , *args, **kwargs)
 
-        if base_tags != None:
+        if base_tags is not None:
             self.base_tags:list = base_tags
         else:
             if minimal_tags:
