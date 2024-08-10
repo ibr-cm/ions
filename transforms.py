@@ -58,7 +58,7 @@ class Transform(YAMLObject):
         dataset_name : str
             The name of the dataset to retrieve from the data repository
         """
-        if not dataset_name in self.data_repo:
+        if dataset_name not in self.data_repo:
             raise Exception(f'"{dataset_name}" not found in data repo')
 
         data = self.data_repo[dataset_name]
