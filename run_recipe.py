@@ -544,6 +544,9 @@ def main():
 
     client = setup_dask(options)
 
+    # This is needed for proper pickling of DataFrames to JSON.
+    exporters.register_jsonpickle_handlers()
+
     # register constructors for all YAML objects
     extractors.register_constructors()
     transforms.register_constructors()
