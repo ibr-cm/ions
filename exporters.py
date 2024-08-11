@@ -15,7 +15,6 @@ import pandas as pd
 # Pandas serializing handlers
 import jsonpickle
 import jsonpickle.ext.pandas as jsonpickle_pandas
-jsonpickle_pandas.register_handlers()
 
 import dask
 
@@ -214,10 +213,14 @@ class FileResultProcessor(YAMLObject):
         logd(f'FileResultProcessor: prepare: {job_list=}')
         return job_list
 
+def register_jsonpickle_handlers():
+    r"""
+    Register the jsonpickle handlers for pickling pandas objects to JSON.
+    """
+    jsonpickle_pandas.register_handlers()
 
 def register_constructors():
     r"""
     Register YAML constructors for all exporters
     """
     yaml.add_constructor(u'!FileResultProcessor', proto_constructor(FileResultProcessor))
-
