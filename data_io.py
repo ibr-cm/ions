@@ -6,7 +6,7 @@ from typing import List, Optional, Union
 
 # ---
 
-from common.logging_facilities import logi, loge, logd, logw
+from common.logging_facilities import logi, logd
 
 # ---
 
