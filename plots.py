@@ -37,7 +37,7 @@ from extractors import BaseExtractor, DataAttributes
 
 from utility.filesystem import check_file_access_permissions
 
-from common.debug import start_ipython_dbg_cmdline
+from common.debug import start_ipython_dbg_cmdline, start_debug
 
 # ---
 
