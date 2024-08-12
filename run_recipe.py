@@ -58,13 +58,13 @@ def eval_recipe_tag_definitions(recipe, attributes_regex_map, iterationvars_rege
         for tag_name in recipe.evaluation.tags[tag_set_name]:
             tag_list = eval(recipe.evaluation.tags[tag_set_name][tag_name])
             logd(f'{tag_name=} {tag_list=}')
-            l = []
+            evaluated_tag_list = []
             for tag in tag_list:
                 if not isinstance(tag['transform'], Callable):
                     tag['transform'] = eval(tag['transform'])
-                l.append(tag)
+                evaluated_tag_list.append(tag)
 
-            regex_map[tag_name] = l
+            regex_map[tag_name] = evaluated_tag_list
 
     if 'attributes' in recipe.evaluation.tags:
         eval_and_add_tags('attributes', attributes_regex_map)
