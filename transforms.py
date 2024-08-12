@@ -20,8 +20,8 @@ from common.logging_facilities import loge, logd, logw, get_logging_level
 
 from extractors import DataAttributes
 
-# for debugging purposes
-from common.debug import start_ipython_dbg_cmdline, start_debug
+# Import for availability in user-supplied code.
+from common.debug import start_ipython_dbg_cmdline, start_debug  # noqa: F401
 
 
 class Transform(YAMLObject):
