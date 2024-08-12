@@ -14,14 +14,13 @@ from typing import Callable
 
 import logging
 
-from common.logging_facilities import logi, loge, logd, logw \
-                                        , setup_logging_defaults, set_logging_level
+from common.logging_facilities import logi, loge, logd, setup_logging_defaults, set_logging_level
 
 # ---
 
 import yaml
 
-from yaml import load, dump
+from yaml import dump
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
 except ImportError:
@@ -46,8 +45,6 @@ import extractors
 import transforms
 import exporters
 import plots
-
-from sql_queries import generate_signal_query
 
 # ---
 
