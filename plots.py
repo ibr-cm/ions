@@ -37,6 +37,7 @@ from extractors import BaseExtractor, DataAttributes
 
 from utility.filesystem import check_file_access_permissions
 
+# Import for availability in user-supplied code.
 from common.debug import start_ipython_dbg_cmdline, start_debug  # noqa: F401
 
 # ---
