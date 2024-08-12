@@ -56,12 +56,12 @@ _debug = False
 def eval_recipe_tag_definitions(recipe, attributes_regex_map, iterationvars_regex_map, parameters_regex_map):
     def eval_and_add_tags(tag_set_name, regex_map):
         for tag_name in recipe.evaluation.tags[tag_set_name]:
-            tag_list = eval(recipe.evaluation.tags[tag_set_name][tag_name])
+            tag_list = eval(recipe.evaluation.tags[tag_set_name][tag_name]) # pylint: disable=eval-used
             logd(f'{tag_name=} {tag_list=}')
             evaluated_tag_list = []
             for tag in tag_list:
                 if not isinstance(tag['transform'], Callable):
-                    tag['transform'] = eval(tag['transform'])
+                    tag['transform'] = eval(tag['transform']) # pylint: disable=eval-used
                 evaluated_tag_list.append(tag)
 
             regex_map[tag_name] = evaluated_tag_list
