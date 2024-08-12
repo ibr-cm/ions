@@ -6,9 +6,6 @@ from collections import defaultdict
 import yaml
 from yaml import YAMLObject
 
-# some of the imports here are just here to make a base set of libraries
-# available in the runtime environment of code fragments that are read and
-# evaluated from a recipe
 import pandas as pd
 
 import dask
