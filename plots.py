@@ -2,7 +2,6 @@
 from typing import Union, List, Callable, Optional
 
 import functools
-import itertools
 import operator
 
 import re
@@ -11,7 +10,7 @@ import pprint
 
 # ---
 
-from common.logging_facilities import logi, loge, logd, logw
+from common.logging_facilities import logi, loge, logd
 
 # ---
 
@@ -20,7 +19,6 @@ from yaml import YAMLObject
 
 # ---
 
-import numpy as np
 import pandas as pd
 import seaborn as sb
 import matplotlib as mpl
@@ -28,14 +26,12 @@ import matplotlib as mpl
 # ---
 
 import dask
-import dask.dataframe as ddf
 
 import dask.distributed
-from dask.delayed import Delayed
 
 # ---
 
-from yaml_helper import decode_node, proto_constructor
+from yaml_helper import proto_constructor
 from data_io import DataSet, read_from_file
 from extractors import BaseExtractor, DataAttributes
 
