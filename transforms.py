@@ -9,21 +9,14 @@ from yaml import YAMLObject
 # some of the imports here are just here to make a base set of libraries
 # available in the runtime environment of code fragments that are read and
 # evaluated from a recipe
-import numpy as np
 import pandas as pd
-
-import matplotlib
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-
-import seaborn as sb
 
 import dask
 
-from yaml_helper import decode_node, proto_constructor
+from yaml_helper import proto_constructor
 
 import logging
-from common.logging_facilities import logi, loge, logd, logw, get_logging_level
+from common.logging_facilities import loge, logd, logw, get_logging_level
 
 from extractors import DataAttributes
 
