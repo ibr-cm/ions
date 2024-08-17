@@ -114,12 +114,12 @@ class ExtraCodeFunctionMixin:
             compiled_extra_code = compile(extra_code, filename='<string>', mode='exec')
             # actually evaluate the code within the given namespace to allow
             # access to all the defined symbols, such as helper functions that are not defined inline
-            eval(compiled_extra_code, global_env)
+            eval(compiled_extra_code, global_env) # pylint: disable=W0123:eval-used
 
         if isinstance(function, Callable):
             evaluated_function = function
         else:
-            evaluated_function = eval(function, global_env)
+            evaluated_function = eval(function, global_env) # pylint: disable=W0123:eval-used
 
         return evaluated_function
 
