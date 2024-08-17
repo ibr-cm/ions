@@ -702,7 +702,7 @@ class PlottingTask(YAMLObject):
                     case _:
                         raise Exception(f'Unknown plot type: "{pt}"')
 
-        if type(figure) == sb.axisgrid.FacetGrid:
+        if isinstance(figure, sb.axisgrid.FacetGrid):
             g = figure
         else:
             raise Exception('multipass drawing is only implemented for grids')
