@@ -54,7 +54,7 @@ class FileResultProcessor(YAMLObject):
         whether to save the raw input or convert the columns of the input
         `pandas.DataFrame` to categories before saving
     """
-    yaml_tag = u'!FileResultProcessor'
+    yaml_tag = '!FileResultProcessor'
 
     def __init__(self, dataset_name:str
                  , output_filename = None
@@ -220,4 +220,4 @@ def register_constructors():
     r"""
     Register YAML constructors for all exporters
     """
-    yaml.add_constructor(u'!FileResultProcessor', proto_constructor(FileResultProcessor))
+    yaml.add_constructor('!FileResultProcessor', proto_constructor(FileResultProcessor))
