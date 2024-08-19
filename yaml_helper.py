@@ -100,6 +100,6 @@ def register_constructors():
     r"""
     Register YAML constructors for all the custom tags
     """
-    yaml.add_constructor(u'!include', include_constructor)
+    yaml.add_constructor('!include', include_constructor)
 
 register_constructors()
