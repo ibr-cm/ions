@@ -2,14 +2,13 @@ import yaml
 
 from typing import Callable
 
-def load_yaml_from_file(file):
+def load_yaml_from_file(file_name:str):
     r"""
     Read and evaluate the YAML contained in the file with the given name
     """
-    f = open(file, mode = 'rt', encoding = 'utf_8')
-    x = yaml.unsafe_load(f.read())
-    f.close()
-    return x
+    with open(file_name, mode = 'rt', encoding = 'utf_8') as text_file:
+        parsed_object = yaml.unsafe_load(text_file.read())
+    return parsed_object
 
 def construct_bool(loader, node):
     x = loader.construct_scalar(node)
