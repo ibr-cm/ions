@@ -4,7 +4,18 @@ from typing import Callable
 
 def load_yaml_from_file(file_name:str):
     r"""
-    Read and evaluate the YAML contained in the file with the given name
+    Read and evaluate the YAML contained in the file with the given name, construct the corresponding python object
+    and return it.
+
+    Parameters
+    ----------
+    file_name: str
+        The path to the file to load.
+
+    Returns
+    -------
+    Any:
+        The object parsed from the YAML definitions in the given file.
     """
     with open(file_name, mode = 'rt', encoding = 'utf_8') as text_file:
         parsed_object = yaml.unsafe_load(text_file.read())
