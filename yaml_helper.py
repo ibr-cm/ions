@@ -1,6 +1,7 @@
+from typing import Callable
+
 import yaml
 
-from typing import Callable
 
 def load_yaml_from_file(file_name:str):
     r"""
