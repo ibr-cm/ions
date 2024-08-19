@@ -63,7 +63,7 @@ class PlottingReaderFeather(YAMLObject):
     sample_seed: int
         the seed to use for the sampling RNG
     """
-    yaml_tag = u'!PlottingReaderFeather'
+    yaml_tag = '!PlottingReaderFeather'
 
     def __init__(self, input_files:str
                  , categorical_columns:set[str] = set()
@@ -225,7 +225,7 @@ class PlottingTask(YAMLObject):
         This takes the produced FacetGrid as input and returns the modified FacetGrid.
         The purpose is to allow for arbitrary modification not yet provided by the framework.
     """
-    yaml_tag = u'!PlottingTask'
+    yaml_tag = '!PlottingTask'
 
     def __init__(self, dataset_name:str
                  , output_file:str
@@ -1041,6 +1041,6 @@ class PlottingTask(YAMLObject):
         return grid
 
 def register_constructors():
-    yaml.add_constructor(u'!PlottingReaderFeather', proto_constructor(PlottingReaderFeather))
-    yaml.add_constructor(u'!PlottingTask', proto_constructor(PlottingTask))
+    yaml.add_constructor('!PlottingReaderFeather', proto_constructor(PlottingReaderFeather))
+    yaml.add_constructor('!PlottingTask', proto_constructor(PlottingTask))
 
