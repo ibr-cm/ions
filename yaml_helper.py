@@ -46,13 +46,13 @@ def decode_node(loader, node):
                 case 'tag:yaml.org,2002:null' | '!null' | '!!null':
                     x = None
                 case 'tag:yaml.org,2002:tuple' | '!tuple' | '!!tuple':
-                    x = eval(node.value)
+                    x = eval(node.value) # pylint: disable=W0123:eval-used
                 case 'tag:yaml.org,2002:code' | '!code' | '!!code':
-                    x = eval(node.value)
+                    x = eval(node.value) # pylint: disable=W0123:eval-used
                 case 'tag:yaml.org,2002:eval' | '!eval' | '!!eval':
-                    x = eval(node.value)
+                    x = eval(node.value) # pylint: disable=W0123:eval-used
                 case 'tag:yaml.org,2002:dict' | '!dict' | '!!dict':
-                    x = eval(node.value)
+                    x = eval(node.value) # pylint: disable=W0123:eval-used
                 case _:
                     # use the default scalar constructor
                     x = loader.construct_scalar(node)
