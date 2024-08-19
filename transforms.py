@@ -25,7 +25,7 @@ class Transform(YAMLObject):
     r"""
     The base class for all transforms
     """
-    yaml_tag = u'!Transform'
+    yaml_tag = '!Transform'
 
     def set_name(self, name:str):
         self.name = name
@@ -137,7 +137,7 @@ class ConcatTransform(Transform, YAMLObject):
         the name given to the output dataset
     """
 
-    yaml_tag = u'!ConcatTransform'
+    yaml_tag = '!ConcatTransform'
 
     def __init__(self, dataset_names:Optional[List[str]]
                  , output_dataset_name:str):
@@ -203,7 +203,7 @@ class MergeTransform(Transform, YAMLObject):
 
     """
 
-    yaml_tag = u'!MergeTransform'
+    yaml_tag = '!MergeTransform'
 
     def __init__(self, dataset_name_left:str
                  , dataset_name_right:str
@@ -339,7 +339,7 @@ class FunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
         functions for readibility.
     """
 
-    yaml_tag = u'!FunctionTransform'
+    yaml_tag = '!FunctionTransform'
 
     def __init__(self, dataset_name:str, output_dataset_name:str
                  , function:Union[Callable[[pd.DataFrame], pd.DataFrame], str]=None
@@ -415,7 +415,7 @@ class ColumnFunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
         functions for readibility.
     """
 
-    yaml_tag = u'!ColumnFunctionTransform'
+    yaml_tag = '!ColumnFunctionTransform'
 
     def __init__(self, dataset_name:str, output_dataset_name:str
                  , input_column:str, output_column:str
@@ -512,7 +512,7 @@ class GroupedAggregationTransform(Transform, ExtraCodeFunctionMixin, YAMLObject)
     timestamp_selector: Callable
         the function to select the row in the partition data as template for the output in case of aggregation
     """
-    yaml_tag = u'!GroupedAggregationTransform'
+    yaml_tag = '!GroupedAggregationTransform'
 
     def __init__(self, dataset_name:str, output_dataset_name:str
                  , input_column:str, output_column:str
@@ -652,7 +652,7 @@ class GroupedFunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
     timestamp_selector: Callable
         the function to select the row in the partition data as template for the output in case of aggregation
     """
-    yaml_tag = u'!GroupedFunctionTransform'
+    yaml_tag = '!GroupedFunctionTransform'
 
     def __init__(self, dataset_name:str, output_dataset_name:str
                  , input_column:str, output_column:str
@@ -762,10 +762,10 @@ def register_constructors():
     r"""
     Register YAML constructors for all transforms
     """
-    yaml.add_constructor(u'!ConcatTransform', proto_constructor(ConcatTransform))
-    yaml.add_constructor(u'!FunctionTransform', proto_constructor(FunctionTransform))
-    yaml.add_constructor(u'!ColumnFunctionTransform', proto_constructor(ColumnFunctionTransform))
-    yaml.add_constructor(u'!GroupedAggregationTransform', proto_constructor(GroupedAggregationTransform))
-    yaml.add_constructor(u'!GroupedFunctionTransform', proto_constructor(GroupedFunctionTransform))
-    yaml.add_constructor(u'!MergeTransform', proto_constructor(MergeTransform))
+    yaml.add_constructor('!ConcatTransform', proto_constructor(ConcatTransform))
+    yaml.add_constructor('!FunctionTransform', proto_constructor(FunctionTransform))
+    yaml.add_constructor('!ColumnFunctionTransform', proto_constructor(ColumnFunctionTransform))
+    yaml.add_constructor('!GroupedAggregationTransform', proto_constructor(GroupedAggregationTransform))
+    yaml.add_constructor('!GroupedFunctionTransform', proto_constructor(GroupedFunctionTransform))
+    yaml.add_constructor('!MergeTransform', proto_constructor(MergeTransform))
 
