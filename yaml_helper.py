@@ -6,7 +6,7 @@ def load_yaml_from_file(file):
     r"""
     Read and evaluate the YAML contained in the file with the given name
     """
-    f = open(file, mode='r')
+    f = open(file, mode = 'r', encoding = 'utf_8')
     x = yaml.unsafe_load(f.read())
     f.close()
     return x
