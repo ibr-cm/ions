@@ -5,7 +5,7 @@ import re
 
 # ---
 
-from common.logging_facilities import logi, loge, logd, logw
+from common.logging_facilities import loge, logd, logw
 
 # ---
 
@@ -14,16 +14,13 @@ from yaml import YAMLObject
 
 # ---
 
-import numpy as np
 import pandas as pd
 
 # ---
 
 import dask
-import dask.dataframe as ddf
 
 import dask.distributed
-from dask.delayed import Delayed
 
 # ---
 
@@ -33,15 +30,14 @@ from sqlalchemy import create_engine
 
 import sql_queries
 
-from yaml_helper import decode_node, proto_constructor
+from yaml_helper import proto_constructor
 
-from data_io import DataSet, read_from_file
+from data_io import DataSet
 
 from tag_extractor import ExtractRunParametersTagsOperation
 import tag_regular_expressions as tag_regex
 
-from common.common_sets import BASE_TAGS_EXTRACTION_FULL, BASE_TAGS_EXTRACTION_MINIMAL \
-                               , DEFAULT_CATEGORICALS_COLUMN_EXCLUSION_SET
+from common.common_sets import BASE_TAGS_EXTRACTION_FULL, BASE_TAGS_EXTRACTION_MINIMAL
 
 # ---
 
@@ -180,7 +176,7 @@ class Extractor(YAMLObject):
     This is the abstract base class.
     """
 
-    yaml_tag = u'!Extractor'
+    yaml_tag = '!Extractor'
 
     def prepare(self):
         r"""
@@ -195,7 +191,7 @@ class Extractor(YAMLObject):
 
 class BaseExtractor(Extractor):
 
-    yaml_tag = u'!BaseExtractor'
+    yaml_tag = '!BaseExtractor'
 
     def __init__(self, /,
                  input_files:list[str]
@@ -363,7 +359,7 @@ class SqlExtractor(BaseExtractor):
         the name of the signal which is to be extracted
 
     """
-    yaml_tag = u'!SqlExtractor'
+    yaml_tag = '!SqlExtractor'
 
     def __init__(self, /,
                  input_files:list
@@ -416,7 +412,7 @@ class OmnetExtractor(BaseExtractor):
     This is the base class.
     """
 
-    yaml_tag = u'!OmnetExtractor'
+    yaml_tag = '!OmnetExtractor'
 
     def __init__(self, /,
                  input_files:list
@@ -436,7 +432,7 @@ class OmnetExtractor(BaseExtractor):
                          , numerical_columns = numerical_columns
                          , *args, **kwargs)
 
-        if base_tags != None:
+        if base_tags is not None:
             self.base_tags:list = base_tags
         else:
             if minimal_tags:
@@ -615,7 +611,7 @@ class RawStatisticExtractor(OmnetExtractor):
     statId: str
         whether to extract the `statId` column as well
     """
-    yaml_tag = u'!RawStatisticExtractor'
+    yaml_tag = '!RawStatisticExtractor'
 
     def __init__(self, /,
                  input_files:list
@@ -686,7 +682,7 @@ class RawScalarExtractor(OmnetExtractor):
     scalarId: str
         whether to extract the `scalarId` column as well
     """
-    yaml_tag = u'!RawScalarExtractor'
+    yaml_tag = '!RawScalarExtractor'
 
     def __init__(self, /,
                  input_files:list
@@ -749,7 +745,7 @@ class RawExtractor(OmnetExtractor):
     alias: str
         the name given to the column with the extracted signal data
     """
-    yaml_tag = u'!RawExtractor'
+    yaml_tag = '!RawExtractor'
 
     def __init__(self, /,
                  input_files:list
@@ -820,7 +816,7 @@ class PositionExtractor(OmnetExtractor):
         data is extracted, the tuple (x0, y0, x1, y1) defines the corners of
         a rectangle
     """
-    yaml_tag = u'!PositionExtractor'
+    yaml_tag = '!PositionExtractor'
 
     def __init__(self, /,
                  input_files:list
@@ -841,7 +837,7 @@ class PositionExtractor(OmnetExtractor):
         self.signal:str = signal
         self.alias:str = alias
 
-        if restriction and type(restriction) == str:
+        if restriction and isinstance(restriction, str):
             self.restriction = eval(restriction)
         else:
             self.restriction = restriction
@@ -951,7 +947,7 @@ class MatchingExtractor(OmnetExtractor):
     alias: str
         the name given to the column with the extracted signal data
     """
-    yaml_tag = u'!MatchingExtractor'
+    yaml_tag = '!MatchingExtractor'
 
     def __init__(self, /,
                  input_files:list
@@ -1094,7 +1090,7 @@ class PatternMatchingBulkExtractor(OmnetExtractor):
         the template string for naming the extracted signal from the named capture groups matched by alias_match_pattern
 
     """
-    yaml_tag = u'!PatternMatchingBulkExtractor'
+    yaml_tag = '!PatternMatchingBulkExtractor'
 
     def __init__(self, /,
                  input_files:list
@@ -1161,7 +1157,7 @@ class PatternMatchingBulkExtractor(OmnetExtractor):
 
         data = data.drop(['vectorName'], axis=1)
 
-        if not data is None and not data.empty:
+        if data is not None and not data.empty:
             # convert the data type of the explicitly named columns
             result = OmnetExtractor.convert_columns_dtype(data
                                                          , categorical_columns=categorical_columns \
@@ -1233,7 +1229,7 @@ class PatternMatchingBulkScalarExtractor(OmnetExtractor):
     scalarName: bool
         whether to extract the scalarName column
     """
-    yaml_tag = u'!PatternMatchingBulkScalarExtractor'
+    yaml_tag = '!PatternMatchingBulkScalarExtractor'
 
     def __init__(self, /,
                  input_files:list
@@ -1288,7 +1284,7 @@ class PatternMatchingBulkScalarExtractor(OmnetExtractor):
                                                      )
 
         print(f'{data=}')
-        if data is None or (not data is None and data.empty):
+        if data is None or (data is not None and data.empty):
             return pd.DataFrame()
 
         def process_vectorName(d):
@@ -1311,7 +1307,7 @@ class PatternMatchingBulkScalarExtractor(OmnetExtractor):
 
         data = data.drop(['scalarName'], axis=1)
 
-        if not data is None and not data.empty:
+        if data is not None and not data.empty:
             # convert the data type of the explicitly named columns
             result = OmnetExtractor.convert_columns_dtype(data
                                                          , categorical_columns=categorical_columns \
@@ -1354,12 +1350,12 @@ def register_constructors():
     r"""
     Register YAML constructors for all extractors
     """
-    yaml.add_constructor(u'!RawExtractor', proto_constructor(RawExtractor))
-    yaml.add_constructor(u'!RawScalarExtractor', proto_constructor(RawScalarExtractor))
-    yaml.add_constructor(u'!RawStatisticExtractor', proto_constructor(RawStatisticExtractor))
-    yaml.add_constructor(u'!PositionExtractor', proto_constructor(PositionExtractor))
-    yaml.add_constructor(u'!MatchingExtractor', proto_constructor(MatchingExtractor))
-    yaml.add_constructor(u'!PatternMatchingBulkExtractor', proto_constructor(PatternMatchingBulkExtractor))
-    yaml.add_constructor(u'!PatternMatchingBulkScalarExtractor', proto_constructor(PatternMatchingBulkScalarExtractor))
-    yaml.add_constructor(u'!SqlExtractor', proto_constructor(SqlExtractor))
+    yaml.add_constructor('!RawExtractor', proto_constructor(RawExtractor))
+    yaml.add_constructor('!RawScalarExtractor', proto_constructor(RawScalarExtractor))
+    yaml.add_constructor('!RawStatisticExtractor', proto_constructor(RawStatisticExtractor))
+    yaml.add_constructor('!PositionExtractor', proto_constructor(PositionExtractor))
+    yaml.add_constructor('!MatchingExtractor', proto_constructor(MatchingExtractor))
+    yaml.add_constructor('!PatternMatchingBulkExtractor', proto_constructor(PatternMatchingBulkExtractor))
+    yaml.add_constructor('!PatternMatchingBulkScalarExtractor', proto_constructor(PatternMatchingBulkScalarExtractor))
+    yaml.add_constructor('!SqlExtractor', proto_constructor(SqlExtractor))
 

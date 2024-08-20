@@ -4,22 +4,18 @@ import pathlib
 import time
 import operator
 
-import json
-
 import yaml
 from yaml import YAMLObject
 
-import numpy as np
 import pandas as pd
 
 # Pandas serializing handlers
 import jsonpickle
 import jsonpickle.ext.pandas as jsonpickle_pandas
-jsonpickle_pandas.register_handlers()
 
 import dask
 
-from yaml_helper import decode_node, proto_constructor
+from yaml_helper import proto_constructor
 
 import logging
 from common.logging_facilities import logi, loge, logd, logw, get_logging_level
@@ -58,7 +54,7 @@ class FileResultProcessor(YAMLObject):
         whether to save the raw input or convert the columns of the input
         `pandas.DataFrame` to categories before saving
     """
-    yaml_tag = u'!FileResultProcessor'
+    yaml_tag = '!FileResultProcessor'
 
     def __init__(self, dataset_name:str
                  , output_filename = None
@@ -143,7 +139,7 @@ class FileResultProcessor(YAMLObject):
         self.data_repo = data_repo
 
     def get_data(self, dataset_name:str):
-        if not dataset_name in self.data_repo:
+        if dataset_name not in self.data_repo:
             raise Exception(f'"{dataset_name}" not found in data repo')
 
         data = self.data_repo[dataset_name]
@@ -214,10 +210,14 @@ class FileResultProcessor(YAMLObject):
         logd(f'FileResultProcessor: prepare: {job_list=}')
         return job_list
 
+def register_jsonpickle_handlers():
+    r"""
+    Register the jsonpickle handlers for pickling pandas objects to JSON.
+    """
+    jsonpickle_pandas.register_handlers()
 
 def register_constructors():
     r"""
     Register YAML constructors for all exporters
     """
-    yaml.add_constructor(u'!FileResultProcessor', proto_constructor(FileResultProcessor))
-
+    yaml.add_constructor('!FileResultProcessor', proto_constructor(FileResultProcessor))

@@ -2,7 +2,6 @@
 from typing import Union, List, Callable, Optional
 
 import functools
-import itertools
 import operator
 
 import re
@@ -11,7 +10,7 @@ import pprint
 
 # ---
 
-from common.logging_facilities import logi, loge, logd, logw
+from common.logging_facilities import logi, loge, logd
 
 # ---
 
@@ -20,7 +19,6 @@ from yaml import YAMLObject
 
 # ---
 
-import numpy as np
 import pandas as pd
 import seaborn as sb
 import matplotlib as mpl
@@ -28,20 +26,19 @@ import matplotlib as mpl
 # ---
 
 import dask
-import dask.dataframe as ddf
 
 import dask.distributed
-from dask.delayed import Delayed
 
 # ---
 
-from yaml_helper import decode_node, proto_constructor
+from yaml_helper import proto_constructor
 from data_io import DataSet, read_from_file
 from extractors import BaseExtractor, DataAttributes
 
 from utility.filesystem import check_file_access_permissions
 
-from common.debug import start_ipython_dbg_cmdline
+# Import for availability in user-supplied code.
+from common.debug import start_ipython_dbg_cmdline, start_debug  # noqa: F401
 
 # ---
 
@@ -66,7 +63,7 @@ class PlottingReaderFeather(YAMLObject):
     sample_seed: int
         the seed to use for the sampling RNG
     """
-    yaml_tag = u'!PlottingReaderFeather'
+    yaml_tag = '!PlottingReaderFeather'
 
     def __init__(self, input_files:str
                  , categorical_columns:set[str] = set()
@@ -228,7 +225,7 @@ class PlottingTask(YAMLObject):
         This takes the produced FacetGrid as input and returns the modified FacetGrid.
         The purpose is to allow for arbitrary modification not yet provided by the framework.
     """
-    yaml_tag = u'!PlottingTask'
+    yaml_tag = '!PlottingTask'
 
     def __init__(self, dataset_name:str
                  , output_file:str
@@ -308,7 +305,7 @@ class PlottingTask(YAMLObject):
 
         if plot_kwargs:
             # parse plot kwargs
-            if type(plot_kwargs) == dict:
+            if isinstance(plot_kwargs, dict):
                 self.plot_kwargs = plot_kwargs
             else:
                 loge(f"plot_kwargs set but is not a dict: {plot_kwargs=}")
@@ -379,7 +376,7 @@ class PlottingTask(YAMLObject):
 
         self.title_template = title_template
 
-        if type(xticklabels) == str:
+        if isinstance(xticklabels, str):
             self.xticklabels = eval(xticklabels)
         else:
             self.xticklabels = xticklabels
@@ -396,12 +393,12 @@ class PlottingTask(YAMLObject):
         self.legend = legend
         self.legend_location = legend_location
 
-        if type(legend_bbox) == str:
+        if isinstance(legend_bbox, str):
             self.legend_bbox = eval(self.legend_bbox)
         else:
             self.legend_bbox = legend_bbox
 
-        if type(legend_labels) == str:
+        if isinstance(legend_labels, str):
             self.legend_labels = eval(legend_labels)
         else:
             self.legend_labels = legend_labels
@@ -452,7 +449,7 @@ class PlottingTask(YAMLObject):
                  , colormap:Optional[str] = None
                      ):
 
-        if type(alpha) == str:
+        if isinstance(alpha, str):
             self.alpha = eval(alpha)
         else:
             self.alpha = alpha
@@ -462,7 +459,7 @@ class PlottingTask(YAMLObject):
 
         if matplotlib_rc:
             # parse the custom matplotlib_rc into an dictionary or None
-            if type(matplotlib_rc) == dict:
+            if isinstance(matplotlib_rc, dict):
                 # inline definition
                 self.matplotlib_rc_dict = matplotlib_rc
             else:
@@ -474,19 +471,19 @@ class PlottingTask(YAMLObject):
             self.matplotlib_rc = None
             self.matplotlib_rc_dict = None
 
-        if type(xrange) == str:
+        if isinstance(xrange, str):
             self.xrange = eval(xrange)
         else:
             self.xrange = xrange
 
-        if type(yrange) == str:
+        if isinstance(yrange, str):
             self.yrange = eval(yrange)
         else:
             self.yrange = yrange
 
         self.invert_yaxis = invert_yaxis
 
-        if type(plot_size) == str:
+        if isinstance(plot_size, str):
             self.plot_size = eval(plot_size)
         else:
             self.plot_size = plot_size
@@ -501,7 +498,7 @@ class PlottingTask(YAMLObject):
         self.data_repo = data_repo
 
     def get_data(self, dataset_name:str):
-        if not dataset_name in self.data_repo:
+        if dataset_name not in self.data_repo:
             raise Exception(f'"{dataset_name}" not found in data repo')
 
         data = self.data_repo[dataset_name]
@@ -557,7 +554,7 @@ class PlottingTask(YAMLObject):
         self.set_backend(self.matplotlib_backend)
         self.set_theme(self.context, self.axes_style)
 
-        if type(self.grid_transform) == str:
+        if isinstance(self.grid_transform, str):
             # The compilation of the extra code has to happen in the thread/process
             # of the processing worker since code objects can't be serialized.
             grid_transform = self.eval_grid_transform()
@@ -651,7 +648,7 @@ class PlottingTask(YAMLObject):
         if hasattr(fig, 'tight_layout'):
             fig.tight_layout(pad=0.1)
 
-        if self.legend is None and not fig.legend is None:
+        if self.legend is None and fig.legend is not None:
             if  isinstance(fig.legend, Callable):
                 fig.legend().remove()
             else:
@@ -705,7 +702,7 @@ class PlottingTask(YAMLObject):
                     case _:
                         raise Exception(f'Unknown plot type: "{pt}"')
 
-        if type(figure) == sb.axisgrid.FacetGrid:
+        if isinstance(figure, sb.axisgrid.FacetGrid):
             g = figure
         else:
             raise Exception('multipass drawing is only implemented for grids')
@@ -766,13 +763,13 @@ class PlottingTask(YAMLObject):
                 axis.set_xticklabels(self.xticklabels)
 
         # strings of length of zero evaluate to false, so test explicitly for None
-        if not self.title_template == None:
+        if self.title_template is not None:
             grid.set_titles(template=self.title_template)
 
         # logi(type(ax))
         # ax.fig.get_axes()[0].legend(loc='lower left', bbox_to_anchor=(0, 1, 1, 1))
 
-        if grid.legend and (isinstance(grid.legend, mpl.legend.Legend) or not grid.legend() is None):
+        if grid.legend and (isinstance(grid.legend, mpl.legend.Legend) or grid.legend() is not None):
             if self.legend_title:
                 if self.legend_bbox:
                     sb.move_legend(grid, loc=self.legend_location, title=self.legend_title, bbox_to_anchor=self.legend_bbox)
@@ -930,7 +927,7 @@ class PlottingTask(YAMLObject):
         logi(f'PlottingTask::plot_data: {df=}')
         logd(f'PlottingTask::plot_relplot: {df.columns=}')
 
-        if not column is None:
+        if column is not None:
             return self.plot_heatmap_grid(df, x, y, z, column)
         else:
             return self.plot_heatmap_nogrid(df, x, y, z)
@@ -1044,6 +1041,6 @@ class PlottingTask(YAMLObject):
         return grid
 
 def register_constructors():
-    yaml.add_constructor(u'!PlottingReaderFeather', proto_constructor(PlottingReaderFeather))
-    yaml.add_constructor(u'!PlottingTask', proto_constructor(PlottingTask))
+    yaml.add_constructor('!PlottingReaderFeather', proto_constructor(PlottingReaderFeather))
+    yaml.add_constructor('!PlottingTask', proto_constructor(PlottingTask))
 

@@ -1,4 +1,4 @@
-from typing import List, Mapping, Dict, Tuple
+from typing import Mapping, Tuple
 
 class Tag():
     r"""

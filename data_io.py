@@ -6,7 +6,7 @@ from typing import List, Optional, Union
 
 # ---
 
-from common.logging_facilities import logi, loge, logd, logw
+from common.logging_facilities import logi, logd
 
 # ---
 
@@ -58,7 +58,7 @@ class DataSet:
     def expand_data_path(self):
         file_list = []
         base_paths = []
-        if type(self.data_path) == list:
+        if isinstance(self.data_path, list):
             for entry in self.data_path:
                 base_path, files = self.evaluate_regex_path(entry)
                 file_list.extend(files)

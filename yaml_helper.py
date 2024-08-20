@@ -1,15 +1,26 @@
-import yaml
-
 from typing import Callable
 
-def load_yaml_from_file(file):
+import yaml
+
+
+def load_yaml_from_file(file_name:str):
     r"""
-    Read and evaluate the YAML contained in the file with the given name
+    Read and evaluate the YAML contained in the file with the given name, construct the corresponding python object
+    and return it.
+
+    Parameters
+    ----------
+    file_name: str
+        The path to the file to load.
+
+    Returns
+    -------
+    Any:
+        The object parsed from the YAML definitions in the given file.
     """
-    f = open(file, mode='r')
-    x = yaml.unsafe_load(f.read())
-    f.close()
-    return x
+    with open(file_name, mode = 'rt', encoding = 'utf_8') as text_file:
+        parsed_object = yaml.unsafe_load(text_file.read())
+    return parsed_object
 
 def construct_bool(loader, node):
     x = loader.construct_scalar(node)
@@ -46,13 +57,13 @@ def decode_node(loader, node):
                 case 'tag:yaml.org,2002:null' | '!null' | '!!null':
                     x = None
                 case 'tag:yaml.org,2002:tuple' | '!tuple' | '!!tuple':
-                    x = eval(node.value)
+                    x = eval(node.value) # pylint: disable=W0123:eval-used
                 case 'tag:yaml.org,2002:code' | '!code' | '!!code':
-                    x = eval(node.value)
+                    x = eval(node.value) # pylint: disable=W0123:eval-used
                 case 'tag:yaml.org,2002:eval' | '!eval' | '!!eval':
-                    x = eval(node.value)
+                    x = eval(node.value) # pylint: disable=W0123:eval-used
                 case 'tag:yaml.org,2002:dict' | '!dict' | '!!dict':
-                    x = eval(node.value)
+                    x = eval(node.value) # pylint: disable=W0123:eval-used
                 case _:
                     # use the default scalar constructor
                     x = loader.construct_scalar(node)
@@ -90,6 +101,6 @@ def register_constructors():
     r"""
     Register YAML constructors for all the custom tags
     """
-    yaml.add_constructor(u'!include', include_constructor)
+    yaml.add_constructor('!include', include_constructor)
 
 register_constructors()

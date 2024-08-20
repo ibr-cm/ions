@@ -14,14 +14,12 @@ from typing import Callable
 
 import logging
 
-from common.logging_facilities import logi, loge, logd, logw \
-                                        , setup_logging_defaults, set_logging_level
 
 # ---
 
 import yaml
 
-from yaml import load, dump
+from yaml import dump
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
 except ImportError:
@@ -33,12 +31,13 @@ import numexpr
 
 import dask
 import dask.distributed
-from dask.distributed import LocalCluster
+from dask.distributed import Client, LocalCluster
 from dask_jobqueue import SLURMCluster
 
-from dask.distributed import Client
 
 # ---
+
+from common.logging_facilities import logi, loge, logd, setup_logging_defaults, set_logging_level
 
 from recipe import Recipe
 
@@ -46,8 +45,6 @@ import extractors
 import transforms
 import exporters
 import plots
-
-from sql_queries import generate_signal_query
 
 # ---
 
@@ -59,15 +56,15 @@ _debug = False
 def eval_recipe_tag_definitions(recipe, attributes_regex_map, iterationvars_regex_map, parameters_regex_map):
     def eval_and_add_tags(tag_set_name, regex_map):
         for tag_name in recipe.evaluation.tags[tag_set_name]:
-            tag_list = eval(recipe.evaluation.tags[tag_set_name][tag_name])
+            tag_list = eval(recipe.evaluation.tags[tag_set_name][tag_name]) # pylint: disable=eval-used
             logd(f'{tag_name=} {tag_list=}')
-            l = []
+            evaluated_tag_list = []
             for tag in tag_list:
                 if not isinstance(tag['transform'], Callable):
-                    tag['transform'] = eval(tag['transform'])
-                l.append(tag)
+                    tag['transform'] = eval(tag['transform']) # pylint: disable=eval-used
+                evaluated_tag_list.append(tag)
 
-            regex_map[tag_name] = l
+            regex_map[tag_name] = evaluated_tag_list
 
     if 'attributes' in recipe.evaluation.tags:
         eval_and_add_tags('attributes', attributes_regex_map)
@@ -98,7 +95,7 @@ def prepare_evaluation_phase(recipe:Recipe, options, data_repo):
         extractor_name = list(extractor_tuple.keys())[0]
         extractor = list(extractor_tuple.values())[0]
 
-        if options.run_tree and not extractor_name in options.run_tree['evaluation']['extractors']:
+        if options.run_tree and extractor_name not in options.run_tree['evaluation']['extractors']:
             logi(f'skipping extractor {extractor_name}')
             continue
 
@@ -122,7 +119,7 @@ def prepare_evaluation_phase(recipe:Recipe, options, data_repo):
             transform_name = list(transform_tuple.keys())[0]
             transform = list(transform_tuple.values())[0]
 
-            if options.run_tree and not transform_name in options.run_tree['evaluation']['transforms']:
+            if options.run_tree and transform_name not in options.run_tree['evaluation']['transforms']:
                 logi(f'skipping transform {transform_name}')
                 continue
             logi(f'preparing transform {transform_name}')
@@ -141,7 +138,7 @@ def prepare_evaluation_phase(recipe:Recipe, options, data_repo):
             exporter_name = list(exporter_tuple.keys())[0]
             exporter = list(exporter_tuple.values())[0]
 
-            if options.run_tree and not exporter_name in options.run_tree['evaluation']['exporter']:
+            if options.run_tree and exporter_name not in options.run_tree['evaluation']['exporter']:
                 logi(f'skipping exporter {exporter_name}')
                 continue
 
@@ -174,7 +171,7 @@ def prepare_plotting_phase(recipe:Recipe, options, data_repo):
             dataset_name = list(dataset_tuple.keys())[0]
             reader = list(dataset_tuple.values())[0]
 
-            if options.run_tree and not dataset_name in options.run_tree['plot']['reader']:
+            if options.run_tree and dataset_name not in options.run_tree['plot']['reader']:
                 logi(f'skipping reader {dataset_name}')
                 continue
             logi(f'plot: loading dataset: "{dataset_name=}"')
@@ -196,7 +193,7 @@ def prepare_plotting_phase(recipe:Recipe, options, data_repo):
             transform_name = list(transform_tuple.keys())[0]
             transform = list(transform_tuple.values())[0]
 
-            if options.run_tree and not transform_name in options.run_tree['plot']['transforms']:
+            if options.run_tree and transform_name not in options.run_tree['plot']['transforms']:
                 logi(f'skipping transform {transform_name}')
                 continue
             transform.set_name(transform_name)
@@ -209,7 +206,7 @@ def prepare_plotting_phase(recipe:Recipe, options, data_repo):
         task_name = list(task_tuple.keys())[0]
         task = list(task_tuple.values())[0]
 
-        if options.run_tree and not task_name in options.run_tree['plot']['tasks']:
+        if options.run_tree and task_name not in options.run_tree['plot']['tasks']:
             logi(f'skipping task {task_name}')
             continue
 
@@ -299,6 +296,7 @@ def parse_arguments(arguments):
 
     parser.add_argument('--cluster', type=str, help='The address of an already running cluster')
     parser.add_argument('--single-threaded', action='store_true', default=False, help='Run in single-threaded mode; this overrides the value of the `--worker` flag')
+    parser.add_argument('--dashboard-port', type=int, default=8787, help='The port for the dashboard of the cluster. For the default localhost cluster')
 
     parser.add_argument('--slurm', action='store_true', default=False, help='Use a SLURM cluster')
     parser.add_argument('--partition', type=str, help='The partition for the SLURM cluster')
@@ -506,8 +504,9 @@ def setup_dask(options):
             client.register_worker_plugin(plugin)
             return client
     else:
-        logi(f'using local cluster with dashboard at localhost:8787')
-        client = Client(dashboard_address='localhost:8787', n_workers=options.worker)
+        dashboard_address = f'localhost:{options.dashboard_port}'
+        logi(f'using local cluster with dashboard at {dashboard_address}')
+        client = Client(dashboard_address=dashboard_address, n_workers=options.worker)
         client.register_worker_plugin(plugin)
         return client
 
@@ -541,6 +540,9 @@ def main():
     setup_pandas()
 
     client = setup_dask(options)
+
+    # This is needed for proper pickling of DataFrames to JSON.
+    exporters.register_jsonpickle_handlers()
 
     # register constructors for all YAML objects
     extractors.register_constructors()

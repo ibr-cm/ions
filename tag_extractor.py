@@ -97,7 +97,7 @@ class ExtractRunParametersTagsOperation():
         parameters_regex_map : dict
             The dictionary containing the definitions for the tags to extract from the `runParam` table
         """
-        tags:List[Tag] = []
+        tags:list[Tag] = []
 
         parameters_data = parameter_extractor()
         ExtractRunParametersTagsOperation.add_parameters(parameters_data, tags, parameters_regex_map)

@@ -1,7 +1,5 @@
 import sqlalchemy as sqla
 
-from typing import Tuple
-
 
 class OmnetppTableModel:
     r"""

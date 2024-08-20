@@ -6,36 +6,26 @@ from collections import defaultdict
 import yaml
 from yaml import YAMLObject
 
-# some of the imports here are just here to make a base set of libraries
-# available in the runtime environment of code fragments that are read and
-# evaluated from a recipe
-import numpy as np
 import pandas as pd
-
-import matplotlib
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-
-import seaborn as sb
 
 import dask
 
-from yaml_helper import decode_node, proto_constructor
+from yaml_helper import proto_constructor
 
 import logging
-from common.logging_facilities import logi, loge, logd, logw, get_logging_level
+from common.logging_facilities import loge, logd, logw, get_logging_level
 
 from extractors import DataAttributes
 
-# for debugging purposes
-from common.debug import start_ipython_dbg_cmdline, start_debug
+# Import for availability in user-supplied code.
+from common.debug import start_ipython_dbg_cmdline, start_debug  # noqa: F401
 
 
 class Transform(YAMLObject):
     r"""
     The base class for all transforms
     """
-    yaml_tag = u'!Transform'
+    yaml_tag = '!Transform'
 
     def set_name(self, name:str):
         self.name = name
@@ -58,7 +48,7 @@ class Transform(YAMLObject):
         dataset_name : str
             The name of the dataset to retrieve from the data repository
         """
-        if not dataset_name in self.data_repo:
+        if dataset_name not in self.data_repo:
             raise Exception(f'"{dataset_name}" not found in data repo')
 
         data = self.data_repo[dataset_name]
@@ -119,17 +109,17 @@ class ExtraCodeFunctionMixin:
         # code fragment so as to not pollute the global namespace itself
         global_env = globals().copy()
 
-        if type(extra_code) == str:
+        if isinstance(extra_code, str):
             # compile the code fragment
             compiled_extra_code = compile(extra_code, filename='<string>', mode='exec')
             # actually evaluate the code within the given namespace to allow
             # access to all the defined symbols, such as helper functions that are not defined inline
-            eval(compiled_extra_code, global_env)
+            eval(compiled_extra_code, global_env) # pylint: disable=W0123:eval-used
 
         if isinstance(function, Callable):
             evaluated_function = function
         else:
-            evaluated_function = eval(function, global_env)
+            evaluated_function = eval(function, global_env) # pylint: disable=W0123:eval-used
 
         return evaluated_function
 
@@ -147,7 +137,7 @@ class ConcatTransform(Transform, YAMLObject):
         the name given to the output dataset
     """
 
-    yaml_tag = u'!ConcatTransform'
+    yaml_tag = '!ConcatTransform'
 
     def __init__(self, dataset_names:Optional[List[str]]
                  , output_dataset_name:str):
@@ -213,7 +203,7 @@ class MergeTransform(Transform, YAMLObject):
 
     """
 
-    yaml_tag = u'!MergeTransform'
+    yaml_tag = '!MergeTransform'
 
     def __init__(self, dataset_name_left:str
                  , dataset_name_right:str
@@ -237,7 +227,7 @@ class MergeTransform(Transform, YAMLObject):
               , left_key_columns:Optional[List[str]] = None
               , right_key_columns:Optional[List[str]] = None):
         def is_empty(df):
-            if not df is None:
+            if df is not None:
                 if df.empty:
                     return True
                 return False
@@ -267,7 +257,7 @@ class MergeTransform(Transform, YAMLObject):
         def add_by_attribute(data_list):
             for data, attributes in data_list:
                 attribute = getattr(attributes, self.matching_attribute)
-                if type(attribute) == set:
+                if isinstance(attribute, set):
                     attribute = '_'.join(list(attribute))
                 d[attribute].append((data, attributes))
 
@@ -349,7 +339,7 @@ class FunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
         functions for readibility.
     """
 
-    yaml_tag = u'!FunctionTransform'
+    yaml_tag = '!FunctionTransform'
 
     def __init__(self, dataset_name:str, output_dataset_name:str
                  , function:Union[Callable[[pd.DataFrame], pd.DataFrame], str]=None
@@ -367,7 +357,7 @@ class FunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
         self.extra_code = extra_code
 
     def process(self, data, attributes) -> pd.DataFrame:
-        if data is None or (not data is None and data.empty):
+        if data is None or (data is not None and data.empty):
             return pd.DataFrame()
 
         # Get the function to call and possibly compile and evaluate the code defined in
@@ -425,7 +415,7 @@ class ColumnFunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
         functions for readibility.
     """
 
-    yaml_tag = u'!ColumnFunctionTransform'
+    yaml_tag = '!ColumnFunctionTransform'
 
     def __init__(self, dataset_name:str, output_dataset_name:str
                  , input_column:str, output_column:str
@@ -522,7 +512,7 @@ class GroupedAggregationTransform(Transform, ExtraCodeFunctionMixin, YAMLObject)
     timestamp_selector: Callable
         the function to select the row in the partition data as template for the output in case of aggregation
     """
-    yaml_tag = u'!GroupedAggregationTransform'
+    yaml_tag = '!GroupedAggregationTransform'
 
     def __init__(self, dataset_name:str, output_dataset_name:str
                  , input_column:str, output_column:str
@@ -662,7 +652,7 @@ class GroupedFunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
     timestamp_selector: Callable
         the function to select the row in the partition data as template for the output in case of aggregation
     """
-    yaml_tag = u'!GroupedFunctionTransform'
+    yaml_tag = '!GroupedFunctionTransform'
 
     def __init__(self, dataset_name:str, output_dataset_name:str
                  , input_column:str, output_column:str
@@ -772,10 +762,10 @@ def register_constructors():
     r"""
     Register YAML constructors for all transforms
     """
-    yaml.add_constructor(u'!ConcatTransform', proto_constructor(ConcatTransform))
-    yaml.add_constructor(u'!FunctionTransform', proto_constructor(FunctionTransform))
-    yaml.add_constructor(u'!ColumnFunctionTransform', proto_constructor(ColumnFunctionTransform))
-    yaml.add_constructor(u'!GroupedAggregationTransform', proto_constructor(GroupedAggregationTransform))
-    yaml.add_constructor(u'!GroupedFunctionTransform', proto_constructor(GroupedFunctionTransform))
-    yaml.add_constructor(u'!MergeTransform', proto_constructor(MergeTransform))
+    yaml.add_constructor('!ConcatTransform', proto_constructor(ConcatTransform))
+    yaml.add_constructor('!FunctionTransform', proto_constructor(FunctionTransform))
+    yaml.add_constructor('!ColumnFunctionTransform', proto_constructor(ColumnFunctionTransform))
+    yaml.add_constructor('!GroupedAggregationTransform', proto_constructor(GroupedAggregationTransform))
+    yaml.add_constructor('!GroupedFunctionTransform', proto_constructor(GroupedFunctionTransform))
+    yaml.add_constructor('!MergeTransform', proto_constructor(MergeTransform))
 
