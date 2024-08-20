@@ -876,12 +876,20 @@ class PlottingTask(YAMLObject):
         kwargs = self.set_plot_specific_options(plot_type, **kwargs)
 
         logd(f'PlottingTask::plot_catplot: {df.columns=}')
-        grid = sb.catplot(data=df, x=x, y=y, row=row, col=column
-                        , hue=hue
-                        , kind=plot_type
-                        # , legend_out=False
-                        , **kwargs
-                       )
+        if plot_type != 'count':
+            grid = sb.catplot(data=df, x=x, y=y, row=row, col=column
+                            , hue=hue
+                            , kind=plot_type
+                            # , legend_out=False
+                            , **kwargs
+                           )
+        else:
+            grid = sb.catplot(data=df, x=x, row=row, col=column
+                            , hue=hue
+                            , kind=plot_type
+                            # , legend_out=False
+                            , **kwargs
+                           )
 
         grid = self.set_grid_defaults(grid)
 
