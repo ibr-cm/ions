@@ -218,11 +218,21 @@ The equivalent SQL query:</p>
 </dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="sql_queries.run_param_query">
-<span class="sig-prename descclassname"><span class="pre">sql_queries.</span></span><span class="sig-name descname"><span class="pre">run_param_query</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;sqlalchemy.sql.selectable.Select</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#sql_queries.run_param_query" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="sql_queries.run_config_query">
+<span class="sig-prename descclassname"><span class="pre">sql_queries.</span></span><span class="sig-name descname"><span class="pre">run_config_query</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;sqlalchemy.sql.selectable.Select</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#sql_queries.run_config_query" title="Link to this definition"></a></dt>
 <dd><p>Query the <cite>vector</cite> table and return all the <a href="#id1"><span class="problematic" id="id2">`</span></a>vectorName`s contained in it.
 The equivalent SQL query:</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">vectorName</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">vector_table</span><span class="p">;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="sql_queries.run_param_query">
+<span class="sig-prename descclassname"><span class="pre">sql_queries.</span></span><span class="sig-name descname"><span class="pre">run_param_query</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;sqlalchemy.sql.selectable.Select</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#sql_queries.run_param_query" title="Link to this definition"></a></dt>
+<dd><p>Query the <cite>runConfig</cite> table and return all the rows contained in it. For OMNeT++ versions &gt;= 6.
+The equivalent SQL query:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">configKey</span><span class="p">,</span><span class="w"> </span><span class="n">configValue</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">runConfig</span><span class="p">;</span>
 </pre></div>
 </div>
 </dd></dl>

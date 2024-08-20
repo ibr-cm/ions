@@ -172,6 +172,15 @@
         <span class="k">return</span> <span class="n">result</span></div>
 
 
+<div class="viewcode-block" id="SqlLiteReader.config_extractor">
+<a class="viewcode-back" href="../extractors.html#extractors.SqlLiteReader.config_extractor">[docs]</a>
+    <span class="k">def</span> <span class="nf">config_extractor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">sql_queries</span><span class="o">.</span><span class="n">run_config_query</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
 <div class="viewcode-block" id="SqlLiteReader.attribute_extractor">
 <a class="viewcode-back" href="../extractors.html#extractors.SqlLiteReader.attribute_extractor">[docs]</a>
     <span class="k">def</span> <span class="nf">attribute_extractor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -197,8 +206,30 @@
 <span class="sd">        Extract all tags defined in the given mappings from the `runAttr` and `runParam` tables and parse the value of the `iterationvars` attribute.</span>
 <span class="sd">        See the module `tag_regular_expressions` for the expected structure of the mappings.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tags</span> <span class="o">=</span> <span class="n">ExtractRunParametersTagsOperation</span><span class="o">.</span><span class="n">extract_attributes_and_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameter_extractor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attribute_extractor</span>
-                                                                               <span class="p">,</span> <span class="n">parameters_regex_map</span><span class="p">,</span> <span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">iterationvars_regex_map</span><span class="p">)</span>
+
+        <span class="c1"># Determine OMNeT++ version by checking whether a `runParam` or a `runConfig` table exists.</span>
+        <span class="c1"># OMNeT++ versions &gt;= 6 store the parameters in the `runConfig` table, previous versions in the `runParams` table.</span>
+        <span class="n">runParamName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute_sql_query</span><span class="p">(</span><span class="s2">&quot;SELECT name FROM sqlite_master WHERE name=&#39;runParam&#39;;&quot;</span><span class="p">)</span>
+        <span class="n">runConfigName</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute_sql_query</span><span class="p">(</span><span class="s2">&quot;SELECT name FROM sqlite_master WHERE name=&#39;runConfig&#39;;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">runParamName</span><span class="p">)</span> <span class="ow">and</span> <span class="n">runConfigName</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="c1"># versions &lt; 6</span>
+            <span class="n">parameter_extractor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameter_extractor</span>
+            <span class="n">isOmnetv6</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">runParamName</span><span class="o">.</span><span class="n">empty</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">runConfigName</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># versions &gt;= 6</span>
+            <span class="n">parameter_extractor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_extractor</span>
+            <span class="n">isOmnetv6</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;Neither the `runParam` nor the `runConfig` table has been found in the input database. &quot;</span>
+                <span class="s2">&quot;This is possibly either a corrupted database or an unknown OMNeT++ version.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">tags</span> <span class="o">=</span> <span class="n">ExtractRunParametersTagsOperation</span><span class="o">.</span><span class="n">extract_attributes_and_params</span><span class="p">(</span><span class="n">parameter_extractor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attribute_extractor</span>
+                                                                               <span class="p">,</span> <span class="n">parameters_regex_map</span><span class="p">,</span> <span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">iterationvars_regex_map</span>
+                                                                               <span class="p">,</span> <span class="n">isOmnetv6</span><span class="o">=</span><span class="n">isOmnetv6</span>
+                                                                               <span class="p">)</span>
         <span class="k">return</span> <span class="n">tags</span></div>
 </div>
 

@@ -257,8 +257,26 @@
 <span class="sd">                             , paramKey    TEXT NOT NULL</span>
 <span class="sd">                             , paramValue  TEXT NOT NULL</span>
 <span class="sd">                             , paramOrder  INTEGER NOT NULL );</span>
-<span class="sd">    &quot;&quot;&quot;</span></div>
+<span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">runConfig_table</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s1">&#39;runConfig&#39;</span>
+                                     <span class="p">,</span> <span class="n">metadata</span>
+                                     <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;rowId&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                                     <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;runId&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s1">&#39;run.runId&#39;</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                                     <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;configKey&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                                     <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;configValue&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">String</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                                     <span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;configOrder&#39;</span><span class="p">,</span> <span class="n">sqla</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                                    <span class="p">)</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Equivalent SQLite statement:</span>
+
+<span class="sd">    .. code-block:: sql</span>
+
+<span class="sd">      CREATE TABLE runConfig ( runId       INTEGER NOT NULL REFERENCES run(runId) ON DELETE CASCADE</span>
+<span class="sd">                             , configKey    TEXT NOT NULL</span>
+<span class="sd">                             , configValue  TEXT NOT NULL</span>
+<span class="sd">                             , configOrder  INTEGER NOT NULL );</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
 
 </pre></div>
 

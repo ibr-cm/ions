@@ -149,8 +149,8 @@
 <div class="viewcode-block" id="ExtractRunParametersTagsOperation.add_parameters">
 <a class="viewcode-back" href="../tag_extractor.html#tag_extractor.ExtractRunParametersTagsOperation.add_parameters">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">add_parameters</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">parameters_regex_map</span><span class="p">):</span>
-        <span class="n">ExtractRunParametersTagsOperation</span><span class="o">.</span><span class="n">add_tags</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;paramKey&#39;</span><span class="p">,</span> <span class="s1">&#39;paramValue&#39;</span><span class="p">,</span> <span class="n">parameters_regex_map</span><span class="p">,</span> <span class="n">tags</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">add_parameters</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">parameters_regex_map</span><span class="p">,</span> <span class="n">parameter_key_name</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;paramKey&#39;</span><span class="p">,</span> <span class="n">parameter_value_name</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;paramValue&#39;</span><span class="p">):</span>
+        <span class="n">ExtractRunParametersTagsOperation</span><span class="o">.</span><span class="n">add_tags</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">parameter_key_name</span><span class="p">,</span> <span class="n">parameter_value_name</span><span class="p">,</span> <span class="n">parameters_regex_map</span><span class="p">,</span> <span class="n">tags</span><span class="p">)</span></div>
 
 
 
@@ -188,7 +188,9 @@
 <a class="viewcode-back" href="../tag_extractor.html#tag_extractor.ExtractRunParametersTagsOperation.extract_attributes_and_params">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">extract_attributes_and_params</span><span class="p">(</span><span class="n">parameter_extractor</span><span class="p">,</span> <span class="n">attribute_extractor</span>
-                                      <span class="p">,</span> <span class="n">parameters_regex_map</span><span class="p">,</span> <span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">iterationvars_regex_map</span><span class="p">):</span>
+                                      <span class="p">,</span> <span class="n">parameters_regex_map</span><span class="p">,</span> <span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">iterationvars_regex_map</span>
+                                      <span class="p">,</span> <span class="n">isOmnetv6</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
+                                      <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -206,7 +208,12 @@
         <span class="n">tags</span><span class="p">:</span><span class="nb">list</span><span class="p">[</span><span class="n">Tag</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="n">parameters_data</span> <span class="o">=</span> <span class="n">parameter_extractor</span><span class="p">()</span>
-        <span class="n">ExtractRunParametersTagsOperation</span><span class="o">.</span><span class="n">add_parameters</span><span class="p">(</span><span class="n">parameters_data</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">parameters_regex_map</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">isOmnetv6</span><span class="p">:</span>
+            <span class="n">ExtractRunParametersTagsOperation</span><span class="o">.</span><span class="n">add_parameters</span><span class="p">(</span><span class="n">parameters_data</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">parameters_regex_map</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ExtractRunParametersTagsOperation</span><span class="o">.</span><span class="n">add_parameters</span><span class="p">(</span><span class="n">parameters_data</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">parameters_regex_map</span>
+                                                            <span class="p">,</span> <span class="n">parameter_key_name</span><span class="o">=</span><span class="s1">&#39;configKey&#39;</span><span class="p">,</span> <span class="n">parameter_value_name</span><span class="o">=</span><span class="s1">&#39;configValue&#39;</span>
+                                                            <span class="p">)</span>
 
         <span class="n">attributes_data</span> <span class="o">=</span> <span class="n">attribute_extractor</span><span class="p">()</span>
         <span class="n">ExtractRunParametersTagsOperation</span><span class="o">.</span><span class="n">add_attributes</span><span class="p">(</span><span class="n">attributes_data</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">iterationvars_regex_map</span><span class="p">)</span>

@@ -110,6 +110,16 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="n">run_param_query</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">runParam_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">rowId</span><span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">runParam_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">paramKey</span><span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">runParam_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">paramValue</span><span class="p">)</span>
 
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Query the `runConfig` table and return all the rows contained in it. For OMNeT++ versions &gt;= 6.</span>
+<span class="sd">The equivalent SQL query:</span>
+
+<span class="sd">.. code-block:: sql</span>
+
+<span class="sd"> SELECT configKey, configValue FROM runConfig;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">run_config_query</span> <span class="o">=</span> <span class="n">sqla</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">TM</span><span class="o">.</span><span class="n">runConfig_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">rowId</span><span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">runConfig_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">configKey</span><span class="p">,</span> <span class="n">TM</span><span class="o">.</span><span class="n">runConfig_table</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">configValue</span><span class="p">)</span>
 
 <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Query the `vector` table and return all the `vectorName`s contained in it.</span>
