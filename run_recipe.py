@@ -14,7 +14,6 @@ from typing import Callable
 
 import logging
 
-from common.logging_facilities import logi, loge, logd, setup_logging_defaults, set_logging_level
 
 # ---
 
@@ -32,12 +31,13 @@ import numexpr
 
 import dask
 import dask.distributed
-from dask.distributed import LocalCluster
+from dask.distributed import Client, LocalCluster
 from dask_jobqueue import SLURMCluster
 
-from dask.distributed import Client
 
 # ---
+
+from common.logging_facilities import logi, loge, logd, setup_logging_defaults, set_logging_level
 
 from recipe import Recipe
 
