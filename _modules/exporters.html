@@ -88,22 +88,18 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">operator</span>
 
-<span class="kn">import</span> <span class="nn">json</span>
-
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">yaml</span> <span class="kn">import</span> <span class="n">YAMLObject</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="c1"># Pandas serializing handlers</span>
 <span class="kn">import</span> <span class="nn">jsonpickle</span>
 <span class="kn">import</span> <span class="nn">jsonpickle.ext.pandas</span> <span class="k">as</span> <span class="nn">jsonpickle_pandas</span>
-<span class="n">jsonpickle_pandas</span><span class="o">.</span><span class="n">register_handlers</span><span class="p">()</span>
 
 <span class="kn">import</span> <span class="nn">dask</span>
 
-<span class="kn">from</span> <span class="nn">yaml_helper</span> <span class="kn">import</span> <span class="n">decode_node</span><span class="p">,</span> <span class="n">proto_constructor</span>
+<span class="kn">from</span> <span class="nn">yaml_helper</span> <span class="kn">import</span> <span class="n">proto_constructor</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">common.logging_facilities</span> <span class="kn">import</span> <span class="n">logi</span><span class="p">,</span> <span class="n">loge</span><span class="p">,</span> <span class="n">logd</span><span class="p">,</span> <span class="n">logw</span><span class="p">,</span> <span class="n">get_logging_level</span>
@@ -144,7 +140,7 @@
 <span class="sd">        whether to save the raw input or convert the columns of the input</span>
 <span class="sd">        `pandas.DataFrame` to categories before saving</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!FileResultProcessor&#39;</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s1">&#39;!FileResultProcessor&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">:</span><span class="nb">str</span>
                  <span class="p">,</span> <span class="n">output_filename</span> <span class="o">=</span> <span class="kc">None</span>
@@ -237,7 +233,7 @@
 <div class="viewcode-block" id="FileResultProcessor.get_data">
 <a class="viewcode-back" href="../exporters.html#exporters.FileResultProcessor.get_data">[docs]</a>
     <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_repo</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">dataset_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_repo</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s1">&quot; not found in data repo&#39;</span><span class="p">)</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_repo</span><span class="p">[</span><span class="n">dataset_name</span><span class="p">]</span>
@@ -319,6 +315,14 @@
 </div>
 
 
+<div class="viewcode-block" id="register_jsonpickle_handlers">
+<a class="viewcode-back" href="../exporters.html#exporters.register_jsonpickle_handlers">[docs]</a>
+<span class="k">def</span> <span class="nf">register_jsonpickle_handlers</span><span class="p">():</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Register the jsonpickle handlers for pickling pandas objects to JSON.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">jsonpickle_pandas</span><span class="o">.</span><span class="n">register_handlers</span><span class="p">()</span></div>
+
 
 <div class="viewcode-block" id="register_constructors">
 <a class="viewcode-back" href="../exporters.html#exporters.register_constructors">[docs]</a>
@@ -326,8 +330,7 @@
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Register YAML constructors for all exporters</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;!FileResultProcessor&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">FileResultProcessor</span><span class="p">))</span></div>
-
+    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="s1">&#39;!FileResultProcessor&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">FileResultProcessor</span><span class="p">))</span></div>
 
 </pre></div>
 

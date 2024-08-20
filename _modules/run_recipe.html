@@ -98,14 +98,12 @@
 
 <span class="kn">import</span> <span class="nn">logging</span>
 
-<span class="kn">from</span> <span class="nn">common.logging_facilities</span> <span class="kn">import</span> <span class="n">logi</span><span class="p">,</span> <span class="n">loge</span><span class="p">,</span> <span class="n">logd</span><span class="p">,</span> <span class="n">logw</span> \
-                                        <span class="p">,</span> <span class="n">setup_logging_defaults</span><span class="p">,</span> <span class="n">set_logging_level</span>
 
 <span class="c1"># ---</span>
 
 <span class="kn">import</span> <span class="nn">yaml</span>
 
-<span class="kn">from</span> <span class="nn">yaml</span> <span class="kn">import</span> <span class="n">load</span><span class="p">,</span> <span class="n">dump</span>
+<span class="kn">from</span> <span class="nn">yaml</span> <span class="kn">import</span> <span class="n">dump</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">yaml</span> <span class="kn">import</span> <span class="n">CLoader</span> <span class="k">as</span> <span class="n">Loader</span><span class="p">,</span> <span class="n">CDumper</span> <span class="k">as</span> <span class="n">Dumper</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -117,12 +115,13 @@
 
 <span class="kn">import</span> <span class="nn">dask</span>
 <span class="kn">import</span> <span class="nn">dask.distributed</span>
-<span class="kn">from</span> <span class="nn">dask.distributed</span> <span class="kn">import</span> <span class="n">LocalCluster</span>
+<span class="kn">from</span> <span class="nn">dask.distributed</span> <span class="kn">import</span> <span class="n">Client</span><span class="p">,</span> <span class="n">LocalCluster</span>
 <span class="kn">from</span> <span class="nn">dask_jobqueue</span> <span class="kn">import</span> <span class="n">SLURMCluster</span>
 
-<span class="kn">from</span> <span class="nn">dask.distributed</span> <span class="kn">import</span> <span class="n">Client</span>
 
 <span class="c1"># ---</span>
+
+<span class="kn">from</span> <span class="nn">common.logging_facilities</span> <span class="kn">import</span> <span class="n">logi</span><span class="p">,</span> <span class="n">loge</span><span class="p">,</span> <span class="n">logd</span><span class="p">,</span> <span class="n">setup_logging_defaults</span><span class="p">,</span> <span class="n">set_logging_level</span>
 
 <span class="kn">from</span> <span class="nn">recipe</span> <span class="kn">import</span> <span class="n">Recipe</span>
 
@@ -130,8 +129,6 @@
 <span class="kn">import</span> <span class="nn">transforms</span>
 <span class="kn">import</span> <span class="nn">exporters</span>
 <span class="kn">import</span> <span class="nn">plots</span>
-
-<span class="kn">from</span> <span class="nn">sql_queries</span> <span class="kn">import</span> <span class="n">generate_signal_query</span>
 
 <span class="c1"># ---</span>
 
@@ -145,15 +142,15 @@
 <span class="k">def</span> <span class="nf">eval_recipe_tag_definitions</span><span class="p">(</span><span class="n">recipe</span><span class="p">,</span> <span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">iterationvars_regex_map</span><span class="p">,</span> <span class="n">parameters_regex_map</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">eval_and_add_tags</span><span class="p">(</span><span class="n">tag_set_name</span><span class="p">,</span> <span class="n">regex_map</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">tag_name</span> <span class="ow">in</span> <span class="n">recipe</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">tag_set_name</span><span class="p">]:</span>
-            <span class="n">tag_list</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">recipe</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">tag_set_name</span><span class="p">][</span><span class="n">tag_name</span><span class="p">])</span>
+            <span class="n">tag_list</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">recipe</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">tag_set_name</span><span class="p">][</span><span class="n">tag_name</span><span class="p">])</span> <span class="c1"># pylint: disable=eval-used</span>
             <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">tag_name</span><span class="si">=}</span><span class="s1"> </span><span class="si">{</span><span class="n">tag_list</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">l</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">evaluated_tag_list</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tag_list</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tag</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">],</span> <span class="n">Callable</span><span class="p">):</span>
-                    <span class="n">tag</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">tag</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">])</span>
-                <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+                    <span class="n">tag</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">tag</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">])</span> <span class="c1"># pylint: disable=eval-used</span>
+                <span class="n">evaluated_tag_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
 
-            <span class="n">regex_map</span><span class="p">[</span><span class="n">tag_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span>
+            <span class="n">regex_map</span><span class="p">[</span><span class="n">tag_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">evaluated_tag_list</span>
 
     <span class="k">if</span> <span class="s1">&#39;attributes&#39;</span> <span class="ow">in</span> <span class="n">recipe</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
         <span class="n">eval_and_add_tags</span><span class="p">(</span><span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="n">attributes_regex_map</span><span class="p">)</span>
@@ -187,7 +184,7 @@
         <span class="n">extractor_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">extractor_tuple</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">extractor</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">extractor_tuple</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">extractor_name</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span><span class="p">[</span><span class="s1">&#39;evaluation&#39;</span><span class="p">][</span><span class="s1">&#39;extractors&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span> <span class="ow">and</span> <span class="n">extractor_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span><span class="p">[</span><span class="s1">&#39;evaluation&#39;</span><span class="p">][</span><span class="s1">&#39;extractors&#39;</span><span class="p">]:</span>
             <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;skipping extractor </span><span class="si">{</span><span class="n">extractor_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">continue</span>
 
@@ -211,7 +208,7 @@
             <span class="n">transform_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">transform_tuple</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">transform</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">transform_tuple</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 
-            <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">transform_name</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span><span class="p">[</span><span class="s1">&#39;evaluation&#39;</span><span class="p">][</span><span class="s1">&#39;transforms&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span> <span class="ow">and</span> <span class="n">transform_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span><span class="p">[</span><span class="s1">&#39;evaluation&#39;</span><span class="p">][</span><span class="s1">&#39;transforms&#39;</span><span class="p">]:</span>
                 <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;skipping transform </span><span class="si">{</span><span class="n">transform_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">continue</span>
             <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;preparing transform </span><span class="si">{</span><span class="n">transform_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -230,7 +227,7 @@
             <span class="n">exporter_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">exporter_tuple</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">exporter</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">exporter_tuple</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 
-            <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">exporter_name</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span><span class="p">[</span><span class="s1">&#39;evaluation&#39;</span><span class="p">][</span><span class="s1">&#39;exporter&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span> <span class="ow">and</span> <span class="n">exporter_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span><span class="p">[</span><span class="s1">&#39;evaluation&#39;</span><span class="p">][</span><span class="s1">&#39;exporter&#39;</span><span class="p">]:</span>
                 <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;skipping exporter </span><span class="si">{</span><span class="n">exporter_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">continue</span>
 
@@ -266,7 +263,7 @@
             <span class="n">dataset_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset_tuple</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">reader</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset_tuple</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 
-            <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">dataset_name</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span><span class="p">[</span><span class="s1">&#39;plot&#39;</span><span class="p">][</span><span class="s1">&#39;reader&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span> <span class="ow">and</span> <span class="n">dataset_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span><span class="p">[</span><span class="s1">&#39;plot&#39;</span><span class="p">][</span><span class="s1">&#39;reader&#39;</span><span class="p">]:</span>
                 <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;skipping reader </span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">continue</span>
             <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;plot: loading dataset: &quot;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">=}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
@@ -288,7 +285,7 @@
             <span class="n">transform_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">transform_tuple</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">transform</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">transform_tuple</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 
-            <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">transform_name</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span><span class="p">[</span><span class="s1">&#39;plot&#39;</span><span class="p">][</span><span class="s1">&#39;transforms&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span> <span class="ow">and</span> <span class="n">transform_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span><span class="p">[</span><span class="s1">&#39;plot&#39;</span><span class="p">][</span><span class="s1">&#39;transforms&#39;</span><span class="p">]:</span>
                 <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;skipping transform </span><span class="si">{</span><span class="n">transform_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">continue</span>
             <span class="n">transform</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="n">transform_name</span><span class="p">)</span>
@@ -301,7 +298,7 @@
         <span class="n">task_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">task_tuple</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">task</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">task_tuple</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">task_name</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span><span class="p">[</span><span class="s1">&#39;plot&#39;</span><span class="p">][</span><span class="s1">&#39;tasks&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span> <span class="ow">and</span> <span class="n">task_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">run_tree</span><span class="p">[</span><span class="s1">&#39;plot&#39;</span><span class="p">][</span><span class="s1">&#39;tasks&#39;</span><span class="p">]:</span>
             <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;skipping task </span><span class="si">{</span><span class="n">task_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">continue</span>
 
@@ -400,6 +397,7 @@
 
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--cluster&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The address of an already running cluster&#39;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--single-threaded&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Run in single-threaded mode; this overrides the value of the `--worker` flag&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dashboard-port&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">8787</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The port for the dashboard of the cluster. For the default localhost cluster&#39;</span><span class="p">)</span>
 
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--slurm&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Use a SLURM cluster&#39;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--partition&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The partition for the SLURM cluster&#39;</span><span class="p">)</span>
@@ -619,8 +617,9 @@
             <span class="n">client</span><span class="o">.</span><span class="n">register_worker_plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">client</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;using local cluster with dashboard at localhost:8787&#39;</span><span class="p">)</span>
-        <span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">dashboard_address</span><span class="o">=</span><span class="s1">&#39;localhost:8787&#39;</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">worker</span><span class="p">)</span>
+        <span class="n">dashboard_address</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;localhost:</span><span class="si">{</span><span class="n">options</span><span class="o">.</span><span class="n">dashboard_port</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;using local cluster with dashboard at </span><span class="si">{</span><span class="n">dashboard_address</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">dashboard_address</span><span class="o">=</span><span class="n">dashboard_address</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">worker</span><span class="p">)</span>
         <span class="n">client</span><span class="o">.</span><span class="n">register_worker_plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">client</span></div>
 
@@ -660,6 +659,9 @@
     <span class="n">setup_pandas</span><span class="p">()</span>
 
     <span class="n">client</span> <span class="o">=</span> <span class="n">setup_dask</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+
+    <span class="c1"># This is needed for proper pickling of DataFrames to JSON.</span>
+    <span class="n">exporters</span><span class="o">.</span><span class="n">register_jsonpickle_handlers</span><span class="p">()</span>
 
     <span class="c1"># register constructors for all YAML objects</span>
     <span class="n">extractors</span><span class="o">.</span><span class="n">register_constructors</span><span class="p">()</span>

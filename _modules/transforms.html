@@ -90,29 +90,19 @@
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">yaml</span> <span class="kn">import</span> <span class="n">YAMLObject</span>
 
-<span class="c1"># some of the imports here are just here to make a base set of libraries</span>
-<span class="c1"># available in the runtime environment of code fragments that are read and</span>
-<span class="c1"># evaluated from a recipe</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-
-<span class="kn">import</span> <span class="nn">matplotlib</span>
-<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-
-<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sb</span>
 
 <span class="kn">import</span> <span class="nn">dask</span>
 
-<span class="kn">from</span> <span class="nn">yaml_helper</span> <span class="kn">import</span> <span class="n">decode_node</span><span class="p">,</span> <span class="n">proto_constructor</span>
+<span class="kn">from</span> <span class="nn">yaml_helper</span> <span class="kn">import</span> <span class="n">proto_constructor</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">common.logging_facilities</span> <span class="kn">import</span> <span class="n">logi</span><span class="p">,</span> <span class="n">loge</span><span class="p">,</span> <span class="n">logd</span><span class="p">,</span> <span class="n">logw</span><span class="p">,</span> <span class="n">get_logging_level</span>
+<span class="kn">from</span> <span class="nn">common.logging_facilities</span> <span class="kn">import</span> <span class="n">loge</span><span class="p">,</span> <span class="n">logd</span><span class="p">,</span> <span class="n">logw</span><span class="p">,</span> <span class="n">get_logging_level</span>
 
 <span class="kn">from</span> <span class="nn">extractors</span> <span class="kn">import</span> <span class="n">DataAttributes</span>
 
-<span class="c1"># for debugging purposes</span>
-<span class="kn">from</span> <span class="nn">common.debug</span> <span class="kn">import</span> <span class="n">start_ipython_dbg_cmdline</span><span class="p">,</span> <span class="n">start_debug</span>
+<span class="c1"># Import for availability in user-supplied code.</span>
+<span class="kn">from</span> <span class="nn">common.debug</span> <span class="kn">import</span> <span class="n">start_ipython_dbg_cmdline</span><span class="p">,</span> <span class="n">start_debug</span>  <span class="c1"># noqa: F401</span>
 
 
 <div class="viewcode-block" id="Transform">
@@ -121,7 +111,7 @@
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The base class for all transforms</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!Transform&#39;</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s1">&#39;!Transform&#39;</span>
 
 <div class="viewcode-block" id="Transform.set_name">
 <a class="viewcode-back" href="../transforms.html#transforms.Transform.set_name">[docs]</a>
@@ -152,7 +142,7 @@
 <span class="sd">        dataset_name : str</span>
 <span class="sd">            The name of the dataset to retrieve from the data repository</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">dataset_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_repo</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">dataset_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_repo</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s1">&quot; not found in data repo&#39;</span><span class="p">)</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_repo</span><span class="p">[</span><span class="n">dataset_name</span><span class="p">]</span>
@@ -225,17 +215,17 @@
         <span class="c1"># code fragment so as to not pollute the global namespace itself</span>
         <span class="n">global_env</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">extra_code</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">extra_code</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="c1"># compile the code fragment</span>
             <span class="n">compiled_extra_code</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="n">extra_code</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;&lt;string&gt;&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;exec&#39;</span><span class="p">)</span>
             <span class="c1"># actually evaluate the code within the given namespace to allow</span>
             <span class="c1"># access to all the defined symbols, such as helper functions that are not defined inline</span>
-            <span class="nb">eval</span><span class="p">(</span><span class="n">compiled_extra_code</span><span class="p">,</span> <span class="n">global_env</span><span class="p">)</span>
+            <span class="nb">eval</span><span class="p">(</span><span class="n">compiled_extra_code</span><span class="p">,</span> <span class="n">global_env</span><span class="p">)</span> <span class="c1"># pylint: disable=W0123:eval-used</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">Callable</span><span class="p">):</span>
             <span class="n">evaluated_function</span> <span class="o">=</span> <span class="n">function</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">evaluated_function</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">global_env</span><span class="p">)</span>
+            <span class="n">evaluated_function</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">global_env</span><span class="p">)</span> <span class="c1"># pylint: disable=W0123:eval-used</span>
 
         <span class="k">return</span> <span class="n">evaluated_function</span></div>
 </div>
@@ -257,7 +247,7 @@
 <span class="sd">        the name given to the output dataset</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!ConcatTransform&#39;</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s1">&#39;!ConcatTransform&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_names</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
                  <span class="p">,</span> <span class="n">output_dataset_name</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
@@ -332,7 +322,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!MergeTransform&#39;</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s1">&#39;!MergeTransform&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_name_left</span><span class="p">:</span><span class="nb">str</span>
                  <span class="p">,</span> <span class="n">dataset_name_right</span><span class="p">:</span><span class="nb">str</span>
@@ -358,7 +348,7 @@
               <span class="p">,</span> <span class="n">left_key_columns</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
               <span class="p">,</span> <span class="n">right_key_columns</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
                     <span class="k">return</span> <span class="kc">True</span>
                 <span class="k">return</span> <span class="kc">False</span>
@@ -391,7 +381,7 @@
         <span class="k">def</span> <span class="nf">add_by_attribute</span><span class="p">(</span><span class="n">data_list</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">data</span><span class="p">,</span> <span class="n">attributes</span> <span class="ow">in</span> <span class="n">data_list</span><span class="p">:</span>
                 <span class="n">attribute</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">attributes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">matching_attribute</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
                     <span class="n">attribute</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">attribute</span><span class="p">))</span>
                 <span class="n">d</span><span class="p">[</span><span class="n">attribute</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">data</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
 
@@ -483,7 +473,7 @@
 <span class="sd">        functions for readibility.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!FunctionTransform&#39;</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s1">&#39;!FunctionTransform&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">output_dataset_name</span><span class="p">:</span><span class="nb">str</span>
                  <span class="p">,</span> <span class="n">function</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span>
@@ -503,7 +493,7 @@
 <div class="viewcode-block" id="FunctionTransform.process">
 <a class="viewcode-back" href="../transforms.html#transforms.FunctionTransform.process">[docs]</a>
     <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">attributes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span><span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
 
         <span class="c1"># Get the function to call and possibly compile and evaluate the code defined in</span>
@@ -568,7 +558,7 @@
 <span class="sd">        functions for readibility.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!ColumnFunctionTransform&#39;</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s1">&#39;!ColumnFunctionTransform&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">output_dataset_name</span><span class="p">:</span><span class="nb">str</span>
                  <span class="p">,</span> <span class="n">input_column</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">output_column</span><span class="p">:</span><span class="nb">str</span>
@@ -674,7 +664,7 @@
 <span class="sd">    timestamp_selector: Callable</span>
 <span class="sd">        the function to select the row in the partition data as template for the output in case of aggregation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!GroupedAggregationTransform&#39;</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s1">&#39;!GroupedAggregationTransform&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">output_dataset_name</span><span class="p">:</span><span class="nb">str</span>
                  <span class="p">,</span> <span class="n">input_column</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">output_column</span><span class="p">:</span><span class="nb">str</span>
@@ -823,7 +813,7 @@
 <span class="sd">    timestamp_selector: Callable</span>
 <span class="sd">        the function to select the row in the partition data as template for the output in case of aggregation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;!GroupedFunctionTransform&#39;</span>
+    <span class="n">yaml_tag</span> <span class="o">=</span> <span class="s1">&#39;!GroupedFunctionTransform&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">output_dataset_name</span><span class="p">:</span><span class="nb">str</span>
                  <span class="p">,</span> <span class="n">input_column</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">output_column</span><span class="p">:</span><span class="nb">str</span>
@@ -942,12 +932,12 @@
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Register YAML constructors for all transforms</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;!ConcatTransform&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">ConcatTransform</span><span class="p">))</span>
-    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;!FunctionTransform&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">FunctionTransform</span><span class="p">))</span>
-    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;!ColumnFunctionTransform&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">ColumnFunctionTransform</span><span class="p">))</span>
-    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;!GroupedAggregationTransform&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">GroupedAggregationTransform</span><span class="p">))</span>
-    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;!GroupedFunctionTransform&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">GroupedFunctionTransform</span><span class="p">))</span>
-    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;!MergeTransform&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">MergeTransform</span><span class="p">))</span></div>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="s1">&#39;!ConcatTransform&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">ConcatTransform</span><span class="p">))</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="s1">&#39;!FunctionTransform&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">FunctionTransform</span><span class="p">))</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="s1">&#39;!ColumnFunctionTransform&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">ColumnFunctionTransform</span><span class="p">))</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="s1">&#39;!GroupedAggregationTransform&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">GroupedAggregationTransform</span><span class="p">))</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="s1">&#39;!GroupedFunctionTransform&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">GroupedFunctionTransform</span><span class="p">))</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="s1">&#39;!MergeTransform&#39;</span><span class="p">,</span> <span class="n">proto_constructor</span><span class="p">(</span><span class="n">MergeTransform</span><span class="p">))</span></div>
 
 
 </pre></div>

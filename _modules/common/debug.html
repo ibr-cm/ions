@@ -82,18 +82,9 @@
            <div itemprop="articleBody">
              
   <h1>Source code for common.debug</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">.globals</span> <span class="kn">import</span> <span class="n">debug</span>
-
-<div class="viewcode-block" id="debug_print">
-<a class="viewcode-back" href="../../common.debug.html#common.debug.debug_print">[docs]</a>
-<span class="k">def</span> <span class="nf">debug_print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="start_ipython_dbg_cmdline">
 <a class="viewcode-back" href="../../common.debug.html#common.debug.start_ipython_dbg_cmdline">[docs]</a>
-<span class="k">def</span> <span class="nf">start_ipython_dbg_cmdline</span><span class="p">(</span><span class="n">user_ns</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span></span><span class="k">def</span> <span class="nf">start_ipython_dbg_cmdline</span><span class="p">(</span><span class="n">user_ns</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">IPython</span> <span class="kn">import</span> <span class="n">start_ipython</span>
     <span class="k">if</span> <span class="n">user_ns</span><span class="p">:</span>
         <span class="n">start_ipython</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="p">[],</span> <span class="n">user_ns</span><span class="o">=</span><span class="n">user_ns</span><span class="p">)</span>
