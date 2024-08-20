@@ -74,6 +74,12 @@ class SqlLiteReader():
         self.disconnect()
         return result
 
+    def config_extractor(self):
+        self.connect()
+        result = pd.read_sql_query(sql_queries.run_config_query, self.connection)
+        self.disconnect()
+        return result
+
     def attribute_extractor(self):
         self.connect()
         result = pd.read_sql_query(sql_queries.run_attr_query, self.connection)
@@ -94,8 +100,30 @@ class SqlLiteReader():
         Extract all tags defined in the given mappings from the `runAttr` and `runParam` tables and parse the value of the `iterationvars` attribute.
         See the module `tag_regular_expressions` for the expected structure of the mappings.
         """
-        tags = ExtractRunParametersTagsOperation.extract_attributes_and_params(self.parameter_extractor, self.attribute_extractor
-                                                                               , parameters_regex_map, attributes_regex_map, iterationvars_regex_map)
+
+        # Determine OMNeT++ version by checking whether a `runParam` or a `runConfig` table exists.
+        # OMNeT++ versions >= 6 store the parameters in the `runConfig` table, previous versions in the `runParams` table.
+        runParamName = self.execute_sql_query("SELECT name FROM sqlite_master WHERE name='runParam';")
+        runConfigName = self.execute_sql_query("SELECT name FROM sqlite_master WHERE name='runConfig';")
+
+        if len(runParamName) and runConfigName.empty:
+            # versions < 6
+            parameter_extractor = self.parameter_extractor
+            isOmnetv6 = False
+        elif runParamName.empty and len(runConfigName) == 1:
+            # versions >= 6
+            parameter_extractor = self.config_extractor
+            isOmnetv6 = True
+        else:
+            raise NotImplementedError(
+                "Neither the `runParam` nor the `runConfig` table has been found in the input database. "
+                "This is possibly either a corrupted database or an unknown OMNeT++ version."
+            )
+
+        tags = ExtractRunParametersTagsOperation.extract_attributes_and_params(parameter_extractor, self.attribute_extractor
+                                                                               , parameters_regex_map, attributes_regex_map, iterationvars_regex_map
+                                                                               , isOmnetv6=isOmnetv6
+                                                                               )
         return tags
 
 

@@ -173,3 +173,21 @@ class OmnetppTableModel:
                              , paramOrder  INTEGER NOT NULL );
     """
 
+    runConfig_table = sqla.Table('runConfig'
+                                     , metadata
+                                     , sqla.Column('rowId', sqla.Integer, nullable=False, primary_key=True)
+                                     , sqla.Column('runId', None, sqla.ForeignKey('run.runId'), nullable=False)
+                                     , sqla.Column('configKey', sqla.String, nullable=False)
+                                     , sqla.Column('configValue', sqla.String, nullable=False)
+                                     , sqla.Column('configOrder', sqla.Integer, nullable=False)
+                                    )
+    r"""
+    Equivalent SQLite statement:
+
+    .. code-block:: sql
+
+      CREATE TABLE runConfig ( runId       INTEGER NOT NULL REFERENCES run(runId) ON DELETE CASCADE
+                             , configKey    TEXT NOT NULL
+                             , configValue  TEXT NOT NULL
+                             , configOrder  INTEGER NOT NULL );
+    """

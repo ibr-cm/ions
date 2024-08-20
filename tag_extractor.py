@@ -52,8 +52,8 @@ class ExtractRunParametersTagsOperation():
 
 
     @staticmethod
-    def add_parameters(data, tags, parameters_regex_map):
-        ExtractRunParametersTagsOperation.add_tags(data, 'paramKey', 'paramValue', parameters_regex_map, tags)
+    def add_parameters(data, tags, parameters_regex_map, parameter_key_name:str='paramKey', parameter_value_name:str='paramValue'):
+        ExtractRunParametersTagsOperation.add_tags(data, parameter_key_name, parameter_value_name, parameters_regex_map, tags)
 
 
     @staticmethod
@@ -82,7 +82,9 @@ class ExtractRunParametersTagsOperation():
 
     @staticmethod
     def extract_attributes_and_params(parameter_extractor, attribute_extractor
-                                      , parameters_regex_map, attributes_regex_map, iterationvars_regex_map):
+                                      , parameters_regex_map, attributes_regex_map, iterationvars_regex_map
+                                      , isOmnetv6:bool=False
+                                      ):
         r"""
         Parameters
         ----------
@@ -100,7 +102,12 @@ class ExtractRunParametersTagsOperation():
         tags:list[Tag] = []
 
         parameters_data = parameter_extractor()
-        ExtractRunParametersTagsOperation.add_parameters(parameters_data, tags, parameters_regex_map)
+        if not isOmnetv6:
+            ExtractRunParametersTagsOperation.add_parameters(parameters_data, tags, parameters_regex_map)
+        else:
+            ExtractRunParametersTagsOperation.add_parameters(parameters_data, tags, parameters_regex_map
+                                                            , parameter_key_name='configKey', parameter_value_name='configValue'
+                                                            )
 
         attributes_data = attribute_extractor()
         ExtractRunParametersTagsOperation.add_attributes(attributes_data, tags, attributes_regex_map, iterationvars_regex_map)

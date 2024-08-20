@@ -26,6 +26,16 @@ The equivalent SQL query:
 """
 run_param_query = sqla.select(TM.runParam_table.c.rowId, TM.runParam_table.c.paramKey, TM.runParam_table.c.paramValue)
 
+r"""
+Query the `runConfig` table and return all the rows contained in it. For OMNeT++ versions >= 6.
+The equivalent SQL query:
+
+.. code-block:: sql
+
+ SELECT configKey, configValue FROM runConfig;
+
+"""
+run_config_query = sqla.select(TM.runConfig_table.c.rowId, TM.runConfig_table.c.configKey, TM.runConfig_table.c.configValue)
 
 r"""
 Query the `vector` table and return all the `vectorName`s contained in it.
