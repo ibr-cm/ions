@@ -35,6 +35,7 @@ from yaml_helper import proto_constructor
 from data_io import DataSet, read_from_file
 from extractors import BaseExtractor, DataAttributes
 
+from utility.code import ExtraCodeFunctionMixin
 from utility.filesystem import check_file_access_permissions
 
 # Import for availability in user-supplied code.
@@ -103,7 +104,7 @@ class PlottingReaderFeather(YAMLObject):
         return [(convert_columns_result, DataAttributes())]
 
 
-class PlottingTask(YAMLObject):
+class PlottingTask(YAMLObject, ExtraCodeFunctionMixin):
     r"""
     Generate a plot from the given data.
 
@@ -534,16 +535,9 @@ class PlottingTask(YAMLObject):
             sb.set_theme(context=self.context, style=self.axes_style)
 
     def eval_grid_transform(self):
-        # Create a copy of the global environment for evaluating the extra
-        # code fragment so as to not pollute the global namespace itself.
-        global_env = globals().copy()
-
-        # Compile the code fragment
-        compiled_grid_transform = compile(self.grid_transform, filename='<string>', mode='exec')
-        # Actually evaluate the code within the given namespace to allow
-        # access to all the defined symbols, such as helper functions that are not defined inline.
-        eval(compiled_grid_transform, global_env)
-        grid_transform = eval('grid_transform', global_env)
+        # Compile and evaluate the code fragment in a shallow copy of the global environment.
+        grid_transform, global_environment = self.evaluate_function(function='grid_transform'
+                                                                , extra_code=self.grid_transform)
 
         return grid_transform
 

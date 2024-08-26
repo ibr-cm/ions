@@ -50,21 +50,66 @@ import plots
 
 import tag_regular_expressions as tag_regex
 
+# import debug helper for usage in function definitions
+from common.debug import start_debug # noqa: F401recipe import Recipe
+
+from utility.code import compile_and_evaluate_function_definition
+
 _debug = False
 
 
-def eval_recipe_tag_definitions(recipe, attributes_regex_map, iterationvars_regex_map, parameters_regex_map):
+def evaluate_function_definitions(recipe:Recipe):
+    r"""
+    Evaluate the functions defined in `recipe.function_definitions` and make the compiled code available in a copy of
+    the global environment of the interpreter.
+    A copy of the global environment is used so as to not pollute the global namespace itself. All the defined functions share the same copy.
+
+    Parameters
+    ----------
+    recipe: Recipe
+        The recipe in which the functions are to be made available.
+
+    Returns
+    -------
+        A shallow copy of the global environment with the compiled functions as members, i.e. a dictionary with the
+        function names as key and the code as associated value.
+    """
+    # Create a copy of the global environment for evaluating the extra code fragments so as to not pollute the global
+    # namespace itself.
+    #
+    # NOTE: This is a shallow copy and thus a rather simple method to prevent accidental overwrites, *not* a defense
+    # against deliberately malicious modifications.
+    global_env = globals().copy()
+
+    for function_name in recipe.function_definitions:
+        # Get the string with the source code.
+        function_code = recipe.function_definitions[function_name]
+        # Actually evaluate the code within the given namespace to allow
+        # access to all the defined symbols, such as helper functions that are not defined inline.
+        function, global_env = compile_and_evaluate_function_definition(function_code, function_name, global_env)
+        # Bind the function to the specified name.
+        recipe.function_definitions[function_name] = function
+
+    # Return the environment with the compiled functions.
+    return global_env
+
+
+def eval_recipe_tag_definitions(recipe:Recipe
+                                , attributes_regex_map, iterationvars_regex_map, parameters_regex_map
+                                , function_definitions_global_env:dict
+                               ):
     def eval_and_add_tags(tag_set_name, regex_map):
         for tag_name in recipe.evaluation.tags[tag_set_name]:
-            tag_list = eval(recipe.evaluation.tags[tag_set_name][tag_name]) # pylint: disable=eval-used
-            logd(f'{tag_name=} {tag_list=}')
-            evaluated_tag_list = []
+            # The `eval` is necessary here since the `transform` function of the tag
+            # can be an arbitrary function and has to be parsed into a`Callable`.
+            tag_list = eval(recipe.evaluation.tags[tag_set_name][tag_name], function_definitions_global_env) # pylint: disable=W0123:eval-used
+
+            # Check that the transform is indeed a `Callable` .
             for tag in tag_list:
                 if not isinstance(tag['transform'], Callable):
-                    tag['transform'] = eval(tag['transform']) # pylint: disable=eval-used
-                evaluated_tag_list.append(tag)
+                    raise RuntimeError(f'transform for {tag=} is not a Callable!')
 
-            regex_map[tag_name] = evaluated_tag_list
+            regex_map[tag_name] = tag_list
 
     if 'attributes' in recipe.evaluation.tags:
         eval_and_add_tags('attributes', attributes_regex_map)
@@ -76,12 +121,13 @@ def eval_recipe_tag_definitions(recipe, attributes_regex_map, iterationvars_rege
     return attributes_regex_map, iterationvars_regex_map, parameters_regex_map
 
 
-def prepare_evaluation_phase(recipe:Recipe, options, data_repo):
+def prepare_evaluation_phase(recipe:Recipe, options, data_repo, function_definitions_global_env:dict):
     logi(f'prepare_evaluation_phase: {recipe}  {recipe.name}')
 
     if hasattr(recipe.evaluation, 'tags'):
         attributes_regex_map, iterationvars_regex_map, parameters_regex_map = eval_recipe_tag_definitions(recipe \
-                , tag_regex.attributes_regex_map, tag_regex.iterationvars_regex_map, tag_regex.parameters_regex_map)
+                , tag_regex.attributes_regex_map, tag_regex.iterationvars_regex_map, tag_regex.parameters_regex_map
+                , function_definitions_global_env)
     else:
         attributes_regex_map, iterationvars_regex_map, parameters_regex_map = \
                 tag_regex.attributes_regex_map, tag_regex.iterationvars_regex_map, tag_regex.parameters_regex_map
@@ -245,11 +291,19 @@ def process_recipe(options):
     data_repo = {}
     job_list = []
 
+    # Compile all the functions defined in `function_definitions` and make them available in a shallow copy
+    # of the runtime environment.
+    if hasattr(recipe, 'function_definitions'):
+        function_definitions_global_env = evaluate_function_definitions(recipe)
+    else:
+        # Or just use the default environment.
+        function_definitions_global_env = globals()
+
     if not options.plot_only:
         if not hasattr(recipe, 'evaluation'):
             logi('process_recipe: no Evaluation in recipe')
             return
-        data_repo, jobs = prepare_evaluation_phase(recipe, options, data_repo)
+        data_repo, jobs = prepare_evaluation_phase(recipe, options, data_repo, function_definitions_global_env)
         job_list.extend(jobs)
 
     if options.eval_only:

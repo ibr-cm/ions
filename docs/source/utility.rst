@@ -6,10 +6,15 @@ Utility
     :undoc-members:
     :show-inheritance:
 
-.. .. automodule:: utility.singleton
-..     :members:
-..     :undoc-members:
-..     :show-inheritance:
+.. automodule:: utility.code
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. automodule:: utility.filesystem
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 .. .. automodule:: utility.registry
 ..     :members:
