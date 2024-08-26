@@ -45,6 +45,7 @@ import extractors
 import transforms
 import exporters
 import plots
+import yaml_helper
 
 # ---
 
@@ -599,6 +600,7 @@ def main():
     exporters.register_jsonpickle_handlers()
 
     # register constructors for all YAML objects
+    yaml_helper.register_constructors()
     extractors.register_constructors()
     transforms.register_constructors()
     exporters.register_constructors()
