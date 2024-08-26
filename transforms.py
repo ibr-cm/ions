@@ -20,6 +20,8 @@ from extractors import DataAttributes
 # Import for availability in user-supplied code.
 from common.debug import start_ipython_dbg_cmdline, start_debug  # noqa: F401
 
+from utility.code import ExtraCodeFunctionMixin
+
 
 class Transform(YAMLObject):
     r"""
@@ -82,46 +84,6 @@ class Transform(YAMLObject):
         self.data_repo[self.output_dataset_name] = job_list
 
         return job_list
-
-
-class ExtraCodeFunctionMixin:
-    r"""
-    A mixin class for providing the functionality to compile and evaluate a
-    function and an additional, optional code fragment within a separate global environment.
-    """
-    def eval_function(self, function:Union[Callable, str], extra_code:Optional[str]) -> Callable:
-        r"""
-        Compile and evaluate the given function and an additional, optional
-        code fragment within a separate global environment and return the
-        executable function object.
-
-        Parameters
-        ----------
-        function : Union[Callable, str]
-            The name of the function or a function object.
-
-        extra_code : Optional[str]
-            This can contain additional code for the transform function, such as
-            the definition of a function over multiple lines or split into multiple
-            functions for readibility.
-        """
-        # create a copy of the global environment for evaluating the extra
-        # code fragment so as to not pollute the global namespace itself
-        global_env = globals().copy()
-
-        if isinstance(extra_code, str):
-            # compile the code fragment
-            compiled_extra_code = compile(extra_code, filename='<string>', mode='exec')
-            # actually evaluate the code within the given namespace to allow
-            # access to all the defined symbols, such as helper functions that are not defined inline
-            eval(compiled_extra_code, global_env) # pylint: disable=W0123:eval-used
-
-        if isinstance(function, Callable):
-            evaluated_function = function
-        else:
-            evaluated_function = eval(function, global_env) # pylint: disable=W0123:eval-used
-
-        return evaluated_function
 
 
 class ConcatTransform(Transform, YAMLObject):
@@ -364,7 +326,7 @@ class FunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
         # extra_code in a separate global namespace.
         # The compilation of the extra code has to happen in the thread/process
         # of the processing worker since code objects can't be serialized.
-        function = self.eval_function(self.function, self.extra_code)
+        function, _ = self.evaluate_function(self.function, self.extra_code)
 
         result = function(data)
 
@@ -445,7 +407,7 @@ class ColumnFunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
             logw(f'ColumnFunctionTransform return is empty!')
             return pd.DataFrame()
 
-        function = self.eval_function(self.function, None)
+        function, _ = self.evaluate_function(self.function, None)
 
         data[self.output_column] = data[self.input_column].apply(function)
 
@@ -552,7 +514,7 @@ class GroupedAggregationTransform(Transform, ExtraCodeFunctionMixin, YAMLObject)
         # extra_code in a separate global namespace.
         # The compilation of the extra code has to happen in the thread/process
         # of the processing worker since code objects can't be serialized.
-        aggregation_function = self.eval_function(self.aggregation_function, self.extra_code)
+        aggregation_function, _ = self.evaluate_function(self.aggregation_function, self.extra_code)
 
         if len(self.grouping_columns) == 1:
             grouping_columns = self.grouping_columns[0]
@@ -698,7 +660,7 @@ class GroupedFunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
         # extra_code in a separate global namespace.
         # The compilation of the extra code has to happen in the thread/process
         # of the processing worker since code objects can't be serialized.
-        transform_function = self.eval_function(self.transform_function, self.extra_code)
+        transform_function, _ = self.evaluate_function(self.transform_function, self.extra_code)
 
         if len(self.grouping_columns) == 1:
             grouping_columns = self.grouping_columns[0]
