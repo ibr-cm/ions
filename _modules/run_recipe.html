@@ -134,23 +134,71 @@
 
 <span class="kn">import</span> <span class="nn">tag_regular_expressions</span> <span class="k">as</span> <span class="nn">tag_regex</span>
 
+<span class="c1"># import debug helper for usage in function definitions</span>
+<span class="kn">from</span> <span class="nn">common.debug</span> <span class="kn">import</span> <span class="n">start_debug</span> <span class="c1"># noqa: F401recipe import Recipe</span>
+
+<span class="kn">from</span> <span class="nn">utility.code</span> <span class="kn">import</span> <span class="n">compile_and_evaluate_function_definition</span>
+
 <span class="n">_debug</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<div class="viewcode-block" id="evaluate_function_definitions">
+<a class="viewcode-back" href="../run_recipe.html#run_recipe.evaluate_function_definitions">[docs]</a>
+<span class="k">def</span> <span class="nf">evaluate_function_definitions</span><span class="p">(</span><span class="n">recipe</span><span class="p">:</span><span class="n">Recipe</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Evaluate the functions defined in `recipe.function_definitions` and make the compiled code available in a copy of</span>
+<span class="sd">    the global environment of the interpreter.</span>
+<span class="sd">    A copy of the global environment is used so as to not pollute the global namespace itself. All the defined functions share the same copy.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    recipe: Recipe</span>
+<span class="sd">        The recipe in which the functions are to be made available.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        A shallow copy of the global environment with the compiled functions as members, i.e. a dictionary with the</span>
+<span class="sd">        function names as key and the code as associated value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create a copy of the global environment for evaluating the extra code fragments so as to not pollute the global</span>
+    <span class="c1"># namespace itself.</span>
+    <span class="c1">#</span>
+    <span class="c1"># NOTE: This is a shallow copy and thus a rather simple method to prevent accidental overwrites, *not* a defense</span>
+    <span class="c1"># against deliberately malicious modifications.</span>
+    <span class="n">global_env</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">function_name</span> <span class="ow">in</span> <span class="n">recipe</span><span class="o">.</span><span class="n">function_definitions</span><span class="p">:</span>
+        <span class="c1"># Get the string with the source code.</span>
+        <span class="n">function_code</span> <span class="o">=</span> <span class="n">recipe</span><span class="o">.</span><span class="n">function_definitions</span><span class="p">[</span><span class="n">function_name</span><span class="p">]</span>
+        <span class="c1"># Actually evaluate the code within the given namespace to allow</span>
+        <span class="c1"># access to all the defined symbols, such as helper functions that are not defined inline.</span>
+        <span class="n">function</span><span class="p">,</span> <span class="n">global_env</span> <span class="o">=</span> <span class="n">compile_and_evaluate_function_definition</span><span class="p">(</span><span class="n">function_code</span><span class="p">,</span> <span class="n">function_name</span><span class="p">,</span> <span class="n">global_env</span><span class="p">)</span>
+        <span class="c1"># Bind the function to the specified name.</span>
+        <span class="n">recipe</span><span class="o">.</span><span class="n">function_definitions</span><span class="p">[</span><span class="n">function_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">function</span>
+
+    <span class="c1"># Return the environment with the compiled functions.</span>
+    <span class="k">return</span> <span class="n">global_env</span></div>
+
 
 
 <div class="viewcode-block" id="eval_recipe_tag_definitions">
 <a class="viewcode-back" href="../run_recipe.html#run_recipe.eval_recipe_tag_definitions">[docs]</a>
-<span class="k">def</span> <span class="nf">eval_recipe_tag_definitions</span><span class="p">(</span><span class="n">recipe</span><span class="p">,</span> <span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">iterationvars_regex_map</span><span class="p">,</span> <span class="n">parameters_regex_map</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">eval_recipe_tag_definitions</span><span class="p">(</span><span class="n">recipe</span><span class="p">:</span><span class="n">Recipe</span>
+                                <span class="p">,</span> <span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">iterationvars_regex_map</span><span class="p">,</span> <span class="n">parameters_regex_map</span>
+                                <span class="p">,</span> <span class="n">function_definitions_global_env</span><span class="p">:</span><span class="nb">dict</span>
+                               <span class="p">):</span>
     <span class="k">def</span> <span class="nf">eval_and_add_tags</span><span class="p">(</span><span class="n">tag_set_name</span><span class="p">,</span> <span class="n">regex_map</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">tag_name</span> <span class="ow">in</span> <span class="n">recipe</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">tag_set_name</span><span class="p">]:</span>
-            <span class="n">tag_list</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">recipe</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">tag_set_name</span><span class="p">][</span><span class="n">tag_name</span><span class="p">])</span> <span class="c1"># pylint: disable=eval-used</span>
-            <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">tag_name</span><span class="si">=}</span><span class="s1"> </span><span class="si">{</span><span class="n">tag_list</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">evaluated_tag_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1"># The `eval` is necessary here since the `transform` function of the tag</span>
+            <span class="c1"># can be an arbitrary function and has to be parsed into a`Callable`.</span>
+            <span class="n">tag_list</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">recipe</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">tag_set_name</span><span class="p">][</span><span class="n">tag_name</span><span class="p">],</span> <span class="n">function_definitions_global_env</span><span class="p">)</span> <span class="c1"># pylint: disable=W0123:eval-used</span>
+
+            <span class="c1"># Check that the transform is indeed a `Callable` .</span>
             <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tag_list</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tag</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">],</span> <span class="n">Callable</span><span class="p">):</span>
-                    <span class="n">tag</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">tag</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">])</span> <span class="c1"># pylint: disable=eval-used</span>
-                <span class="n">evaluated_tag_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;transform for </span><span class="si">{</span><span class="n">tag</span><span class="si">=}</span><span class="s1"> is not a Callable!&#39;</span><span class="p">)</span>
 
-            <span class="n">regex_map</span><span class="p">[</span><span class="n">tag_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">evaluated_tag_list</span>
+            <span class="n">regex_map</span><span class="p">[</span><span class="n">tag_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">tag_list</span>
 
     <span class="k">if</span> <span class="s1">&#39;attributes&#39;</span> <span class="ow">in</span> <span class="n">recipe</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
         <span class="n">eval_and_add_tags</span><span class="p">(</span><span class="s1">&#39;attributes&#39;</span><span class="p">,</span> <span class="n">attributes_regex_map</span><span class="p">)</span>
@@ -165,12 +213,13 @@
 
 <div class="viewcode-block" id="prepare_evaluation_phase">
 <a class="viewcode-back" href="../run_recipe.html#run_recipe.prepare_evaluation_phase">[docs]</a>
-<span class="k">def</span> <span class="nf">prepare_evaluation_phase</span><span class="p">(</span><span class="n">recipe</span><span class="p">:</span><span class="n">Recipe</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">data_repo</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">prepare_evaluation_phase</span><span class="p">(</span><span class="n">recipe</span><span class="p">:</span><span class="n">Recipe</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">data_repo</span><span class="p">,</span> <span class="n">function_definitions_global_env</span><span class="p">:</span><span class="nb">dict</span><span class="p">):</span>
     <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;prepare_evaluation_phase: </span><span class="si">{</span><span class="n">recipe</span><span class="si">}</span><span class="s1">  </span><span class="si">{</span><span class="n">recipe</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">recipe</span><span class="o">.</span><span class="n">evaluation</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">):</span>
         <span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">iterationvars_regex_map</span><span class="p">,</span> <span class="n">parameters_regex_map</span> <span class="o">=</span> <span class="n">eval_recipe_tag_definitions</span><span class="p">(</span><span class="n">recipe</span> \
-                <span class="p">,</span> <span class="n">tag_regex</span><span class="o">.</span><span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">tag_regex</span><span class="o">.</span><span class="n">iterationvars_regex_map</span><span class="p">,</span> <span class="n">tag_regex</span><span class="o">.</span><span class="n">parameters_regex_map</span><span class="p">)</span>
+                <span class="p">,</span> <span class="n">tag_regex</span><span class="o">.</span><span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">tag_regex</span><span class="o">.</span><span class="n">iterationvars_regex_map</span><span class="p">,</span> <span class="n">tag_regex</span><span class="o">.</span><span class="n">parameters_regex_map</span>
+                <span class="p">,</span> <span class="n">function_definitions_global_env</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">iterationvars_regex_map</span><span class="p">,</span> <span class="n">parameters_regex_map</span> <span class="o">=</span> \
                 <span class="n">tag_regex</span><span class="o">.</span><span class="n">attributes_regex_map</span><span class="p">,</span> <span class="n">tag_regex</span><span class="o">.</span><span class="n">iterationvars_regex_map</span><span class="p">,</span> <span class="n">tag_regex</span><span class="o">.</span><span class="n">parameters_regex_map</span>
@@ -340,11 +389,19 @@
     <span class="n">data_repo</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">job_list</span> <span class="o">=</span> <span class="p">[]</span>
 
+    <span class="c1"># Compile all the functions defined in `function_definitions` and make them available in a shallow copy</span>
+    <span class="c1"># of the runtime environment.</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">recipe</span><span class="p">,</span> <span class="s1">&#39;function_definitions&#39;</span><span class="p">):</span>
+        <span class="n">function_definitions_global_env</span> <span class="o">=</span> <span class="n">evaluate_function_definitions</span><span class="p">(</span><span class="n">recipe</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Or just use the default environment.</span>
+        <span class="n">function_definitions_global_env</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()</span>
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">options</span><span class="o">.</span><span class="n">plot_only</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">recipe</span><span class="p">,</span> <span class="s1">&#39;evaluation&#39;</span><span class="p">):</span>
             <span class="n">logi</span><span class="p">(</span><span class="s1">&#39;process_recipe: no Evaluation in recipe&#39;</span><span class="p">)</span>
             <span class="k">return</span>
-        <span class="n">data_repo</span><span class="p">,</span> <span class="n">jobs</span> <span class="o">=</span> <span class="n">prepare_evaluation_phase</span><span class="p">(</span><span class="n">recipe</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">data_repo</span><span class="p">)</span>
+        <span class="n">data_repo</span><span class="p">,</span> <span class="n">jobs</span> <span class="o">=</span> <span class="n">prepare_evaluation_phase</span><span class="p">(</span><span class="n">recipe</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">data_repo</span><span class="p">,</span> <span class="n">function_definitions_global_env</span><span class="p">)</span>
         <span class="n">job_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">jobs</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">eval_only</span><span class="p">:</span>

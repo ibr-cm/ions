@@ -61,6 +61,13 @@
 <li class="toctree-l2"><a class="reference internal" href="common.html">Common</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Utility</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#utility.arithmetic.evaluate_simple_arithmetic_expression"><code class="docutils literal notranslate"><span class="pre">evaluate_simple_arithmetic_expression()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#utility.code.ExtraCodeFunctionMixin"><code class="docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#utility.code.ExtraCodeFunctionMixin.evaluate_function"><code class="docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin.evaluate_function()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#utility.code.compile_and_evaluate_function_definition"><code class="docutils literal notranslate"><span class="pre">compile_and_evaluate_function_definition()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#utility.filesystem.check_directory_access_permissions"><code class="docutils literal notranslate"><span class="pre">check_directory_access_permissions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#utility.filesystem.check_file_access_permissions"><code class="docutils literal notranslate"><span class="pre">check_file_access_permissions()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#utility.stopwatch.startWatch"><code class="docutils literal notranslate"><span class="pre">startWatch()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#utility.stopwatch.stopWatch"><code class="docutils literal notranslate"><span class="pre">stopWatch()</span></code></a></li>
 </ul>
@@ -117,6 +124,97 @@
 </dl>
 </dd>
 </dl>
+</dd></dl>
+
+<span class="target" id="module-utility.code"></span><dl class="py class">
+<dt class="sig sig-object py" id="utility.code.ExtraCodeFunctionMixin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">utility.code.</span></span><span class="sig-name descname"><span class="pre">ExtraCodeFunctionMixin</span></span><a class="reference internal" href="_modules/utility/code.html#ExtraCodeFunctionMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utility.code.ExtraCodeFunctionMixin" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A mixin class for providing the functionality to compile and evaluate a
+function and an additional, optional code fragment within a separate global environment.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#utility.code.ExtraCodeFunctionMixin.evaluate_function" title="utility.code.ExtraCodeFunctionMixin.evaluate_function"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_function</span></code></a>(function, extra_code)</p></td>
+<td><p>Compile and evaluate the given function and an additional, optional code fragment within a separate global environment and return the executable function object.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="utility.code.ExtraCodeFunctionMixin.evaluate_function">
+<span class="sig-name descname"><span class="pre">evaluate_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/utility/code.html#ExtraCodeFunctionMixin.evaluate_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utility.code.ExtraCodeFunctionMixin.evaluate_function" title="Link to this definition"></a></dt>
+<dd><p>Compile and evaluate the given function and an additional, optional
+code fragment within a separate global environment and return the
+executable function object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>function</strong><span class="classifier">Union[Callable, str]</span></dt><dd><p>The name of the function or a function object.</p>
+</dd>
+<dt><strong>extra_code</strong><span class="classifier">Optional[str]</span></dt><dd><p>This can contain additional code for the function definition, such as the definition of a function with
+multiple statements or split into multiple functions for readibility, i.e. every use case where a single
+simple python statement doesn’t suffice.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Callable</dt><dd><p>The resulting function object.</p>
+</dd>
+<dt>dict[str, Any]</dt><dd><p>The runtime environment of the function.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utility.code.compile_and_evaluate_function_definition">
+<span class="sig-prename descclassname"><span class="pre">utility.code.</span></span><span class="sig-name descname"><span class="pre">compile_and_evaluate_function_definition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_environment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/utility/code.html#compile_and_evaluate_function_definition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utility.code.compile_and_evaluate_function_definition" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the sequence of code statements in the given <cite>source</cite> and return the function object bound to the specified <cite>function_name</cite> name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>source</strong><span class="classifier">str</span></dt><dd><p>The source code of the code snippet to compile and evaluate.</p>
+</dd>
+<dt><strong>function_name</strong><span class="classifier">str</span></dt><dd><p>The name of the function to return.</p>
+</dd>
+<dt><strong>global_env</strong><span class="classifier">dict</span></dt><dd><p>The global runtime environment to evaluate the given code in.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Callable</dt><dd><p>The resulting function object.</p>
+</dd>
+<dt>dict</dt><dd><p>The runtime environment of the function.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>SyntaxError</dt><dd><p>If the supplied source code has a syntax error.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If the supplied source code contains null bytes.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-utility.filesystem"></span><dl class="py function">
+<dt class="sig sig-object py" id="utility.filesystem.check_directory_access_permissions">
+<span class="sig-prename descclassname"><span class="pre">utility.filesystem.</span></span><span class="sig-name descname"><span class="pre">check_directory_access_permissions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/filesystem.html#check_directory_access_permissions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utility.filesystem.check_directory_access_permissions" title="Link to this definition"></a></dt>
+<dd><p>Check whether writing to the specified directory is permitted.
+If the directory doesn’t exist, try creating it.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utility.filesystem.check_file_access_permissions">
+<span class="sig-prename descclassname"><span class="pre">utility.filesystem.</span></span><span class="sig-name descname"><span class="pre">check_file_access_permissions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utility/filesystem.html#check_file_access_permissions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utility.filesystem.check_file_access_permissions" title="Link to this definition"></a></dt>
+<dd><p>Check whether writing to the specified file path is permitted.</p>
 </dd></dl>
 
 <span class="target" id="module-utility.stopwatch"></span><dl class="py function">

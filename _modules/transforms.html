@@ -104,6 +104,8 @@
 <span class="c1"># Import for availability in user-supplied code.</span>
 <span class="kn">from</span> <span class="nn">common.debug</span> <span class="kn">import</span> <span class="n">start_ipython_dbg_cmdline</span><span class="p">,</span> <span class="n">start_debug</span>  <span class="c1"># noqa: F401</span>
 
+<span class="kn">from</span> <span class="nn">utility.code</span> <span class="kn">import</span> <span class="n">ExtraCodeFunctionMixin</span>
+
 
 <div class="viewcode-block" id="Transform">
 <a class="viewcode-back" href="../transforms.html#transforms.Transform">[docs]</a>
@@ -182,52 +184,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data_repo</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dataset_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">job_list</span>
 
         <span class="k">return</span> <span class="n">job_list</span></div>
-</div>
-
-
-
-<div class="viewcode-block" id="ExtraCodeFunctionMixin">
-<a class="viewcode-back" href="../transforms.html#transforms.ExtraCodeFunctionMixin">[docs]</a>
-<span class="k">class</span> <span class="nc">ExtraCodeFunctionMixin</span><span class="p">:</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A mixin class for providing the functionality to compile and evaluate a</span>
-<span class="sd">    function and an additional, optional code fragment within a separate global environment.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="ExtraCodeFunctionMixin.eval_function">
-<a class="viewcode-back" href="../transforms.html#transforms.ExtraCodeFunctionMixin.eval_function">[docs]</a>
-    <span class="k">def</span> <span class="nf">eval_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span><span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">extra_code</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compile and evaluate the given function and an additional, optional</span>
-<span class="sd">        code fragment within a separate global environment and return the</span>
-<span class="sd">        executable function object.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        function : Union[Callable, str]</span>
-<span class="sd">            The name of the function or a function object.</span>
-
-<span class="sd">        extra_code : Optional[str]</span>
-<span class="sd">            This can contain additional code for the transform function, such as</span>
-<span class="sd">            the definition of a function over multiple lines or split into multiple</span>
-<span class="sd">            functions for readibility.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># create a copy of the global environment for evaluating the extra</span>
-        <span class="c1"># code fragment so as to not pollute the global namespace itself</span>
-        <span class="n">global_env</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">extra_code</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="c1"># compile the code fragment</span>
-            <span class="n">compiled_extra_code</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="n">extra_code</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;&lt;string&gt;&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;exec&#39;</span><span class="p">)</span>
-            <span class="c1"># actually evaluate the code within the given namespace to allow</span>
-            <span class="c1"># access to all the defined symbols, such as helper functions that are not defined inline</span>
-            <span class="nb">eval</span><span class="p">(</span><span class="n">compiled_extra_code</span><span class="p">,</span> <span class="n">global_env</span><span class="p">)</span> <span class="c1"># pylint: disable=W0123:eval-used</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">Callable</span><span class="p">):</span>
-            <span class="n">evaluated_function</span> <span class="o">=</span> <span class="n">function</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">evaluated_function</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">global_env</span><span class="p">)</span> <span class="c1"># pylint: disable=W0123:eval-used</span>
-
-        <span class="k">return</span> <span class="n">evaluated_function</span></div>
 </div>
 
 
@@ -500,7 +456,7 @@
         <span class="c1"># extra_code in a separate global namespace.</span>
         <span class="c1"># The compilation of the extra code has to happen in the thread/process</span>
         <span class="c1"># of the processing worker since code objects can&#39;t be serialized.</span>
-        <span class="n">function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_code</span><span class="p">)</span>
+        <span class="n">function</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_code</span><span class="p">)</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
@@ -590,7 +546,7 @@
             <span class="n">logw</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ColumnFunctionTransform return is empty!&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
 
-        <span class="n">function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">function</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_column</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
 
@@ -706,7 +662,7 @@
         <span class="c1"># extra_code in a separate global namespace.</span>
         <span class="c1"># The compilation of the extra code has to happen in the thread/process</span>
         <span class="c1"># of the processing worker since code objects can&#39;t be serialized.</span>
-        <span class="n">aggregation_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aggregation_function</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_code</span><span class="p">)</span>
+        <span class="n">aggregation_function</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aggregation_function</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_code</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grouping_columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">grouping_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grouping_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -861,7 +817,7 @@
         <span class="c1"># extra_code in a separate global namespace.</span>
         <span class="c1"># The compilation of the extra code has to happen in the thread/process</span>
         <span class="c1"># of the processing worker since code objects can&#39;t be serialized.</span>
-        <span class="n">transform_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transform_function</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_code</span><span class="p">)</span>
+        <span class="n">transform_function</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transform_function</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_code</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grouping_columns</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">grouping_columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grouping_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>

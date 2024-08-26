@@ -137,8 +137,30 @@ registered.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="run_recipe.eval_recipe_tag_definitions">
-<span class="sig-prename descclassname"><span class="pre">run_recipe.</span></span><span class="sig-name descname"><span class="pre">eval_recipe_tag_definitions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes_regex_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterationvars_regex_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters_regex_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_recipe.html#eval_recipe_tag_definitions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#run_recipe.eval_recipe_tag_definitions" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">run_recipe.</span></span><span class="sig-name descname"><span class="pre">eval_recipe_tag_definitions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="recipe.html#recipe.Recipe" title="recipe.Recipe"><span class="pre">Recipe</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes_regex_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterationvars_regex_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters_regex_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function_definitions_global_env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_recipe.html#eval_recipe_tag_definitions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#run_recipe.eval_recipe_tag_definitions" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="run_recipe.evaluate_function_definitions">
+<span class="sig-prename descclassname"><span class="pre">run_recipe.</span></span><span class="sig-name descname"><span class="pre">evaluate_function_definitions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="recipe.html#recipe.Recipe" title="recipe.Recipe"><span class="pre">Recipe</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_recipe.html#evaluate_function_definitions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#run_recipe.evaluate_function_definitions" title="Link to this definition"></a></dt>
+<dd><p>Evaluate the functions defined in <cite>recipe.function_definitions</cite> and make the compiled code available in a copy of
+the global environment of the interpreter.
+A copy of the global environment is used so as to not pollute the global namespace itself. All the defined functions share the same copy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>recipe: Recipe</strong></dt><dd><p>The recipe in which the functions are to be made available.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>A shallow copy of the global environment with the compiled functions as members, i.e. a dictionary with the</dt><dd></dd>
+<dt>function names as key and the code as associated value.</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="run_recipe.extract_dict_from_string">
@@ -157,7 +179,7 @@ registered.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="run_recipe.prepare_evaluation_phase">
-<span class="sig-prename descclassname"><span class="pre">run_recipe.</span></span><span class="sig-name descname"><span class="pre">prepare_evaluation_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="recipe.html#recipe.Recipe" title="recipe.Recipe"><span class="pre">Recipe</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_repo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_recipe.html#prepare_evaluation_phase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#run_recipe.prepare_evaluation_phase" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">run_recipe.</span></span><span class="sig-name descname"><span class="pre">prepare_evaluation_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="recipe.html#recipe.Recipe" title="recipe.Recipe"><span class="pre">Recipe</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_repo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function_definitions_global_env</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/run_recipe.html#prepare_evaluation_phase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#run_recipe.prepare_evaluation_phase" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">

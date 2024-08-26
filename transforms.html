@@ -75,10 +75,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#transforms.ConcatTransform.yaml_tag"><code class="docutils literal notranslate"><span class="pre">ConcatTransform.yaml_tag</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#transforms.ExtraCodeFunctionMixin"><code class="docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#transforms.ExtraCodeFunctionMixin.eval_function"><code class="docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin.eval_function()</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="#transforms.FunctionTransform"><code class="docutils literal notranslate"><span class="pre">FunctionTransform</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#transforms.FunctionTransform.prepare"><code class="docutils literal notranslate"><span class="pre">FunctionTransform.prepare()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#transforms.FunctionTransform.process"><code class="docutils literal notranslate"><span class="pre">FunctionTransform.process()</span></code></a></li>
@@ -151,7 +147,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="transforms.ColumnFunctionTransform">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">transforms.</span></span><span class="sig-name descname"><span class="pre">ColumnFunctionTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Series</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Series</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#ColumnFunctionTransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.ColumnFunctionTransform" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#transforms.Transform" title="transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transform</span></code></a>, <a class="reference internal" href="#transforms.ExtraCodeFunctionMixin" title="transforms.ExtraCodeFunctionMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#transforms.Transform" title="transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transform</span></code></a>, <a class="reference internal" href="utility.html#utility.code.ExtraCodeFunctionMixin" title="utility.code.ExtraCodeFunctionMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
 <p>A transform for applying a function to every value in a column of a DataFrame</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -182,7 +178,7 @@ functions for readibility.</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_function</span></code>(function, extra_code)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_function</span></code>(function, extra_code)</p></td>
 <td><p>Compile and evaluate the given function and an additional, optional code fragment within a separate global environment and return the executable function object.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
@@ -306,45 +302,9 @@ functions for readibility.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="transforms.ExtraCodeFunctionMixin">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">transforms.</span></span><span class="sig-name descname"><span class="pre">ExtraCodeFunctionMixin</span></span><a class="reference internal" href="_modules/transforms.html#ExtraCodeFunctionMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.ExtraCodeFunctionMixin" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A mixin class for providing the functionality to compile and evaluate a
-function and an additional, optional code fragment within a separate global environment.</p>
-<p class="rubric">Methods</p>
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#transforms.ExtraCodeFunctionMixin.eval_function" title="transforms.ExtraCodeFunctionMixin.eval_function"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_function</span></code></a>(function, extra_code)</p></td>
-<td><p>Compile and evaluate the given function and an additional, optional code fragment within a separate global environment and return the executable function object.</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py method">
-<dt class="sig sig-object py" id="transforms.ExtraCodeFunctionMixin.eval_function">
-<span class="sig-name descname"><span class="pre">eval_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span></span></span><a class="reference internal" href="_modules/transforms.html#ExtraCodeFunctionMixin.eval_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.ExtraCodeFunctionMixin.eval_function" title="Link to this definition"></a></dt>
-<dd><p>Compile and evaluate the given function and an additional, optional
-code fragment within a separate global environment and return the
-executable function object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>function</strong><span class="classifier">Union[Callable, str]</span></dt><dd><p>The name of the function or a function object.</p>
-</dd>
-<dt><strong>extra_code</strong><span class="classifier">Optional[str]</span></dt><dd><p>This can contain additional code for the transform function, such as
-the definition of a function over multiple lines or split into multiple
-functions for readibility.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="transforms.FunctionTransform">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">transforms.</span></span><span class="sig-name descname"><span class="pre">FunctionTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dataset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">DataFrame</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#FunctionTransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.FunctionTransform" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#transforms.Transform" title="transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transform</span></code></a>, <a class="reference internal" href="#transforms.ExtraCodeFunctionMixin" title="transforms.ExtraCodeFunctionMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#transforms.Transform" title="transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transform</span></code></a>, <a class="reference internal" href="utility.html#utility.code.ExtraCodeFunctionMixin" title="utility.code.ExtraCodeFunctionMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
 <p>A transform for applying a arbitrary function to a whole DataFrame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -371,7 +331,7 @@ functions for readibility.</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_function</span></code>(function, extra_code)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_function</span></code>(function, extra_code)</p></td>
 <td><p>Compile and evaluate the given function and an additional, optional code fragment within a separate global environment and return the executable function object.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
@@ -424,7 +384,7 @@ functions for readibility.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="transforms.GroupedAggregationTransform">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">transforms.</span></span><span class="sig-name descname"><span class="pre">GroupedAggregationTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataset_name:</span> <span class="pre">str,</span> <span class="pre">output_dataset_name:</span> <span class="pre">str,</span> <span class="pre">input_column:</span> <span class="pre">str,</span> <span class="pre">output_column:</span> <span class="pre">str,</span> <span class="pre">grouping_columns:</span> <span class="pre">~typing.List,</span> <span class="pre">raw:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">pre_concatenate:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">aggregation_function:</span> <span class="pre">~typing.Callable[[~pandas.core.series.Series],</span> <span class="pre">object]</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">extra_code:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">timestamp_selector:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame.head&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#GroupedAggregationTransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.GroupedAggregationTransform" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#transforms.Transform" title="transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transform</span></code></a>, <a class="reference internal" href="#transforms.ExtraCodeFunctionMixin" title="transforms.ExtraCodeFunctionMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#transforms.Transform" title="transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transform</span></code></a>, <a class="reference internal" href="utility.html#utility.code.ExtraCodeFunctionMixin" title="utility.code.ExtraCodeFunctionMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
 <p>A transform for dividing a dataset into distinct partitions with
 <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html#pandas.DataFrame.groupby">pandas.DataFrame.groupby</a>,
 each sharing the same value in the specified list of grouping/partitioning
@@ -468,7 +428,7 @@ functions for readibility.</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_function</span></code>(function, extra_code)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_function</span></code>(function, extra_code)</p></td>
 <td><p>Compile and evaluate the given function and an additional, optional code fragment within a separate global environment and return the executable function object.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>
@@ -524,7 +484,7 @@ functions for readibility.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="transforms.GroupedFunctionTransform">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">transforms.</span></span><span class="sig-name descname"><span class="pre">GroupedFunctionTransform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dataset_name:</span> <span class="pre">str,</span> <span class="pre">output_dataset_name:</span> <span class="pre">str,</span> <span class="pre">input_column:</span> <span class="pre">str,</span> <span class="pre">output_column:</span> <span class="pre">str,</span> <span class="pre">grouping_columns:</span> <span class="pre">~typing.List,</span> <span class="pre">raw:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">aggregate:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">pre_concatenate:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">transform_function:</span> <span class="pre">~typing.Callable[[~pandas.core.frame.DataFrame],</span> <span class="pre">~pandas.core.frame.DataFrame]</span> <span class="pre">|</span> <span class="pre">~typing.Callable[[~pandas.core.frame.DataFrame],</span> <span class="pre">object]</span> <span class="pre">|</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">extra_code:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">timestamp_selector:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">NDFrame.head&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/transforms.html#GroupedFunctionTransform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#transforms.GroupedFunctionTransform" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#transforms.Transform" title="transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transform</span></code></a>, <a class="reference internal" href="#transforms.ExtraCodeFunctionMixin" title="transforms.ExtraCodeFunctionMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#transforms.Transform" title="transforms.Transform"><code class="xref py py-class docutils literal notranslate"><span class="pre">Transform</span></code></a>, <a class="reference internal" href="utility.html#utility.code.ExtraCodeFunctionMixin" title="utility.code.ExtraCodeFunctionMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExtraCodeFunctionMixin</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">YAMLObject</span></code></p>
 <p>A transform for dividing a dataset into distinct partitions with
 <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.groupby.html#pandas.DataFrame.groupby">pandas.DataFrame.groupby</a>,
 each sharing the same value in the specified list of grouping/partitioning
@@ -569,7 +529,7 @@ functions for readibility.</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval_function</span></code>(function, extra_code)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_function</span></code>(function, extra_code)</p></td>
 <td><p>Compile and evaluate the given function and an additional, optional code fragment within a separate global environment and return the executable function object.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_yaml</span></code>(loader, node)</p></td>

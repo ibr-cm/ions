@@ -119,6 +119,7 @@
 <span class="kn">from</span> <span class="nn">data_io</span> <span class="kn">import</span> <span class="n">DataSet</span><span class="p">,</span> <span class="n">read_from_file</span>
 <span class="kn">from</span> <span class="nn">extractors</span> <span class="kn">import</span> <span class="n">BaseExtractor</span><span class="p">,</span> <span class="n">DataAttributes</span>
 
+<span class="kn">from</span> <span class="nn">utility.code</span> <span class="kn">import</span> <span class="n">ExtraCodeFunctionMixin</span>
 <span class="kn">from</span> <span class="nn">utility.filesystem</span> <span class="kn">import</span> <span class="n">check_file_access_permissions</span>
 
 <span class="c1"># Import for availability in user-supplied code.</span>
@@ -195,7 +196,7 @@
 
 <div class="viewcode-block" id="PlottingTask">
 <a class="viewcode-back" href="../plots.html#plots.PlottingTask">[docs]</a>
-<span class="k">class</span> <span class="nc">PlottingTask</span><span class="p">(</span><span class="n">YAMLObject</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">PlottingTask</span><span class="p">(</span><span class="n">YAMLObject</span><span class="p">,</span> <span class="n">ExtraCodeFunctionMixin</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a plot from the given data.</span>
 
@@ -655,16 +656,9 @@
 <div class="viewcode-block" id="PlottingTask.eval_grid_transform">
 <a class="viewcode-back" href="../plots.html#plots.PlottingTask.eval_grid_transform">[docs]</a>
     <span class="k">def</span> <span class="nf">eval_grid_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Create a copy of the global environment for evaluating the extra</span>
-        <span class="c1"># code fragment so as to not pollute the global namespace itself.</span>
-        <span class="n">global_env</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-        <span class="c1"># Compile the code fragment</span>
-        <span class="n">compiled_grid_transform</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid_transform</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;&lt;string&gt;&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;exec&#39;</span><span class="p">)</span>
-        <span class="c1"># Actually evaluate the code within the given namespace to allow</span>
-        <span class="c1"># access to all the defined symbols, such as helper functions that are not defined inline.</span>
-        <span class="nb">eval</span><span class="p">(</span><span class="n">compiled_grid_transform</span><span class="p">,</span> <span class="n">global_env</span><span class="p">)</span>
-        <span class="n">grid_transform</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="s1">&#39;grid_transform&#39;</span><span class="p">,</span> <span class="n">global_env</span><span class="p">)</span>
+        <span class="c1"># Compile and evaluate the code fragment in a shallow copy of the global environment.</span>
+        <span class="n">grid_transform</span><span class="p">,</span> <span class="n">global_environment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_function</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="s1">&#39;grid_transform&#39;</span>
+                                                                <span class="p">,</span> <span class="n">extra_code</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">grid_transform</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">grid_transform</span></div>
 
