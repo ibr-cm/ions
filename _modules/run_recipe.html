@@ -129,6 +129,7 @@
 <span class="kn">import</span> <span class="nn">transforms</span>
 <span class="kn">import</span> <span class="nn">exporters</span>
 <span class="kn">import</span> <span class="nn">plots</span>
+<span class="kn">import</span> <span class="nn">yaml_helper</span>
 
 <span class="c1"># ---</span>
 
@@ -721,6 +722,7 @@
     <span class="n">exporters</span><span class="o">.</span><span class="n">register_jsonpickle_handlers</span><span class="p">()</span>
 
     <span class="c1"># register constructors for all YAML objects</span>
+    <span class="n">yaml_helper</span><span class="o">.</span><span class="n">register_constructors</span><span class="p">()</span>
     <span class="n">extractors</span><span class="o">.</span><span class="n">register_constructors</span><span class="p">()</span>
     <span class="n">transforms</span><span class="o">.</span><span class="n">register_constructors</span><span class="p">()</span>
     <span class="n">exporters</span><span class="o">.</span><span class="n">register_constructors</span><span class="p">()</span>
