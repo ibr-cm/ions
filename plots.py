@@ -233,6 +233,7 @@ class PlottingTask(YAMLObject, ExtraCodeFunctionMixin):
                  , plot_type:Optional[str] = None
                  , x:Optional[str] = None
                  , y:Optional[str] = None
+                 , z:Optional[str] = None
                  , plot_types:Optional[List[str]] = None
                  , ys:Optional[List[str]] = None
                  , selector:Optional[Union[Callable, str]] = None
@@ -303,6 +304,8 @@ class PlottingTask(YAMLObject, ExtraCodeFunctionMixin):
             self.y = None
             self.ys = None
 
+        if z:
+            self.z = z
 
         if plot_kwargs:
             # parse plot kwargs
@@ -599,7 +602,7 @@ class PlottingTask(YAMLObject, ExtraCodeFunctionMixin):
         def heatplot(plot_type):
                 return self.plot_heatplot(df=selected_data
                                         , plot_type=plot_type
-                                        , x=self.x, y=self.y
+                                        , x=self.x, y=self.y, z=self.z
                                         , hue=self.hue, style=self.style
                                         , row=self.row, column=self.column
                                         , kwargs=self.plot_kwargs
