@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "20604e9c46e0fc9599ce39c7ca27228590a7c69cc7743e8137c5918457a1bced"
+            "sha256": "1876e5ca36669af2ca9ef89d194fe42294b1286f01086d09c34ebbf2a62b7d98"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -320,12 +320,12 @@
         },
         "dask-jobqueue": {
             "hashes": [
-                "sha256:96a51083b93e5e66354bdb337840663202e45b20930071edeb41af07bbd5af26",
-                "sha256:f6923f9d7ff894b96efbf706118b2cd37fd37751d567e91c22dfd3e2eaa93202"
+                "sha256:253dfc4f0b8722201a08e05b841859dfeea1f6698ff21eff0d9370e5aa8ae20f",
+                "sha256:494ef64b7bb3848c7d72ed334c288030caca6a09dca54cfaa3f395f4ba7f5c47"
             ],
             "index": "pypi",
-            "markers": "python_version >= '3.8'",
-            "version": "==0.8.5"
+            "markers": "python_version >= '3.10'",
+            "version": "==0.9.0"
         },
         "decorator": {
             "hashes": [
