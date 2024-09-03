@@ -152,9 +152,9 @@ dask==2024.8.1 \
 dask-expr==1.1.11 \
     --hash=sha256:275689c269f9c30dbaf9d8d7e9d3b5ac5438ea6db73fdbf95b3f4bfb1381bc5a \
     --hash=sha256:b9222b3d430152e3af4a1777f66bcee88651f510876cb57c720107d123d9ba63
-dask-jobqueue==0.8.5 \
-    --hash=sha256:96a51083b93e5e66354bdb337840663202e45b20930071edeb41af07bbd5af26 \
-    --hash=sha256:f6923f9d7ff894b96efbf706118b2cd37fd37751d567e91c22dfd3e2eaa93202
+dask-jobqueue==0.9.0 \
+    --hash=sha256:253dfc4f0b8722201a08e05b841859dfeea1f6698ff21eff0d9370e5aa8ae20f \
+    --hash=sha256:494ef64b7bb3848c7d72ed334c288030caca6a09dca54cfaa3f395f4ba7f5c47
 dask[array,dataframe,diagnostics,distributed]==2024.8.1 \
     --hash=sha256:4254e43ac8c3affad2b22952f126b00a00f52c87caae91c068d8e395a4ad1a72 \
     --hash=sha256:b8b58cba91dc9c057c8676dcc80b8bc321602b4dfd21529d33b03b55d428e2c3
