@@ -52,7 +52,7 @@ Now the recipe can be processed by `run_recipe.py` and should produce
 a lineplot.
 Using pipenv as package manager:
 ```
-pipenv python run run_recipe.py <path to the recipe>
+pipenv run python run_recipe.py <path to the recipe>
 ```
 
 ## Analyzing and plotting from SQLite databases
