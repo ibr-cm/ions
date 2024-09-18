@@ -253,7 +253,7 @@ class PlottingTask(YAMLObject, ExtraCodeFunctionMixin):
                  , bin_size:float = 10.
                  , title_template:Optional[str] = None
                  , bbox_inches:str = 'tight'
-                 , legend_location:str = 'best'
+                 , legend_location:str = 'upper left'
                  , legend_bbox:Optional[str] = None
                  , legend_labels:Optional[str] = None
                  , legend_title:Optional[str] = None
@@ -387,7 +387,7 @@ class PlottingTask(YAMLObject, ExtraCodeFunctionMixin):
 
     def set_legend_defaults(self
                             , legend:bool = True
-                            , legend_location:str = 'best'
+                            , legend_location:str = 'upper left'
                             , legend_bbox:Optional[str] = None
                             , legend_labels:Optional[str] = None
                             , legend_title:Optional[str] = None
