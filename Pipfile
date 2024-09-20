@@ -26,6 +26,7 @@ graphviz = ">=0.20.1"
 ipython = ">=8.25.0"
 ipdb = ">=0.13.13"
 dask = {extras = ["complete"], version = "==2024.8.1"}
+yamllint = "*"
 
 [dev-packages]
 pylint = ">=3.2.6"
