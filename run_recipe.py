@@ -5,6 +5,7 @@ import sys
 import os
 import shutil
 import argparse
+import subprocess
 import traceback
 import threading
 
@@ -365,6 +366,7 @@ def parse_arguments(arguments):
 
     parser.add_argument('--dump-recipe', action='store_true', default=False, help='Dump the loaded recipe; useful for finding errors in the recipe')
     parser.add_argument('--dump-recipe-only', action='store_true', default=False, help='Dump the loaded recipe and exit; useful for finding errors in the recipe')
+    parser.add_argument('--lint-recipe', action='store_true', default=False, help='Run yamllint over the specified recipe; useful for finding errors in the recipe')
 
     parser.add_argument('--debug', action='store_true', default=False, help='Enable debug mode. If an exception is encountered, drop into an ipdb debugger session')
 
@@ -591,6 +593,11 @@ def main():
     set_logging_level(options.log_level)
 
     logd(f'{options=}')
+
+    if options.lint_recipe:
+        # Just run yamllint in a subprocess for now. This also provides a nicely colored output.
+        subprocess.run(['yamllint', options.recipe])
+        exit()
 
     setup_pandas()
 
