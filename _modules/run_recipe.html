@@ -381,11 +381,6 @@
 
     <span class="n">recipe</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">unsafe_load</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 
-    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">lint_recipe</span><span class="p">:</span>
-        <span class="c1"># Just run yamllint in a subprocess for now. This also provides a nicely colored output.</span>
-        <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;yamllint&#39;</span><span class="p">,</span> <span class="n">options</span><span class="o">.</span><span class="n">recipe</span><span class="p">])</span>
-        <span class="n">exit</span><span class="p">()</span>
-
     <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">dump_recipe</span> <span class="ow">or</span> <span class="n">options</span><span class="o">.</span><span class="n">dump_recipe_only</span><span class="p">:</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">dump</span><span class="p">(</span><span class="n">recipe</span><span class="p">,</span> <span class="n">Dumper</span><span class="o">=</span><span class="n">Dumper</span><span class="p">)</span>
         <span class="n">terminal_size</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">get_terminal_size</span><span class="p">()</span>
@@ -720,6 +715,11 @@
     <span class="n">set_logging_level</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">log_level</span><span class="p">)</span>
 
     <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">options</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">lint_recipe</span><span class="p">:</span>
+        <span class="c1"># Just run yamllint in a subprocess for now. This also provides a nicely colored output.</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;yamllint&#39;</span><span class="p">,</span> <span class="n">options</span><span class="o">.</span><span class="n">recipe</span><span class="p">])</span>
+        <span class="n">exit</span><span class="p">()</span>
 
     <span class="n">setup_pandas</span><span class="p">()</span>
 
