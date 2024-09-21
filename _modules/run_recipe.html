@@ -89,6 +89,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 
@@ -380,6 +381,11 @@
 
     <span class="n">recipe</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">unsafe_load</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">lint_recipe</span><span class="p">:</span>
+        <span class="c1"># Just run yamllint in a subprocess for now. This also provides a nicely colored output.</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;yamllint&#39;</span><span class="p">,</span> <span class="n">options</span><span class="o">.</span><span class="n">recipe</span><span class="p">])</span>
+        <span class="n">exit</span><span class="p">()</span>
+
     <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">dump_recipe</span> <span class="ow">or</span> <span class="n">options</span><span class="o">.</span><span class="n">dump_recipe_only</span><span class="p">:</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">dump</span><span class="p">(</span><span class="n">recipe</span><span class="p">,</span> <span class="n">Dumper</span><span class="o">=</span><span class="n">Dumper</span><span class="p">)</span>
         <span class="n">terminal_size</span> <span class="o">=</span> <span class="n">shutil</span><span class="o">.</span><span class="n">get_terminal_size</span><span class="p">()</span>
@@ -469,6 +475,7 @@
 
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dump-recipe&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Dump the loaded recipe; useful for finding errors in the recipe&#39;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dump-recipe-only&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Dump the loaded recipe and exit; useful for finding errors in the recipe&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--lint-recipe&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Run yamllint over the specified recipe; useful for finding errors in the recipe&#39;</span><span class="p">)</span>
 
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--debug&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Enable debug mode. If an exception is encountered, drop into an ipdb debugger session&#39;</span><span class="p">)</span>
 
