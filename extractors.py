@@ -352,41 +352,41 @@ class BaseExtractor(Extractor):
                            , query:str
                            , includeFilename:bool=False
                            ) -> pd.DataFrame:
-            r"""
-            Extract the data from a SQLite database into a `pandas.DataFrame <https://pandas.pydata.org/docs/user_guide/dsintro.html#dataframe>`_
+        r"""
+        Extract the data from a SQLite database into a `pandas.DataFrame <https://pandas.pydata.org/docs/user_guide/dsintro.html#dataframe>`_
 
-            Parameters
-            ----------
-            db_file: str
-                The input file name from which data is to be extracted.
+        Parameters
+        ----------
+        db_file: str
+            The input file name from which data is to be extracted.
 
-            query: str
-                The SQL query to extract data from the input file.
+        query: str
+            The SQL query to extract data from the input file.
 
-            includeFilename: bool
-                Whether to include the input file name in the column `filename` of the result DataFrame.
-            """
+        includeFilename: bool
+            Whether to include the input file name in the column `filename` of the result DataFrame.
+        """
 
-            sql_reader = SqlLiteReader(db_file)
+        sql_reader = SqlLiteReader(db_file)
 
-            try:
-                data = sql_reader.execute_sql_query(query)
-            except Exception as e:
-                loge(f'>>>> ERROR: no data could be extracted from {db_file}:\n {e}')
-                return pd.DataFrame()
+        try:
+            data = sql_reader.execute_sql_query(query)
+        except Exception as e:
+            loge(f'>>>> ERROR: no data could be extracted from {db_file}:\n {e}')
+            return pd.DataFrame()
 
-            if 'rowId' in data.columns:
-                data = data.drop(labels=['rowId'], axis=1)
+        if 'rowId' in data.columns:
+            data = data.drop(labels=['rowId'], axis=1)
 
-            if (data.empty):
-                logw(f'Extractor: extraction yields no data for {db_file}')
-                return pd.DataFrame()
+        if (data.empty):
+            logw(f'Extractor: extraction yields no data for {db_file}')
+            return pd.DataFrame()
 
-            # add path to dataframe
-            if (includeFilename):
-                data["filename"] = str(db_file)
+        # add path to dataframe
+        if (includeFilename):
+            data["filename"] = str(db_file)
 
-            return data
+        return data
 
 
 class SqlExtractor(BaseExtractor):
