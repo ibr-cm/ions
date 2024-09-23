@@ -48,7 +48,7 @@ class SqlLiteReader():
     Parameters
     ----------
     db_file : str
-        The path to the SQLite3 database file
+        The path to the SQLite3 database file.
     """
     def __init__(self, db_file):
         self.db_file = db_file
@@ -91,11 +91,11 @@ class SqlLiteReader():
         Parameters
         ----------
         attributes_regex_map : dict
-            The dictionary containing the definitions for the tags to extract from the `runAttr` table
+            The dictionary containing the definitions for the tags to extract from the `runAttr` table.
         iterationvars_regex_map : dict
-            The dictionary containing the definitions for the tags to extract from the `iterationvars` attribute
+            The dictionary containing the definitions for the tags to extract from the `iterationvars` attribute.
         parameters_regex_map : dict
-            The dictionary containing the definitions for the tags to extract from the `runParam` table
+            The dictionary containing the definitions for the tags to extract from the `runParam` table.
 
         Extract all tags defined in the given mappings from the `runAttr` and `runParam` tables and parse the value of the `iterationvars` attribute.
         See the module `tag_regular_expressions` for the expected structure of the mappings.
@@ -137,15 +137,15 @@ class DataAttributes(YAMLObject):
     Parameters
     ----------
     source_file : str
-        The file name the dataset was extracted from
+        The file name the dataset was extracted from.
     source_files : List[str]
-        The list of file names the dataset was extracted from
+        The list of file names the dataset was extracted from.
     common_root : str
-        The root directory that was not containing regex for search files
+        The root directory that was not containing regex for search files.
     alias : List[str]
-        The alias given to the data in the dataset
+        The alias given to the data in the dataset.
     aliases : List[str]
-        The aliases given to the data in the dataset
+        The aliases given to the data in the dataset.
     """
     def __init__(self, /,  **kwargs):
         self.source_files = set()
@@ -208,7 +208,7 @@ class Extractor(YAMLObject):
 
     def prepare(self):
         r"""
-        Prepare and return a list or a single dask.Delayed task
+        Prepare and return a list or a single dask.Delayed task.
         """
         return None
 
@@ -259,10 +259,10 @@ class BaseExtractor(Extractor):
         data: pd.DataFrame
             The input DataFrame whose columns are to be converted.
 
-        categorical_columns: set
+        categorical_columns: Optional[set[str]]
             The set of names of the columns to convert to a categorical data type.
 
-        numerical_columns: Union[dict[str, str], set[str]]
+        numerical_columns: Optional[Union[dict[str, str], set[str]]]
             The set of names of the columns to convert to a categorical data type.
             The data type to convert to can also be given explicitly as a dictionary
             with the column names as keys and the data type as values.
@@ -348,10 +348,25 @@ class BaseExtractor(Extractor):
 
 
     @staticmethod
-    def read_sql_from_file(db_file
-                            , query
-                            , includeFilename=False
-                            ):
+    def read_sql_from_file(db_file:str
+                           , query:str
+                           , includeFilename:bool=False
+                           ) -> pd.DataFrame:
+            r"""
+            Extract the data from a SQLite database into a `pandas.DataFrame <https://pandas.pydata.org/docs/user_guide/dsintro.html#dataframe>`_
+
+            Parameters
+            ----------
+            db_file: str
+                The input file name from which data is to be extracted.
+
+            query: str
+                The SQL query to extract data from the input file.
+
+            includeFilename: bool
+                Whether to include the input file name in the column `filename` of the result DataFrame.
+            """
+
             sql_reader = SqlLiteReader(db_file)
 
             try:
@@ -376,15 +391,15 @@ class BaseExtractor(Extractor):
 
 class SqlExtractor(BaseExtractor):
     r"""
-    Extract the data from files using a SQL statement
+    Extract the data from files using a SQL statement.
 
     Parameters
     ----------
     input_files: List[str]
-        the list of paths to the input files, as literal path or as a regular expression
+        The list of paths to the input files, as literal path or as a regular expression.
 
     query: str
-        the name of the signal which is to be extracted
+        The SQL query used to extract data from the input files.
 
     """
     yaml_tag = '!SqlExtractor'
@@ -1102,20 +1117,32 @@ class PatternMatchingBulkExtractor(OmnetExtractor):
 
     Parameters
     ----------
-    input_files: List[str]
-        the list of paths to the input files, as literal path or as a regular expression
+    input_files: list[str]
+        The list of paths to the input files, as literal path or as a regular expression.
 
     pattern: str
-        the SQL LIKE pattern matching expression used for matching on possible signal names
+        The SQL LIKE pattern used for matching on the `vectorName` column. See the SQLite
+        `expression syntax <https://www.sqlite.org/lang_expr.html#the_like_glob_regexp_match_and_extract_operators>`_
+        documentation for the syntax rules.
+        Note that this is (by default) not case sensitive for ASCII characters, but is case sensitive for unicode characters outside of ASCII.
 
     alias: str
-        the name given to the column with the extracted signal data
+        The name given to the column with the extracted signal data.
 
     alias_match_pattern: str
-        the regular expression used for extracting named capture groups from the matched signal names
+        The regular expression used for extracting substrings from the `vectorName` column of the extracted data
+        and binding them to variables that can be used in the parameter `alias_pattern`. In regular expression
+        terminology these substrings are called named capture groups.
+        For details see the documentation for `syntax <https://docs.python.org/3/library/re.html#index-18>`_
+        and `named groups <https://docs.python.org/3/howto/regex.html#non-capturing-and-named-groups>`_.
 
     alias_pattern: str
-        the template string for naming the extracted signal from the named capture groups matched by alias_match_pattern
+        The format string used in naming the different extracted signal.
+        This is formatted by `str.format <https://docs.python.org/3/library/stdtypes.html#str.format>`_ with the variables
+        extracted via the `alias_match_pattern` passed as arguments.
+        For syntax and details see the documentation for `formatstrings <https://docs.python.org/3/library/string.html#formatstrings>`_.
+
+        This is placed into the `variable` column
 
     """
     yaml_tag = '!PatternMatchingBulkExtractor'
