@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Iterable
 
 import yaml
 
@@ -40,6 +40,36 @@ def construct_numeral(loader, node, type_constructor:Callable = int):
     x = type_constructor(x)
     return x
 
+def construct_joined_sequence(loader, sequence):
+    if isinstance(sequence, yaml.nodes.SequenceNode):
+        # Construct the nodes of the SequenceNode into an Iterable.
+        joined_sequence = decode_node(loader, sequence)
+    elif isinstance(sequence, Iterable):
+        # First construct all the contained nodes.
+        nodes_to_join = []
+        for node in sequence:
+            x = decode_node(loader, node)
+            nodes_to_join.append(x)
+
+        # Now join all the nodes of the sequence depending on the type.
+        if all(map(lambda x: isinstance(x, str), nodes_to_join)):
+            # A list of strings is joined into a single string.
+            joined_sequence = ''.join(nodes_to_join)
+        elif all(map(lambda x: isinstance(x, list), nodes_to_join)):
+            # A list of lists is joined into a single list.
+            joined_sequence = []
+            for elm in nodes_to_join:
+                joined_sequence.extend(elm)
+        elif all(map(lambda x: isinstance(x, dict), nodes_to_join)):
+            # A list of dictionaries is joined into a single dictionary.
+            joined_sequence = {}
+            for elm in nodes_to_join:
+                joined_sequence.update(elm)
+        else:
+            raise TypeError(f'Unsuitable types for joining:  {nodes_to_join}')
+
+    return joined_sequence
+
 def decode_node(loader, node):
     match type(node):
         case yaml.ScalarNode:
@@ -70,7 +100,12 @@ def decode_node(loader, node):
         case yaml.MappingNode:
             x = loader.construct_mapping(node)
         case yaml.SequenceNode:
-            x = loader.construct_sequence(node)
+            match node.tag:
+                case '!join':
+                    # Join all the elements of the sequence.
+                    x = construct_joined_sequence(loader, node.value)
+                case _:
+                    x = loader.construct_sequence(node)
         case _:
             x = None
     return x
@@ -102,3 +137,4 @@ def register_constructors():
     Register YAML constructors for all the custom tags
     """
     yaml.add_constructor('!include', include_constructor)
+    yaml.add_constructor('!join', construct_joined_sequence)
