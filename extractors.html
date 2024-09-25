@@ -208,22 +208,22 @@
 <td><p>Convert a representation node to a Python object.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code>()</p></td>
-<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#extractors.BaseExtractor.read_sql_from_file" title="extractors.BaseExtractor.read_sql_from_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_sql_from_file</span></code></a>(db_file, query[, ...])</p></td>
+<td><p>Extract the data from a SQLite database into a <a class="reference external" href="https://pandas.pydata.org/docs/user_guide/dsintro.html#dataframe">pandas.DataFrame</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
 <td><p>Convert a Python object to a representation node.</p></td>
 </tr>
 </tbody>
 </table>
 <table class="docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><strong>read_sql_from_file</strong></p></td>
+<tr class="row-odd"><td><p><strong>set_tag_maps</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><strong>set_tag_maps</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
+<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -239,9 +239,9 @@
 <dd class="field-odd"><dl class="simple">
 <dt><strong>data: pd.DataFrame</strong></dt><dd><p>The input DataFrame whose columns are to be converted.</p>
 </dd>
-<dt><strong>categorical_columns: set</strong></dt><dd><p>The set of names of the columns to convert to a categorical data type.</p>
+<dt><strong>categorical_columns: Optional[set[str]]</strong></dt><dd><p>The set of names of the columns to convert to a categorical data type.</p>
 </dd>
-<dt><strong>numerical_columns: Union[dict[str, str], set[str]]</strong></dt><dd><p>The set of names of the columns to convert to a categorical data type.
+<dt><strong>numerical_columns: Optional[Union[dict[str, str], set[str]]]</strong></dt><dd><p>The set of names of the columns to convert to a categorical data type.
 The data type to convert to can also be given explicitly as a dictionary
 with the column names as keys and the data type as values.</p>
 </dd>
@@ -252,8 +252,21 @@ with the column names as keys and the data type as values.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="extractors.BaseExtractor.read_sql_from_file">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_sql_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">includeFilename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#BaseExtractor.read_sql_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.BaseExtractor.read_sql_from_file" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_sql_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">includeFilename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/extractors.html#BaseExtractor.read_sql_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.BaseExtractor.read_sql_from_file" title="Link to this definition"></a></dt>
+<dd><p>Extract the data from a SQLite database into a <a class="reference external" href="https://pandas.pydata.org/docs/user_guide/dsintro.html#dataframe">pandas.DataFrame</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>db_file: str</strong></dt><dd><p>The input file name from which data is to be extracted.</p>
+</dd>
+<dt><strong>query: str</strong></dt><dd><p>The SQL query to extract data from the input file.</p>
+</dd>
+<dt><strong>includeFilename: bool</strong></dt><dd><p>Whether to include the input file name in the column <cite>filename</cite> of the result DataFrame.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="extractors.BaseExtractor.yaml_tag">
@@ -272,15 +285,15 @@ them into object attributes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>source_file</strong><span class="classifier">str</span></dt><dd><p>The file name the dataset was extracted from</p>
+<dt><strong>source_file</strong><span class="classifier">str</span></dt><dd><p>The file name the dataset was extracted from.</p>
 </dd>
-<dt><strong>source_files</strong><span class="classifier">List[str]</span></dt><dd><p>The list of file names the dataset was extracted from</p>
+<dt><strong>source_files</strong><span class="classifier">List[str]</span></dt><dd><p>The list of file names the dataset was extracted from.</p>
 </dd>
-<dt><strong>common_root</strong><span class="classifier">str</span></dt><dd><p>The root directory that was not containing regex for search files</p>
+<dt><strong>common_root</strong><span class="classifier">str</span></dt><dd><p>The root directory that was not containing regex for search files.</p>
 </dd>
-<dt><strong>alias</strong><span class="classifier">List[str]</span></dt><dd><p>The alias given to the data in the dataset</p>
+<dt><strong>alias</strong><span class="classifier">List[str]</span></dt><dd><p>The alias given to the data in the dataset.</p>
 </dd>
-<dt><strong>aliases</strong><span class="classifier">List[str]</span></dt><dd><p>The aliases given to the data in the dataset</p>
+<dt><strong>aliases</strong><span class="classifier">List[str]</span></dt><dd><p>The aliases given to the data in the dataset.</p>
 </dd>
 </dl>
 </dd>
@@ -387,7 +400,7 @@ This is the abstract base class.</p>
 <td><p>Convert a representation node to a Python object.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#extractors.Extractor.prepare" title="extractors.Extractor.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
-<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
 <td><p>Convert a Python object to a representation node.</p></td>
@@ -407,7 +420,7 @@ This is the abstract base class.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="extractors.Extractor.prepare">
 <span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#Extractor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.Extractor.prepare" title="Link to this definition"></a></dt>
-<dd><p>Prepare and return a list or a single dask.Delayed task</p>
+<dd><p>Prepare and return a list or a single dask.Delayed task.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -457,9 +470,12 @@ the associated positions, from the input files specified.</p>
 <td><p>Convert a representation node to a Python object.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#extractors.MatchingExtractor.prepare" title="extractors.MatchingExtractor.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
-<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_sql_from_file</span></code>(db_file, query[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
 <td><p>Convert a Python object to a representation node.</p></td>
 </tr>
 </tbody>
@@ -490,16 +506,13 @@ the associated positions, from the input files specified.</p>
 <tr class="row-even"><td><p><strong>read_signals_from_file</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>read_sql_from_file</strong></p></td>
+<tr class="row-odd"><td><p><strong>read_statistic_from_file</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><strong>read_statistic_from_file</strong></p></td>
+<tr class="row-even"><td><p><strong>set_tag_maps</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>set_tag_maps</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
+<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -517,7 +530,7 @@ the associated positions, from the input files specified.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="extractors.MatchingExtractor.prepare">
 <span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#MatchingExtractor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.MatchingExtractor.prepare" title="Link to this definition"></a></dt>
-<dd><p>Prepare and return a list or a single dask.Delayed task</p>
+<dd><p>Prepare and return a list or a single dask.Delayed task.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -550,9 +563,12 @@ This is the base class.</p>
 <td><p>Convert a representation node to a Python object.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code>()</p></td>
-<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_sql_from_file</span></code>(db_file, query[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
 <td><p>Convert a Python object to a representation node.</p></td>
 </tr>
 </tbody>
@@ -577,16 +593,13 @@ This is the base class.</p>
 <tr class="row-even"><td><p><strong>read_signals_from_file</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>read_sql_from_file</strong></p></td>
+<tr class="row-odd"><td><p><strong>read_statistic_from_file</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><strong>read_statistic_from_file</strong></p></td>
+<tr class="row-even"><td><p><strong>set_tag_maps</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>set_tag_maps</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
+<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -639,18 +652,29 @@ This is the base class.</p>
 <dd><p>Bases: <a class="reference internal" href="#extractors.OmnetExtractor" title="extractors.OmnetExtractor"><code class="xref py py-class docutils literal notranslate"><span class="pre">OmnetExtractor</span></code></a></p>
 <p>Extract the data for multiple signals matching a SQL LIKE pattern
 expression from the input files specified.</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>input_files: List[str]</strong></dt><dd><p>the list of paths to the input files, as literal path or as a regular expression</p>
+<dd class="field-odd"><dl>
+<dt><strong>input_files: list[str]</strong></dt><dd><p>The list of paths to the input files, as literal path or as a regular expression.</p>
 </dd>
-<dt><strong>pattern: str</strong></dt><dd><p>the SQL LIKE pattern matching expression used for matching on possible signal names</p>
+<dt><strong>pattern: str</strong></dt><dd><p>The SQL LIKE pattern used for matching on the <cite>vectorName</cite> column. See the SQLite
+<a class="reference external" href="https://www.sqlite.org/lang_expr.html#the_like_glob_regexp_match_and_extract_operators">expression syntax</a>
+documentation for the syntax rules.
+Note that this is (by default) not case sensitive for ASCII characters, but is case sensitive for unicode characters outside of ASCII.</p>
 </dd>
-<dt><strong>alias: str</strong></dt><dd><p>the name given to the column with the extracted signal data</p>
+<dt><strong>alias: str</strong></dt><dd><p>The name given to the column with the extracted signal data.</p>
 </dd>
-<dt><strong>alias_match_pattern: str</strong></dt><dd><p>the regular expression used for extracting named capture groups from the matched signal names</p>
+<dt><strong>alias_match_pattern: str</strong></dt><dd><p>The regular expression used for extracting substrings from the <cite>vectorName</cite> column of the extracted data
+and binding them to variables that can be used in the parameter <cite>alias_pattern</cite>. In regular expression
+terminology these substrings are called named capture groups.
+For details see the documentation for <a class="reference external" href="https://docs.python.org/3/library/re.html#index-18">syntax</a>
+and <a class="reference external" href="https://docs.python.org/3/howto/regex.html#non-capturing-and-named-groups">named groups</a>.</p>
 </dd>
-<dt><strong>alias_pattern: str</strong></dt><dd><p>the template string for naming the extracted signal from the named capture groups matched by alias_match_pattern</p>
+<dt><strong>alias_pattern: str</strong></dt><dd><p>The format string used in naming the different extracted signal.
+This is formatted by <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str.format">str.format</a> with the variables
+extracted via the <cite>alias_match_pattern</cite> passed as arguments.
+For syntax and details see the documentation for <a class="reference external" href="https://docs.python.org/3/library/string.html#formatstrings">formatstrings</a>.</p>
+<p>This is placed into the <cite>variable</cite> column</p>
 </dd>
 </dl>
 </dd>
@@ -670,9 +694,12 @@ expression from the input files specified.</p>
 <td><p>Convert a representation node to a Python object.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#extractors.PatternMatchingBulkExtractor.prepare" title="extractors.PatternMatchingBulkExtractor.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
-<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_sql_from_file</span></code>(db_file, query[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
 <td><p>Convert a Python object to a representation node.</p></td>
 </tr>
 </tbody>
@@ -700,16 +727,13 @@ expression from the input files specified.</p>
 <tr class="row-odd"><td><p><strong>read_signals_from_file</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><strong>read_sql_from_file</strong></p></td>
+<tr class="row-even"><td><p><strong>read_statistic_from_file</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>read_statistic_from_file</strong></p></td>
+<tr class="row-odd"><td><p><strong>set_tag_maps</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><strong>set_tag_maps</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
+<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -722,7 +746,7 @@ expression from the input files specified.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="extractors.PatternMatchingBulkExtractor.prepare">
 <span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#PatternMatchingBulkExtractor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.PatternMatchingBulkExtractor.prepare" title="Link to this definition"></a></dt>
-<dd><p>Prepare and return a list or a single dask.Delayed task</p>
+<dd><p>Prepare and return a list or a single dask.Delayed task.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -779,9 +803,12 @@ Equivalent to:</p>
 <td><p>Convert a representation node to a Python object.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#extractors.PatternMatchingBulkScalarExtractor.prepare" title="extractors.PatternMatchingBulkScalarExtractor.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
-<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_sql_from_file</span></code>(db_file, query[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
 <td><p>Convert a Python object to a representation node.</p></td>
 </tr>
 </tbody>
@@ -809,16 +836,13 @@ Equivalent to:</p>
 <tr class="row-odd"><td><p><strong>read_signals_from_file</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><strong>read_sql_from_file</strong></p></td>
+<tr class="row-even"><td><p><strong>read_statistic_from_file</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>read_statistic_from_file</strong></p></td>
+<tr class="row-odd"><td><p><strong>set_tag_maps</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><strong>set_tag_maps</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
+<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -831,7 +855,7 @@ Equivalent to:</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="extractors.PatternMatchingBulkScalarExtractor.prepare">
 <span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#PatternMatchingBulkScalarExtractor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.PatternMatchingBulkScalarExtractor.prepare" title="Link to this definition"></a></dt>
-<dd><p>Prepare and return a list or a single dask.Delayed task</p>
+<dd><p>Prepare and return a list or a single dask.Delayed task.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -885,9 +909,12 @@ a rectangle</p>
 <td><p>Convert a representation node to a Python object.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#extractors.PositionExtractor.prepare" title="extractors.PositionExtractor.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
-<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_sql_from_file</span></code>(db_file, query[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
 <td><p>Convert a Python object to a representation node.</p></td>
 </tr>
 </tbody>
@@ -915,16 +942,13 @@ a rectangle</p>
 <tr class="row-odd"><td><p><strong>read_signals_from_file</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><strong>read_sql_from_file</strong></p></td>
+<tr class="row-even"><td><p><strong>read_statistic_from_file</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>read_statistic_from_file</strong></p></td>
+<tr class="row-odd"><td><p><strong>set_tag_maps</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><strong>set_tag_maps</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
+<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -932,7 +956,7 @@ a rectangle</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="extractors.PositionExtractor.prepare">
 <span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#PositionExtractor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.PositionExtractor.prepare" title="Link to this definition"></a></dt>
-<dd><p>Prepare and return a list or a single dask.Delayed task</p>
+<dd><p>Prepare and return a list or a single dask.Delayed task.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -979,9 +1003,12 @@ a rectangle</p>
 <td><p>Convert a representation node to a Python object.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#extractors.RawExtractor.prepare" title="extractors.RawExtractor.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
-<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_sql_from_file</span></code>(db_file, query[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
 <td><p>Convert a Python object to a representation node.</p></td>
 </tr>
 </tbody>
@@ -1006,16 +1033,13 @@ a rectangle</p>
 <tr class="row-even"><td><p><strong>read_signals_from_file</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>read_sql_from_file</strong></p></td>
+<tr class="row-odd"><td><p><strong>read_statistic_from_file</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><strong>read_statistic_from_file</strong></p></td>
+<tr class="row-even"><td><p><strong>set_tag_maps</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>set_tag_maps</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
+<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -1023,7 +1047,7 @@ a rectangle</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="extractors.RawExtractor.prepare">
 <span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#RawExtractor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.RawExtractor.prepare" title="Link to this definition"></a></dt>
-<dd><p>Prepare and return a list or a single dask.Delayed task</p>
+<dd><p>Prepare and return a list or a single dask.Delayed task.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1071,9 +1095,12 @@ a rectangle</p>
 <td><p>Convert a representation node to a Python object.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#extractors.RawScalarExtractor.prepare" title="extractors.RawScalarExtractor.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
-<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_sql_from_file</span></code>(db_file, query[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
 <td><p>Convert a Python object to a representation node.</p></td>
 </tr>
 </tbody>
@@ -1098,16 +1125,13 @@ a rectangle</p>
 <tr class="row-even"><td><p><strong>read_signals_from_file</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>read_sql_from_file</strong></p></td>
+<tr class="row-odd"><td><p><strong>read_statistic_from_file</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><strong>read_statistic_from_file</strong></p></td>
+<tr class="row-even"><td><p><strong>set_tag_maps</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>set_tag_maps</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
+<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -1115,7 +1139,7 @@ a rectangle</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="extractors.RawScalarExtractor.prepare">
 <span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#RawScalarExtractor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.RawScalarExtractor.prepare" title="Link to this definition"></a></dt>
-<dd><p>Prepare and return a list or a single dask.Delayed task</p>
+<dd><p>Prepare and return a list or a single dask.Delayed task.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1163,9 +1187,12 @@ a rectangle</p>
 <td><p>Convert a representation node to a Python object.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#extractors.RawStatisticExtractor.prepare" title="extractors.RawStatisticExtractor.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
-<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_sql_from_file</span></code>(db_file, query[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
 <td><p>Convert a Python object to a representation node.</p></td>
 </tr>
 </tbody>
@@ -1190,16 +1217,13 @@ a rectangle</p>
 <tr class="row-even"><td><p><strong>read_signals_from_file</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>read_sql_from_file</strong></p></td>
+<tr class="row-odd"><td><p><strong>read_statistic_from_file</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><strong>read_statistic_from_file</strong></p></td>
+<tr class="row-even"><td><p><strong>set_tag_maps</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>set_tag_maps</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
+<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -1207,7 +1231,7 @@ a rectangle</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="extractors.RawStatisticExtractor.prepare">
 <span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#RawStatisticExtractor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.RawStatisticExtractor.prepare" title="Link to this definition"></a></dt>
-<dd><p>Prepare and return a list or a single dask.Delayed task</p>
+<dd><p>Prepare and return a list or a single dask.Delayed task.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1221,13 +1245,13 @@ a rectangle</p>
 <dt class="sig sig-object py" id="extractors.SqlExtractor">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">extractors.</span></span><span class="sig-name descname"><span class="pre">SqlExtractor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">includeFilename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#SqlExtractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.SqlExtractor" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#extractors.BaseExtractor" title="extractors.BaseExtractor"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExtractor</span></code></a></p>
-<p>Extract the data from files using a SQL statement</p>
+<p>Extract the data from files using a SQL statement.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>input_files: List[str]</strong></dt><dd><p>the list of paths to the input files, as literal path or as a regular expression</p>
+<dt><strong>input_files: List[str]</strong></dt><dd><p>The list of paths to the input files, as literal path or as a regular expression.</p>
 </dd>
-<dt><strong>query: str</strong></dt><dd><p>the name of the signal which is to be extracted</p>
+<dt><strong>query: str</strong></dt><dd><p>The SQL query used to extract data from the input files.</p>
 </dd>
 </dl>
 </dd>
@@ -1247,9 +1271,12 @@ a rectangle</p>
 <td><p>Convert a representation node to a Python object.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#extractors.SqlExtractor.prepare" title="extractors.SqlExtractor.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
-<td><p>Prepare and return a list or a single dask.Delayed task</p></td>
+<td><p>Prepare and return a list or a single dask.Delayed task.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_sql_from_file</span></code>(db_file, query[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_yaml</span></code>(dumper, data)</p></td>
 <td><p>Convert a Python object to a representation node.</p></td>
 </tr>
 </tbody>
@@ -1259,13 +1286,10 @@ a rectangle</p>
 <tr class="row-odd"><td><p><strong>read_query_from_file</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><strong>read_sql_from_file</strong></p></td>
+<tr class="row-even"><td><p><strong>set_tag_maps</strong></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>set_tag_maps</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>yaml_dumper</strong></p></td>
+<tr class="row-odd"><td><p><strong>yaml_dumper</strong></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -1273,7 +1297,7 @@ a rectangle</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="extractors.SqlExtractor.prepare">
 <span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/extractors.html#SqlExtractor.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#extractors.SqlExtractor.prepare" title="Link to this definition"></a></dt>
-<dd><p>Prepare and return a list or a single dask.Delayed task</p>
+<dd><p>Prepare and return a list or a single dask.Delayed task.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1296,7 +1320,7 @@ a rectangle</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>db_file</strong><span class="classifier">str</span></dt><dd><p>The path to the SQLite3 database file</p>
+<dt><strong>db_file</strong><span class="classifier">str</span></dt><dd><p>The path to the SQLite3 database file.</p>
 </dd>
 </dl>
 </dd>
@@ -1362,11 +1386,11 @@ a rectangle</p>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>attributes_regex_map</strong><span class="classifier">dict</span></dt><dd><p>The dictionary containing the definitions for the tags to extract from the <cite>runAttr</cite> table</p>
+<dt><strong>attributes_regex_map</strong><span class="classifier">dict</span></dt><dd><p>The dictionary containing the definitions for the tags to extract from the <cite>runAttr</cite> table.</p>
 </dd>
-<dt><strong>iterationvars_regex_map</strong><span class="classifier">dict</span></dt><dd><p>The dictionary containing the definitions for the tags to extract from the <cite>iterationvars</cite> attribute</p>
+<dt><strong>iterationvars_regex_map</strong><span class="classifier">dict</span></dt><dd><p>The dictionary containing the definitions for the tags to extract from the <cite>iterationvars</cite> attribute.</p>
 </dd>
-<dt><strong>parameters_regex_map</strong><span class="classifier">dict</span></dt><dd><p>The dictionary containing the definitions for the tags to extract from the <cite>runParam</cite> table</p>
+<dt><strong>parameters_regex_map</strong><span class="classifier">dict</span></dt><dd><p>The dictionary containing the definitions for the tags to extract from the <cite>runParam</cite> table.</p>
 </dd>
 <dt><strong>Extract all tags defined in the given mappings from the `runAttr` and `runParam` tables and parse the value of the `iterationvars` attribute.</strong></dt><dd></dd>
 <dt><strong>See the module `tag_regular_expressions` for the expected structure of the mappings.</strong></dt><dd></dd>

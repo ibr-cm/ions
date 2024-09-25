@@ -82,7 +82,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for yaml_helper</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span>
 
 <span class="kn">import</span> <span class="nn">yaml</span>
 
@@ -133,6 +133,39 @@
     <span class="k">return</span> <span class="n">x</span></div>
 
 
+<div class="viewcode-block" id="construct_joined_sequence">
+<a class="viewcode-back" href="../yaml_helper.html#yaml_helper.construct_joined_sequence">[docs]</a>
+<span class="k">def</span> <span class="nf">construct_joined_sequence</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">yaml</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">SequenceNode</span><span class="p">):</span>
+        <span class="c1"># Construct the nodes of the SequenceNode into an Iterable.</span>
+        <span class="n">joined_sequence</span> <span class="o">=</span> <span class="n">decode_node</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">sequence</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+        <span class="c1"># First construct all the contained nodes.</span>
+        <span class="n">nodes_to_join</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">decode_node</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+            <span class="n">nodes_to_join</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Now join all the nodes of the sequence depending on the type.</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="n">nodes_to_join</span><span class="p">)):</span>
+            <span class="c1"># A list of strings is joined into a single string.</span>
+            <span class="n">joined_sequence</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nodes_to_join</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">),</span> <span class="n">nodes_to_join</span><span class="p">)):</span>
+            <span class="c1"># A list of lists is joined into a single list.</span>
+            <span class="n">joined_sequence</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">elm</span> <span class="ow">in</span> <span class="n">nodes_to_join</span><span class="p">:</span>
+                <span class="n">joined_sequence</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">elm</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">dict</span><span class="p">),</span> <span class="n">nodes_to_join</span><span class="p">)):</span>
+            <span class="c1"># A list of dictionaries is joined into a single dictionary.</span>
+            <span class="n">joined_sequence</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">elm</span> <span class="ow">in</span> <span class="n">nodes_to_join</span><span class="p">:</span>
+                <span class="n">joined_sequence</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">elm</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsuitable types for joining:  </span><span class="si">{</span><span class="n">nodes_to_join</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">joined_sequence</span></div>
+
+
 <div class="viewcode-block" id="decode_node">
 <a class="viewcode-back" href="../yaml_helper.html#yaml_helper.decode_node">[docs]</a>
 <span class="k">def</span> <span class="nf">decode_node</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
@@ -165,7 +198,12 @@
         <span class="k">case</span> <span class="n">yaml</span><span class="o">.</span><span class="n">MappingNode</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">construct_mapping</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
         <span class="k">case</span> <span class="n">yaml</span><span class="o">.</span><span class="n">SequenceNode</span><span class="p">:</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">construct_sequence</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">match</span> <span class="n">node</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+                <span class="k">case</span> <span class="s1">&#39;!join&#39;</span><span class="p">:</span>
+                    <span class="c1"># Join all the elements of the sequence.</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">construct_joined_sequence</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">construct_sequence</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
         <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">return</span> <span class="n">x</span></div>
@@ -205,7 +243,8 @@
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Register YAML constructors for all the custom tags</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="s1">&#39;!include&#39;</span><span class="p">,</span> <span class="n">include_constructor</span><span class="p">)</span></div>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="s1">&#39;!include&#39;</span><span class="p">,</span> <span class="n">include_constructor</span><span class="p">)</span>
+    <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="s1">&#39;!join&#39;</span><span class="p">,</span> <span class="n">construct_joined_sequence</span><span class="p">)</span></div>
 
 </pre></div>
 
