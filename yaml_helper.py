@@ -1,4 +1,4 @@
-from typing import Callable, Iterable
+from typing import Callable, Iterable, Union
 
 import yaml
 
@@ -40,7 +40,7 @@ def construct_numeral(loader, node, type_constructor:Callable = int):
     x = type_constructor(x)
     return x
 
-def construct_joined_sequence(loader, sequence):
+def construct_joined_sequence(loader:yaml.Loader, sequence:Union[yaml.nodes.SequenceNode, Iterable]):
     if isinstance(sequence, yaml.nodes.SequenceNode):
         # Construct the nodes of the SequenceNode into an Iterable.
         joined_sequence = decode_node(loader, sequence)
@@ -66,7 +66,12 @@ def construct_joined_sequence(loader, sequence):
             for elm in nodes_to_join:
                 joined_sequence.update(elm)
         else:
-            raise TypeError(f'Unsuitable types for joining:  {nodes_to_join}')
+            # Inhomogenous sequences are not supported.
+            raise TypeError(f"Unsuitable types for joining: {[ type(x).__name__ for x in nodes_to_join ]}"
+                            f"\n{nodes_to_join= }")
+    else:
+        # Cover all remaining cases.
+        raise TypeError(f"Unsuitable sequence for joining:  {type(sequence).__name__}" f"\n{sequence}")
 
     return joined_sequence
 
