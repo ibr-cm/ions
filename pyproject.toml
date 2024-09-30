@@ -6,7 +6,7 @@ authors = [
     {name = "Christian Hagau", email = "hagau@ibr.cs.tu-bs.de"},
 ]
 dependencies = [
-    "matplotlib==3.9.1",
+    "matplotlib==3.9.2",
     "numpy==2.0.1",
     "jsonpickle",
     "ujson",
