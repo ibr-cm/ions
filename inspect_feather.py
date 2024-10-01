@@ -49,47 +49,72 @@ def display_full(df, max_rows:Optional[int] = None, max_columns:Optional[int] = 
         display(df)
 
 #######################
-# TODO: quick & dirty
+# TODO: Quick & dirty. This could be parallelized.
 def load_all_inputs(input_filenames):
     input_list = []
+    loaded_filenames = []
     for filename in input_filenames:
         try:
             df = read_from_file(filename)
             input_list.append(df)
+            loaded_filenames.append(filename)
         except FileNotFoundError as e:
             print(f'!!>> File "{filename}" not found:\n {e}')
             continue
 
-    return input_list
+    return input_list, loaded_filenames
 
-def verify_equality(df0, df1):
-    is_equal = all(df0, df1)
+def is_df_pair_equal(df0, df1):
+    is_equal = all((df0 == df1).all())
+
     return is_equal
 
-# TODO: quick & dirty, comparison only works for two inputs
+def is_df_pair_equal_detailed(df0, df1):
+    diff = df0.compare(df1)
+    is_equal = diff.empty
+
+    return is_equal, diff
+
 def process_multiple_inputs(input_list:Iterable[str]
                             , context_options
                             , compare:bool = False
                             , detailed_compare:bool = False
                             ):
-    dfs = load_all_inputs(input_list)
+    dfs, loaded_filenames = load_all_inputs(input_list)
 
     if compare or detailed_compare:
-        if detailed_compare:
-            res = dfs[0].compare(dfs[1])
-            print(f'{res=}')
-            is_equal = all((dfs[0] == dfs[1]).all())
-            equal_result = '' if is_equal else ' *NOT*'
-        else:
-            is_equal = all((dfs[0] == dfs[1]).all())
-            equal_result = '' if is_equal else ' *NOT*'
+        is_equal_results:list[bool] = []
+        num_dfs:int = len(dfs)
+        diffs:dict[int, pd.DataFrame] = {}
 
-        print(f'{is_equal}: values in the given DataFrames are{equal_result} equal')
+        # Compare the loaded DataFrames one-to-one sequencially.
+        if detailed_compare:
+            for i in range(0, num_dfs-1):
+                print(f'comparing {loaded_filenames[i]} with {loaded_filenames[i+1]}')
+                is_equal, diff = is_df_pair_equal_detailed(dfs[i], dfs[i+1])
+                # Keep the differenve for the detailed log report.
+                if not diff.empty:
+                    diffs[i] = diff
+                is_equal_results.append(is_equal)
+        else:
+            for i in range(0, num_dfs-1):
+                print(f'comparing {loaded_filenames[i]} with {loaded_filenames[i+1]}')
+                is_equal = is_df_pair_equal(dfs[i], dfs[i+1])
+                is_equal_results.append(is_equal)
+
+        is_equal = all(is_equal_results)
+        equal_result_str = "" if is_equal else " *NOT*"
+        print(f'{is_equal}: values in the given DataFrames are{equal_result_str} equal')
+
+        if detailed_compare:
+            # Print the differences for unequal DataFrames.
+            for k in diffs:
+                print(f'{k}: {loaded_filenames[k]}: {loaded_filenames[k+1]} :\n{diffs[k]}')
 
         return is_equal
     else:
         with pd.option_context(*context_options):
-            print('>>>> Starting a IPython shell...\n>>>> The data has been loaded into `dfs`')
+            print('>>>> Starting a IPython shell...\n>>>> The DataFrames has been loaded into `dfs`')
             embed(color_info=True, colors='Linux')
 
 #######################
@@ -149,7 +174,11 @@ def main():
     context_options = process_context_options(args)
 
     if len(args.input) > 1 :
-        process_multiple_inputs(args.input, context_options, compare=args.compare, detailed_compare=args.detailed_compare)
+        result_code = process_multiple_inputs(args.input, context_options, compare=args.compare, detailed_compare=args.detailed_compare)
+        if result_code is not None:
+            exit((0 if result_code else 1))
+        else:
+            exit(0)
     else:
         process_single_input(args.input[0], context_options)
 
