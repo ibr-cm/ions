@@ -679,7 +679,10 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">dashboard_address</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;localhost:</span><span class="si">{</span><span class="n">options</span><span class="o">.</span><span class="n">dashboard_port</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;using local cluster with dashboard at </span><span class="si">{</span><span class="n">dashboard_address</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">dashboard_address</span><span class="o">=</span><span class="n">dashboard_address</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">worker</span><span class="p">)</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">dashboard_address</span><span class="o">=</span><span class="n">dashboard_address</span>
+                        <span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">worker</span>
+                        <span class="p">,</span> <span class="n">local_directory</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">tmpdir</span>
+                        <span class="p">)</span>
         <span class="n">client</span><span class="o">.</span><span class="n">register_worker_plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">client</span></div>
 
