@@ -563,7 +563,10 @@ def setup_dask(options):
     else:
         dashboard_address = f'localhost:{options.dashboard_port}'
         logi(f'using local cluster with dashboard at {dashboard_address}')
-        client = Client(dashboard_address=dashboard_address, n_workers=options.worker)
+        client = Client(dashboard_address=dashboard_address
+                        , n_workers=options.worker
+                        , local_directory = options.tmpdir
+                        )
         client.register_worker_plugin(plugin)
         return client
 
