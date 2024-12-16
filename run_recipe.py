@@ -348,7 +348,7 @@ def parse_arguments(arguments):
                                                                 )
 
     parser.add_argument('--worker', type=int, default=4, help='The number of worker processes')
-    parser.add_argument('--mem', type=int, default=1, help='The memory, in GB, to reserve for each worker process')
+    parser.add_argument('--mem', type=int, default=1, help='The memory, in GB, to limit each worker process to. This is only obeyed if the cluster is not already running.')
 
     parser.add_argument('--cluster', type=str, help='The address of an already running cluster')
     parser.add_argument('--single-threaded', action='store_true', default=False, help='Run in single-threaded mode; this overrides the value of the `--worker` flag')
@@ -549,6 +549,7 @@ def setup_dask(options):
             cluster = LocalCluster(n_workers=options.worker
                                  , host='localhost'
                                  # , interface='lo'
+                                 , memory_limit = str(options.mem) + 'GB'
                                  , local_directory = options.tmpdir
                                  )
             cluster.scale(options.worker)
@@ -565,6 +566,7 @@ def setup_dask(options):
         logi(f'using local cluster with dashboard at {dashboard_address}')
         client = Client(dashboard_address=dashboard_address
                         , n_workers=options.worker
+                        , memory_limit = str(options.mem) + 'GB'
                         , local_directory = options.tmpdir
                         )
         client.register_worker_plugin(plugin)
