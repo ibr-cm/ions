@@ -204,7 +204,9 @@ def prepare_evaluation_phase(recipe:Recipe, options, data_repo, function_definit
 
     if options.plot_task_graphs:
         for i in range(0, len(jobs)):
-            jobs[i].visualize(f'{options.tmpdir}/dask_task_graph_evaluation_job-{i}.png')
+            graph_output_file = f'{options.tmpdir}/dask_task_graph_evaluation_job-{i}.png'
+            jobs[i].visualize(graph_output_file)
+            logi(f'saved the evaluation phase task graph for job {i}:{jobs[i]} to: {graph_output_file}')
 
     return data_repo, jobs
 
@@ -273,7 +275,7 @@ def prepare_plotting_phase(recipe:Recipe, options, data_repo):
         for i in range(0, len(jobs)):
             graph_output_file = f'{options.tmpdir}/dask_task_graph_plotting_job-{i}.png'
             jobs[i].visualize(graph_output_file)
-            logi(f'saved the plot phase task graph for job {jobs[i]} to: {graph_output_file}')
+            logi(f'saved the plot phase task graph for job {i}:{jobs[i]} to: {graph_output_file}')
 
     return data_repo, jobs
 
