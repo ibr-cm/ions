@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:cb96cb3973628d6ec08ecf0602315c7f025740a80818b270f238ededf62d368b"
+content_hash = "sha256:3449c697c612d429152e5d770b00a920731529680fbddf3c7ca7b92ce7f31682"
 
 [[metadata.targets]]
 requires_python = ">=3.10,<3.13"
@@ -317,7 +317,7 @@ files = [
 
 [[package]]
 name = "dask"
-version = "2024.8.1"
+version = "2024.12.1"
 requires_python = ">=3.10"
 summary = "Parallel PyData with Task Scheduling"
 groups = ["default"]
@@ -332,24 +332,24 @@ dependencies = [
     "toolz>=0.10.0",
 ]
 files = [
-    {file = "dask-2024.8.1-py3-none-any.whl", hash = "sha256:b8b58cba91dc9c057c8676dcc80b8bc321602b4dfd21529d33b03b55d428e2c3"},
-    {file = "dask-2024.8.1.tar.gz", hash = "sha256:4254e43ac8c3affad2b22952f126b00a00f52c87caae91c068d8e395a4ad1a72"},
+    {file = "dask-2024.12.1-py3-none-any.whl", hash = "sha256:1f32acddf1a6994e3af6734756f0a92467c47050bc29f3555bb9b140420e8e19"},
+    {file = "dask-2024.12.1.tar.gz", hash = "sha256:bac809af21c2dd7eb06827bccbfc612504f3ee6435580e548af912828f823195"},
 ]
 
 [[package]]
 name = "dask-expr"
-version = "1.1.11"
+version = "1.1.21"
 requires_python = ">=3.10"
 summary = "High Level Expressions for Dask "
 groups = ["default"]
 dependencies = [
-    "dask==2024.8.1",
+    "dask==2024.12.1",
     "pandas>=2",
-    "pyarrow>=7.0.0",
+    "pyarrow>=14.0.1",
 ]
 files = [
-    {file = "dask_expr-1.1.11-py3-none-any.whl", hash = "sha256:b9222b3d430152e3af4a1777f66bcee88651f510876cb57c720107d123d9ba63"},
-    {file = "dask_expr-1.1.11.tar.gz", hash = "sha256:275689c269f9c30dbaf9d8d7e9d3b5ac5438ea6db73fdbf95b3f4bfb1381bc5a"},
+    {file = "dask_expr-1.1.21-py3-none-any.whl", hash = "sha256:2c2a9a0b0e66b26cf918679988f97e947bc936544f3a106102055adb9a9edeba"},
+    {file = "dask_expr-1.1.21.tar.gz", hash = "sha256:eb45de8e6fea1ce2608a431b4e03a484592defb1796665530c91386ffac581d3"},
 ]
 
 [[package]]
@@ -369,59 +369,58 @@ files = [
 
 [[package]]
 name = "dask"
-version = "2024.8.1"
+version = "2024.12.1"
 extras = ["array", "dataframe", "diagnostics", "distributed"]
 requires_python = ">=3.10"
 summary = "Parallel PyData with Task Scheduling"
 groups = ["default"]
 dependencies = [
-    "bokeh>=2.4.2",
+    "bokeh>=3.1.0",
     "dask-expr<1.2,>=1.1",
-    "dask==2024.8.1",
+    "dask==2024.12.1",
     "dask[array]",
-    "distributed==2024.8.1",
+    "distributed==2024.12.1",
     "jinja2>=2.10.3",
-    "numpy>=1.21",
+    "numpy>=1.24",
     "pandas>=2.0",
 ]
 files = [
-    {file = "dask-2024.8.1-py3-none-any.whl", hash = "sha256:b8b58cba91dc9c057c8676dcc80b8bc321602b4dfd21529d33b03b55d428e2c3"},
-    {file = "dask-2024.8.1.tar.gz", hash = "sha256:4254e43ac8c3affad2b22952f126b00a00f52c87caae91c068d8e395a4ad1a72"},
+    {file = "dask-2024.12.1-py3-none-any.whl", hash = "sha256:1f32acddf1a6994e3af6734756f0a92467c47050bc29f3555bb9b140420e8e19"},
+    {file = "dask-2024.12.1.tar.gz", hash = "sha256:bac809af21c2dd7eb06827bccbfc612504f3ee6435580e548af912828f823195"},
 ]
 
 [[package]]
 name = "dask"
-version = "2024.8.1"
+version = "2024.12.1"
 extras = ["array"]
 requires_python = ">=3.10"
 summary = "Parallel PyData with Task Scheduling"
 groups = ["default"]
 dependencies = [
-    "dask==2024.8.1",
-    "numpy>=1.21",
+    "dask==2024.12.1",
+    "numpy>=1.24",
 ]
 files = [
-    {file = "dask-2024.8.1-py3-none-any.whl", hash = "sha256:b8b58cba91dc9c057c8676dcc80b8bc321602b4dfd21529d33b03b55d428e2c3"},
-    {file = "dask-2024.8.1.tar.gz", hash = "sha256:4254e43ac8c3affad2b22952f126b00a00f52c87caae91c068d8e395a4ad1a72"},
+    {file = "dask-2024.12.1-py3-none-any.whl", hash = "sha256:1f32acddf1a6994e3af6734756f0a92467c47050bc29f3555bb9b140420e8e19"},
+    {file = "dask-2024.12.1.tar.gz", hash = "sha256:bac809af21c2dd7eb06827bccbfc612504f3ee6435580e548af912828f823195"},
 ]
 
 [[package]]
 name = "dask"
-version = "2024.8.1"
+version = "2024.12.1"
 extras = ["complete"]
 requires_python = ">=3.10"
 summary = "Parallel PyData with Task Scheduling"
 groups = ["default"]
 dependencies = [
-    "dask==2024.8.1",
+    "dask==2024.12.1",
     "dask[array,dataframe,diagnostics,distributed]",
     "lz4>=4.3.2",
-    "pyarrow-hotfix",
-    "pyarrow>=7.0",
+    "pyarrow>=14.0.1",
 ]
 files = [
-    {file = "dask-2024.8.1-py3-none-any.whl", hash = "sha256:b8b58cba91dc9c057c8676dcc80b8bc321602b4dfd21529d33b03b55d428e2c3"},
-    {file = "dask-2024.8.1.tar.gz", hash = "sha256:4254e43ac8c3affad2b22952f126b00a00f52c87caae91c068d8e395a4ad1a72"},
+    {file = "dask-2024.12.1-py3-none-any.whl", hash = "sha256:1f32acddf1a6994e3af6734756f0a92467c47050bc29f3555bb9b140420e8e19"},
+    {file = "dask-2024.12.1.tar.gz", hash = "sha256:bac809af21c2dd7eb06827bccbfc612504f3ee6435580e548af912828f823195"},
 ]
 
 [[package]]
@@ -448,14 +447,14 @@ files = [
 
 [[package]]
 name = "distributed"
-version = "2024.8.1"
+version = "2024.12.1"
 requires_python = ">=3.10"
 summary = "Distributed scheduler for Dask"
 groups = ["default"]
 dependencies = [
     "click>=8.0",
-    "cloudpickle>=2.0.0",
-    "dask==2024.8.1",
+    "cloudpickle>=3.0.0",
+    "dask==2024.12.1",
     "jinja2>=2.10.3",
     "locket>=1.0.0",
     "msgpack>=1.0.2",
@@ -470,8 +469,8 @@ dependencies = [
     "zict>=3.0.0",
 ]
 files = [
-    {file = "distributed-2024.8.1-py3-none-any.whl", hash = "sha256:03f5d3fe7a407cdc16dd2bc25dff4900b72f8dee896b7174eebe8a10b42d8c06"},
-    {file = "distributed-2024.8.1.tar.gz", hash = "sha256:82394ceb68b91118717148dbe182cff679f32621812bd7b2bc27eaaa8589f962"},
+    {file = "distributed-2024.12.1-py3-none-any.whl", hash = "sha256:87e31abaa0ee3dc517b44fec4993d4b5d92257f926a8d2a12d52c005227154e7"},
+    {file = "distributed-2024.12.1.tar.gz", hash = "sha256:438aa3ae48bfac9c2bb2ad03f9d47899286f9cb3db8a627b3b8c0de9e26f53dd"},
 ]
 
 [[package]]
@@ -1410,17 +1409,6 @@ files = [
     {file = "pyarrow-18.1.0-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:c52f81aa6f6575058d8e2c782bf79d4f9fdc89887f16825ec3a66607a5dd8e30"},
     {file = "pyarrow-18.1.0-cp312-cp312-win_amd64.whl", hash = "sha256:0ad4892617e1a6c7a551cfc827e072a633eaff758fa09f21c4ee548c30bcaf99"},
     {file = "pyarrow-18.1.0.tar.gz", hash = "sha256:9386d3ca9c145b5539a1cfc75df07757dff870168c959b473a0bccbc3abc8c73"},
-]
-
-[[package]]
-name = "pyarrow-hotfix"
-version = "0.6"
-requires_python = ">=3.5"
-summary = ""
-groups = ["default"]
-files = [
-    {file = "pyarrow_hotfix-0.6-py3-none-any.whl", hash = "sha256:dcc9ae2d220dff0083be6a9aa8e0cdee5182ad358d4931fce825c545e5c89178"},
-    {file = "pyarrow_hotfix-0.6.tar.gz", hash = "sha256:79d3e030f7ff890d408a100ac16d6f00b14d44a502d7897cd9fc3e3a534e9945"},
 ]
 
 [[package]]

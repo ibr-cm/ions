@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "af7c5da3ce4f32f8fc464798d5b77644bb0d19eb7276e2fefc968762eb4ccf23"
+            "sha256": "d6616095b7fd2710ab043c9092e929ff609ea27ecb823219a9612e2326c940b3"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -292,18 +292,18 @@
                 "complete"
             ],
             "hashes": [
-                "sha256:4254e43ac8c3affad2b22952f126b00a00f52c87caae91c068d8e395a4ad1a72",
-                "sha256:b8b58cba91dc9c057c8676dcc80b8bc321602b4dfd21529d33b03b55d428e2c3"
+                "sha256:1f32acddf1a6994e3af6734756f0a92467c47050bc29f3555bb9b140420e8e19",
+                "sha256:bac809af21c2dd7eb06827bccbfc612504f3ee6435580e548af912828f823195"
             ],
             "markers": "python_version >= '3.10'",
-            "version": "==2024.8.1"
+            "version": "==2024.12.1"
         },
         "dask-expr": {
             "hashes": [
-                "sha256:275689c269f9c30dbaf9d8d7e9d3b5ac5438ea6db73fdbf95b3f4bfb1381bc5a",
-                "sha256:b9222b3d430152e3af4a1777f66bcee88651f510876cb57c720107d123d9ba63"
+                "sha256:2c2a9a0b0e66b26cf918679988f97e947bc936544f3a106102055adb9a9edeba",
+                "sha256:eb45de8e6fea1ce2608a431b4e03a484592defb1796665530c91386ffac581d3"
             ],
-            "version": "==1.1.11"
+            "version": "==1.1.21"
         },
         "dask-jobqueue": {
             "hashes": [
@@ -324,12 +324,12 @@
         },
         "distributed": {
             "hashes": [
-                "sha256:03f5d3fe7a407cdc16dd2bc25dff4900b72f8dee896b7174eebe8a10b42d8c06",
-                "sha256:82394ceb68b91118717148dbe182cff679f32621812bd7b2bc27eaaa8589f962"
+                "sha256:438aa3ae48bfac9c2bb2ad03f9d47899286f9cb3db8a627b3b8c0de9e26f53dd",
+                "sha256:87e31abaa0ee3dc517b44fec4993d4b5d92257f926a8d2a12d52c005227154e7"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.10'",
-            "version": "==2024.8.1"
+            "version": "==2024.12.1"
         },
         "docutils": {
             "hashes": [
