@@ -227,7 +227,7 @@
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">recipe</span><span class="o">.</span><span class="n">evaluation</span><span class="p">,</span> <span class="s1">&#39;extractors&#39;</span><span class="p">):</span>
         <span class="n">logi</span><span class="p">(</span><span class="s1">&#39;prepare_evaluation_phase: no `extractors` in recipe.Evaluation&#39;</span><span class="p">)</span>
-        <span class="k">return</span>
+        <span class="k">return</span> <span class="n">data_repo</span><span class="p">,</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">extractor_tuple</span> <span class="ow">in</span> <span class="n">recipe</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">extractors</span><span class="p">:</span>
         <span class="n">extractor_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">extractor_tuple</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
@@ -294,7 +294,9 @@
 
     <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">plot_task_graphs</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">jobs</span><span class="p">)):</span>
-            <span class="n">jobs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">options</span><span class="o">.</span><span class="n">tmpdir</span><span class="si">}</span><span class="s1">/dask_task_graph_evaluation_job-</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">.png&#39;</span><span class="p">)</span>
+            <span class="n">graph_output_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">options</span><span class="o">.</span><span class="n">tmpdir</span><span class="si">}</span><span class="s1">/dask_task_graph_evaluation_job-</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">.png&#39;</span>
+            <span class="n">jobs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="n">graph_output_file</span><span class="p">)</span>
+            <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;saved the evaluation phase task graph for job </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">jobs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s1"> to: </span><span class="si">{</span><span class="n">graph_output_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">data_repo</span><span class="p">,</span> <span class="n">jobs</span></div>
 
@@ -366,7 +368,7 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">jobs</span><span class="p">)):</span>
             <span class="n">graph_output_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">options</span><span class="o">.</span><span class="n">tmpdir</span><span class="si">}</span><span class="s1">/dask_task_graph_plotting_job-</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">.png&#39;</span>
             <span class="n">jobs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="n">graph_output_file</span><span class="p">)</span>
-            <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;saved the plot phase task graph for job </span><span class="si">{</span><span class="n">jobs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s1"> to: </span><span class="si">{</span><span class="n">graph_output_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">logi</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;saved the plot phase task graph for job </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">jobs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s1"> to: </span><span class="si">{</span><span class="n">graph_output_file</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">data_repo</span><span class="p">,</span> <span class="n">jobs</span></div>
 
@@ -400,7 +402,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">options</span><span class="o">.</span><span class="n">plot_only</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">recipe</span><span class="p">,</span> <span class="s1">&#39;evaluation&#39;</span><span class="p">):</span>
             <span class="n">logi</span><span class="p">(</span><span class="s1">&#39;process_recipe: no Evaluation in recipe&#39;</span><span class="p">)</span>
-            <span class="k">return</span>
+            <span class="k">return</span> <span class="n">data_repo</span><span class="p">,</span> <span class="p">[]</span>
         <span class="n">data_repo</span><span class="p">,</span> <span class="n">jobs</span> <span class="o">=</span> <span class="n">prepare_evaluation_phase</span><span class="p">(</span><span class="n">recipe</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">data_repo</span><span class="p">,</span> <span class="n">function_definitions_global_env</span><span class="p">)</span>
         <span class="n">job_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">jobs</span><span class="p">)</span>
 
@@ -421,11 +423,7 @@
 <div class="viewcode-block" id="extract_dict_from_string">
 <a class="viewcode-back" href="../run_recipe.html#run_recipe.extract_dict_from_string">[docs]</a>
 <span class="k">def</span> <span class="nf">extract_dict_from_string</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
-        <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-    <span class="k">return</span> <span class="n">d</span></div>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">([</span> <span class="n">token</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">string</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="p">])</span></div>
 
 
 
