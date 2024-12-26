@@ -137,7 +137,7 @@ def prepare_evaluation_phase(recipe:Recipe, options, data_repo, function_definit
 
     if not hasattr(recipe.evaluation, 'extractors'):
         logi('prepare_evaluation_phase: no `extractors` in recipe.Evaluation')
-        return
+        return data_repo, []
 
     for extractor_tuple in recipe.evaluation.extractors:
         extractor_name = list(extractor_tuple.keys())[0]
@@ -306,7 +306,7 @@ def process_recipe(options):
     if not options.plot_only:
         if not hasattr(recipe, 'evaluation'):
             logi('process_recipe: no Evaluation in recipe')
-            return
+            return data_repo, []
         data_repo, jobs = prepare_evaluation_phase(recipe, options, data_repo, function_definitions_global_env)
         job_list.extend(jobs)
 
