@@ -324,11 +324,7 @@ def process_recipe(options):
 
 
 def extract_dict_from_string(string):
-    d = dict()
-    for token in string.split(','):
-        key, value = token.strip(',').split(':')
-        d[key] = value
-    return d
+    return dict([ token.strip(',').split(':') for token in string.strip('{}').split(',') ])
 
 
 def parse_arguments(arguments):
