@@ -353,6 +353,13 @@
             <span class="n">attributes</span><span class="o">.</span><span class="n">add_source_files</span><span class="p">(</span><span class="n">attributes_l</span><span class="o">.</span><span class="n">get_source_files</span><span class="p">())</span>
             <span class="n">attributes</span><span class="o">.</span><span class="n">add_source_files</span><span class="p">(</span><span class="n">attributes_r</span><span class="o">.</span><span class="n">get_source_files</span><span class="p">())</span>
 
+            <span class="k">if</span> <span class="n">attributes_l</span><span class="o">.</span><span class="n">common_root</span> <span class="o">==</span> <span class="n">attributes_r</span><span class="o">.</span><span class="n">common_root</span><span class="p">:</span>
+                <span class="n">logw</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;Warning: The datasets to be merged don&#39;t share a common root path, using the path from the first dataset.</span>
+<span class="s1">                         using: </span><span class="si">{</span><span class="n">attributes_l</span><span class="o">.</span><span class="n">common_root</span><span class="si">=}</span>
+<span class="s1">                         </span><span class="si">{</span><span class="n">attributes_l</span><span class="o">.</span><span class="n">common_root</span><span class="si">=}</span>
+<span class="s1">                         </span><span class="si">{</span><span class="n">attributes_r</span><span class="o">.</span><span class="n">common_root</span><span class="si">=}</span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+                <span class="n">attributes</span><span class="o">.</span><span class="n">common_root</span> <span class="o">=</span> <span class="n">attributes_l</span><span class="o">.</span><span class="n">common_root</span>
+
             <span class="k">for</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">attributes_l</span><span class="o">.</span><span class="n">get_aliases</span><span class="p">():</span>
                 <span class="n">attributes</span><span class="o">.</span><span class="n">add_alias</span><span class="p">(</span><span class="n">alias</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">attributes_r</span><span class="o">.</span><span class="n">get_aliases</span><span class="p">():</span>
@@ -382,6 +389,14 @@
             <span class="n">attributes</span> <span class="o">=</span> <span class="n">DataAttributes</span><span class="p">()</span>
             <span class="n">attributes</span><span class="o">.</span><span class="n">add_source_files</span><span class="p">(</span><span class="n">attributes_l</span><span class="o">.</span><span class="n">get_source_files</span><span class="p">())</span>
             <span class="n">attributes</span><span class="o">.</span><span class="n">add_source_files</span><span class="p">(</span><span class="n">attributes_r</span><span class="o">.</span><span class="n">get_source_files</span><span class="p">())</span>
+
+            <span class="k">if</span> <span class="n">attributes_l</span><span class="o">.</span><span class="n">common_root</span> <span class="o">==</span> <span class="n">attributes_r</span><span class="o">.</span><span class="n">common_root</span><span class="p">:</span>
+                <span class="n">logw</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;Warning: The datasets to be merged don&#39;t share a common root path, using the path from the first dataset.</span>
+<span class="s1">                         using: </span><span class="si">{</span><span class="n">attributes_l</span><span class="o">.</span><span class="n">common_root</span><span class="si">=}</span>
+<span class="s1">                         </span><span class="si">{</span><span class="n">attributes_l</span><span class="o">.</span><span class="n">common_root</span><span class="si">=}</span>
+<span class="s1">                         </span><span class="si">{</span><span class="n">attributes_r</span><span class="o">.</span><span class="n">common_root</span><span class="si">=}</span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+                <span class="n">attributes</span><span class="o">.</span><span class="n">common_root</span> <span class="o">=</span> <span class="n">attributes_l</span><span class="o">.</span><span class="n">common_root</span>
+
             <span class="n">logd</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">attributes</span><span class="si">=}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">job_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">job</span><span class="p">,</span> <span class="n">attributes</span><span class="p">))</span>
             <span class="c1"># start_ipython_dbg_cmdline(locals())</span>
@@ -540,7 +555,7 @@
         <span class="c1"># extra_code in a separate global namespace.</span>
         <span class="c1"># The compilation of the extra code has to happen in the thread/process</span>
         <span class="c1"># of the processing worker since code objects can&#39;t be serialized.</span>
-        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
             <span class="n">logw</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ColumnFunctionTransform return is empty!&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
 

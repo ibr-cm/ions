@@ -1416,6 +1416,8 @@
                                                       <span class="p">,</span> <span class="n">eventNumber</span><span class="o">=</span><span class="n">eventNumber</span>
                                                      <span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">data</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
 
         <span class="k">def</span> <span class="nf">process_vectorName</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
             <span class="c1"># compile the signal matching regex</span>
