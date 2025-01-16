@@ -1,4 +1,5 @@
 import operator
+import itertools
 from typing import Union, List, Callable, Optional
 
 from collections import defaultdict
@@ -122,6 +123,16 @@ class ConcatTransform(Transform, YAMLObject):
         job = dask.delayed(self.concat)(tuple(map(operator.itemgetter(0), data_list)))
 
         attributes = DataAttributes()
+
+        common_roots = []
+        for attribute in list(map(operator.itemgetter(1), data_list)):
+            common_roots.append(attribute.common_root)
+
+        if not all(list(map(lambda x: x[0]==x[1], itertools.pairwise(common_roots)))):
+                logw(f'''Warning: The datasets to be merged don't share a common root path, using the path from the first dataset.
+                         using: {common_roots[0]}
+                         {common_roots=}''')
+                attributes.common_root = common_roots[0]
 
         # add all source files as attributes
         for attribute in list(map(operator.itemgetter(1), data_list)):
