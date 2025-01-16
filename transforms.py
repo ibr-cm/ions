@@ -403,7 +403,7 @@ class ColumnFunctionTransform(Transform, ExtraCodeFunctionMixin, YAMLObject):
         # extra_code in a separate global namespace.
         # The compilation of the extra code has to happen in the thread/process
         # of the processing worker since code objects can't be serialized.
-        if data.empty:
+        if data is None or data.empty:
             logw(f'ColumnFunctionTransform return is empty!')
             return pd.DataFrame()
 
