@@ -237,6 +237,13 @@ class MergeTransform(Transform, YAMLObject):
             attributes.add_source_files(attributes_l.get_source_files())
             attributes.add_source_files(attributes_r.get_source_files())
 
+            if attributes_l.common_root == attributes_r.common_root:
+                logw(f'''Warning: The datasets to be merged don't share a common root path, using the path from the first dataset.
+                         using: {attributes_l.common_root=}
+                         {attributes_l.common_root=}
+                         {attributes_r.common_root=}''')
+                attributes.common_root = attributes_l.common_root
+
             for alias in attributes_l.get_aliases():
                 attributes.add_alias(alias)
             for alias in attributes_r.get_aliases():
@@ -263,6 +270,14 @@ class MergeTransform(Transform, YAMLObject):
             attributes = DataAttributes()
             attributes.add_source_files(attributes_l.get_source_files())
             attributes.add_source_files(attributes_r.get_source_files())
+
+            if attributes_l.common_root == attributes_r.common_root:
+                logw(f'''Warning: The datasets to be merged don't share a common root path, using the path from the first dataset.
+                         using: {attributes_l.common_root=}
+                         {attributes_l.common_root=}
+                         {attributes_r.common_root=}''')
+                attributes.common_root = attributes_l.common_root
+
             logd(f'{attributes=}')
             job_list.append((job, attributes))
             # start_ipython_dbg_cmdline(locals())
