@@ -1192,6 +1192,8 @@ class PatternMatchingBulkExtractor(OmnetExtractor):
                                                       , eventNumber=eventNumber
                                                      )
 
+        if data is None or data.empty:
+            return pd.DataFrame()
 
         def process_vectorName(d):
             # compile the signal matching regex
