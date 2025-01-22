@@ -584,7 +584,7 @@ class PlottingTask(YAMLObject, ExtraCodeFunctionMixin):
                                         , x=self.x, y=self.y
                                         , hue=self.hue
                                         , row=self.row, column=self.column
-                                        , kwargs=self.plot_kwargs
+                                        , **self.plot_kwargs
                                        )
 
         def catplot(plot_type):
@@ -593,25 +593,27 @@ class PlottingTask(YAMLObject, ExtraCodeFunctionMixin):
                                         , x=self.x, y=self.y
                                         , hue=self.hue
                                         , row=self.row, column=self.column
-                                        , kwargs=self.plot_kwargs
+                                        , **self.plot_kwargs
                                        )
 
         def relplot(plot_type):
                 return self.plot_relplot(df=selected_data
                                         , plot_type=plot_type
                                         , x=self.x, y=self.y
-                                        , hue=self.hue, style=self.style, size=self.size
+                                        , hue=self.hue
                                         , row=self.row, column=self.column
-                                        , kwargs=self.plot_kwargs
+                                        , style=self.style, size=self.size
+                                        , **self.plot_kwargs
                                        )
 
         def heatplot(plot_type):
                 return self.plot_heatplot(df=selected_data
                                         , plot_type=plot_type
                                         , x=self.x, y=self.y, z=self.z
-                                        , hue=self.hue, style=self.style
+                                        , hue=self.hue
                                         , row=self.row, column=self.column
-                                        , kwargs=self.plot_kwargs
+                                        , style=self.style
+                                        , **self.plot_kwargs
                                        )
 
         fig = None
@@ -836,7 +838,7 @@ class PlottingTask(YAMLObject, ExtraCodeFunctionMixin):
 
         return kwargs
 
-    def set_plot_specific_options(self, plot_type:str, kwargs:dict):
+    def set_plot_specific_options(self, plot_type:str, **kwargs:dict):
         # defaults, can be overridden by the matplotlib.rc
         boxprops = {'edgecolor': 'black'}
         medianprops = {'color':'red'}
