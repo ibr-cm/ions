@@ -243,6 +243,9 @@ class PlottingTask(YAMLObject, ExtraCodeFunctionMixin):
                  , hue:str = None
                  , style:str = None
                  , size:str = None
+                 , hue_order:list = None
+                 , col_order:list = None
+                 , row_order:list = None
                  , matplotlib_backend:str = 'agg'
                  , context:str = 'paper'
                  , axes_style:str = 'dark'
@@ -322,6 +325,10 @@ class PlottingTask(YAMLObject, ExtraCodeFunctionMixin):
         self.hue = hue if hue != '' else None
         self.style = style if style != '' else None
         self.size = size if size != '' else None
+
+        self.hue_order = hue_order if hue_order != '' else None
+        self.col_order = col_order if col_order != '' else None
+        self.row_order = row_order if row_order != '' else None
 
         self.xticks = xticks
         self.xticks_minor = xticks_minor
