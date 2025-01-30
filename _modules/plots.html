@@ -333,6 +333,9 @@
                  <span class="p">,</span> <span class="n">hue</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
                  <span class="p">,</span> <span class="n">style</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
                  <span class="p">,</span> <span class="n">size</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+                 <span class="p">,</span> <span class="n">hue_order</span><span class="p">:</span><span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span>
+                 <span class="p">,</span> <span class="n">col_order</span><span class="p">:</span><span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span>
+                 <span class="p">,</span> <span class="n">row_order</span><span class="p">:</span><span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span>
                  <span class="p">,</span> <span class="n">matplotlib_backend</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;agg&#39;</span>
                  <span class="p">,</span> <span class="n">context</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;paper&#39;</span>
                  <span class="p">,</span> <span class="n">axes_style</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;dark&#39;</span>
@@ -412,6 +415,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hue</span> <span class="o">=</span> <span class="n">hue</span> <span class="k">if</span> <span class="n">hue</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">=</span> <span class="n">style</span> <span class="k">if</span> <span class="n">style</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span> <span class="k">if</span> <span class="n">size</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">hue_order</span> <span class="o">=</span> <span class="n">hue_order</span> <span class="k">if</span> <span class="n">hue_order</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">col_order</span> <span class="o">=</span> <span class="n">col_order</span> <span class="k">if</span> <span class="n">col_order</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">row_order</span> <span class="o">=</span> <span class="n">row_order</span> <span class="k">if</span> <span class="n">row_order</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span> <span class="k">else</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">xticks</span> <span class="o">=</span> <span class="n">xticks</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xticks_minor</span> <span class="o">=</span> <span class="n">xticks_minor</span>
@@ -699,7 +706,7 @@
                                         <span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span>
                                         <span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hue</span>
                                         <span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span>
-                                        <span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_kwargs</span>
+                                        <span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_kwargs</span>
                                        <span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">catplot</span><span class="p">(</span><span class="n">plot_type</span><span class="p">):</span>
@@ -708,25 +715,27 @@
                                         <span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span>
                                         <span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hue</span>
                                         <span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span>
-                                        <span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_kwargs</span>
+                                        <span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_kwargs</span>
                                        <span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">relplot</span><span class="p">(</span><span class="n">plot_type</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_relplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">selected_data</span>
                                         <span class="p">,</span> <span class="n">plot_type</span><span class="o">=</span><span class="n">plot_type</span>
                                         <span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span>
-                                        <span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hue</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span>
+                                        <span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hue</span>
                                         <span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span>
-                                        <span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_kwargs</span>
+                                        <span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span>
+                                        <span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_kwargs</span>
                                        <span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">heatplot</span><span class="p">(</span><span class="n">plot_type</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot_heatplot</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">selected_data</span>
                                         <span class="p">,</span> <span class="n">plot_type</span><span class="o">=</span><span class="n">plot_type</span>
                                         <span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span>
-                                        <span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hue</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span>
+                                        <span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hue</span>
                                         <span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">column</span>
-                                        <span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_kwargs</span>
+                                        <span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span>
+                                        <span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_kwargs</span>
                                        <span class="p">)</span>
 
         <span class="n">fig</span> <span class="o">=</span> <span class="kc">None</span>
@@ -966,7 +975,7 @@
 
 <div class="viewcode-block" id="PlottingTask.set_plot_specific_options">
 <a class="viewcode-back" href="../plots.html#plots.PlottingTask.set_plot_specific_options">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_plot_specific_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_type</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span><span class="nb">dict</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">set_plot_specific_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot_type</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span><span class="nb">dict</span><span class="p">):</span>
         <span class="c1"># defaults, can be overridden by the matplotlib.rc</span>
         <span class="n">boxprops</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;edgecolor&#39;</span><span class="p">:</span> <span class="s1">&#39;black&#39;</span><span class="p">}</span>
         <span class="n">medianprops</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span><span class="s1">&#39;red&#39;</span><span class="p">}</span>
