@@ -4,66 +4,61 @@
 !Recipe
 name: !!str "example_recipe"
 
+# A collection of definitions used throughout the recipe.
+# This is not used by the framework at all, it is just a convenient place for
+# definitions used repeatedly throughout the recipe.
+common_definitions:
+  # These columns that are converted to categorical data types
+  # Note the definition of the anchor name `ccolumns` with the '&'
+  categorical_columns: &ccolumns ['variable', 'vectorName', 'moduleName'
+                             , 'v2x_rate', 'configname', 'experiment', 'repetition', 'runnumber'
+                             , 'prefix', 'ql', 'mcmI', 'mcmL' ]
+  # These columns that are converted to numerical data types, with explicit data type
+  # Note the definition of the anchor name `ncolumns` with the '&'.
+  numerical_columns_aoi: &ncolumns { 'coordination_aoi' : float, 'eventNumber' : int, 'simtimeRaw' : int }
+
 evaluation: !Evaluation
-  tags: !include /misc/ibr/projects/artery-lte/artery_imagine_hagau_release_t-its_paccrunch/scripts/examples/tags.yaml
+  # It is advisable to use absolute paths everywhere, otherwise the path is
+  # evaluated relative to the current working directory which may not be the same as the root directory of the project.
+  tags: !include examples/tags.yaml
 
   extractors:
     - raw_aoi: !PatternMatchingBulkExtractor
-        # the path to the input files, regular expressions can be used
-        # input_files: !include /net/i5/opt/tmpssd/t-its-paper/review/yaml/all_finished.yaml
+        # The paths to the input files, every entry is parsed as a regular expression.
+        # Or include an external file containing the YAML list
         # input_files: !include /opt/tmp/t-its-paper/review/all_ready_results.yaml
-        # input_files: !include /opt/tmp/t-its-paper/review/results_to_process.yaml
-        # input_files: !include /net/i3/opt/tmpssd/hagau/t-its-paper/review_MCO_split/ready_results.yaml
         input_files: !!python/list
-            - "/opt/tmp/t-its-paper/review_simulation_results/SCO/ffk/.*_2_2023.*vec$"
-            #
-            # - "/net/i3/opt/tmpssd/hagau/t-its-paper/review_ql-3-5/ffk/.*20230910.*.vec$"
-            # - "/net/i3/opt/tmpssd/hagau/t-its-paper/review_MCO_split/ffk/.*20230908.*.vec$"
-            # - "/opt/tmp/t-its-paper/review/ffk/.*vec$"
-            # - "/net/i3/opt/tmpssd/hagau/t-its-paper/review_MCO_split/ffk/.*MPR=0.6.*mcmI=0.5.*mcmL=888_2_2023.*.vec$"
-            # - "/net/i5/opt/tmpssd/t-its-paper/review/ffk/.*MCO.*MPR=(0.05|0.1|0.2|0.4|0.6|0.8|1.0).*mcmI=(0.02|0.1|0.5|1.0).*mcmL=60.*.vec$"
-            # - "/net/i5/opt/tmpssd/t-its-paper/review/ffk/.*MCO.*MPR=(0.05|0.1|0.2|0.4|0.6|0.8|1.0).*mcmI=(0.02|0.1|0.5|1.0).*mcmL=888.*.vec$"
-            # - "/net/i5/opt/tmpssd/t-its-paper/review/ffk/.*MCO.*MPR=(0.05|0.1|0.2|0.4|0.6|0.8|1.0).*mcmI=(0.02|0.1|0.5|1.0).*mcmL=1170.*.vec$"
-            #
-            # - "/net/i5/opt/tmpssd/t-its-paper/review/ffk/.*SCO.*MPR=(0.05|0.1|0.2|0.4|0.6|0.8|1.0).*mcmI=(0.02|0.1|0.5|1.0).*mcmL=60.*.vec$"
-            # - "/net/i5/opt/tmpssd/t-its-paper/review/ffk/.*SCO.*MPR=(0.05|0.1|0.2|0.4|0.6|0.8|1.0).*mcmI=(0.02|0.1|0.5|1.0).*mcmL=888.*.vec$"
-            # - "/net/i5/opt/tmpssd/t-its-paper/review/ffk/.*SCO.*MPR=(0.05|0.1|0.2|0.4|0.6|0.8|1.0).*mcmI=(0.02|0.1|0.5|1.0).*mcmL=1170.*.vec$"
-            #
-            # - "/net/i5/opt/tmpssd/t-its-paper/review/ffk/.*.vec$"
-            # - "/tmp/ffk/0_itsg5_FFK_MCO_MCM_8h_MPR=0.1_mcmI=1.0_mcmL=1170_2_20230901-09:51:08_286.vec"
-            # - "/tmp/ffk/0_itsg5_FFK_MCO_MCM_8h_MPR=0.2_mcmI=1.0_mcmL=60_2_20230901-11:39:34_220.vec"
-            # - "/opt/tmp/t-its-paper/review/ffk/0_itsg5_FFK_SCO_8h_MPR=.*_mcmI=.*_mcmL=888_2_.*.vec"
-            # - "/opt/tmp/t-its-paper/review/obstacles/ffk/.*.vec$"
-            # - "/opt/tmp/t-its-paper/review/ffk/0_itsg5_FFK_SCO_8h_MPR=0.4_mcmI=0.1_mcmL=888_2_20230822-14:03:24_30.vec"
-            # - "/opt/tmp/t-its-paper/review/ffk/0_itsg5_FFK_SCO_.*.vec$"
-            # - "/net/i5/opt/tmpssd/t-its-paper/review/ffk/0_itsg5_FFK_MCO_MCM_8h_MPR=0.05_mcmI=0.02_mcmL=1170_2_20230805-18:45:42_385.vec"
-            # - "/net/i5/opt/tmpssd/t-its-paper/review/ffk/0_itsg5_FFK_MCO_MCM_8h_MPR=0.05_mcmI=0.02_mcmL=1170_2_20230805-19:19:22_389.vec"
-            # - "/misc/ibr/projects/artery-lte/artery_imagine_hagau_release_t-its/scenarios/imagine/results/ffk/0_itsg5_FFK_MCO_MCM_8h_MPR=0.4_mcmI=1.0_mcmL=60_3_20230731-19:22:47_200.vec"
-            # - "/opt/tmpssd/t-its-paper/review/ffk/.*MCO_B.*vec$"
-            # - "/net/i5/opt/tmpssd/t-its-paper/ffk/0_itsg5_FFK_MCO_MCM_8h_MPR=0.4_mcmI=1.0_mcmL=60_3_20230726-22:02:50_200.vec"
-            # - "/opt/tmpssd/t-its-paper/ffk/0_itsg5_FFK_MCO_MCM_8h_MPR=0.4_mcmI=1.0_mcmL=60_3_20230727-11:52:07_200.vec$"
-        # the pattern used for matching on the `vectorName` column
-        # note the binding of the variable `index` to the distance coded into the
-        # signal name
+            # - "/opt/tmp/hagau/data/SCO/ffk/.*MPR=0.2.*_2_2023.*vec$"
+            # - "/opt/tmp/hagau/data/SCO/ffk/.*_2_2023.*vec$"
+            # - "/opt/tmp/hagau/data/SC./ff.*/0_itsg5_FFK_SCO_8h_MPR=0.2_mcmI=0.1_mcmL=888_2_20230901-14:40:56_45.vec$"
+            # - /opt/tmp/hagau/data/SC./ff(k|l)/.*_itsg5_FFK_SCO_8h_MPR=(0.1)_mcmI=0.1_mcmL=888_2_20230901-14:40:56_43.vec$
+
+            # plain mode 
+            # - /opt/tmp/hagau/data\(2\)/SC./ff(k|l)/.*_itsg5_FFK_SCO_8h_MPR=(0.1|0.4)_mcmI=(0.1|0.5)_mcmL=888_2_.*.vec$
+            - /opt/tmp/hagau/data/SCO/ffk/0_itsg5_FFK_SCO_8h_MPR=0.1_mcmI=0.5_mcmL=.*_2_2023.*.vec$
+
+            # single-quoted mode 
+            # - '/opt/tmp/hagau/data\(2\)/SC./ff(k|l)/.*_itsg5_FFK_SCO_8h_MPR=(0.1)_mcmI=0.1_mcmL=888_2_20230901-14:40:56_43.vec$'
+            # double-quoted mode 
+            # - "/opt/tmp/hagau/data/SCO/ffk/0_itsg5_FFK_SCO_8h_MPR=0.1_mcmI=0.1_mcmL=888_2_20230901-14:40:56_43.vec$"
+        # The pattern used for matching on the `vectorName` column.
+        # Note the binding of the variable `index` to the distance coded into the signal name.
         pattern: "coordination_aoi_%:vector"
-        # this is placed into the `variable` column
+        # This is the name of the column containing the extracted data.
         alias: "coordination_aoi"
 
-        # the pattern used for matching on the `vectorName` column
-        # note the binding of the variable `index` to the distance coded into the
-        # signal name
+        # The pattern used for matching on the `vectorName` column.
+        # Note the binding of the variables `index` and `gentime` to the id and generation time, respectively, coded into the signal name.
         alias_match_pattern: "coordination_aoi_(?P<index>[0-9]{1,4})_(?P<gentime>[0-9]{1,5}):vector"
-        # the pattern used in naming each extracted signal
-        # this is placed into the `variable` column
+        # The pattern used in naming each extracted signal.
+        # Note the use of the variables `index` and `gentime` that have been extracted from the signal name with the `alias_match_pattern` specified above.
+        # This is placed into the `variable` column.
         alias_pattern: "coordination_aoi_{index}_{gentime}"
 
-        # these columns that are converted to categorical data types
-        # note the definition of the anchor name with the '&'
-        categorical_columns: &ccolumns ['variable', 'vectorName', 'moduleName'
-                             , 'v2x_rate', 'configname', 'experiment', 'repetition', 'runnumber'
-                             , 'prefix', 'ql', 'mcmI', 'mcmL' ]
-        # these columns that are converted to numerical data types, with explicit data type
-        numerical_columns: &ncolumns { 'coordination_aoi' : float, 'eventNumber' : int, 'simtimeRaw' : int }
+        # These columns that are converted to categorical data types.
+        categorical_columns: *ccolumns
+        # These columns that are converted to numerical data types, with explicit data type.
+        numerical_columns: *ncolumns
         simtimeRaw: !!bool "true"
         moduleName: !!bool "true"
         eventNumber: !!bool "true"
@@ -78,23 +73,16 @@ evaluation: !Evaluation
   exporter:
     - raw_aoi: !FileResultProcessor
         dataset_name: "raw_aoi" # the key for the data loaded by the extractor above
-        # whether to concatenate all input results into one file
-        concatenate: !bool "true"
-        # output_filename: "/net/i5/opt/tmpssd/t-its-paper/review/extracted/raw_aoi.feather"
-        # output_filename: "/opt/tmp/t-its-paper/review/extracted/raw_aoi.feather"
-        # output_filename: "/opt/tmp/t-its-paper/review/test/extracted/raw_aoi.feather"
-        # output_filename: "/net/i3/opt/tmpssd/hagau/t-its-paper/review_MCO_split/extracted/raw_aoi.feather"
-        # output_filename: "/opt/tmp/t-its-paper/review/i3/extracted/aoi/raw_aoi.feather"
-        # output_filename: "/opt/tmp/t-its-paper/review/extracted/raw_aoi.feather"
-        # output_filename: "/opt/tmp/t-its-paper/review_MCO_split/extracted/aoi/raw_aoi.feather"
-        # output_filename: "/opt/tmp/t-its-paper/review_ql-3-5/extracted/aoi/raw_aoi.feather"
-        output_filename: "/opt/tmp/hagau/tmp/raw_aoi.feather"
+        # don't concatenate all input DataFrames into one file
+        concatenate: !bool "false"
+        # the output directory to save to
+        output_directory: "/opt/tmp/hagau/extracted/SCO/ffk/aoi"
 
 
 plot: !Plot
   reader: # !!python/list
     - raw_aoi: !PlottingReaderFeather
-        sample: 0.5
+        # sample: 0.5
         # concat: !!bool false
         # these columns that are converted to categorical data types
         # note the reference to the previously defined alias with the '*'
@@ -102,32 +90,7 @@ plot: !Plot
         # these columns that are converted to numerical data types
         numerical_columns: *ncolumns
         input_files: !!python/list
-          - "/opt/tmp/t-its-paper/review_simulation_extracted/review/extracted/aoi/.*SCO.*mcmL=888_2_2023.*.feather$"
-          # - "/opt/tmp/t-its-paper/review_simulation_extracted/review/extracted/aoi/.*mcmI=0.1_mcmL=888_2_20230905.*.feather$"
-          #
-          # latest batch for interval plot
-          # - "/opt/tmp/t-its-paper/review_ql-3-5/extracted/aoi/.*_2_2023.*.feather"
-          # - "/opt/tmp/t-its-paper/review_MCO_split/extracted/aoi/.*_2_2023.*.feather"
-          # -  "/opt/tmp/t-its-paper/review/extracted/aoi/.*_2_2023.*.feather"
-          #
-          # latest batch mcmL=888 for interval plot
-          # - "/opt/tmp/t-its-paper/review_ql-3-5/extracted/aoi/.*mcmL=888.*_2_2023.*.feather"
-          # - "/opt/tmp/t-its-paper/review_MCO_split/extracted/aoi/.*mcmL=888.*_2_2023.*.feather"
-          # -  "/opt/tmp/t-its-paper/review/extracted/aoi/.*mcmL=888.*_2_2023.*.feather"
-          #
-          # - "/opt/tmp/t-its-paper/review_ql-3-5/extracted/aoi/.*MCO.*.feather"
-          # - "/opt/tmp/t-its-paper/review_MCO_split/extracted/aoi/.*MCO.*.feather"
-          # -  "/opt/tmp/t-its-paper/review/extracted/aoi/.*MCO.*.feather"
-          # - "/opt/tmp/t-its-paper/review/extracted/aoi/.*.feather"
-          # - "/opt/tmp/t-its-paper/review/i3/extracted/aoi/.*MPR=.*mcmI=(0.02|0.1|0.5|1.0).*mcmL=(60|888|1170)_2_.*.feather"
-          # - "/opt/tmp/t-its-paper/review/test/extracted/.*.feather"
-          # - "/opt/tmp/t-its-paper/review/obstacles/extracted/.*MPR=(0.2|0.4|0.6|0.8|1.0).*.feather"
-          # - "/opt/tmp/t-its-paper/review/extracted/.*SCO.*MPR=1.0.*.feather"
-          # - "/opt/tmp/t-its-paper/review/extracted/.*SCO.*.feather"
-          # - "/opt/tmp/t-its-paper/review/extracted/.*.feather"
-          # - "/opt/tmp/t-its-paper/review/extracted/0_itsg5_FFK_SCO_8h_MPR=0.4_mcmI=0.1_mcmL=888_2_20230818-13:12:03_32_coordination_aoi.feather"
-          # - "/opt/tmp/t-its-paper/review/extracted/0_itsg5_FFK_SCO_8h_MPR=0.6_mcmI=0.1_mcmL=1170_2_20230818-17:26:45_54_coordination_aoi.feather"
-          # - "/net/i5/opt/tmpssd/t-its-paper/review/extracted/.*mcmI=0.1.*mcmL=888_2_.*_coordination_aoi.feather"
+          - /opt/tmp/hagau/extracted/SCO/ffk/aoi/.*SCO.*_2_2023.*.feather$
 
 
   transforms:
@@ -148,126 +111,71 @@ plot: !Plot
         extra_code: |
 
           def calculate_cui(df):
-              # diffs = df['simtimeRaw'].sort_values().diff().dropna()
-              # print(df)
-              # print(diffs)
-
               import time
-              # time.sleep(30)
               import numpy as np
-
-              # t0 = time.time()
-              # t1 = time.time()
-
-              # print('running loop done')
-              # while t1 - t0 < (60*30):
-              #   N = 1024
-              #   size = 4096
-              #   A, B = np.random.random((size, size)), np.random.random((size, size))
-              #   for i in range(0, N):
-              #     X = np.dot(A, B)
-              #   for i in range(0, N):
-              #     np.linalg.eig(A)
-
-              #   t1 = time.time()
-              # print('calc loop done')
-
               import math
-              #
 
-              # print("_-*-"*10)
-              # filtered = df.query('simtimeRaw > 30e12')
-
-              # if filtered.empty:
-              #   return math.nan
-
-              sorted = df.sort_values(by=['simtimeRaw'])
-              # print(f"blah: {sorted=}")
-
-              trimmed = sorted
-              # drop the first sample
-              # trimmed = sorted.tail(n=-1)
-              # print(f"blah: {trimmed=}")
-
-              if trimmed.empty:
+              if df is None or (not df is None and df.empty):
+                print(f'calculate_cui: {df=}')
                 return math.nan
 
-              # if trimmed['coordination_aoi'].iat[0] > 2e6:
-              #   print("large values:")
-              #   print(f"pretrim: {trimmed=}")
-              #   # trimmed = trimmed.tail(n=-1)
-              #   # print(f"posttrim: {trimmed=}")
-
-
-              # if len(trimmed) < 5:
-              #   print("not enough values, returning NaN")
-              #   return math.nan
-
-              # print(f"using: {trimmed=}")
+              sorted = df.sort_values(by=['simtimeRaw'])
 
               # the generation timestamp of the second message
-              ts_generation = int(trimmed['variable'].iat[0].split('_')[-1:][0])
+              ts_generation = int(sorted['variable'].iat[0].split('_')[-1:][0])
 
-              # timestamps of the second and last emission
-              # ts2 = trimmed['simtimeRaw'].iat[0]
-
-              tsn = trimmed['simtimeRaw'].tail(n=1).iat[0]
+              tsn = sorted['simtimeRaw'].tail(n=1).iat[0]
               # calculate difference in milliseconds
               td = (tsn * 1e-9) - ts_generation
-              # print("_-*-"*10)
-              # print(f"{ts2=}")
-
-              # print(f"{ts_generation=}")
-              # print(f"{tsn=}")
-              # print(f"{td=}")
 
               if td > 30e3:
-                print(">>>>>>>    td is too large")
+                print(f">>>>>>>    {td=} is too large")
 
 
               if math.isclose(td, 0.):
                 print("division by zero, returning NaN")
-                # print(f"{sorted['simtimeRaw']=}")
-                print(f"{trimmed=}")
+                print(f"{sorted=}")
                 return math.nan
 
 
-              trimmed['coordination_aoi'] = trimmed['coordination_aoi'].astype('float')
+              sorted['coordination_aoi'] = sorted['coordination_aoi'].astype('float')
 
               # calculate average AoI estimate
-              result = trimmed['coordination_aoi'].sum() / td
+              result = sorted['coordination_aoi'].sum() / td
               # print(f"{result=}")
 
               if result > 30e3:
                 print(f"BIG VALUE")
-                print(f"{trimmed=}")
-                print(f"{trimmed['coordination_aoi'].sum()=}")
+                print(f"{sorted=}")
+                print(f"{sorted['coordination_aoi'].sum()=}")
                 print(f"{result=}")
 
-              # this drops into an interactive command line interface with access to the local variables, for data introspection and debugging purposes
-              # start_ipython_dbg_cmdline(user_ns=locals())
+              # this drops into an interactive debugging interface
+              # start_debug()
 
               return result
 
-        # the function to execute for each group
-        # this should accept a pandas.Series as parameter and return a single value (when not outputting in raw mode)
-        # aggregation_function: "dask.dataframe.groupby.DataFrameGroupBy.mean"
-        # aggregation_function: "pd.Series.mean"
+        # The function to execute for each group
+        # This should accept a pandas.Series as parameter and return a single value (when not outputting in raw mode).
+        # This can be a function name, like "dask.dataframe.groupby.DataFrameGroupBy.mean" or "pd.Series.mean", possibly defined in `extra_code`.
         transform_function: "calculate_cui"
 
-        # whether to treat the result of the transform function as a single value (and augment it with the first row of the group data)
+        # Whether to treat the result of the transform function as a single value (and augment it with the first row of the group data)
         # or as a pandas.Series (and assign it as a new column)
         aggregate: !!bool "true"
 
-        # whether to output a list of the raw result from the aggregation
+        # Whether to output a list of the raw result from the aggregation
         # function or add the result as a new column to to the first row of the
         # input data (the input column having been removed beforehand)
         # raw: !!bool "false"
         raw: !!null
 
-        pre_concatenate: !!bool "false"
+        # Whether to concatenate all the input DataFrames into one before processing.
+        # Separately processing of each DataFrame can be faster if possible.
+        pre_concatenate: !!bool "true"
 
-    - rename: !ColumnFunctionTransform
+    # Replace a value in the `prefix` column with 'MCO' if it contains the substring 'MCO' and with 'SCO' in every other case.
+    - rename_0: !ColumnFunctionTransform
         dataset_name: "mean_aoi"
         output_dataset_name: "mean_aoi"
         input_column: "prefix"
@@ -275,35 +183,55 @@ plot: !Plot
         function: !code |
           lambda x: 'MCO' if 'MCO' in x else 'SCO'
 
+    # This is equivalent to the above ColumnFunctionTransform, expect it operates on the `experiment` column.
+    - rename_1: !FunctionTransform
+        dataset_name: "mean_aoi"
+        output_dataset_name: "mean_aoi"
+        # The following function definition is an unnecessarily contrived example to show the use of helper functions and global variables.
+        function: 'f'
+        extra_code: |
+          example_var = 23
+          def f(df):
+            print('------> f')
+            print(f'------> {example_var=}')
+            df = g(df)
+            # start_debug()
+            return df
+          def g(df):
+            print('------> g')
+            df['experiment'] = df['experiment'].apply(lambda x: 'MCO' if 'MCO' in x else 'SCO')
+            return df
+          # The following definitions would overwrite the symbols under which
+          # numpy and pandas have been imported, so one should be careful when
+          # naming functions and choose unique and expressive names (unlike the
+          # choices in the example above):
+          # def np():
+          #   pass
+          # def pd():
+          #   pass
+
+    # Filter the input DataFrame by whether the `prefix` column of the row contains the substring 'SCO'
+    - filter_SCO: !FunctionTransform
+        dataset_name: "mean_aoi"
+        output_dataset_name: "mean_aoi"
+        function: |
+          lambda df: df.query('prefix.str.contains("SCO")')
+
+
   tasks: # !!python/list
     - mean_aoi_interval_box: !PlottingTask
-        # the key used for selecting from the data loaded and/or transformed in
-        # the reader and transform phases
+        # The key used for selecting from the data loaded and/or transformed in the reader and transform phases.
         dataset_name: "mean_aoi"
-        # dataset_name: "cbr_stats"
-        # selector: "ql == 2"
-        # the kind of plot to draw
-        # one of { 'lineplot', 'box', 'scatterplot'
-        #        , 'boxen', 'stripplot', 'swarm', 'bar', 'count'
-        #        , 'point'
-        #        , ... }
         plot_type: "box"
-        # plot_type: "box"
-        # plot_type: "lineplot"
-
-        # x: "v2x_rate"
-        # y: "mean_aoi"
 
         x: "v2x_rate"
-        # y: !none
         y: "mean_aoi"
 
         yrange: !!tuple (0., 2750.)
 
         hue: &hue "mcmI"
-        # row: "mcmL"
         row: !!null
-        column: "prefix"
+        column: "mcmL"
 
         alpha: 0.9
 
@@ -328,6 +256,9 @@ plot: !Plot
         bbox_inches: "tight"
 
         colormap: "plasma"
+
+        plot_kwargs:
+          aspect: 1.5
 
         matplotlib_backend: "agg"
         # matplotlib_rc: "/misc/ibr/projects/artery-lte/artery_imagine_hagau_release_t-its_paccrunch/scripts/examples/AOI.matplotlib.rc"
@@ -373,8 +304,10 @@ plot: !Plot
         # output_file: "/opt/tmp/t-its-paper/review/plots/aoi_over_mpr_ql=2_interval_boxplot.png"
         # output_file: "/opt/tmp/t-its-paper/review/plots/aoi_over_mpr_mcmL=888_ql=2_interval_boxplot.png"
         # output_file: "/opt/tmp/hagau/tmp/aoi_over_mpr_mcmL=888_ql=2_interval_boxplot_no-concat.png"
-        output_file: "/opt/tmp/hagau/tmp/aoi.png"
+        output_file: "/opt/tmp/hagau/plots/aoi.png"
 
+        # The `grid_transform` function takes the produced seaborn.FacetGrid as
+        # argument and can apply arbitrary operations to it before it is saved to disk.
         grid_transform: |
             def grid_transform(ax):
                 font_scale = 1.5
@@ -392,6 +325,9 @@ plot: !Plot
                 mprs = [0.05, 0.1 , 0.2 , 0.4 , 0.6 , 0.8 , 1.  ]
                 mpr_labels = ['0.05', '0.1' , 0.2 , 0.4 , 0.6 , 0.8 , 1.  ]
 
+                # start_debug()
+
+                # set labels and ticks for the x-axis
                 for col in range(0, ax._ncol):
                   # ax._axes[0][col].set_xticks(mprs)
                   ax._axes[0][col].set_xticklabels(mpr_labels)
