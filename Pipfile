@@ -4,11 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-matplotlib = "==3.10.0"
-numpy = "==2.2.1"
+matplotlib = "==3.10.7"
+numpy = "==2.3.0"
 jsonpickle = "*"
 ujson = "*"
-pandas = "==2.2.3"
+pandas = "==2.3.3"
 sqlalchemy = "*"
 seaborn = "==0.13.2"
 sphinx = "*"
@@ -19,19 +19,18 @@ tabulate = "*"
 bottleneck = "*"
 numexpr = "*"
 pyarrow = "*"
-distributed = "==2024.12.1"
+distributed = "==2025.11.0"
 dask-jobqueue = "==0.9.0"
 graphviz = ">=0.20.1"
 ipython = ">=8.25.0"
 ipdb = ">=0.13.13"
 yamllint = "*"
-dask = {extras = ["complete"], version = "==2024.12.1"}
+dask = {extras = ["complete"], version = "==2025.11.0"}
 
 [dev-packages]
 pylint = ">=3.2.6"
 autopep8 = "*"
 wrapt = "*"
-typed-ast = "*"
 rope = "*"
 pycodestyle = "*"
 mccabe = "*"
@@ -43,4 +42,4 @@ autoflake = ">=1.7.7"
 ruff = ">=0.4.9"
 
 [requires]
-python_version = "3.10"
+python_version = "3.11"
