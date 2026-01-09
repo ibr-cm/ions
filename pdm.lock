@@ -92,7 +92,7 @@ files = [
 
 [[package]]
 name = "bokeh"
-version = "3.6.2"
+version = "3.8.2"
 requires_python = ">=3.10"
 summary = "Interactive plots and applications in the browser from Python"
 groups = ["default"]
@@ -100,16 +100,17 @@ dependencies = [
     "Jinja2>=2.9",
     "PyYAML>=3.10",
     "contourpy>=1.2",
+    "narwhals>=1.13",
     "numpy>=1.16",
     "packaging>=16.8",
     "pandas>=1.2",
     "pillow>=7.1.0",
-    "tornado>=6.2",
+    "tornado>=6.2; sys_platform != \"emscripten\"",
     "xyzservices>=2021.09.1",
 ]
 files = [
-    {file = "bokeh-3.6.2-py3-none-any.whl", hash = "sha256:fddc4b91f8b40178c0e3e83dfcc33886d7803a3a1f041a840834255e435a18c2"},
-    {file = "bokeh-3.6.2.tar.gz", hash = "sha256:2f3043d9ecb3d5dc2e8c0ebf8ad55727617188d4e534f3e7208b36357e352396"},
+    {file = "bokeh-3.8.2-py3-none-any.whl", hash = "sha256:5e2c0d84f75acb25d60efb9e4d2f434a791c4639b47d685534194c4e07bd0111"},
+    {file = "bokeh-3.8.2.tar.gz", hash = "sha256:8e7dcacc21d53905581b54328ad2705954f72f2997f99fc332c1de8da53aa3cc"},
 ]
 
 [[package]]
@@ -1081,6 +1082,17 @@ groups = ["dev"]
 files = [
     {file = "mypy_extensions-1.0.0-py3-none-any.whl", hash = "sha256:4392f6c0eb8a5668a69e23d168ffa70f0be9ccfd32b5cc2d26a34ae5b844552d"},
     {file = "mypy_extensions-1.0.0.tar.gz", hash = "sha256:75dbf8955dc00442a438fc4d0666508a9a97b6bd41aa2f0ffe9d2f2725af0782"},
+]
+
+[[package]]
+name = "narwhals"
+version = "2.15.0"
+requires_python = ">=3.9"
+summary = "Extremely lightweight compatibility layer between dataframe libraries"
+groups = ["default"]
+files = [
+    {file = "narwhals-2.15.0-py3-none-any.whl", hash = "sha256:cbfe21ca19d260d9fd67f995ec75c44592d1f106933b03ddd375df7ac841f9d6"},
+    {file = "narwhals-2.15.0.tar.gz", hash = "sha256:a9585975b99d95084268445a1fdd881311fa26ef1caa18020d959d5b2ff9a965"},
 ]
 
 [[package]]
