@@ -7,7 +7,6 @@ name = "pypi"
 matplotlib = "==3.10.7"
 numpy = "==2.3.0"
 jsonpickle = "*"
-ujson = "*"
 pandas = "==2.3.3"
 sqlalchemy = "*"
 seaborn = "==0.13.2"
@@ -26,6 +25,7 @@ ipdb = ">=0.13.13"
 yamllint = ">=1.35.1"
 dask = {extras = ["complete"], version = "==2026.1.2"}
 distributed = "==2026.1.2"
+ujson = "*"
 
 [dev-packages]
 pylint = ">=3.2.6"
