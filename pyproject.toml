@@ -6,11 +6,11 @@ authors = [
     {name = "Christian Hagau", email = "hagau@ibr.cs.tu-bs.de"},
 ]
 dependencies = [
-    "matplotlib==3.10.7",
-    "numpy==2.3.0",
+    "matplotlib==3.11.0",
+    "numpy==2.5.0",
     "jsonpickle",
     "ujson",
-    "pandas==2.3.3",
+    "pandas==3.0.5",
     "SQLAlchemy",
     "seaborn==0.13.2",
     "sphinx",
@@ -21,13 +21,14 @@ dependencies = [
     "bottleneck",
     "numexpr",
     "pyarrow",
-    "dask[complete]==2026.1.2",
+    "dask[complete]==2026.7.0",
     "dask-jobqueue==0.9.0",
-    "distributed==2026.1.2",
+    "distributed==2026.7.0",
     "graphviz>=0.20.1",
     "ipython>=9.8.0",
     "ipdb>=0.13.13",
     "yamllint>=1.35.1",
+    "mypy==1.18.2",
 ]
 requires-python = ">=3.12,<3.14"
 license = {text = "GPLv3"}
