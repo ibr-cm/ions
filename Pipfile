@@ -42,4 +42,4 @@ autoflake = ">=1.7.7"
 ruff = ">=0.4.9"
 
 [requires]
-python_version = "3.11"
+python_version = "3.12"

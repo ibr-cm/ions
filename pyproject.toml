@@ -29,7 +29,7 @@ dependencies = [
     "ipdb>=0.13.13",
     "yamllint>=1.35.1",
 ]
-requires-python = ">=3.11,<3.14"
+requires-python = ">=3.12,<3.14"
 license = {text = "GPLv3"}
 readme = "README.md"
 [tool]
