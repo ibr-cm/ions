@@ -28,7 +28,7 @@ distributed = "==2026.8.0"
 ujson = "*"
 
 [dev-packages]
-pylint = ">=3.2.6"
+pylint = ">=4.1.4"
 autopep8 = "*"
 wrapt = "*"
 rope = "*"
